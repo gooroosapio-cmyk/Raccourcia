@@ -287,7 +287,7 @@ for (const row of prompts) {
     );
   };
 
-  const versionGuard = (provider) => [
+  const versionGuard = () => [
     `  and not exists (`,
     `    select 1 from public.prompt_versions existing`,
     `    where existing.variant_id = v.id and existing.version_label = ${sql(versionLabel)}`,
@@ -303,7 +303,7 @@ for (const row of prompts) {
     `join public.prompts p on p.id = v.prompt_id`,
     `join public.ai_providers pr on pr.id = v.provider_id`,
     `where p.external_ref = ${sql(row.id)} and pr.key = ${sql(referenceProvider)}`,
-    ...versionGuard(referenceProvider),
+    ...versionGuard(),
   );
 
   for (const provider of otherProviders) {
@@ -320,7 +320,7 @@ for (const row of prompts) {
       `join public.prompt_versions src on src.variant_id = ref.id`,
       `  and src.version_label = ${sql(versionLabel)}`,
       `where p.external_ref = ${sql(row.id)} and pr.key = ${sql(provider)}`,
-      ...versionGuard(provider),
+      ...versionGuard(),
     );
   }
 }
