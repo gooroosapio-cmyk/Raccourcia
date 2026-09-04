@@ -1,0 +1,23 @@
+[
+  {
+    "domaine": "image",
+    "chatgpt": "excellent",
+    "claude": "prompt utilisable, execution image selon interface",
+    "gemini": "excellent",
+    "note_dev": "Afficher avertissement interface si l'IA ne peut pas editer/generer l'image directement."
+  },
+  {
+    "domaine": "ecrire",
+    "chatgpt": "excellent",
+    "claude": "excellent",
+    "gemini": "excellent",
+    "note_dev": "Compatible texte brut."
+  },
+  {
+    "domaine": "analyser",
+    "chatgpt": "excellent",
+    "claude": "excellent",
+    "gemini": "excellent",
+    "note_dev": "Compatible si la taille du document respecte la fenetre de contexte."
+  }
+]

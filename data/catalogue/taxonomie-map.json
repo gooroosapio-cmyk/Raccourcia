@@ -1,0 +1,137 @@
+{
+  "_comment": "Regroupement editorial des familles du tableur en categories et sous-categories. Les familles image sont assez peu nombreuses pour rester au premier niveau ; ecrire et analyser sont regroupees pour garder une seule ligne de chips sur mobile. Ce fichier ne sert qu'a l'import initial : ensuite, tout se renomme, se reordonne et se desactive depuis /admin.",
+  "modes": {
+    "image": {
+      "mode": "image",
+      "status": "published",
+      "flat": true,
+      "groups": [
+        {
+          "slug": "image-visualisation-produit",
+          "name": "Visualisation produit",
+          "families": ["Visualisation produit"]
+        },
+        {
+          "slug": "image-portrait-mode",
+          "name": "Portrait et mode",
+          "families": ["Portrait et mode"]
+        },
+        { "slug": "image-marketing", "name": "Marketing image", "families": ["Marketing image"] },
+        {
+          "slug": "image-effets-creatifs",
+          "name": "Effets créatifs",
+          "families": ["Effets creatifs"]
+        },
+        {
+          "slug": "image-lieu-interieur",
+          "name": "Lieu et intérieur",
+          "families": ["Lieu et interieur"]
+        },
+        {
+          "slug": "image-education",
+          "name": "Éducation visuelle",
+          "families": ["Education visuelle"]
+        },
+        {
+          "slug": "image-food-lifestyle",
+          "name": "Food et lifestyle",
+          "families": ["Food et lifestyle"]
+        }
+      ]
+    },
+    "ecrire": {
+      "mode": "texte",
+      "status": "published",
+      "flat": false,
+      "groups": [
+        {
+          "slug": "texte-marketing-contenu",
+          "name": "Marketing et contenu",
+          "families": [
+            "Marketing",
+            "Publicite",
+            "Social",
+            "SEO",
+            "Storytelling",
+            "Video",
+            "Creatif",
+            "Branding",
+            "Naming",
+            "PR"
+          ]
+        },
+        {
+          "slug": "texte-vente-produit",
+          "name": "Vente et produit",
+          "families": ["Produit", "Business", "Preuves"]
+        },
+        {
+          "slug": "texte-communication",
+          "name": "Communication",
+          "families": ["Email", "Reunions", "Synthese"]
+        },
+        {
+          "slug": "texte-redaction",
+          "name": "Rédaction et édition",
+          "families": ["Reecriture", "Documents"]
+        },
+        {
+          "slug": "texte-interne-rh",
+          "name": "Interne et RH",
+          "families": ["RH", "Operations", "Conformite", "Education"]
+        }
+      ]
+    },
+    "analyser": {
+      "mode": "analyse",
+      "status": "draft",
+      "flat": false,
+      "groups": [
+        {
+          "slug": "analyse-client-marche",
+          "name": "Client et marché",
+          "families": ["Client", "Marche", "UX", "Acquisition", "Growth"]
+        },
+        {
+          "slug": "analyse-produit-contenu",
+          "name": "Produit et contenu",
+          "families": ["Produit", "Contenu", "Copywriting", "SEO", "Web", "Prompts"]
+        },
+        {
+          "slug": "analyse-strategie-decision",
+          "name": "Stratégie et décision",
+          "families": ["Strategie", "Decision", "Pricing", "Finance"]
+        },
+        {
+          "slug": "analyse-operations-qualite",
+          "name": "Opérations et qualité",
+          "families": ["Operations", "Diagnostic", "Qualite", "Reunions", "Documents"]
+        },
+        {
+          "slug": "analyse-risques-conformite",
+          "name": "Risques et conformité",
+          "families": ["Risques", "Conformite", "Securite", "Data"]
+        }
+      ]
+    }
+  },
+  "familyLabels": {
+    "Reecriture": "Réécriture",
+    "Education": "Éducation",
+    "Education visuelle": "Éducation visuelle",
+    "Effets creatifs": "Effets créatifs",
+    "Lieu et interieur": "Lieu et intérieur",
+    "Publicite": "Publicité",
+    "Reunions": "Réunions",
+    "Synthese": "Synthèse",
+    "Marche": "Marché",
+    "Strategie": "Stratégie",
+    "Decision": "Décision",
+    "Conformite": "Conformité",
+    "Securite": "Sécurité",
+    "Qualite": "Qualité",
+    "Creatif": "Créatif",
+    "Operations": "Opérations",
+    "Preuves": "Preuves"
+  }
+}

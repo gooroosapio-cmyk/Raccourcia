@@ -1,0 +1,4162 @@
+[
+  {
+    "prompt_id": "RCI-IMG-001",
+    "commande": "/xray",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-001",
+    "commande": "/xray",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-001",
+    "commande": "/xray",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-002",
+    "commande": "/explodeview",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-002",
+    "commande": "/explodeview",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-002",
+    "commande": "/explodeview",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-003",
+    "commande": "/crosssection",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-003",
+    "commande": "/crosssection",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "axe_de_coupe",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-003",
+    "commande": "/crosssection",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-004",
+    "commande": "/blueprint",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-004",
+    "commande": "/blueprint",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-004",
+    "commande": "/blueprint",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-005",
+    "commande": "/ghostview",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-005",
+    "commande": "/ghostview",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-005",
+    "commande": "/ghostview",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-006",
+    "commande": "/cutaway",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-006",
+    "commande": "/cutaway",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "zone",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-006",
+    "commande": "/cutaway",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-007",
+    "commande": "/materialscan",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-007",
+    "commande": "/materialscan",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-007",
+    "commande": "/materialscan",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-008",
+    "commande": "/assembly",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-008",
+    "commande": "/assembly",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-008",
+    "commande": "/assembly",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-009",
+    "commande": "/schematic",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-009",
+    "commande": "/schematic",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-009",
+    "commande": "/schematic",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-010",
+    "commande": "/isometric",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-010",
+    "commande": "/isometric",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-010",
+    "commande": "/isometric",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-011",
+    "commande": "/packshot",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-011",
+    "commande": "/packshot",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-012",
+    "commande": "/luxmockup",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-012",
+    "commande": "/luxmockup",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "contexte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-013",
+    "commande": "/textureclean",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-013",
+    "commande": "/textureclean",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-014",
+    "commande": "/colorswap",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "zone",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-014",
+    "commande": "/colorswap",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "couleur",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-015",
+    "commande": "/producthero",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-015",
+    "commande": "/producthero",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "promesse",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-016",
+    "commande": "/labelmockup",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-016",
+    "commande": "/labelmockup",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "texte_etiquette",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-017",
+    "commande": "/adsocial",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-017",
+    "commande": "/adsocial",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-018",
+    "commande": "/thumbnail",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-018",
+    "commande": "/thumbnail",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "angle",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-018",
+    "commande": "/thumbnail",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-019",
+    "commande": "/poster",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-019",
+    "commande": "/poster",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "message",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-019",
+    "commande": "/poster",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-020",
+    "commande": "/memepro",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-020",
+    "commande": "/memepro",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "ton",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-021",
+    "commande": "/carouselcover",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-021",
+    "commande": "/carouselcover",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "benefice",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-021",
+    "commande": "/carouselcover",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-022",
+    "commande": "/ugcscene",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-022",
+    "commande": "/ugcscene",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "profil_createur",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-023",
+    "commande": "/billboard",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "visuel",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-023",
+    "commande": "/billboard",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "lieu",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-024",
+    "commande": "/storyad",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-024",
+    "commande": "/storyad",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "message",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-025",
+    "commande": "/headshot",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "personne",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-025",
+    "commande": "/headshot",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "personne",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-026",
+    "commande": "/hairstyle",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "personne",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-026",
+    "commande": "/hairstyle",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "coiffure",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-027",
+    "commande": "/outfit",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "personne",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-027",
+    "commande": "/outfit",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "tenue",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-028",
+    "commande": "/backgroundswap",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-028",
+    "commande": "/backgroundswap",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "fond",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-028",
+    "commande": "/backgroundswap",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-029",
+    "commande": "/portraitcinema",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "personne",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-029",
+    "commande": "/portraitcinema",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "ambiance",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-030",
+    "commande": "/avatarpro",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "personne",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-030",
+    "commande": "/avatarpro",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "style",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-031",
+    "commande": "/makeup",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "personne",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-031",
+    "commande": "/makeup",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "style_maquillage",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-032",
+    "commande": "/colorgrade",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "image",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-032",
+    "commande": "/colorgrade",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "ambiance",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-033",
+    "commande": "/retouchclean",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "image",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-033",
+    "commande": "/retouchclean",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "image",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-034",
+    "commande": "/expression",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "personne",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-034",
+    "commande": "/expression",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "expression",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-035",
+    "commande": "/roomredesign",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "piece",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-035",
+    "commande": "/roomredesign",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "style",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-036",
+    "commande": "/furnitureswap",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "piece",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-036",
+    "commande": "/furnitureswap",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "mobilier",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-037",
+    "commande": "/wallcolor",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "piece",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-037",
+    "commande": "/wallcolor",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "couleur",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-038",
+    "commande": "/homestaging",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "piece",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-038",
+    "commande": "/homestaging",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "cible",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-039",
+    "commande": "/storefront",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "commerce",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-039",
+    "commande": "/storefront",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "marque",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-040",
+    "commande": "/floorplan",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "espace",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-040",
+    "commande": "/floorplan",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "espace",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-041",
+    "commande": "/eventdecor",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "lieu",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-041",
+    "commande": "/eventdecor",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "theme",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-042",
+    "commande": "/foodstyling",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "plat",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-042",
+    "commande": "/foodstyling",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "plat",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-043",
+    "commande": "/menuhero",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "plat",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-043",
+    "commande": "/menuhero",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "restaurant",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-044",
+    "commande": "/infographic",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-044",
+    "commande": "/infographic",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "points_cles",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-044",
+    "commande": "/infographic",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-045",
+    "commande": "/comparisonvisual",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "options",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-045",
+    "commande": "/comparisonvisual",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "criteres",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-046",
+    "commande": "/processvisual",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-046",
+    "commande": "/processvisual",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-047",
+    "commande": "/mapvisual",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "lieu",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-047",
+    "commande": "/mapvisual",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "points",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-048",
+    "commande": "/timelinevisual",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "evenements",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-048",
+    "commande": "/timelinevisual",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "evenements",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-049",
+    "commande": "/anatomyview",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-049",
+    "commande": "/anatomyview",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "zones",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-049",
+    "commande": "/anatomyview",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-050",
+    "commande": "/miniature",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "scene",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-050",
+    "commande": "/miniature",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "scene",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-051",
+    "commande": "/clay",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-051",
+    "commande": "/clay",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-051",
+    "commande": "/clay",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-052",
+    "commande": "/papercut",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-052",
+    "commande": "/papercut",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-052",
+    "commande": "/papercut",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-053",
+    "commande": "/neon",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-053",
+    "commande": "/neon",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "couleur",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-053",
+    "commande": "/neon",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-054",
+    "commande": "/retrofuture",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-054",
+    "commande": "/retrofuture",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-054",
+    "commande": "/retrofuture",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-055",
+    "commande": "/graffiti",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-055",
+    "commande": "/graffiti",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-055",
+    "commande": "/graffiti",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-056",
+    "commande": "/watercolor",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-056",
+    "commande": "/watercolor",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-056",
+    "commande": "/watercolor",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-057",
+    "commande": "/comic",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "scene",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-057",
+    "commande": "/comic",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "scene",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-058",
+    "commande": "/cinematicstill",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "scene",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-058",
+    "commande": "/cinematicstill",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "genre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-059",
+    "commande": "/doubleexposure",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-059",
+    "commande": "/doubleexposure",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "univers",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-059",
+    "commande": "/doubleexposure",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-060",
+    "commande": "/glitch",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-060",
+    "commande": "/glitch",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-060",
+    "commande": "/glitch",
+    "domaine": "image",
+    "ordre": "3",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-061",
+    "commande": "/tiltshift",
+    "domaine": "image",
+    "ordre": "1",
+    "question": "Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre",
+    "variable_associee": "scene",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-IMG-061",
+    "commande": "/tiltshift",
+    "domaine": "image",
+    "ordre": "2",
+    "question": "Format ? A. Meme ratio que l'image B. Mobile 9:16 C. Carre 1:1 D. Autre",
+    "variable_associee": "scene",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-001",
+    "commande": "/landingcopy",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-001",
+    "commande": "/landingcopy",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-001",
+    "commande": "/landingcopy",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-002",
+    "commande": "/headline",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-002",
+    "commande": "/headline",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-002",
+    "commande": "/headline",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-003",
+    "commande": "/offer",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-003",
+    "commande": "/offer",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "cible",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-003",
+    "commande": "/offer",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-004",
+    "commande": "/emailpro",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-004",
+    "commande": "/emailpro",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "destinataire",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-004",
+    "commande": "/emailpro",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-005",
+    "commande": "/coldmail",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "cible",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-005",
+    "commande": "/coldmail",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-005",
+    "commande": "/coldmail",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "cible",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-006",
+    "commande": "/newsletter",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "theme",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-006",
+    "commande": "/newsletter",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-006",
+    "commande": "/newsletter",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "theme",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-007",
+    "commande": "/linkedinpost",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-007",
+    "commande": "/linkedinpost",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-007",
+    "commande": "/linkedinpost",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-008",
+    "commande": "/instagramcaption",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "visuel",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-008",
+    "commande": "/instagramcaption",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-008",
+    "commande": "/instagramcaption",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "visuel",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-009",
+    "commande": "/tiktokscript",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-009",
+    "commande": "/tiktokscript",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "public",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-009",
+    "commande": "/tiktokscript",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-010",
+    "commande": "/adcopy",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-010",
+    "commande": "/adcopy",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-010",
+    "commande": "/adcopy",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-011",
+    "commande": "/productdesc",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-011",
+    "commande": "/productdesc",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "cible",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-011",
+    "commande": "/productdesc",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-012",
+    "commande": "/faq",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-012",
+    "commande": "/faq",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-012",
+    "commande": "/faq",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-013",
+    "commande": "/onboardingcopy",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-013",
+    "commande": "/onboardingcopy",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "etapes",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-013",
+    "commande": "/onboardingcopy",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-014",
+    "commande": "/uxmicrocopy",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "ecran",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-014",
+    "commande": "/uxmicrocopy",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "action",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-014",
+    "commande": "/uxmicrocopy",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "ecran",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-015",
+    "commande": "/salespage",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-015",
+    "commande": "/salespage",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "preuve",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-015",
+    "commande": "/salespage",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-016",
+    "commande": "/pitchdecktext",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "projet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-016",
+    "commande": "/pitchdecktext",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-016",
+    "commande": "/pitchdecktext",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "projet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-017",
+    "commande": "/businessplan",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "projet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-017",
+    "commande": "/businessplan",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "modele",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-017",
+    "commande": "/businessplan",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "projet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-018",
+    "commande": "/positioning",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "marque",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-018",
+    "commande": "/positioning",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "cible",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-018",
+    "commande": "/positioning",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "marque",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-019",
+    "commande": "/brandvoice",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "marque",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-019",
+    "commande": "/brandvoice",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-019",
+    "commande": "/brandvoice",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "marque",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-020",
+    "commande": "/pressrelease",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "annonce",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-020",
+    "commande": "/pressrelease",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "organisation",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-020",
+    "commande": "/pressrelease",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "annonce",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-021",
+    "commande": "/proposal",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "besoin_client",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-021",
+    "commande": "/proposal",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "solution",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-021",
+    "commande": "/proposal",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "besoin_client",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-022",
+    "commande": "/briefcreative",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-022",
+    "commande": "/briefcreative",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "support",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-022",
+    "commande": "/briefcreative",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-023",
+    "commande": "/sop",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-023",
+    "commande": "/sop",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-023",
+    "commande": "/sop",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-024",
+    "commande": "/checklist",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-024",
+    "commande": "/checklist",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-024",
+    "commande": "/checklist",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-025",
+    "commande": "/meetingagenda",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-025",
+    "commande": "/meetingagenda",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "participants",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-025",
+    "commande": "/meetingagenda",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-026",
+    "commande": "/followup",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "notes",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-026",
+    "commande": "/followup",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "destinataires",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-026",
+    "commande": "/followup",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "notes",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-027",
+    "commande": "/summary",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "source",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-027",
+    "commande": "/summary",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "source",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-027",
+    "commande": "/summary",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "source",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-028",
+    "commande": "/rewriteclear",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-028",
+    "commande": "/rewriteclear",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-028",
+    "commande": "/rewriteclear",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-029",
+    "commande": "/translateadapt",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-029",
+    "commande": "/translateadapt",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "langue",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-029",
+    "commande": "/translateadapt",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-030",
+    "commande": "/simplify",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-030",
+    "commande": "/simplify",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "niveau",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-030",
+    "commande": "/simplify",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-031",
+    "commande": "/tonepro",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-031",
+    "commande": "/tonepro",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-031",
+    "commande": "/tonepro",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-032",
+    "commande": "/storybrand",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "marque",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-032",
+    "commande": "/storybrand",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "client",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-032",
+    "commande": "/storybrand",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "marque",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-033",
+    "commande": "/case_study",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "client",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-033",
+    "commande": "/case_study",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "resultats",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-033",
+    "commande": "/case_study",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "client",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-034",
+    "commande": "/testimonial",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "notes_client",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-034",
+    "commande": "/testimonial",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "notes_client",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-034",
+    "commande": "/testimonial",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "notes_client",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-035",
+    "commande": "/jobpost",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "poste",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-035",
+    "commande": "/jobpost",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "entreprise",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-035",
+    "commande": "/jobpost",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "poste",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-036",
+    "commande": "/cvrewrite",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "cv",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-036",
+    "commande": "/cvrewrite",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-036",
+    "commande": "/cvrewrite",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "cv",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-037",
+    "commande": "/coverletter",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "poste",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-037",
+    "commande": "/coverletter",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "profil",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-037",
+    "commande": "/coverletter",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "poste",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-038",
+    "commande": "/lessonplan",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-038",
+    "commande": "/lessonplan",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "niveau",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-038",
+    "commande": "/lessonplan",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-039",
+    "commande": "/quiz",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-039",
+    "commande": "/quiz",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "niveau",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-039",
+    "commande": "/quiz",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-040",
+    "commande": "/rubric",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "travail",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-040",
+    "commande": "/rubric",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "criteres",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-040",
+    "commande": "/rubric",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "travail",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-041",
+    "commande": "/blogoutline",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "mot_cle",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-041",
+    "commande": "/blogoutline",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-041",
+    "commande": "/blogoutline",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "mot_cle",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-042",
+    "commande": "/blogpost",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-042",
+    "commande": "/blogpost",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-042",
+    "commande": "/blogpost",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-043",
+    "commande": "/seo_meta",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "page",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-043",
+    "commande": "/seo_meta",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "mot_cle",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-043",
+    "commande": "/seo_meta",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "page",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-044",
+    "commande": "/scriptvideo",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-044",
+    "commande": "/scriptvideo",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "duree",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-044",
+    "commande": "/scriptvideo",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-045",
+    "commande": "/story",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-045",
+    "commande": "/story",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "genre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-045",
+    "commande": "/story",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "idee",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-046",
+    "commande": "/dialogue",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "personnages",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-046",
+    "commande": "/dialogue",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "situation",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-046",
+    "commande": "/dialogue",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "personnages",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-047",
+    "commande": "/naming",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "concept",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-047",
+    "commande": "/naming",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "cible",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-047",
+    "commande": "/naming",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "concept",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-048",
+    "commande": "/slogan",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "marque",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-048",
+    "commande": "/slogan",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "promesse",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-048",
+    "commande": "/slogan",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "marque",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-049",
+    "commande": "/legalplain",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-049",
+    "commande": "/legalplain",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-049",
+    "commande": "/legalplain",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-050",
+    "commande": "/policycopy",
+    "domaine": "ecrire",
+    "ordre": "1",
+    "question": "Audience ? A. Client final B. Prospect C. Equipe interne D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-050",
+    "commande": "/policycopy",
+    "domaine": "ecrire",
+    "ordre": "2",
+    "question": "Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre",
+    "variable_associee": "service",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-TXT-050",
+    "commande": "/policycopy",
+    "domaine": "ecrire",
+    "ordre": "3",
+    "question": "Longueur ? A. Court B. Moyen C. Detaille D. Autre",
+    "variable_associee": "sujet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-001",
+    "commande": "/swot",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "source",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-001",
+    "commande": "/swot",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-001",
+    "commande": "/swot",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "source",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-002",
+    "commande": "/pestel",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "marche",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-002",
+    "commande": "/pestel",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "pays",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-002",
+    "commande": "/pestel",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "marche",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-003",
+    "commande": "/porter",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "marche",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-003",
+    "commande": "/porter",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "marche",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-003",
+    "commande": "/porter",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "marche",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-004",
+    "commande": "/persona",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-004",
+    "commande": "/persona",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-004",
+    "commande": "/persona",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "audience",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-005",
+    "commande": "/journey",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-005",
+    "commande": "/journey",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "client",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-005",
+    "commande": "/journey",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-006",
+    "commande": "/competitor",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "concurrents",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-006",
+    "commande": "/competitor",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "criteres",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-006",
+    "commande": "/competitor",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "concurrents",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-007",
+    "commande": "/marketmap",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "marche",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-007",
+    "commande": "/marketmap",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "marche",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-007",
+    "commande": "/marketmap",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "marche",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-008",
+    "commande": "/pricingaudit",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-008",
+    "commande": "/pricingaudit",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "prix",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-008",
+    "commande": "/pricingaudit",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "offre",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-009",
+    "commande": "/funnelaudit",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "funnel",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-009",
+    "commande": "/funnelaudit",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "funnel",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-009",
+    "commande": "/funnelaudit",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "funnel",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-010",
+    "commande": "/landingaudit",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "page",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-010",
+    "commande": "/landingaudit",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "page",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-010",
+    "commande": "/landingaudit",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "page",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-011",
+    "commande": "/uixaudit",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "interface",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-011",
+    "commande": "/uixaudit",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "interface",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-011",
+    "commande": "/uixaudit",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "interface",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-012",
+    "commande": "/copyaudit",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-012",
+    "commande": "/copyaudit",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-012",
+    "commande": "/copyaudit",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-013",
+    "commande": "/seoaudit",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "page_ou_texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-013",
+    "commande": "/seoaudit",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "page_ou_texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-013",
+    "commande": "/seoaudit",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "page_ou_texte",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-014",
+    "commande": "/contentaudit",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "contenus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-014",
+    "commande": "/contentaudit",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "contenus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-014",
+    "commande": "/contentaudit",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "contenus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-015",
+    "commande": "/briefanalyse",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "brief",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-015",
+    "commande": "/briefanalyse",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "brief",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-015",
+    "commande": "/briefanalyse",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "brief",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-016",
+    "commande": "/docsynthese",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "document",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-016",
+    "commande": "/docsynthese",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "document",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-016",
+    "commande": "/docsynthese",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "document",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-017",
+    "commande": "/meetingnotes",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "notes",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-017",
+    "commande": "/meetingnotes",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "notes",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-017",
+    "commande": "/meetingnotes",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "notes",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-018",
+    "commande": "/riskscan",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "projet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-018",
+    "commande": "/riskscan",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "projet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-018",
+    "commande": "/riskscan",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "projet",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-019",
+    "commande": "/decisionmatrix",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "options",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-019",
+    "commande": "/decisionmatrix",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "criteres",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-019",
+    "commande": "/decisionmatrix",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "options",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-020",
+    "commande": "/prioritize",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "liste",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-020",
+    "commande": "/prioritize",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "liste",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-020",
+    "commande": "/prioritize",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "liste",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-021",
+    "commande": "/gapanalysis",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "etat_actuel",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-021",
+    "commande": "/gapanalysis",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "etat_cible",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-021",
+    "commande": "/gapanalysis",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "etat_actuel",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-022",
+    "commande": "/rootcause",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "probleme",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-022",
+    "commande": "/rootcause",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "probleme",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-022",
+    "commande": "/rootcause",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "probleme",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-023",
+    "commande": "/kpi",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-023",
+    "commande": "/kpi",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-023",
+    "commande": "/kpi",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-024",
+    "commande": "/datainsights",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "donnees",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-024",
+    "commande": "/datainsights",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "donnees",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-024",
+    "commande": "/datainsights",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "donnees",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-025",
+    "commande": "/surveyanalyse",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "reponses",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-025",
+    "commande": "/surveyanalyse",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "reponses",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-025",
+    "commande": "/surveyanalyse",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "reponses",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-026",
+    "commande": "/customerfeedback",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "feedback",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-026",
+    "commande": "/customerfeedback",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "feedback",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-026",
+    "commande": "/customerfeedback",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "feedback",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-027",
+    "commande": "/contractscan",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "contrat",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-027",
+    "commande": "/contractscan",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "contrat",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-027",
+    "commande": "/contractscan",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "contrat",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-028",
+    "commande": "/financialsnapshot",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "chiffres",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-028",
+    "commande": "/financialsnapshot",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "chiffres",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-028",
+    "commande": "/financialsnapshot",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "chiffres",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-029",
+    "commande": "/roadmap",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "objectifs",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-029",
+    "commande": "/roadmap",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "features",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-029",
+    "commande": "/roadmap",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "objectifs",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-030",
+    "commande": "/backlogtriage",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "backlog",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-030",
+    "commande": "/backlogtriage",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "backlog",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-030",
+    "commande": "/backlogtriage",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "backlog",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-031",
+    "commande": "/prdreview",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "prd",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-031",
+    "commande": "/prdreview",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "prd",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-031",
+    "commande": "/prdreview",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "prd",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-032",
+    "commande": "/testplan",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "fonctionnalite",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-032",
+    "commande": "/testplan",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "fonctionnalite",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-032",
+    "commande": "/testplan",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "fonctionnalite",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-033",
+    "commande": "/promptaudit",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "prompt",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-033",
+    "commande": "/promptaudit",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "prompt",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-033",
+    "commande": "/promptaudit",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "prompt",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-034",
+    "commande": "/imagepromptdebug",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "prompt",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-034",
+    "commande": "/imagepromptdebug",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "resultat",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-034",
+    "commande": "/imagepromptdebug",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "prompt",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-035",
+    "commande": "/securitybasic",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "systeme_ou_process",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-035",
+    "commande": "/securitybasic",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "systeme_ou_process",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-035",
+    "commande": "/securitybasic",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "systeme_ou_process",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-036",
+    "commande": "/workflowmap",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-036",
+    "commande": "/workflowmap",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-036",
+    "commande": "/workflowmap",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-037",
+    "commande": "/processaudit",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-037",
+    "commande": "/processaudit",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-037",
+    "commande": "/processaudit",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "processus",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-038",
+    "commande": "/featurematrix",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "features",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-038",
+    "commande": "/featurematrix",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "criteres",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-038",
+    "commande": "/featurematrix",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "features",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-039",
+    "commande": "/churnhypothesis",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-039",
+    "commande": "/churnhypothesis",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "donnees",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-039",
+    "commande": "/churnhypothesis",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "produit",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-040",
+    "commande": "/growthideas",
+    "domaine": "analyser",
+    "ordre": "1",
+    "question": "Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre",
+    "variable_associee": "business",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-040",
+    "commande": "/growthideas",
+    "domaine": "analyser",
+    "ordre": "2",
+    "question": "Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre",
+    "variable_associee": "objectif",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  },
+  {
+    "prompt_id": "RCI-ANA-040",
+    "commande": "/growthideas",
+    "domaine": "analyser",
+    "ordre": "3",
+    "question": "Sortie ? A. Tableau B. Plan d'action C. Rapport court D. Autre",
+    "variable_associee": "business",
+    "regle_ui": "QCM court; proposer Autre implicitement cote interface",
+    "declencheur": "Si une variable requise manque et que le contexte ne permet pas de l'inferer avec confiance."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "R01",
+    "regle": "Source de verite",
+    "description": "Le tableur Catalogue est la source editoriale principale; le PDF sert de lecture et cadrage.",
+    "zone": "admin, dev"
+  },
+  {
+    "id": "R02",
+    "regle": "Copie",
+    "description": "Le clic sur une commande copie le payload_copiable complet en texte brut.",
+    "zone": "frontend"
+  },
+  {
+    "id": "R03",
+    "regle": "Contexte suffisant",
+    "description": "Si l'utilisateur fournit assez de contexte, le prompt ordonne d'executer sans question.",
+    "zone": "prompt"
+  },
+  {
+    "id": "R04",
+    "regle": "QCM court",
+    "description": "Si une information indispensable manque, poser 1 a 3 questions maximum avec choix courts.",
+    "zone": "prompt, ux"
+  },
+  {
+    "id": "R05",
+    "regle": "Compatibilite",
+    "description": "Afficher une compatibilite honnete par IA; Claude peut utiliser les prompts image mais l'execution depend de son interface.",
+    "zone": "frontend"
+  },
+  {
+    "id": "R06",
+    "regle": "Publication",
+    "description": "Publier uniquement statut=publie, version validee et commande unique.",
+    "zone": "backend"
+  },
+  {
+    "id": "R07",
+    "regle": "ID stable",
+    "description": "Ne jamais reutiliser un ID archive; garder historique de versions.",
+    "zone": "backend"
+  },
+  {
+    "id": "R08",
+    "regle": "Mobile-first",
+    "description": "Carte prompt: commande, titre, miniature, description, tags, bouton copier; fiche detail en modal.",
+    "zone": "frontend"
+  },
+  {
+    "id": "R09",
+    "regle": "Limites",
+    "description": "Afficher limites et niveau_risque pour les commandes sensibles.",
+    "zone": "frontend"
+  },
+  {
+    "id": "R10",
+    "regle": "Admin",
+    "description": "L'admin peut ajouter categorie, prompt, miniature, compatibilite, statut et version sans redeployer.",
+    "zone": "admin"
+  },
+  {
+    "id": "R11",
+    "regle": "Tests",
+    "description": "Tester commandes P0 sur ChatGPT, Gemini et Claude quand possible avant mise en avant.",
+    "zone": "qa"
+  },
+  {
+    "id": "R12",
+    "regle": "Anti-redondance",
+    "description": "Un prompt = une intention principale; variantes stylistiques restent variables, pas nouvelles commandes.",
+    "zone": "editorial"
+  }
+]

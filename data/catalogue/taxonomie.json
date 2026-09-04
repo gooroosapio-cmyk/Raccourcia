@@ -1,0 +1,57 @@
+[
+  {
+    "type": "Domaine",
+    "valeur": "image",
+    "definition": "Edition/generation d'image, visualisations, portraits, marketing visuel."
+  },
+  {
+    "type": "Domaine",
+    "valeur": "ecrire",
+    "definition": "Production et transformation de textes, emails, contenus, documents."
+  },
+  {
+    "type": "Domaine",
+    "valeur": "analyser",
+    "definition": "Diagnostic, synthese, audit, priorisation et decision."
+  },
+  {
+    "type": "Statut",
+    "valeur": "publie",
+    "definition": "Visible dans la bibliotheque."
+  },
+  {
+    "type": "Statut",
+    "valeur": "brouillon",
+    "definition": "Editable mais non visible."
+  },
+  {
+    "type": "Statut",
+    "valeur": "archive",
+    "definition": "Retire du catalogue; ID conserve."
+  },
+  {
+    "type": "Priorite",
+    "valeur": "P0",
+    "definition": "Commande essentielle a tester en premier."
+  },
+  {
+    "type": "Priorite",
+    "valeur": "P1",
+    "definition": "Commande utile pour enrichir la bibliotheque."
+  },
+  {
+    "type": "Risque",
+    "valeur": "faible",
+    "definition": "Usage standard, faible sensibilite."
+  },
+  {
+    "type": "Risque",
+    "valeur": "moyen",
+    "definition": "Peut necessiter verification humaine selon contexte."
+  },
+  {
+    "type": "Risque",
+    "valeur": "eleve",
+    "definition": "Afficher garde-fou; validation experte conseillee."
+  }
+]
