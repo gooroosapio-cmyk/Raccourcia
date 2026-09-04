@@ -233,38 +233,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /xray]
-
-Role: tu executes un raccourci image pour produire: Vue X-ray.
-Objectif: Rendre visible la structure interne plausible d''un objet.
-Description: Transforme un objet en vue transparente montrant ses composants internes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-001' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -279,38 +256,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /xray]
-
-Role: tu executes un raccourci image pour produire: Vue X-ray.
-Objectif: Rendre visible la structure interne plausible d''un objet.
-Description: Transforme un objet en vue transparente montrant ses composants internes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-001' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -409,38 +363,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /explodeview]
-
-Role: tu executes un raccourci image pour produire: Vue eclatee.
-Objectif: Decomposer un objet en pieces logiques tout en gardant l''ordre d''assemblage.
-Description: Separe les composants principaux pour expliquer la construction d''un objet.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-002' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -455,38 +386,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /explodeview]
-
-Role: tu executes un raccourci image pour produire: Vue eclatee.
-Objectif: Decomposer un objet en pieces logiques tout en gardant l''ordre d''assemblage.
-Description: Separe les composants principaux pour expliquer la construction d''un objet.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-002' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -585,38 +493,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /crosssection]
-
-Role: tu executes un raccourci image pour produire: Coupe transversale.
-Objectif: Montrer l''interieur d''un objet ou d''un espace par une coupe nette.
-Description: Cree une coupe transversale pedagogique avec couches et details visibles.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, axe_de_coupe.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-003' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -631,38 +516,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /crosssection]
-
-Role: tu executes un raccourci image pour produire: Coupe transversale.
-Objectif: Montrer l''interieur d''un objet ou d''un espace par une coupe nette.
-Description: Cree une coupe transversale pedagogique avec couches et details visibles.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, axe_de_coupe.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-003' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -761,38 +623,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /blueprint]
-
-Role: tu executes un raccourci image pour produire: Plan blueprint.
-Objectif: Transformer un objet ou lieu en plan technique lisible.
-Description: Produit un rendu bleu technique avec contours, cotes visuelles et annotations courtes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-004' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -807,38 +646,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /blueprint]
-
-Role: tu executes un raccourci image pour produire: Plan blueprint.
-Objectif: Transformer un objet ou lieu en plan technique lisible.
-Description: Produit un rendu bleu technique avec contours, cotes visuelles et annotations courtes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-004' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -937,38 +753,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /ghostview]
-
-Role: tu executes un raccourci image pour produire: Ghost view.
-Objectif: Superposer coque externe translucide et mecanisme interne.
-Description: Cree une vue fantome premium qui montre interieur et silhouette externe.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-005' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -983,38 +776,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /ghostview]
-
-Role: tu executes un raccourci image pour produire: Ghost view.
-Objectif: Superposer coque externe translucide et mecanisme interne.
-Description: Cree une vue fantome premium qui montre interieur et silhouette externe.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-005' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1113,38 +883,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /cutaway]
-
-Role: tu executes un raccourci image pour produire: Cutaway premium.
-Objectif: Ouvrir visuellement une portion de l''objet pour exposer l''interieur.
-Description: Retire proprement une section de surface afin de reveler la structure interne.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, zone.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-006' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1159,38 +906,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /cutaway]
-
-Role: tu executes un raccourci image pour produire: Cutaway premium.
-Objectif: Ouvrir visuellement une portion de l''objet pour exposer l''interieur.
-Description: Retire proprement une section de surface afin de reveler la structure interne.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, zone.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-006' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1289,38 +1013,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /materialscan]
-
-Role: tu executes un raccourci image pour produire: Scan matieres.
-Objectif: Mettre en evidence les materiaux visibles et leurs textures.
-Description: Cree une analyse visuelle premium des matieres avec rendu propre et annotations courtes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-007' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1335,38 +1036,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /materialscan]
-
-Role: tu executes un raccourci image pour produire: Scan matieres.
-Objectif: Mettre en evidence les materiaux visibles et leurs textures.
-Description: Cree une analyse visuelle premium des matieres avec rendu propre et annotations courtes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-007' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1465,38 +1143,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /assembly]
-
-Role: tu executes un raccourci image pour produire: Assemblage guide.
-Objectif: Montrer comment les pieces d''un objet s''emboitent.
-Description: Produit une visualisation d''assemblage claire avec direction, ordre et alignement.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-008' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1511,38 +1166,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /assembly]
-
-Role: tu executes un raccourci image pour produire: Assemblage guide.
-Objectif: Montrer comment les pieces d''un objet s''emboitent.
-Description: Produit une visualisation d''assemblage claire avec direction, ordre et alignement.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-008' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1641,38 +1273,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /schematic]
-
-Role: tu executes un raccourci image pour produire: Schema simplifie.
-Objectif: Transformer un objet complexe en schema lisible.
-Description: Reduit l''image en schema propre pour expliquer fonctions, parties ou flux.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-009' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1687,38 +1296,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /schematic]
-
-Role: tu executes un raccourci image pour produire: Schema simplifie.
-Objectif: Transformer un objet complexe en schema lisible.
-Description: Reduit l''image en schema propre pour expliquer fonctions, parties ou flux.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-009' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1817,38 +1403,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /isometric]
-
-Role: tu executes un raccourci image pour produire: Vue isometrique.
-Objectif: Convertir un sujet en rendu isometrique net.
-Description: Cree une vue 3D isometrique coherente, utile pour catalogue ou explication.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-010' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1863,38 +1426,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /isometric]
-
-Role: tu executes un raccourci image pour produire: Vue isometrique.
-Objectif: Convertir un sujet en rendu isometrique net.
-Description: Cree une vue 3D isometrique coherente, utile pour catalogue ou explication.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-010' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -1992,37 +1532,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /packshot]
-
-Role: tu executes un raccourci image pour produire: Packshot studio.
-Objectif: Creer un rendu produit propre pour fiche ou boutique.
-Description: Transforme le produit en visuel studio net, lumineux et commercial.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-011' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2037,37 +1555,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /packshot]
-
-Role: tu executes un raccourci image pour produire: Packshot studio.
-Objectif: Creer un rendu produit propre pour fiche ou boutique.
-Description: Transforme le produit en visuel studio net, lumineux et commercial.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-011' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2165,37 +1661,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /luxmockup]
-
-Role: tu executes un raccourci image pour produire: Mockup premium.
-Objectif: Presenter un produit dans un contexte haut de gamme.
-Description: Place le produit dans une scene premium realiste sans perdre son design.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, contexte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-012' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2210,37 +1684,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /luxmockup]
-
-Role: tu executes un raccourci image pour produire: Mockup premium.
-Objectif: Presenter un produit dans un contexte haut de gamme.
-Description: Place le produit dans une scene premium realiste sans perdre son design.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, contexte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-012' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2338,37 +1790,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /textureclean]
-
-Role: tu executes un raccourci image pour produire: Texture propre.
-Objectif: Nettoyer visuellement les textures sans changer le produit.
-Description: Corrige poussiere, reflets et petits defauts tout en preservant l''objet.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-013' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2383,37 +1813,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /textureclean]
-
-Role: tu executes un raccourci image pour produire: Texture propre.
-Objectif: Nettoyer visuellement les textures sans changer le produit.
-Description: Corrige poussiere, reflets et petits defauts tout en preservant l''objet.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-013' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2511,37 +1919,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /colorswap]
-
-Role: tu executes un raccourci image pour produire: Changement couleur.
-Objectif: Modifier uniquement une couleur cible.
-Description: Change la couleur d''un element tout en gardant volumes, ombres et matiere.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: zone, couleur.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-014' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2556,37 +1942,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /colorswap]
-
-Role: tu executes un raccourci image pour produire: Changement couleur.
-Objectif: Modifier uniquement une couleur cible.
-Description: Change la couleur d''un element tout en gardant volumes, ombres et matiere.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: zone, couleur.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-014' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2684,37 +2048,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /producthero]
-
-Role: tu executes un raccourci image pour produire: Hero produit.
-Objectif: Creer une image principale forte pour landing page.
-Description: Construit un visuel hero clair avec produit dominant et ambiance de marque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, promesse.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-015' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2729,37 +2071,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /producthero]
-
-Role: tu executes un raccourci image pour produire: Hero produit.
-Objectif: Creer une image principale forte pour landing page.
-Description: Construit un visuel hero clair avec produit dominant et ambiance de marque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, promesse.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-015' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2857,37 +2177,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /labelmockup]
-
-Role: tu executes un raccourci image pour produire: Etiquette mockup.
-Objectif: Appliquer ou visualiser une etiquette sur un packaging.
-Description: Integre une etiquette proprement sur un emballage avec perspective realiste.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, texte_etiquette.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-016' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -2902,37 +2200,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /labelmockup]
-
-Role: tu executes un raccourci image pour produire: Etiquette mockup.
-Objectif: Appliquer ou visualiser une etiquette sur un packaging.
-Description: Integre une etiquette proprement sur un emballage avec perspective realiste.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, texte_etiquette.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-016' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3030,37 +2306,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /adsocial]
-
-Role: tu executes un raccourci image pour produire: Visuel social ad.
-Objectif: Creer un visuel publicitaire adapte aux reseaux sociaux.
-Description: Produit une composition publicitaire claire, lisible et mobile-first.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, offre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-017' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3075,37 +2329,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /adsocial]
-
-Role: tu executes un raccourci image pour produire: Visuel social ad.
-Objectif: Creer un visuel publicitaire adapte aux reseaux sociaux.
-Description: Produit une composition publicitaire claire, lisible et mobile-first.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, offre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-017' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3204,38 +2436,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /thumbnail]
-
-Role: tu executes un raccourci image pour produire: Miniature virale.
-Objectif: Generer une miniature accrocheuse sans tromper le sujet.
-Description: Cree une miniature forte avec contraste, sujet lisible et tension visuelle.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, angle.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-018' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3250,38 +2459,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /thumbnail]
-
-Role: tu executes un raccourci image pour produire: Miniature virale.
-Objectif: Generer une miniature accrocheuse sans tromper le sujet.
-Description: Cree une miniature forte avec contraste, sujet lisible et tension visuelle.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, angle.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-018' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3380,38 +2566,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /poster]
-
-Role: tu executes un raccourci image pour produire: Affiche impact.
-Objectif: Transformer un sujet en affiche propre et expressive.
-Description: Cree une affiche visuelle avec hierarchie claire et style coherent.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, message.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-019' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3426,38 +2589,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /poster]
-
-Role: tu executes un raccourci image pour produire: Affiche impact.
-Objectif: Transformer un sujet en affiche propre et expressive.
-Description: Cree une affiche visuelle avec hierarchie claire et style coherent.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, message.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-019' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3555,37 +2695,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /memepro]
-
-Role: tu executes un raccourci image pour produire: Meme propre.
-Objectif: Transformer une idee en meme visuel exploitable par une marque.
-Description: Produit un meme lisible, sobre, partageable et compatible contexte marque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, ton.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-020' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3600,37 +2718,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /memepro]
-
-Role: tu executes un raccourci image pour produire: Meme propre.
-Objectif: Transformer une idee en meme visuel exploitable par une marque.
-Description: Produit un meme lisible, sobre, partageable et compatible contexte marque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, ton.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-020' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3729,38 +2825,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /carouselcover]
-
-Role: tu executes un raccourci image pour produire: Cover carousel.
-Objectif: Creer la premiere slide d''un carousel social.
-Description: Produit une couverture mobile qui annonce le sujet avec impact visuel.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, benefice.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-021' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3775,38 +2848,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /carouselcover]
-
-Role: tu executes un raccourci image pour produire: Cover carousel.
-Objectif: Creer la premiere slide d''un carousel social.
-Description: Produit une couverture mobile qui annonce le sujet avec impact visuel.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, benefice.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-021' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3904,37 +2954,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /ugcscene]
-
-Role: tu executes un raccourci image pour produire: Scene UGC.
-Objectif: Presenter un produit dans une scene realiste type contenu createur.
-Description: Integre le produit dans une scene naturelle, credible et non trop publicitaire.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, profil_createur.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-022' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -3949,37 +2977,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /ugcscene]
-
-Role: tu executes un raccourci image pour produire: Scene UGC.
-Objectif: Presenter un produit dans une scene realiste type contenu createur.
-Description: Integre le produit dans une scene naturelle, credible et non trop publicitaire.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, profil_createur.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-022' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4077,37 +3083,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /billboard]
-
-Role: tu executes un raccourci image pour produire: Mockup billboard.
-Objectif: Visualiser une campagne sur panneau publicitaire.
-Description: Place le visuel ou produit sur un billboard realiste avec contexte urbain.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: visuel, lieu.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-023' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4122,37 +3106,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /billboard]
-
-Role: tu executes un raccourci image pour produire: Mockup billboard.
-Objectif: Visualiser une campagne sur panneau publicitaire.
-Description: Place le visuel ou produit sur un billboard realiste avec contexte urbain.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: visuel, lieu.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-023' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4250,37 +3212,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /storyad]
-
-Role: tu executes un raccourci image pour produire: Story verticale.
-Objectif: Composer un visuel publicitaire en 9:16.
-Description: Cree une story verticale claire, avec espace texte et sujet immediatement lisible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, message.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-024' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4295,37 +3235,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /storyad]
-
-Role: tu executes un raccourci image pour produire: Story verticale.
-Objectif: Composer un visuel publicitaire en 9:16.
-Description: Cree une story verticale claire, avec espace texte et sujet immediatement lisible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, message.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-024' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4423,37 +3341,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /headshot]
-
-Role: tu executes un raccourci image pour produire: Headshot pro.
-Objectif: Transformer un portrait en photo professionnelle.
-Description: Produit un headshot credible en preservant strictement le visage.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-025' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4468,37 +3364,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /headshot]
-
-Role: tu executes un raccourci image pour produire: Headshot pro.
-Objectif: Transformer un portrait en photo professionnelle.
-Description: Produit un headshot credible en preservant strictement le visage.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-025' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4596,37 +3470,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /hairstyle]
-
-Role: tu executes un raccourci image pour produire: Changer coiffure.
-Objectif: Tester une coiffure sans modifier le visage.
-Description: Modifie uniquement la coiffure demandee avec integration naturelle.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, coiffure.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-026' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4641,37 +3493,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /hairstyle]
-
-Role: tu executes un raccourci image pour produire: Changer coiffure.
-Objectif: Tester une coiffure sans modifier le visage.
-Description: Modifie uniquement la coiffure demandee avec integration naturelle.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, coiffure.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-026' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4769,37 +3599,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /outfit]
-
-Role: tu executes un raccourci image pour produire: Changer tenue.
-Objectif: Essayer une tenue tout en gardant la personne reconnaissable.
-Description: Change uniquement les vetements selon style, contexte et morphologie.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, tenue.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-027' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4814,37 +3622,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /outfit]
-
-Role: tu executes un raccourci image pour produire: Changer tenue.
-Objectif: Essayer une tenue tout en gardant la personne reconnaissable.
-Description: Change uniquement les vetements selon style, contexte et morphologie.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, tenue.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-027' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4943,38 +3729,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /backgroundswap]
-
-Role: tu executes un raccourci image pour produire: Changer fond.
-Objectif: Remplacer l''arriere-plan sans alterer le sujet.
-Description: Integre un nouveau fond coherent avec lumiere, perspective et profondeur.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, fond.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-028' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -4989,38 +3752,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /backgroundswap]
-
-Role: tu executes un raccourci image pour produire: Changer fond.
-Objectif: Remplacer l''arriere-plan sans alterer le sujet.
-Description: Integre un nouveau fond coherent avec lumiere, perspective et profondeur.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, fond.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-028' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5118,37 +3858,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /portraitcinema]
-
-Role: tu executes un raccourci image pour produire: Portrait cinema.
-Objectif: Donner un rendu cinematographique a un portrait.
-Description: Cree un portrait editorial avec lumiere, colorimetrie et profondeur cinema.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, ambiance.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-029' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5163,37 +3881,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /portraitcinema]
-
-Role: tu executes un raccourci image pour produire: Portrait cinema.
-Objectif: Donner un rendu cinematographique a un portrait.
-Description: Cree un portrait editorial avec lumiere, colorimetrie et profondeur cinema.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, ambiance.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-029' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5291,37 +3987,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /avatarpro]
-
-Role: tu executes un raccourci image pour produire: Avatar professionnel.
-Objectif: Creer un avatar fidele pour profil ou reseaux.
-Description: Produit un avatar propre, reconnaissable et adapte a un usage professionnel.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, style.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-030' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5336,37 +4010,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /avatarpro]
-
-Role: tu executes un raccourci image pour produire: Avatar professionnel.
-Objectif: Creer un avatar fidele pour profil ou reseaux.
-Description: Produit un avatar propre, reconnaissable et adapte a un usage professionnel.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, style.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-030' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5464,37 +4116,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /makeup]
-
-Role: tu executes un raccourci image pour produire: Essai maquillage.
-Objectif: Tester un maquillage sans changer les traits.
-Description: Applique un maquillage choisi en respectant carnation, lumiere et visage.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, style_maquillage.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-031' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5509,37 +4139,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /makeup]
-
-Role: tu executes un raccourci image pour produire: Essai maquillage.
-Objectif: Tester un maquillage sans changer les traits.
-Description: Applique un maquillage choisi en respectant carnation, lumiere et visage.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, style_maquillage.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-031' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5637,37 +4245,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /colorgrade]
-
-Role: tu executes un raccourci image pour produire: Color grading.
-Objectif: Changer l''ambiance colorimetrique d''une image.
-Description: Applique une colorimetrie precise tout en gardant le contenu intact.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: image, ambiance.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-032' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5682,37 +4268,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /colorgrade]
-
-Role: tu executes un raccourci image pour produire: Color grading.
-Objectif: Changer l''ambiance colorimetrique d''une image.
-Description: Applique une colorimetrie precise tout en gardant le contenu intact.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: image, ambiance.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-032' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5810,37 +4374,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /retouchclean]
-
-Role: tu executes un raccourci image pour produire: Retouche naturelle.
-Objectif: Ameliorer une image sans effet artificiel.
-Description: Nettoie les petites imperfections tout en gardant texture et realisme.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: image.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-033' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5855,37 +4397,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /retouchclean]
-
-Role: tu executes un raccourci image pour produire: Retouche naturelle.
-Objectif: Ameliorer une image sans effet artificiel.
-Description: Nettoie les petites imperfections tout en gardant texture et realisme.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: image.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-033' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -5983,37 +4503,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /expression]
-
-Role: tu executes un raccourci image pour produire: Expression cible.
-Objectif: Ajuster legerement l''expression faciale.
-Description: Modifie subtilement l''expression sans changer l''identite du visage.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, expression.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-034' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6028,37 +4526,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /expression]
-
-Role: tu executes un raccourci image pour produire: Expression cible.
-Objectif: Ajuster legerement l''expression faciale.
-Description: Modifie subtilement l''expression sans changer l''identite du visage.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personne, expression.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-034' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6156,37 +4632,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /roomredesign]
-
-Role: tu executes un raccourci image pour produire: Redesign piece.
-Objectif: Repenser une piece en conservant sa structure.
-Description: Transforme style, mobilier et ambiance tout en gardant volumes et ouvertures.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: piece, style.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-035' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6201,37 +4655,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /roomredesign]
-
-Role: tu executes un raccourci image pour produire: Redesign piece.
-Objectif: Repenser une piece en conservant sa structure.
-Description: Transforme style, mobilier et ambiance tout en gardant volumes et ouvertures.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: piece, style.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-035' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6329,37 +4761,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /furnitureswap]
-
-Role: tu executes un raccourci image pour produire: Changer mobilier.
-Objectif: Remplacer le mobilier principal d''une piece.
-Description: Modifie les meubles cibles avec dimensions et perspective coherentes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: piece, mobilier.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-036' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6374,37 +4784,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /furnitureswap]
-
-Role: tu executes un raccourci image pour produire: Changer mobilier.
-Objectif: Remplacer le mobilier principal d''une piece.
-Description: Modifie les meubles cibles avec dimensions et perspective coherentes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: piece, mobilier.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-036' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6502,37 +4890,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /wallcolor]
-
-Role: tu executes un raccourci image pour produire: Couleur murale.
-Objectif: Tester une couleur de mur ou palette interieure.
-Description: Change la couleur des murs en preservant lumiere, ombres et mobilier.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: piece, couleur.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-037' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6547,37 +4913,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /wallcolor]
-
-Role: tu executes un raccourci image pour produire: Couleur murale.
-Objectif: Tester une couleur de mur ou palette interieure.
-Description: Change la couleur des murs en preservant lumiere, ombres et mobilier.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: piece, couleur.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-037' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6675,37 +5019,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /homestaging]
-
-Role: tu executes un raccourci image pour produire: Home staging.
-Objectif: Valoriser un lieu pour presentation ou vente.
-Description: Ameliore l''espace avec decoration sobre, propre et realiste.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: piece, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-038' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6720,37 +5042,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /homestaging]
-
-Role: tu executes un raccourci image pour produire: Home staging.
-Objectif: Valoriser un lieu pour presentation ou vente.
-Description: Ameliore l''espace avec decoration sobre, propre et realiste.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: piece, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-038' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6848,37 +5148,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /storefront]
-
-Role: tu executes un raccourci image pour produire: Facade boutique.
-Objectif: Visualiser une facade commerciale.
-Description: Cree ou ameliore une devanture avec enseigne, vitrine et coherence de marque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: commerce, marque.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-039' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -6893,37 +5171,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /storefront]
-
-Role: tu executes un raccourci image pour produire: Facade boutique.
-Objectif: Visualiser une facade commerciale.
-Description: Cree ou ameliore une devanture avec enseigne, vitrine et coherence de marque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: commerce, marque.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-039' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7021,37 +5277,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /floorplan]
-
-Role: tu executes un raccourci image pour produire: Plan espace.
-Objectif: Transformer une photo ou brief en plan lisible.
-Description: Produit un plan simplifie d''espace avec zones, circulation et etiquettes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: espace.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-040' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7066,37 +5300,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /floorplan]
-
-Role: tu executes un raccourci image pour produire: Plan espace.
-Objectif: Transformer une photo ou brief en plan lisible.
-Description: Produit un plan simplifie d''espace avec zones, circulation et etiquettes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: espace.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-040' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7194,37 +5406,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /eventdecor]
-
-Role: tu executes un raccourci image pour produire: Decoration event.
-Objectif: Visualiser une decoration d''evenement.
-Description: Transforme un lieu en scene evenementielle selon theme, budget et ambiance.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: lieu, theme.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-041' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7239,37 +5429,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /eventdecor]
-
-Role: tu executes un raccourci image pour produire: Decoration event.
-Objectif: Visualiser une decoration d''evenement.
-Description: Transforme un lieu en scene evenementielle selon theme, budget et ambiance.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: lieu, theme.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-041' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7367,37 +5535,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /foodstyling]
-
-Role: tu executes un raccourci image pour produire: Food styling.
-Objectif: Rendre un plat plus appetissant sans le denaturer.
-Description: Ameliore presentation, lumiere et textures d''un plat de maniere realiste.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: plat.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-042' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7412,37 +5558,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /foodstyling]
-
-Role: tu executes un raccourci image pour produire: Food styling.
-Objectif: Rendre un plat plus appetissant sans le denaturer.
-Description: Ameliore presentation, lumiere et textures d''un plat de maniere realiste.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: plat.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-042' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7540,37 +5664,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /menuhero]
-
-Role: tu executes un raccourci image pour produire: Hero menu.
-Objectif: Creer un visuel principal pour menu ou restaurant.
-Description: Compose un visuel gourmand avec plat, ambiance et espace texte.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: plat, restaurant.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-043' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7585,37 +5687,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /menuhero]
-
-Role: tu executes un raccourci image pour produire: Hero menu.
-Objectif: Creer un visuel principal pour menu ou restaurant.
-Description: Compose un visuel gourmand avec plat, ambiance et espace texte.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: plat, restaurant.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-043' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7714,38 +5794,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /infographic]
-
-Role: tu executes un raccourci image pour produire: Infographie claire.
-Objectif: Transformer une idee en infographie visuelle.
-Description: Cree une infographie concise avec blocs, pictos et hierarchie lisible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, points_cles.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-044' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7760,38 +5817,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /infographic]
-
-Role: tu executes un raccourci image pour produire: Infographie claire.
-Objectif: Transformer une idee en infographie visuelle.
-Description: Cree une infographie concise avec blocs, pictos et hierarchie lisible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, points_cles.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-044' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7889,37 +5923,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /comparisonvisual]
-
-Role: tu executes un raccourci image pour produire: Comparatif visuel.
-Objectif: Comparer deux ou plusieurs options visuellement.
-Description: Produit une grille comparative claire avec criteres et differences visibles.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: options, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-045' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -7934,37 +5946,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /comparisonvisual]
-
-Role: tu executes un raccourci image pour produire: Comparatif visuel.
-Objectif: Comparer deux ou plusieurs options visuellement.
-Description: Produit une grille comparative claire avec criteres et differences visibles.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: options, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-045' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8062,37 +6052,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /processvisual]
-
-Role: tu executes un raccourci image pour produire: Process visuel.
-Objectif: Expliquer un processus en etapes.
-Description: Cree un visuel de processus avec etapes courtes et enchainement logique.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: processus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-046' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8107,37 +6075,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /processvisual]
-
-Role: tu executes un raccourci image pour produire: Process visuel.
-Objectif: Expliquer un processus en etapes.
-Description: Cree un visuel de processus avec etapes courtes et enchainement logique.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: processus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-046' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8235,37 +6181,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /mapvisual]
-
-Role: tu executes un raccourci image pour produire: Carte stylisee.
-Objectif: Creer une carte simple ou parcours visuel.
-Description: Produit une carte claire avec zones, points et legende simplifiee.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: lieu, points.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-047' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8280,37 +6204,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /mapvisual]
-
-Role: tu executes un raccourci image pour produire: Carte stylisee.
-Objectif: Creer une carte simple ou parcours visuel.
-Description: Produit une carte claire avec zones, points et legende simplifiee.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: lieu, points.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-047' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8408,37 +6310,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /timelinevisual]
-
-Role: tu executes un raccourci image pour produire: Timeline visuelle.
-Objectif: Transformer une chronologie en visuel.
-Description: Cree une timeline lisible avec dates, etapes et hierarchy claire.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: evenements.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-048' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8453,37 +6333,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /timelinevisual]
-
-Role: tu executes un raccourci image pour produire: Timeline visuelle.
-Objectif: Transformer une chronologie en visuel.
-Description: Cree une timeline lisible avec dates, etapes et hierarchy claire.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: evenements.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-048' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8582,38 +6440,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /anatomyview]
-
-Role: tu executes un raccourci image pour produire: Anatomie objet.
-Objectif: Identifier les parties importantes d''un sujet.
-Description: Ajoute des callouts propres sur les zones cles d''un objet, lieu ou interface.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, zones.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-049' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8628,38 +6463,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /anatomyview]
-
-Role: tu executes un raccourci image pour produire: Anatomie objet.
-Objectif: Identifier les parties importantes d''un sujet.
-Description: Ajoute des callouts propres sur les zones cles d''un objet, lieu ou interface.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, zones.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-049' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8757,37 +6569,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /miniature]
-
-Role: tu executes un raccourci image pour produire: Monde miniature.
-Objectif: Transformer une scene en diorama miniature.
-Description: Cree un effet maquette avec profondeur, echelle et details realistes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: scene.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-050' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8802,37 +6592,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /miniature]
-
-Role: tu executes un raccourci image pour produire: Monde miniature.
-Objectif: Transformer une scene en diorama miniature.
-Description: Cree un effet maquette avec profondeur, echelle et details realistes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: scene.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-050' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8931,38 +6699,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /clay]
-
-Role: tu executes un raccourci image pour produire: Style clay.
-Objectif: Convertir un sujet en rendu argile 3D.
-Description: Donne un style clay propre, tactile et coherent pour visuel social.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-051' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -8977,38 +6722,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /clay]
-
-Role: tu executes un raccourci image pour produire: Style clay.
-Objectif: Convertir un sujet en rendu argile 3D.
-Description: Donne un style clay propre, tactile et coherent pour visuel social.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-051' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9107,38 +6829,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /papercut]
-
-Role: tu executes un raccourci image pour produire: Papercut.
-Objectif: Transformer un sujet en decoupage papier.
-Description: Cree un rendu couches de papier colore avec ombres douces.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-052' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9153,38 +6852,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /papercut]
-
-Role: tu executes un raccourci image pour produire: Papercut.
-Objectif: Transformer un sujet en decoupage papier.
-Description: Cree un rendu couches de papier colore avec ombres douces.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-052' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9283,38 +6959,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /neon]
-
-Role: tu executes un raccourci image pour produire: Neon glow.
-Objectif: Donner un style neon impactant.
-Description: Cree un rendu lumineux avec contrastes forts et sujet identifiable.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, couleur.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-053' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9329,38 +6982,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /neon]
-
-Role: tu executes un raccourci image pour produire: Neon glow.
-Objectif: Donner un style neon impactant.
-Description: Cree un rendu lumineux avec contrastes forts et sujet identifiable.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, couleur.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-053' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9459,38 +7089,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /retrofuture]
-
-Role: tu executes un raccourci image pour produire: Retro futur.
-Objectif: Appliquer une direction artistique retrofuturiste.
-Description: Transforme le sujet avec codes retro, chrome, grain et lumiere stylisee.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-054' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9505,38 +7112,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /retrofuture]
-
-Role: tu executes un raccourci image pour produire: Retro futur.
-Objectif: Appliquer une direction artistique retrofuturiste.
-Description: Transforme le sujet avec codes retro, chrome, grain et lumiere stylisee.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-054' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9635,38 +7219,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /graffiti]
-
-Role: tu executes un raccourci image pour produire: Graffiti mural.
-Objectif: Transformer un sujet en fresque graffiti.
-Description: Cree une version street-art lisible avec couleur, mur et texture.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-055' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9681,38 +7242,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /graffiti]
-
-Role: tu executes un raccourci image pour produire: Graffiti mural.
-Objectif: Transformer un sujet en fresque graffiti.
-Description: Cree une version street-art lisible avec couleur, mur et texture.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-055' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9811,38 +7349,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /watercolor]
-
-Role: tu executes un raccourci image pour produire: Aquarelle.
-Objectif: Convertir une image en illustration aquarelle.
-Description: Produit une aquarelle douce tout en gardant composition et sujet.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-056' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9857,38 +7372,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /watercolor]
-
-Role: tu executes un raccourci image pour produire: Aquarelle.
-Objectif: Convertir une image en illustration aquarelle.
-Description: Produit une aquarelle douce tout en gardant composition et sujet.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-056' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -9986,37 +7478,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /comic]
-
-Role: tu executes un raccourci image pour produire: Case comic.
-Objectif: Transformer une scene en style bande dessinee.
-Description: Cree une case dynamique avec encrage, couleurs et composition narrative.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: scene.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-057' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10031,37 +7501,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /comic]
-
-Role: tu executes un raccourci image pour produire: Case comic.
-Objectif: Transformer une scene en style bande dessinee.
-Description: Cree une case dynamique avec encrage, couleurs et composition narrative.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: scene.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-057' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10159,37 +7607,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /cinematicstill]
-
-Role: tu executes un raccourci image pour produire: Still cinema.
-Objectif: Transformer une scene en photogramme de film.
-Description: Produit un rendu filmique avec cadrage, lumiere et tension visuelle.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: scene, genre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-058' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10204,37 +7630,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /cinematicstill]
-
-Role: tu executes un raccourci image pour produire: Still cinema.
-Objectif: Transformer une scene en photogramme de film.
-Description: Produit un rendu filmique avec cadrage, lumiere et tension visuelle.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: scene, genre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-058' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10333,38 +7737,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /doubleexposure]
-
-Role: tu executes un raccourci image pour produire: Double exposition.
-Objectif: Fusionner portrait ou objet avec un second univers.
-Description: Cree un effet double exposition coherent et lisible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, univers.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-059' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10379,38 +7760,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /doubleexposure]
-
-Role: tu executes un raccourci image pour produire: Double exposition.
-Objectif: Fusionner portrait ou objet avec un second univers.
-Description: Cree un effet double exposition coherent et lisible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, univers.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-059' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10509,38 +7867,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /glitch]
-
-Role: tu executes un raccourci image pour produire: Glitch premium.
-Objectif: Ajouter un effet glitch maitrise.
-Description: Applique une distorsion digitale propre sans rendre le sujet illisible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-060' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10555,38 +7890,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /glitch]
-
-Role: tu executes un raccourci image pour produire: Glitch premium.
-Objectif: Ajouter un effet glitch maitrise.
-Description: Applique une distorsion digitale propre sans rendre le sujet illisible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Sujet principal ? A. Objet visible B. Personne visible C. Lieu visible D. Autre
-3. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Sujet principal ?","options":["Objet visible","Personne visible","Lieu visible","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-060' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10684,37 +7996,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /tiltshift]
-
-Role: tu executes un raccourci image pour produire: Tilt shift.
-Objectif: Simuler un effet miniature photographique.
-Description: Ajoute profondeur de champ et perspective tilt-shift a une scene.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: scene.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-061' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10729,37 +8019,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /tiltshift]
-
-Role: tu executes un raccourci image pour produire: Tilt shift.
-Objectif: Simuler un effet miniature photographique.
-Description: Ajoute profondeur de champ et perspective tilt-shift a une scene.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: scene.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Style final ? A. Realiste premium B. Editorial C. Technique propre D. Autre
-2. Format ? A. Meme ratio que l''image B. Mobile 9:16 C. Carre 1:1 D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Identite du sujet, proportions, angle general, lumiere coherente, materiaux plausibles.
-A eviter: Deformer le sujet, inventer des elements absurdes, changer l''identite, ajouter du texte illisible.
-
-Format de sortie attendu: Image finale ou prompt image; aucune explication longue sauf blocage.
-Controle qualite avant reponse: Sujet reconnaissable; rendu propre; consignes respectees; coherence lumiere/matiere; aucun artefact majeur.', '[{"question":"Style final ?","options":["Realiste premium","Editorial","Technique propre","Autre"]},{"question":"Format ?","options":["Meme ratio que l''image","Mobile 9:16","Carre 1:1","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-IMG-061' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10858,38 +8126,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /landingcopy]
-
-Role: tu executes un raccourci texte pour produire: Texte landing.
-Objectif: Rediger le texte complet d''une landing page.
-Description: Structure une page de vente claire avec sections, preuves et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-001' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -10904,38 +8149,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /landingcopy]
-
-Role: tu executes un raccourci texte pour produire: Texte landing.
-Objectif: Rediger le texte complet d''une landing page.
-Description: Structure une page de vente claire avec sections, preuves et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-001' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11034,38 +8256,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /headline]
-
-Role: tu executes un raccourci texte pour produire: Accroches fortes.
-Objectif: Generer des titres et accroches testables.
-Description: Produit plusieurs headlines classes par angle de persuasion.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-002' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11080,38 +8279,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /headline]
-
-Role: tu executes un raccourci texte pour produire: Accroches fortes.
-Objectif: Generer des titres et accroches testables.
-Description: Produit plusieurs headlines classes par angle de persuasion.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-002' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11210,38 +8386,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /offer]
-
-Role: tu executes un raccourci texte pour produire: Offre claire.
-Objectif: Transformer une idee en offre vendable.
-Description: Clarifie promesse, cible, benefices, mecanisme et objections.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-003' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11256,38 +8409,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /offer]
-
-Role: tu executes un raccourci texte pour produire: Offre claire.
-Objectif: Transformer une idee en offre vendable.
-Description: Clarifie promesse, cible, benefices, mecanisme et objections.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-003' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11386,38 +8516,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /emailpro]
-
-Role: tu executes un raccourci texte pour produire: Email professionnel.
-Objectif: Rediger un email clair et utile.
-Description: Produit un email pret a envoyer avec objet et message adapte.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectif, destinataire.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-004' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11432,38 +8539,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /emailpro]
-
-Role: tu executes un raccourci texte pour produire: Email professionnel.
-Objectif: Rediger un email clair et utile.
-Description: Produit un email pret a envoyer avec objet et message adapte.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectif, destinataire.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-004' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11562,38 +8646,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /coldmail]
-
-Role: tu executes un raccourci texte pour produire: Cold email.
-Objectif: Ecrire un email de prospection court.
-Description: Cree un cold email personnalise, sobre et oriente reponse.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: cible, offre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-005' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11608,38 +8669,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /coldmail]
-
-Role: tu executes un raccourci texte pour produire: Cold email.
-Objectif: Ecrire un email de prospection court.
-Description: Cree un cold email personnalise, sobre et oriente reponse.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: cible, offre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-005' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11738,38 +8776,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /newsletter]
-
-Role: tu executes un raccourci texte pour produire: Newsletter.
-Objectif: Transformer un contenu en newsletter.
-Description: Structure une newsletter utile avec objet, intro, sections et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: theme, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-006' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11784,38 +8799,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /newsletter]
-
-Role: tu executes un raccourci texte pour produire: Newsletter.
-Objectif: Transformer un contenu en newsletter.
-Description: Structure une newsletter utile avec objet, intro, sections et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: theme, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-006' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11914,38 +8906,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /linkedinpost]
-
-Role: tu executes un raccourci texte pour produire: Post LinkedIn.
-Objectif: Rediger un post LinkedIn clair et engageant.
-Description: Produit un post avec accroche, developpement et chute actionnable.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-007' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -11960,38 +8929,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /linkedinpost]
-
-Role: tu executes un raccourci texte pour produire: Post LinkedIn.
-Objectif: Rediger un post LinkedIn clair et engageant.
-Description: Produit un post avec accroche, developpement et chute actionnable.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-007' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12090,38 +9036,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /instagramcaption]
-
-Role: tu executes un raccourci texte pour produire: Caption Instagram.
-Objectif: Ecrire une legende Instagram adaptee.
-Description: Cree une caption concise avec ton, structure et hashtags utiles.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: visuel, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-008' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12136,38 +9059,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /instagramcaption]
-
-Role: tu executes un raccourci texte pour produire: Caption Instagram.
-Objectif: Ecrire une legende Instagram adaptee.
-Description: Cree une caption concise avec ton, structure et hashtags utiles.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: visuel, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-008' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12266,38 +9166,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /tiktokscript]
-
-Role: tu executes un raccourci texte pour produire: Script TikTok.
-Objectif: Transformer une idee en script video court.
-Description: Produit hook, scenes, voix off et CTA pour video verticale.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, public.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-009' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12312,38 +9189,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /tiktokscript]
-
-Role: tu executes un raccourci texte pour produire: Script TikTok.
-Objectif: Transformer une idee en script video court.
-Description: Produit hook, scenes, voix off et CTA pour video verticale.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, public.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-009' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12442,38 +9296,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /adcopy]
-
-Role: tu executes un raccourci texte pour produire: Copy publicitaire.
-Objectif: Creer des variantes publicitaires multi-angles.
-Description: Produit textes courts pour ads avec angles, preuves et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-010' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12488,38 +9319,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /adcopy]
-
-Role: tu executes un raccourci texte pour produire: Copy publicitaire.
-Objectif: Creer des variantes publicitaires multi-angles.
-Description: Produit textes courts pour ads avec angles, preuves et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-010' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12618,38 +9426,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /productdesc]
-
-Role: tu executes un raccourci texte pour produire: Description produit.
-Objectif: Rediger une fiche produit convaincante.
-Description: Transforme caracteristiques en benefices et elements de reassurance.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-011' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12664,38 +9449,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /productdesc]
-
-Role: tu executes un raccourci texte pour produire: Description produit.
-Objectif: Rediger une fiche produit convaincante.
-Description: Transforme caracteristiques en benefices et elements de reassurance.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-011' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12794,38 +9556,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /faq]
-
-Role: tu executes un raccourci texte pour produire: FAQ utile.
-Objectif: Creer une FAQ claire a partir d''une offre.
-Description: Anticipe questions clients et repond sans jargon inutile.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-012' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12840,38 +9579,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /faq]
-
-Role: tu executes un raccourci texte pour produire: FAQ utile.
-Objectif: Creer une FAQ claire a partir d''une offre.
-Description: Anticipe questions clients et repond sans jargon inutile.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-012' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -12970,38 +9686,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /onboardingcopy]
-
-Role: tu executes un raccourci texte pour produire: Onboarding UX.
-Objectif: Ecrire les textes d''accueil d''un produit.
-Description: Produit messages courts pour guider un nouvel utilisateur.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, etapes.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-013' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13016,38 +9709,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /onboardingcopy]
-
-Role: tu executes un raccourci texte pour produire: Onboarding UX.
-Objectif: Ecrire les textes d''accueil d''un produit.
-Description: Produit messages courts pour guider un nouvel utilisateur.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, etapes.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-013' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13146,38 +9816,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /uxmicrocopy]
-
-Role: tu executes un raccourci texte pour produire: Microcopy UX.
-Objectif: Rediger libelles, aides et messages d''interface.
-Description: Cree micro-textes clairs pour boutons, etats, erreurs et confirmations.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: ecran, action.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-014' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13192,38 +9839,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /uxmicrocopy]
-
-Role: tu executes un raccourci texte pour produire: Microcopy UX.
-Objectif: Rediger libelles, aides et messages d''interface.
-Description: Cree micro-textes clairs pour boutons, etats, erreurs et confirmations.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: ecran, action.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-014' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13322,38 +9946,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /salespage]
-
-Role: tu executes un raccourci texte pour produire: Page de vente.
-Objectif: Construire une page persuasive complete.
-Description: Redige une page longue avec promesse, preuves, objections et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre, preuve.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-015' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13368,38 +9969,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /salespage]
-
-Role: tu executes un raccourci texte pour produire: Page de vente.
-Objectif: Construire une page persuasive complete.
-Description: Redige une page longue avec promesse, preuves, objections et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre, preuve.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-015' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13498,38 +10076,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /pitchdecktext]
-
-Role: tu executes un raccourci texte pour produire: Texte pitch deck.
-Objectif: Rediger le contenu textuel d''un deck.
-Description: Structure les messages de slides sans surcharger la presentation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: projet, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-016' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13544,38 +10099,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /pitchdecktext]
-
-Role: tu executes un raccourci texte pour produire: Texte pitch deck.
-Objectif: Rediger le contenu textuel d''un deck.
-Description: Structure les messages de slides sans surcharger la presentation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: projet, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-016' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13674,38 +10206,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /businessplan]
-
-Role: tu executes un raccourci texte pour produire: Business plan.
-Objectif: Rediger un business plan synthetique.
-Description: Produit un document structure marche, offre, modele, operations et risques.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: projet, modele.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-017' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13720,38 +10229,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /businessplan]
-
-Role: tu executes un raccourci texte pour produire: Business plan.
-Objectif: Rediger un business plan synthetique.
-Description: Produit un document structure marche, offre, modele, operations et risques.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: projet, modele.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-017' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13850,38 +10336,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /positioning]
-
-Role: tu executes un raccourci texte pour produire: Positionnement.
-Objectif: Clarifier le positionnement d''une marque.
-Description: Definit cible, promesse, difference, preuves et territoire de marque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marque, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-018' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -13896,38 +10359,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /positioning]
-
-Role: tu executes un raccourci texte pour produire: Positionnement.
-Objectif: Clarifier le positionnement d''une marque.
-Description: Definit cible, promesse, difference, preuves et territoire de marque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marque, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-018' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14026,38 +10466,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /brandvoice]
-
-Role: tu executes un raccourci texte pour produire: Voix de marque.
-Objectif: Definir une voix de marque exploitable.
-Description: Cree principes de ton, mots a utiliser, mots a eviter et exemples.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marque, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-019' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14072,38 +10489,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /brandvoice]
-
-Role: tu executes un raccourci texte pour produire: Voix de marque.
-Objectif: Definir une voix de marque exploitable.
-Description: Cree principes de ton, mots a utiliser, mots a eviter et exemples.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marque, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-019' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14202,38 +10596,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /pressrelease]
-
-Role: tu executes un raccourci texte pour produire: Communique presse.
-Objectif: Rediger un communique clair et credible.
-Description: Produit titre, chapeau, corps, citation et boilerplate.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: annonce, organisation.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-020' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14248,38 +10619,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /pressrelease]
-
-Role: tu executes un raccourci texte pour produire: Communique presse.
-Objectif: Rediger un communique clair et credible.
-Description: Produit titre, chapeau, corps, citation et boilerplate.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: annonce, organisation.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-020' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14378,38 +10726,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /proposal]
-
-Role: tu executes un raccourci texte pour produire: Proposition client.
-Objectif: Rediger une proposition commerciale.
-Description: Structure contexte, solution, livrables, planning, budget indicatif et prochaines etapes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: besoin_client, solution.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-021' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14424,38 +10749,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /proposal]
-
-Role: tu executes un raccourci texte pour produire: Proposition client.
-Objectif: Rediger une proposition commerciale.
-Description: Structure contexte, solution, livrables, planning, budget indicatif et prochaines etapes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: besoin_client, solution.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-021' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14554,38 +10856,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /briefcreative]
-
-Role: tu executes un raccourci texte pour produire: Brief creatif.
-Objectif: Transformer une idee en brief actionnable.
-Description: Produit un brief clair pour designer, copywriter ou videaste.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectif, support.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-022' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14600,38 +10879,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /briefcreative]
-
-Role: tu executes un raccourci texte pour produire: Brief creatif.
-Objectif: Transformer une idee en brief actionnable.
-Description: Produit un brief clair pour designer, copywriter ou videaste.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectif, support.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-022' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14730,38 +10986,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /sop]
-
-Role: tu executes un raccourci texte pour produire: Procedure SOP.
-Objectif: Creer une procedure operationnelle.
-Description: Formalise etapes, roles, controles et exceptions dans une SOP.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: processus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-023' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14776,38 +11009,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /sop]
-
-Role: tu executes un raccourci texte pour produire: Procedure SOP.
-Objectif: Creer une procedure operationnelle.
-Description: Formalise etapes, roles, controles et exceptions dans une SOP.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: processus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-023' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14906,38 +11116,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /checklist]
-
-Role: tu executes un raccourci texte pour produire: Checklist.
-Objectif: Transformer un processus en checklist.
-Description: Produit une checklist simple avec cases, ordre et controles.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-024' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -14952,38 +11139,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /checklist]
-
-Role: tu executes un raccourci texte pour produire: Checklist.
-Objectif: Transformer un processus en checklist.
-Description: Produit une checklist simple avec cases, ordre et controles.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-024' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15082,38 +11246,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /meetingagenda]
-
-Role: tu executes un raccourci texte pour produire: Agenda reunion.
-Objectif: Preparer un ordre du jour efficace.
-Description: Cree objectifs, timing, participants, questions et decisions attendues.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, participants.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-025' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15128,38 +11269,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /meetingagenda]
-
-Role: tu executes un raccourci texte pour produire: Agenda reunion.
-Objectif: Preparer un ordre du jour efficace.
-Description: Cree objectifs, timing, participants, questions et decisions attendues.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, participants.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-025' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15258,38 +11376,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /followup]
-
-Role: tu executes un raccourci texte pour produire: Suivi action.
-Objectif: Rediger un message de suivi apres reunion.
-Description: Resume decisions, actions, responsables et echeances.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: notes, destinataires.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-026' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15304,38 +11399,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /followup]
-
-Role: tu executes un raccourci texte pour produire: Suivi action.
-Objectif: Rediger un message de suivi apres reunion.
-Description: Resume decisions, actions, responsables et echeances.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: notes, destinataires.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-026' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15434,38 +11506,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /summary]
-
-Role: tu executes un raccourci texte pour produire: Resume clair.
-Objectif: Resumer un contenu sans perdre l''essentiel.
-Description: Produit une synthese courte, structuree et fidele a la source.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: source.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-027' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15480,38 +11529,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /summary]
-
-Role: tu executes un raccourci texte pour produire: Resume clair.
-Objectif: Resumer un contenu sans perdre l''essentiel.
-Description: Produit une synthese courte, structuree et fidele a la source.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: source.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-027' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15610,38 +11636,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /rewriteclear]
-
-Role: tu executes un raccourci texte pour produire: Reecriture claire.
-Objectif: Rendre un texte plus clair.
-Description: Reformule un texte en supprimant flou, lourdeurs et repetitions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-028' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15656,38 +11659,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /rewriteclear]
-
-Role: tu executes un raccourci texte pour produire: Reecriture claire.
-Objectif: Rendre un texte plus clair.
-Description: Reformule un texte en supprimant flou, lourdeurs et repetitions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-028' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15786,38 +11766,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /translateadapt]
-
-Role: tu executes un raccourci texte pour produire: Traduction adaptee.
-Objectif: Traduire en adaptant au contexte culturel.
-Description: Traduit le texte en preservant intention, ton et usage final.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte, langue.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-029' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15832,38 +11789,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /translateadapt]
-
-Role: tu executes un raccourci texte pour produire: Traduction adaptee.
-Objectif: Traduire en adaptant au contexte culturel.
-Description: Traduit le texte en preservant intention, ton et usage final.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte, langue.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-029' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -15962,38 +11896,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /simplify]
-
-Role: tu executes un raccourci texte pour produire: Simplification.
-Objectif: Simplifier un texte complexe.
-Description: Rend un contenu accessible sans perdre la precision utile.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte, niveau.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-030' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16008,38 +11919,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /simplify]
-
-Role: tu executes un raccourci texte pour produire: Simplification.
-Objectif: Simplifier un texte complexe.
-Description: Rend un contenu accessible sans perdre la precision utile.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte, niveau.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-030' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16138,38 +12026,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /tonepro]
-
-Role: tu executes un raccourci texte pour produire: Ton professionnel.
-Objectif: Adapter un texte a un ton plus professionnel.
-Description: Reecrit le message pour le rendre poli, clair et credible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-031' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16184,38 +12049,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /tonepro]
-
-Role: tu executes un raccourci texte pour produire: Ton professionnel.
-Objectif: Adapter un texte a un ton plus professionnel.
-Description: Reecrit le message pour le rendre poli, clair et credible.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-031' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16314,38 +12156,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /storybrand]
-
-Role: tu executes un raccourci texte pour produire: Story marque.
-Objectif: Transformer une marque en histoire persuasive.
-Description: Construit un recit simple avec probleme, guide, solution et transformation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marque, client.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-032' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16360,38 +12179,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /storybrand]
-
-Role: tu executes un raccourci texte pour produire: Story marque.
-Objectif: Transformer une marque en histoire persuasive.
-Description: Construit un recit simple avec probleme, guide, solution et transformation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marque, client.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-032' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16490,38 +12286,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /case_study]
-
-Role: tu executes un raccourci texte pour produire: Cas client.
-Objectif: Rediger une etude de cas.
-Description: Structure probleme, solution, resultats et enseignements sans inventer.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: client, resultats.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-033' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16536,38 +12309,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /case_study]
-
-Role: tu executes un raccourci texte pour produire: Cas client.
-Objectif: Rediger une etude de cas.
-Description: Structure probleme, solution, resultats et enseignements sans inventer.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: client, resultats.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-033' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16666,38 +12416,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /testimonial]
-
-Role: tu executes un raccourci texte pour produire: Temoignage.
-Objectif: Transformer notes client en temoignage.
-Description: Produit un temoignage credible, court et non excessif.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: notes_client.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-034' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16712,38 +12439,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /testimonial]
-
-Role: tu executes un raccourci texte pour produire: Temoignage.
-Objectif: Transformer notes client en temoignage.
-Description: Produit un temoignage credible, court et non excessif.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: notes_client.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-034' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16842,38 +12546,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /jobpost]
-
-Role: tu executes un raccourci texte pour produire: Annonce emploi.
-Objectif: Rediger une annonce de poste claire.
-Description: Cree mission, profil, responsabilites, avantages et processus.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: poste, entreprise.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-035' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -16888,38 +12569,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /jobpost]
-
-Role: tu executes un raccourci texte pour produire: Annonce emploi.
-Objectif: Rediger une annonce de poste claire.
-Description: Cree mission, profil, responsabilites, avantages et processus.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: poste, entreprise.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-035' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17018,38 +12676,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /cvrewrite]
-
-Role: tu executes un raccourci texte pour produire: CV optimise.
-Objectif: Reecrire un CV pour plus d''impact.
-Description: Ameliore formulation, ordre et clarté sans inventer d''experience.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: cv, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-036' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17064,38 +12699,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /cvrewrite]
-
-Role: tu executes un raccourci texte pour produire: CV optimise.
-Objectif: Reecrire un CV pour plus d''impact.
-Description: Ameliore formulation, ordre et clarté sans inventer d''experience.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: cv, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-036' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17194,38 +12806,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /coverletter]
-
-Role: tu executes un raccourci texte pour produire: Lettre motivation.
-Objectif: Rediger une lettre de motivation adaptee.
-Description: Produit une lettre personnalisee, sobre et orientee contribution.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: poste, profil.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-037' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17240,38 +12829,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /coverletter]
-
-Role: tu executes un raccourci texte pour produire: Lettre motivation.
-Objectif: Rediger une lettre de motivation adaptee.
-Description: Produit une lettre personnalisee, sobre et orientee contribution.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: poste, profil.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-037' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17370,38 +12936,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /lessonplan]
-
-Role: tu executes un raccourci texte pour produire: Plan de cours.
-Objectif: Creer un plan de cours clair.
-Description: Structure objectifs, progression, exercices et evaluation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, niveau.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-038' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17416,38 +12959,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /lessonplan]
-
-Role: tu executes un raccourci texte pour produire: Plan de cours.
-Objectif: Creer un plan de cours clair.
-Description: Structure objectifs, progression, exercices et evaluation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, niveau.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-038' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17546,38 +13066,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /quiz]
-
-Role: tu executes un raccourci texte pour produire: Quiz QCM.
-Objectif: Creer un quiz objectif.
-Description: Produit des questions, options, bonne reponse et explication courte.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, niveau.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-039' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17592,38 +13089,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /quiz]
-
-Role: tu executes un raccourci texte pour produire: Quiz QCM.
-Objectif: Creer un quiz objectif.
-Description: Produit des questions, options, bonne reponse et explication courte.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, niveau.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-039' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17722,38 +13196,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /rubric]
-
-Role: tu executes un raccourci texte pour produire: Grille evaluation.
-Objectif: Construire une grille d''evaluation.
-Description: Definit criteres, niveaux, points et attentes observables.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: travail, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-040' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17768,38 +13219,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /rubric]
-
-Role: tu executes un raccourci texte pour produire: Grille evaluation.
-Objectif: Construire une grille d''evaluation.
-Description: Definit criteres, niveaux, points et attentes observables.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: travail, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-040' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17898,38 +13326,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /blogoutline]
-
-Role: tu executes un raccourci texte pour produire: Plan article.
-Objectif: Creer un plan d''article SEO.
-Description: Produit structure Hn, intention de recherche et angles de contenu.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: mot_cle, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-041' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -17944,38 +13349,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /blogoutline]
-
-Role: tu executes un raccourci texte pour produire: Plan article.
-Objectif: Creer un plan d''article SEO.
-Description: Produit structure Hn, intention de recherche et angles de contenu.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: mot_cle, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-041' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18074,38 +13456,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /blogpost]
-
-Role: tu executes un raccourci texte pour produire: Article blog.
-Objectif: Rediger un article structure.
-Description: Produit un article clair avec intro, sections, exemples et conclusion.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-042' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18120,38 +13479,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /blogpost]
-
-Role: tu executes un raccourci texte pour produire: Article blog.
-Objectif: Rediger un article structure.
-Description: Produit un article clair avec intro, sections, exemples et conclusion.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-042' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18250,38 +13586,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /seo_meta]
-
-Role: tu executes un raccourci texte pour produire: Meta SEO.
-Objectif: Ecrire titres et descriptions SEO.
-Description: Genere title tags, meta descriptions et slugs propres.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: page, mot_cle.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-043' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18296,38 +13609,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /seo_meta]
-
-Role: tu executes un raccourci texte pour produire: Meta SEO.
-Objectif: Ecrire titres et descriptions SEO.
-Description: Genere title tags, meta descriptions et slugs propres.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: page, mot_cle.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-043' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18426,38 +13716,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /scriptvideo]
-
-Role: tu executes un raccourci texte pour produire: Script video.
-Objectif: Rediger un script video structure.
-Description: Produit hook, narration, scenes, texte ecran et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, duree.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-044' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18472,38 +13739,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /scriptvideo]
-
-Role: tu executes un raccourci texte pour produire: Script video.
-Objectif: Rediger un script video structure.
-Description: Produit hook, narration, scenes, texte ecran et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, duree.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-044' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18602,38 +13846,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /story]
-
-Role: tu executes un raccourci texte pour produire: Histoire courte.
-Objectif: Ecrire une histoire courte a partir d''un brief.
-Description: Cree une narration coherente avec ton, personnage et chute.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, genre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-045' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18648,38 +13869,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /story]
-
-Role: tu executes un raccourci texte pour produire: Histoire courte.
-Objectif: Ecrire une histoire courte a partir d''un brief.
-Description: Cree une narration coherente avec ton, personnage et chute.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: idee, genre.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-045' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18778,38 +13976,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /dialogue]
-
-Role: tu executes un raccourci texte pour produire: Dialogue naturel.
-Objectif: Ecrire un dialogue credible.
-Description: Produit un echange vivant avec voix distinctes et sous-texte.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personnages, situation.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-046' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18824,38 +13999,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /dialogue]
-
-Role: tu executes un raccourci texte pour produire: Dialogue naturel.
-Objectif: Ecrire un dialogue credible.
-Description: Produit un echange vivant avec voix distinctes et sous-texte.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: personnages, situation.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-046' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -18954,38 +14106,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /naming]
-
-Role: tu executes un raccourci texte pour produire: Noms de marque.
-Objectif: Generer des noms avec logique de choix.
-Description: Propose noms, sens, angles, risques et variantes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: concept, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-047' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19000,38 +14129,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /naming]
-
-Role: tu executes un raccourci texte pour produire: Noms de marque.
-Objectif: Generer des noms avec logique de choix.
-Description: Propose noms, sens, angles, risques et variantes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: concept, cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-047' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19130,38 +14236,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /slogan]
-
-Role: tu executes un raccourci texte pour produire: Slogans.
-Objectif: Creer des slogans memorisables.
-Description: Produit slogans classes par angle: clair, premium, fun, direct.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marque, promesse.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-048' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19176,38 +14259,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /slogan]
-
-Role: tu executes un raccourci texte pour produire: Slogans.
-Objectif: Creer des slogans memorisables.
-Description: Produit slogans classes par angle: clair, premium, fun, direct.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marque, promesse.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-048' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19306,38 +14366,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /legalplain]
-
-Role: tu executes un raccourci texte pour produire: Texte simplifie.
-Objectif: Rendre un texte juridique plus comprehensible.
-Description: Explique en langage clair sans donner d''avis juridique.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-049' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19352,38 +14389,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /legalplain]
-
-Role: tu executes un raccourci texte pour produire: Texte simplifie.
-Objectif: Rendre un texte juridique plus comprehensible.
-Description: Explique en langage clair sans donner d''avis juridique.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-049' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19482,38 +14496,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /policycopy]
-
-Role: tu executes un raccourci texte pour produire: Regle produit.
-Objectif: Rediger une politique claire pour un service.
-Description: Produit une politique lisible avec perimetre, regles et exceptions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, service.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-050' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19528,38 +14519,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /policycopy]
-
-Role: tu executes un raccourci texte pour produire: Regle produit.
-Objectif: Rediger une politique claire pour un service.
-Description: Produit une politique lisible avec perimetre, regles et exceptions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: sujet, service.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Audience ? A. Client final B. Prospect C. Equipe interne D. Autre
-2. Ton ? A. Clair professionnel B. Premium C. Direct commercial D. Autre
-3. Longueur ? A. Court B. Moyen C. Detaille D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Intention, niveau de langage, informations fournies, contraintes de marque.
-A eviter: Promesses non prouvees, ton generique, survente, invention de chiffres ou de sources.
-
-Format de sortie attendu: Titre + texte final + variante courte si utile.
-Controle qualite avant reponse: Clarte; specificite; utilite immediate; ton adapte; zero remplissage; appel a l''action net si pertinent.', '[{"question":"Audience ?","options":["Client final","Prospect","Equipe interne","Autre"]},{"question":"Ton ?","options":["Clair professionnel","Premium","Direct commercial","Autre"]},{"question":"Longueur ?","options":["Court","Moyen","Detaille","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-TXT-050' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19658,38 +14626,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /swot]
-
-Role: tu executes un raccourci analyse pour produire: Analyse SWOT.
-Objectif: Identifier forces, faiblesses, opportunites et menaces.
-Description: Produit une matrice SWOT avec priorites et actions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: source, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-001' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19704,38 +14649,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /swot]
-
-Role: tu executes un raccourci analyse pour produire: Analyse SWOT.
-Objectif: Identifier forces, faiblesses, opportunites et menaces.
-Description: Produit une matrice SWOT avec priorites et actions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: source, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-001' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19834,38 +14756,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /pestel]
-
-Role: tu executes un raccourci analyse pour produire: Analyse PESTEL.
-Objectif: Analyser facteurs macro-environnementaux.
-Description: Structure politique, economique, social, technologique, environnemental et legal.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marche, pays.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-002' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -19880,38 +14779,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /pestel]
-
-Role: tu executes un raccourci analyse pour produire: Analyse PESTEL.
-Objectif: Analyser facteurs macro-environnementaux.
-Description: Structure politique, economique, social, technologique, environnemental et legal.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marche, pays.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-002' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20010,38 +14886,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /porter]
-
-Role: tu executes un raccourci analyse pour produire: Forces Porter.
-Objectif: Evaluer l''intensite concurrentielle d''un marche.
-Description: Analyse les cinq forces et deduit les implications strategiques.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marche.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-003' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20056,38 +14909,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /porter]
-
-Role: tu executes un raccourci analyse pour produire: Forces Porter.
-Objectif: Evaluer l''intensite concurrentielle d''un marche.
-Description: Analyse les cinq forces et deduit les implications strategiques.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marche.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-003' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20186,38 +15016,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /persona]
-
-Role: tu executes un raccourci analyse pour produire: Persona client.
-Objectif: Construire un persona a partir de donnees ou brief.
-Description: Identifie profil, besoins, frustrations, objections et messages.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-004' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20232,38 +15039,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /persona]
-
-Role: tu executes un raccourci analyse pour produire: Persona client.
-Objectif: Construire un persona a partir de donnees ou brief.
-Description: Identifie profil, besoins, frustrations, objections et messages.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: audience.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-004' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20362,38 +15146,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /journey]
-
-Role: tu executes un raccourci analyse pour produire: Parcours client.
-Objectif: Cartographier les etapes d''un parcours utilisateur.
-Description: Produit etapes, intentions, frictions, emotions et opportunites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, client.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-005' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20408,38 +15169,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /journey]
-
-Role: tu executes un raccourci analyse pour produire: Parcours client.
-Objectif: Cartographier les etapes d''un parcours utilisateur.
-Description: Produit etapes, intentions, frictions, emotions et opportunites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, client.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-005' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20538,38 +15276,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /competitor]
-
-Role: tu executes un raccourci analyse pour produire: Analyse concurrente.
-Objectif: Comparer des concurrents sur criteres utiles.
-Description: Produit tableau comparatif, positionnement, forces et angles d''attaque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: concurrents, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-006' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20584,38 +15299,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /competitor]
-
-Role: tu executes un raccourci analyse pour produire: Analyse concurrente.
-Objectif: Comparer des concurrents sur criteres utiles.
-Description: Produit tableau comparatif, positionnement, forces et angles d''attaque.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: concurrents, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-006' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20714,38 +15406,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /marketmap]
-
-Role: tu executes un raccourci analyse pour produire: Carte marche.
-Objectif: Cartographier acteurs et segments d''un marche.
-Description: Structure categories, cibles, offres, prix et differenciation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marche.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-007' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20760,38 +15429,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /marketmap]
-
-Role: tu executes un raccourci analyse pour produire: Carte marche.
-Objectif: Cartographier acteurs et segments d''un marche.
-Description: Structure categories, cibles, offres, prix et differenciation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: marche.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-007' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20890,38 +15536,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /pricingaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit pricing.
-Objectif: Evaluer la coherence d''un prix ou packaging.
-Description: Analyse valeur percue, segments, ancrage, risques et tests.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre, prix.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-008' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -20936,38 +15559,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /pricingaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit pricing.
-Objectif: Evaluer la coherence d''un prix ou packaging.
-Description: Analyse valeur percue, segments, ancrage, risques et tests.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: offre, prix.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-008' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21066,38 +15666,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /funnelaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit funnel.
-Objectif: Diagnostiquer un tunnel de conversion.
-Description: Analyse etapes, frictions, metriques manquantes et priorites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: funnel.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-009' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21112,38 +15689,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /funnelaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit funnel.
-Objectif: Diagnostiquer un tunnel de conversion.
-Description: Analyse etapes, frictions, metriques manquantes et priorites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: funnel.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-009' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21242,38 +15796,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /landingaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit landing.
-Objectif: Analyser une landing page.
-Description: Evalue promesse, structure, preuves, objections, CTA et friction.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: page.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-010' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21288,38 +15819,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /landingaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit landing.
-Objectif: Analyser une landing page.
-Description: Evalue promesse, structure, preuves, objections, CTA et friction.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: page.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-010' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21418,38 +15926,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /uixaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit UI UX.
-Objectif: Identifier problemes d''ergonomie et priorites.
-Description: Analyse clarte, hierarchy, navigation, charge cognitive et mobile.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: interface.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-011' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21464,38 +15949,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /uixaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit UI UX.
-Objectif: Identifier problemes d''ergonomie et priorites.
-Description: Analyse clarte, hierarchy, navigation, charge cognitive et mobile.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: interface.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-011' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21594,38 +16056,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /copyaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit copy.
-Objectif: Evaluer la qualite persuasive d''un texte.
-Description: Analyse promesse, clarté, preuves, objections, ton et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-012' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21640,38 +16079,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /copyaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit copy.
-Objectif: Evaluer la qualite persuasive d''un texte.
-Description: Analyse promesse, clarté, preuves, objections, ton et CTA.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-012' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21770,38 +16186,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /seoaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit SEO.
-Objectif: Analyser une page ou contenu pour le referencement.
-Description: Evalue intention, structure, mots cles, meta, lisibilite et opportunites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: page_ou_texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-013' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21816,38 +16209,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /seoaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit SEO.
-Objectif: Analyser une page ou contenu pour le referencement.
-Description: Evalue intention, structure, mots cles, meta, lisibilite et opportunites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: page_ou_texte.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-013' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21946,38 +16316,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /contentaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit contenu.
-Objectif: Evaluer un corpus de contenus.
-Description: Classe contenus, lacunes, redondances et opportunites editoriales.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: contenus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-014' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -21992,38 +16339,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /contentaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit contenu.
-Objectif: Evaluer un corpus de contenus.
-Description: Classe contenus, lacunes, redondances et opportunites editoriales.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: contenus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-014' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22122,38 +16446,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /briefanalyse]
-
-Role: tu executes un raccourci analyse pour produire: Analyse brief.
-Objectif: Verifier un brief avant execution.
-Description: Identifie objectifs, manques, risques, questions et prochaines etapes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: brief.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-015' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22168,38 +16469,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /briefanalyse]
-
-Role: tu executes un raccourci analyse pour produire: Analyse brief.
-Objectif: Verifier un brief avant execution.
-Description: Identifie objectifs, manques, risques, questions et prochaines etapes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: brief.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-015' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22298,38 +16576,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /docsynthese]
-
-Role: tu executes un raccourci analyse pour produire: Synthese document.
-Objectif: Extraire l''essentiel d''un document.
-Description: Produit resume, decisions, risques, chiffres et actions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: document.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-016' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22344,38 +16599,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /docsynthese]
-
-Role: tu executes un raccourci analyse pour produire: Synthese document.
-Objectif: Extraire l''essentiel d''un document.
-Description: Produit resume, decisions, risques, chiffres et actions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: document.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-016' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22474,38 +16706,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /meetingnotes]
-
-Role: tu executes un raccourci analyse pour produire: Notes reunion.
-Objectif: Transformer notes brutes en decisions et actions.
-Description: Structure resume, decisions, actions, responsables et echeances.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: notes.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-017' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22520,38 +16729,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /meetingnotes]
-
-Role: tu executes un raccourci analyse pour produire: Notes reunion.
-Objectif: Transformer notes brutes en decisions et actions.
-Description: Structure resume, decisions, actions, responsables et echeances.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: notes.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-017' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22650,38 +16836,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /riskscan]
-
-Role: tu executes un raccourci analyse pour produire: Scan risques.
-Objectif: Identifier risques projet ou business.
-Description: Classe risques par probabilite, impact, signaux et mitigations.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: projet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-018' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22696,38 +16859,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /riskscan]
-
-Role: tu executes un raccourci analyse pour produire: Scan risques.
-Objectif: Identifier risques projet ou business.
-Description: Classe risques par probabilite, impact, signaux et mitigations.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: projet.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-018' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22826,38 +16966,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /decisionmatrix]
-
-Role: tu executes un raccourci analyse pour produire: Matrice decision.
-Objectif: Comparer des options objectivement.
-Description: Construit criteres, scores, ponderations et recommandation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: options, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-019' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -22872,38 +16989,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /decisionmatrix]
-
-Role: tu executes un raccourci analyse pour produire: Matrice decision.
-Objectif: Comparer des options objectivement.
-Description: Construit criteres, scores, ponderations et recommandation.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: options, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-019' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23002,38 +17096,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /prioritize]
-
-Role: tu executes un raccourci analyse pour produire: Priorisation.
-Objectif: Classer initiatives ou taches.
-Description: Utilise impact, effort, urgence et dependances pour prioriser.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: liste.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-020' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23048,38 +17119,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /prioritize]
-
-Role: tu executes un raccourci analyse pour produire: Priorisation.
-Objectif: Classer initiatives ou taches.
-Description: Utilise impact, effort, urgence et dependances pour prioriser.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: liste.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-020' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23178,38 +17226,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /gapanalysis]
-
-Role: tu executes un raccourci analyse pour produire: Gap analysis.
-Objectif: Comparer etat actuel et etat cible.
-Description: Identifie ecarts, causes, impact et plan de comblement.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: etat_actuel, etat_cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-021' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23224,38 +17249,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /gapanalysis]
-
-Role: tu executes un raccourci analyse pour produire: Gap analysis.
-Objectif: Comparer etat actuel et etat cible.
-Description: Identifie ecarts, causes, impact et plan de comblement.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: etat_actuel, etat_cible.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-021' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23354,38 +17356,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /rootcause]
-
-Role: tu executes un raccourci analyse pour produire: Cause racine.
-Objectif: Identifier causes profondes d''un probleme.
-Description: Applique 5 pourquoi et categorise causes, preuves et actions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: probleme.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-022' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23400,38 +17379,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /rootcause]
-
-Role: tu executes un raccourci analyse pour produire: Cause racine.
-Objectif: Identifier causes profondes d''un probleme.
-Description: Applique 5 pourquoi et categorise causes, preuves et actions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: probleme.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-022' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23530,38 +17486,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /kpi]
-
-Role: tu executes un raccourci analyse pour produire: KPI pertinents.
-Objectif: Proposer ou auditer des indicateurs.
-Description: Definit KPI, formule, source, frequence et seuils.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-023' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23576,38 +17509,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /kpi]
-
-Role: tu executes un raccourci analyse pour produire: KPI pertinents.
-Objectif: Proposer ou auditer des indicateurs.
-Description: Definit KPI, formule, source, frequence et seuils.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-023' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23706,38 +17616,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /datainsights]
-
-Role: tu executes un raccourci analyse pour produire: Insights donnees.
-Objectif: Extraire constats utiles d''un tableau.
-Description: Repere tendances, anomalies, segments et questions a creuser.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: donnees.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-024' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23752,38 +17639,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /datainsights]
-
-Role: tu executes un raccourci analyse pour produire: Insights donnees.
-Objectif: Extraire constats utiles d''un tableau.
-Description: Repere tendances, anomalies, segments et questions a creuser.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: donnees.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-024' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23882,38 +17746,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /surveyanalyse]
-
-Role: tu executes un raccourci analyse pour produire: Analyse sondage.
-Objectif: Analyser reponses de questionnaire.
-Description: Regroupe themes, signaux forts, verbatims et recommandations.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: reponses.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-025' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -23928,38 +17769,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /surveyanalyse]
-
-Role: tu executes un raccourci analyse pour produire: Analyse sondage.
-Objectif: Analyser reponses de questionnaire.
-Description: Regroupe themes, signaux forts, verbatims et recommandations.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: reponses.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-025' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24058,38 +17876,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /customerfeedback]
-
-Role: tu executes un raccourci analyse pour produire: Feedback client.
-Objectif: Transformer retours clients en priorites.
-Description: Classe irritants, demandes, opportunites et quick wins.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: feedback.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-026' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24104,38 +17899,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /customerfeedback]
-
-Role: tu executes un raccourci analyse pour produire: Feedback client.
-Objectif: Transformer retours clients en priorites.
-Description: Classe irritants, demandes, opportunites et quick wins.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: feedback.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-026' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24234,38 +18006,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /contractscan]
-
-Role: tu executes un raccourci analyse pour produire: Scan contrat.
-Objectif: Reperer points d''attention dans un contrat.
-Description: Liste clauses sensibles, obligations, echeances et questions a verifier.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: contrat.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-027' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24280,38 +18029,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /contractscan]
-
-Role: tu executes un raccourci analyse pour produire: Scan contrat.
-Objectif: Reperer points d''attention dans un contrat.
-Description: Liste clauses sensibles, obligations, echeances et questions a verifier.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: contrat.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-027' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24410,38 +18136,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /financialsnapshot]
-
-Role: tu executes un raccourci analyse pour produire: Snapshot financier.
-Objectif: Lire rapidement une situation financiere fournie.
-Description: Resume revenus, couts, marges, points d''alerte et questions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: chiffres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-028' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24456,38 +18159,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /financialsnapshot]
-
-Role: tu executes un raccourci analyse pour produire: Snapshot financier.
-Objectif: Lire rapidement une situation financiere fournie.
-Description: Resume revenus, couts, marges, points d''alerte et questions.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: chiffres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-028' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24586,38 +18266,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /roadmap]
-
-Role: tu executes un raccourci analyse pour produire: Roadmap produit.
-Objectif: Transformer besoins et contraintes en roadmap.
-Description: Classe phases, jalons, dependances, risques et criteres de succes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectifs, features.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-029' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24632,38 +18289,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /roadmap]
-
-Role: tu executes un raccourci analyse pour produire: Roadmap produit.
-Objectif: Transformer besoins et contraintes en roadmap.
-Description: Classe phases, jalons, dependances, risques et criteres de succes.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: objectifs, features.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-029' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24762,38 +18396,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /backlogtriage]
-
-Role: tu executes un raccourci analyse pour produire: Triage backlog.
-Objectif: Classer un backlog produit.
-Description: Regroupe, dedoublonne et priorise tickets ou idees.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: backlog.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-030' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24808,38 +18419,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /backlogtriage]
-
-Role: tu executes un raccourci analyse pour produire: Triage backlog.
-Objectif: Classer un backlog produit.
-Description: Regroupe, dedoublonne et priorise tickets ou idees.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: backlog.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-030' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24938,38 +18526,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /prdreview]
-
-Role: tu executes un raccourci analyse pour produire: Review PRD.
-Objectif: Verifier un document produit.
-Description: Analyse clarte, scope, hypotheses, criteres d''acceptation et risques.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: prd.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-031' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -24984,38 +18549,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /prdreview]
-
-Role: tu executes un raccourci analyse pour produire: Review PRD.
-Objectif: Verifier un document produit.
-Description: Analyse clarte, scope, hypotheses, criteres d''acceptation et risques.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: prd.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-031' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25114,38 +18656,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /testplan]
-
-Role: tu executes un raccourci analyse pour produire: Plan de test.
-Objectif: Deriver des scenarios de test.
-Description: Produit cas de test, donnees, resultats attendus et priorites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: fonctionnalite.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-032' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25160,38 +18679,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /testplan]
-
-Role: tu executes un raccourci analyse pour produire: Plan de test.
-Objectif: Deriver des scenarios de test.
-Description: Produit cas de test, donnees, resultats attendus et priorites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: fonctionnalite.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-032' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25290,38 +18786,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /promptaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit prompt.
-Objectif: Evaluer et ameliorer un prompt.
-Description: Diagnostique clarte, contexte, contraintes, sortie et robustesse.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: prompt.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-033' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25336,38 +18809,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /promptaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit prompt.
-Objectif: Evaluer et ameliorer un prompt.
-Description: Diagnostique clarte, contexte, contraintes, sortie et robustesse.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: prompt.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-033' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25466,38 +18916,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /imagepromptdebug]
-
-Role: tu executes un raccourci analyse pour produire: Debug image prompt.
-Objectif: Comprendre pourquoi un prompt image echoue.
-Description: Identifie termes ambigus, contradictions, limites IA et version amelioree.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: prompt, resultat.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-034' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25512,38 +18939,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /imagepromptdebug]
-
-Role: tu executes un raccourci analyse pour produire: Debug image prompt.
-Objectif: Comprendre pourquoi un prompt image echoue.
-Description: Identifie termes ambigus, contradictions, limites IA et version amelioree.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: prompt, resultat.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-034' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25642,38 +19046,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /securitybasic]
-
-Role: tu executes un raccourci analyse pour produire: Scan securite basique.
-Objectif: Identifier risques securite non exhaustifs.
-Description: Liste points d''attention visibles et actions de base.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: systeme_ou_process.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-035' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25688,38 +19069,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /securitybasic]
-
-Role: tu executes un raccourci analyse pour produire: Scan securite basique.
-Objectif: Identifier risques securite non exhaustifs.
-Description: Liste points d''attention visibles et actions de base.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: systeme_ou_process.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-035' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25818,38 +19176,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /workflowmap]
-
-Role: tu executes un raccourci analyse pour produire: Map workflow.
-Objectif: Cartographier un workflow.
-Description: Structure acteurs, etapes, entrees, sorties, blocages et automatisations.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: processus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-036' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25864,38 +19199,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /workflowmap]
-
-Role: tu executes un raccourci analyse pour produire: Map workflow.
-Objectif: Cartographier un workflow.
-Description: Structure acteurs, etapes, entrees, sorties, blocages et automatisations.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: processus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-036' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -25994,38 +19306,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /processaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit process.
-Objectif: Evaluer un processus operationnel.
-Description: Identifie gaspillages, points de controle, risques et simplifications.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: processus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-037' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -26040,38 +19329,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /processaudit]
-
-Role: tu executes un raccourci analyse pour produire: Audit process.
-Objectif: Evaluer un processus operationnel.
-Description: Identifie gaspillages, points de controle, risques et simplifications.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: processus.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-037' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -26170,38 +19436,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /featurematrix]
-
-Role: tu executes un raccourci analyse pour produire: Matrice features.
-Objectif: Comparer fonctionnalites par segment ou concurrent.
-Description: Produit matrice, manques, differentiations et priorites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: features, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-038' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -26216,38 +19459,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /featurematrix]
-
-Role: tu executes un raccourci analyse pour produire: Matrice features.
-Objectif: Comparer fonctionnalites par segment ou concurrent.
-Description: Produit matrice, manques, differentiations et priorites.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: features, criteres.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-038' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -26346,38 +19566,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /churnhypothesis]
-
-Role: tu executes un raccourci analyse pour produire: Hypotheses churn.
-Objectif: Identifier causes probables de desabonnement.
-Description: Classe hypotheses, signaux, donnees a verifier et experiences.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, donnees.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-039' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -26392,38 +19589,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /churnhypothesis]
-
-Role: tu executes un raccourci analyse pour produire: Hypotheses churn.
-Objectif: Identifier causes probables de desabonnement.
-Description: Classe hypotheses, signaux, donnees a verifier et experiences.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: produit, donnees.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-039' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -26522,38 +19696,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /growthideas]
-
-Role: tu executes un raccourci analyse pour produire: Idees growth.
-Objectif: Generer des pistes de croissance priorisees.
-Description: Produit idees classees par impact, effort, risque et preuve attendue.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: business, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-040' and pr.key = 'claude'
   and not exists (
     select 1 from public.prompt_versions existing
@@ -26568,38 +19719,15 @@ on conflict (prompt_id, provider_id) do update set
   compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,
   status = excluded.status;
 insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)
-select v.id, 'v1.0', '[RaccourcIA - /growthideas]
-
-Role: tu executes un raccourci analyse pour produire: Idees growth.
-Objectif: Generer des pistes de croissance priorisees.
-Description: Produit idees classees par impact, effort, risque et preuve attendue.
-
-Contexte et detection:
-- Analyse d''abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: business, objectif.
-
-QCM conditionnel a utiliser seulement si necessaire:
-1. Objectif ? A. Decider B. Comprendre C. Prioriser D. Autre
-2. Niveau de detail ? A. Synthese B. Standard C. Approfondi D. Autre
-3. Sortie ? A. Tableau B. Plan d''action C. Rapport court D. Autre
-
-Execution:
-- Respecte strictement les informations fournies par l''utilisateur.
-- N''invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l''utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l''interface, produis le meilleur prompt final reutilisable.
-
-A preserver: Faits observables, incertitudes, limites de la source, distinction fait/inference.
-A eviter: Inventer des donnees, conclure sans preuve, masquer les hypotheses.
-
-Format de sortie attendu: Synthese, tableau des constats, priorites, recommandations.
-Controle qualite avant reponse: Faits separes des hypotheses; priorisation; angles morts listes; recommandations actionnables.', '[{"question":"Objectif ?","options":["Decider","Comprendre","Prioriser","Autre"]},{"question":"Niveau de detail ?","options":["Synthese","Standard","Approfondi","Autre"]},{"question":"Sortie ?","options":["Tableau","Plan d''action","Rapport court","Autre"]}]'::jsonb,
-  'Si une variable requise manque et que le contexte ne permet pas de l''inferer avec confiance.', 'published'::public.version_status, true, now()
+select v.id, 'v1.0', src.payload, src.qcm, src.qcm_trigger,
+  'published'::public.version_status, true, now()
 from public.prompt_variants v
 join public.prompts p on p.id = v.prompt_id
 join public.ai_providers pr on pr.id = v.provider_id
+join public.prompt_variants ref on ref.prompt_id = p.id
+join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = 'chatgpt'
+join public.prompt_versions src on src.variant_id = ref.id
+  and src.version_label = 'v1.0'
 where p.external_ref = 'RCI-ANA-040' and pr.key = 'gemini'
   and not exists (
     select 1 from public.prompt_versions existing

@@ -18,7 +18,8 @@
     "catalogue:import": "node scripts/import-catalogue.mjs",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
-    "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test"
+    "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "db:bundle": "node scripts/bundle-sql.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.6",

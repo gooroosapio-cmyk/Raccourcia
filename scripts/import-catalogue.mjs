@@ -265,11 +265,16 @@ for (const row of prompts) {
     .map((entry) => parseQcmQuestion(entry.question));
   const qcmJson = sql(JSON.stringify(qcm));
 
-  for (const provider of PROVIDERS) {
+  // Le payload initial est identique pour les trois IA : on ne l'ecrit qu'une
+  // fois dans le fichier, les autres variantes le copient en base. L'admin
+  // pourra ensuite faire diverger une version par IA depuis /admin.
+  const [referenceProvider, ...otherProviders] = PROVIDERS;
+  const versionLabel = row.version ?? 'v1.0';
+
+  const emitVariant = (provider) => {
     const { level, note } = compatibility(row[`compat_${provider}`]);
     const variantStatus = level === 'non_supporte' ? 'draft' : 'published';
     variantCount += 1;
-
     lines.push(
       `insert into public.prompt_variants (prompt_id, provider_id, compatibility, compatibility_note, status)`,
       `select p.id, pr.id, ${sql(level)}::public.compatibility_level, ${sql(note)},`,
@@ -279,17 +284,43 @@ for (const row of prompts) {
       `on conflict (prompt_id, provider_id) do update set`,
       `  compatibility = excluded.compatibility, compatibility_note = excluded.compatibility_note,`,
       `  status = excluded.status;`,
+    );
+  };
+
+  const versionGuard = (provider) => [
+    `  and not exists (`,
+    `    select 1 from public.prompt_versions existing`,
+    `    where existing.variant_id = v.id and existing.version_label = ${sql(versionLabel)}`,
+    `  );`,
+  ];
+
+  emitVariant(referenceProvider);
+  lines.push(
+    `insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)`,
+    `select v.id, ${sql(versionLabel)}, ${sql(row.payload_copiable)}, ${qcmJson}::jsonb,`,
+    `  ${sql(row.qcm_declencheur)}, 'published'::public.version_status, true, now()`,
+    `from public.prompt_variants v`,
+    `join public.prompts p on p.id = v.prompt_id`,
+    `join public.ai_providers pr on pr.id = v.provider_id`,
+    `where p.external_ref = ${sql(row.id)} and pr.key = ${sql(referenceProvider)}`,
+    ...versionGuard(referenceProvider),
+  );
+
+  for (const provider of otherProviders) {
+    emitVariant(provider);
+    lines.push(
       `insert into public.prompt_versions (variant_id, version_label, payload, qcm, qcm_trigger, status, is_current, published_at)`,
-      `select v.id, ${sql(row.version ?? 'v1.0')}, ${sql(row.payload_copiable)}, ${qcmJson}::jsonb,`,
-      `  ${sql(row.qcm_declencheur)}, 'published'::public.version_status, true, now()`,
+      `select v.id, ${sql(versionLabel)}, src.payload, src.qcm, src.qcm_trigger,`,
+      `  'published'::public.version_status, true, now()`,
       `from public.prompt_variants v`,
       `join public.prompts p on p.id = v.prompt_id`,
       `join public.ai_providers pr on pr.id = v.provider_id`,
+      `join public.prompt_variants ref on ref.prompt_id = p.id`,
+      `join public.ai_providers refpr on refpr.id = ref.provider_id and refpr.key = ${sql(referenceProvider)}`,
+      `join public.prompt_versions src on src.variant_id = ref.id`,
+      `  and src.version_label = ${sql(versionLabel)}`,
       `where p.external_ref = ${sql(row.id)} and pr.key = ${sql(provider)}`,
-      `  and not exists (`,
-      `    select 1 from public.prompt_versions existing`,
-      `    where existing.variant_id = v.id and existing.version_label = ${sql(row.version ?? 'v1.0')}`,
-      `  );`,
+      ...versionGuard(provider),
     );
   }
 }
