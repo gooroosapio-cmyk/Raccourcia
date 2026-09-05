@@ -4,8 +4,10 @@ import { publicEnv } from '@/lib/env';
 
 /**
  * Rafraichit la session Supabase a chaque requete et protege les espaces
- * membre et admin. Le middleware ameliore l'experience : il ne remplace
+ * membre et admin. Cette couche ameliore l'experience : elle ne remplace
  * jamais la RLS ni les controles serveur (Document Technique V1, 12.1).
+ *
+ * Next 16 a renomme la convention `middleware` en `proxy`.
  */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });

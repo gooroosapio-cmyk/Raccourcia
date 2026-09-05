@@ -81,3 +81,39 @@ Pour ouvrir le mode, en deux etapes et sans aucun code :
 2. `/admin` > Categories > publier les 5 categories `analyse-*`.
 
 Le retour arriere consiste a repasser les categories en brouillon.
+
+## Parcours et routes
+
+| Route                          | Role                                                          |
+| ------------------------------ | ------------------------------------------------------------- |
+| `/`                            | Landing publique                                              |
+| `/connexion`                   | Email + mot de passe. Conserve l'intention via `?suite=`      |
+| `/activation`                  | Email d'achat + licence + choix du mot de passe               |
+| `/recuperation`                | Email d'achat + licence + nouveau mot de passe                |
+| `/r/[slug]`                    | Page publique partageable, sans le prompt complet             |
+| `/app`                         | Bibliotheque : recherche, mode, categories, grille 2 colonnes |
+| `/app/favoris`, `/app/recents` | Vues personnelles du meme catalogue                           |
+| `/compte`                      | Acces a vie, appareils, securite, deconnexion                 |
+| `/api/resolve-prompt`          | Seule sortie du prompt complet, `no-store`                    |
+
+`proxy.ts` rafraichit la session et protege `/app`, `/compte` et `/admin`.
+Next 16 a renomme la convention `middleware` en `proxy`.
+
+## Panne reseau et contenu absent
+
+Une base injoignable ne doit jamais s'afficher comme un contenu inexistant :
+sinon une coupure ressemble a un catalogue vide ou a un raccourci supprime.
+Les fonctions de `lib/catalog/queries.ts` levent une `CatalogUnavailableError`
+lorsque Postgres renvoie une erreur, et chaque page distingue les deux cas :
+
+- contenu absent -> 404 ;
+- base injoignable -> etat "Connexion interrompue" avec un bouton Reessayer.
+
+Les pages traitent l'incident elles-memes plutot que de compter sur
+`error.tsx` : une erreur levee pendant le rendu serveur initial produit
+sinon un 500 a corps vide, donc une page blanche. `app/global-error.tsx`
+reste le dernier filet.
+
+L'erreur se reconnait par un marqueur `code`, pas par `instanceof` : le
+bundler duplique les modules entre le graphe serveur et le graphe SSR, et la
+classe n'a alors pas la meme identite des deux cotes.

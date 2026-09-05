@@ -30,10 +30,19 @@ export const toggleFavoriteInput = z.object({
   promptId: z.string().uuid(),
 });
 
-/** Activation d'un achat : licence + email de vente exiges simultanement. */
+export const signInInput = z.object({
+  email: z.string().email().max(255),
+  password: z.string().min(1).max(200),
+});
+
+/**
+ * Activation ou recuperation : licence ET email de vente exiges ensemble,
+ * puis definition du mot de passe (Doc Technique V1, 8.2).
+ */
 export const claimAccessInput = z.object({
   email: z.string().email().max(255),
   license: z.string().trim().min(6).max(120),
+  password: z.string().min(8).max(200),
 });
 
 export const revokeSessionInput = z.object({

@@ -35,6 +35,8 @@ npm run dev
 
 ```
 app/            interface (public, membre, admin, routes API)
+  (public)/     landing, connexion, activation, recuperation, pages partageables
+  (member)/     bibliotheque, favoris, recents, compte
 components/     cartes, bottom sheets, filtres, navigation
 lib/            auth, acces, catalogue, validation, rate limit, clients Supabase
 supabase/       migrations SQL, seed du catalogue, Edge Functions
