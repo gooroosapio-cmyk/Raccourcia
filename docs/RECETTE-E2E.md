@@ -63,20 +63,42 @@ l'import du catalogue et la fidelite des 250 raccourcis.
 
 ## 5. Points a traiter
 
-### 5.1 Derive de migration en production (bloquant pour Chariow)
+### 5.1 Derive de migration en production — corrigee le 5 septembre 2026
 
-La migration `20260905070000_chariow_ingestion.sql` **n'est pas appliquee** sur
-le projet de production. Verifie directement :
+La migration `20260905070000_chariow_ingestion.sql` n'etait pas appliquee sur
+le projet de production : `pending_licenses`, `process_chariow_sale` et
+`process_chariow_license` etaient absents, et le webhook Chariow aurait echoue
+en appelant une fonction inexistante.
 
-```
-table_pending_licenses_existe     | false
-fn_process_chariow_sale_existe    | false
-fn_process_chariow_license_existe | false
-```
+Elle a depuis ete appliquee. Le rejeu prealable sur Postgres 16 jetable a
+reproduit l'ordre reel de production — la migration en dernier, apres
+`analytics` et `catalogue_v2`, et non a sa place chronologique — et les 10
+scenarios d'integration y passent. La migration est purement additive :
+aucun DDL destructeur, aucune ecriture sur les lignes existantes.
 
-La production compte 13 migrations, le depot 14. En l'etat, le webhook Chariow
-echouerait en production : la route appelle `process_chariow_sale`, qui
-n'existe pas. A appliquer avant toute mise en service du webhook.
+Etat verifie apres application :
+
+| Controle                             | Resultat             |
+| ------------------------------------ | -------------------- |
+| Table `pending_licenses`             | Creee, 0 ligne       |
+| RLS                                  | Active               |
+| Policies                             | 1 (lecture admin)    |
+| Index                                | 3                    |
+| Fonctions `process_chariow_*`        | 2                    |
+| `EXECUTE` sur ces fonctions          | `service_role` seul  |
+| `pending_licenses` en anon (REST)    | 401 refuse           |
+| `process_chariow_sale` en anon (RPC) | 401 refuse           |
+| `purchases` / `webhook_events`       | Inchangees (0 ligne) |
+
+L'auditeur Supabase ne remonte aucun avertissement nouveau.
+
+**Reste a aligner :** l'application via MCP a enregistre la migration sous la
+version `20260905122619`, alors que le depot porte `20260905070000`. Un
+`supabase db push` depuis le depot considererait donc le fichier comme non
+applique et tenterait de le rejouer, ce qui echouerait sur
+`create table public.pending_licenses`. A corriger par
+`supabase migration repair --status applied 20260905070000`, ou en renommant
+le fichier du depot pour qu'il porte la version enregistree.
 
 ### 5.2 `analytics_window` : `search_path` mutable
 
