@@ -1,0 +1,137 @@
+# Recette end-to-end du 5 septembre 2026
+
+Campagne executee depuis un environnement Claude Code isole, contre le projet
+Supabase de production `jhqajkhovtcjklrjgwrx` (Raccourcia, eu-west-1) et une
+instance Next.js locale. Aucune donnee de production n'a ete creee, modifiee
+ni supprimee : toutes les ecritures ont eu lieu sur un Postgres jetable local.
+
+## 1. Acces direct a Supabase
+
+| Voie                           | Resultat                                |
+| ------------------------------ | --------------------------------------- |
+| MCP Supabase (lecture SQL)     | Operationnel                            |
+| REST `/rest/v1/` avec cle anon | Operationnel                            |
+| Cle `service_role` / secrete   | **Absente de l'environnement** (voir 5) |
+
+La cle publiable (`sb_publishable_...`) est publique par conception. Aucune cle
+secrete n'est exposee a l'environnement de developpement, ce qui est le
+comportement attendu.
+
+## 2. Surface exposee au visiteur non authentifie
+
+Chaque table du schema `public` a ete interrogee directement en REST avec la
+cle anon. **Les 15 tables testees repondent 401 `42501` (permission denied)**,
+y compris `prompt_versions`, qui porte le payload premium. Le refus vient du
+niveau `GRANT`, en amont de la RLS : la defense est donc a deux etages.
+
+`resolve_prompt` est egalement refusee en anon (`permission denied for
+function`) ; son `EXECUTE` est reserve a `authenticated`. Les fonctions
+d'administration sont dans le meme cas, et `consume_rate_limit` /
+`purge_rate_limit_counters` sont reservees au `service_role`.
+
+## 3. Application en developpement
+
+`npm run dev` demarre en ~0,4 s. Recette de la surface publique automatisee
+dans `tests/e2e/smoke.sh` (16 controles, tous verts) :
+
+- les 4 pages publiques repondent 200, une route inconnue 404 ;
+- `/app`, `/app/favoris`, `/app/recents`, `/compte`, `/admin`,
+  `/admin/raccourcis` redirigent en 307 vers `/connexion?suite=...`,
+  l'intention de depart etant preservee ;
+- le webhook Chariow repond 401 `signature_invalide`, avec ou sans en-tete de
+  signature bidon ;
+- `/api/resolve-prompt` repond 405 en GET, 400 sur corps invalide, et 401
+  `Reconnectez-vous pour continuer.` sans session — avec
+  `Cache-Control: no-store, no-cache, must-revalidate`.
+
+Le script sort en code 1 des qu'un controle devie ; verifie par mutation.
+
+## 4. Chaine de verification complete
+
+| Etape                  | Resultat                                   |
+| ---------------------- | ------------------------------------------ |
+| `npm run format:check` | Conforme                                   |
+| `npm run lint`         | Aucun probleme                             |
+| `npm run typecheck`    | Aucune erreur                              |
+| `npm run test`         | 24 tests sur 4 fichiers, tous verts        |
+| `npm run build`        | 19 routes generees                         |
+| `./tests/db/run.sh`    | 14 migrations rejouees, 11 scenarios verts |
+| `./tests/e2e/smoke.sh` | 16 controles verts                         |
+
+Le rejeu integral sur Postgres 16 jetable confirme aussi l'idempotence de
+l'import du catalogue et la fidelite des 250 raccourcis.
+
+## 5. Points a traiter
+
+### 5.1 Derive de migration en production (bloquant pour Chariow)
+
+La migration `20260905070000_chariow_ingestion.sql` **n'est pas appliquee** sur
+le projet de production. Verifie directement :
+
+```
+table_pending_licenses_existe     | false
+fn_process_chariow_sale_existe    | false
+fn_process_chariow_license_existe | false
+```
+
+La production compte 13 migrations, le depot 14. En l'etat, le webhook Chariow
+echouerait en production : la route appelle `process_chariow_sale`, qui
+n'existe pas. A appliquer avant toute mise en service du webhook.
+
+### 5.2 `analytics_window` : `search_path` mutable
+
+Seule fonction du schema `public` sans `search_path` fige (avertissement
+`0011_function_search_path_mutable`). Son `EXECUTE` n'est accorde a personne,
+donc le risque est faible, mais la migration de durcissement l'a manquee.
+
+### 5.3 Protection des mots de passe compromis desactivee
+
+`auth_leaked_password_protection` est desactivee : Supabase ne verifie pas les
+mots de passe contre HaveIBeenPwned. Reglage a activer dans le tableau de bord.
+
+### 5.4 Les autres avertissements de l'auditeur sont assumes
+
+Les alertes `anon_security_definer_function_executable` et
+`authenticated_security_definer_function_executable` couvrent des fonctions
+documentees comme volontairement executables dans `docs/SECURITY.md`
+(`is_admin`, `has_role`, `resolve_prompt`, RPC membres...), chacune bornee a
+l'appelant. `rls_enabled_no_policy` sur `rate_limit_counters` est egalement un
+refus total volontaire. Aucune action requise.
+
+## 6. Secrets et depot GitHub
+
+Aucun secret n'est present dans le depot. Verifications menees sur
+**l'integralite de l'historique, toutes branches confondues** (210 blobs) :
+
+- aucun fichier `.env` n'a jamais ete suivi, hormis `.env.example`, dont tous
+  les champs sensibles sont vides ;
+- aucune occurrence de JWT (`eyJ...`), de cle `sb_secret_`, `sb_publishable_`
+  ou de jeton `sbp_` ;
+- les seules occurrences de `service_role` sont de la documentation et des
+  `GRANT` SQL, jamais du materiel de cle ;
+- les seules affectations de variables sensibles pointent vers `process.env`,
+  des schemas Zod, ou des valeurs de test explicites
+  (`test-pepper-...`, `ci-placeholder-anon-key-value`) ;
+- une recherche par entropie (chaines de 32 caracteres ou plus, casse mixte)
+  ne remonte que deux faux positifs : un nom de fichier et un espace de noms
+  OOXML.
+
+`.github/workflows/ci.yml` ne reference **aucun** `secrets.*` : le build tourne
+sur des valeurs factices, conformement a son commentaire.
+
+Le `.gitignore` couvre `.env` et `.env.*` avec la seule exception
+`!.env.example`. Verifie a l'execution : le `.env.local` cree pour cette
+recette est bien ignore.
+
+**A noter : le depot est public.** Aucun secret n'y figure, mais l'integralite
+du code, des migrations et du catalogue est lisible par tous. C'est un choix a
+confirmer explicitement.
+
+## 7. Limite de cette campagne
+
+Aucun parcours authentifie n'a ete joue en production : cela aurait exige de
+creer un compte et un droit d'acces, donc d'ecrire dans la base de production.
+La logique correspondante — les six controles de `resolve_prompt`, la cascade
+de visibilite, l'idempotence commerciale, l'ingestion Chariow dans les deux
+ordres d'arrivee — est couverte par les 11 scenarios de `tests/db/run.sh`,
+rejoues ici sur un cluster jetable.
