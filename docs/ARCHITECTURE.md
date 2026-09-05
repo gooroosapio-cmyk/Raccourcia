@@ -95,9 +95,41 @@ Le retour arriere consiste a repasser les categories en brouillon.
 | `/app/favoris`, `/app/recents` | Vues personnelles du meme catalogue                           |
 | `/compte`                      | Acces a vie, appareils, securite, deconnexion                 |
 | `/api/resolve-prompt`          | Seule sortie du prompt complet, `no-store`                    |
+| `/admin`                       | Tableau de bord : uniquement des alertes actionnables         |
+| `/admin/raccourcis`            | Liste filtrable, creation, fiche d'edition et publication     |
+| `/admin/categories`            | Hierarchie, activation et desactivation en cascade            |
+| `/admin/membres`               | Recherche d'un compte, deblocage d'acces pour le support      |
+| `/admin/parametres`            | Reglages `app_config`, sans redeploiement                     |
 
 `proxy.ts` rafraichit la session et protege `/app`, `/compte` et `/admin`.
 Next 16 a renomme la convention `middleware` en `proxy`.
+
+## Ecritures d'administration
+
+Le back-office n'ecrit jamais en direct sur les chemins sensibles : il appelle
+des fonctions `SECURITY DEFINER` qui revalident le role cote base. La garde de
+route `lib/admin/guard.ts` ameliore l'experience, elle ne constitue pas la
+securite.
+
+| Fonction                    | Garantie                                                        |
+| --------------------------- | --------------------------------------------------------------- |
+| `admin_new_prompt_version`  | Cree une version courante, retire l'ancienne sans l'effacer     |
+| `admin_publish_prompt`      | Refuse un contenu incomplet, avec un code d'erreur precis       |
+| `admin_set_prompt_status`   | Publie, repasse en brouillon ou archive ; jamais de suppression |
+| `admin_set_category_status` | Desactive une categorie et toute sa descendance                 |
+| `admin_get_prompt_versions` | Seule lecture admin des payloads                                |
+| `admin_set_access`          | Accorde ou revoque l'acces a vie, avec journalisation           |
+
+`prompt_versions` reste fermee a toute requete client, administrateur compris :
+la table n'a aucune policy de lecture et ses privileges SQL sont revoques. Le
+back-office lit les payloads par `admin_get_prompt_versions`, jamais autrement.
+
+Les codes d'erreur remontes par ces fonctions sont traduits en phrases utiles
+dans `lib/actions/admin.ts` : l'interface dit "Choisissez une categorie avant
+de publier", jamais `CATEGORIE_REQUISE`.
+
+Avant de publier, la fiche affiche un apercu fidele de la carte telle que le
+membre la verra, y compris l'absence de visuel pour un raccourci texte.
 
 ## Panne reseau et contenu absent
 
