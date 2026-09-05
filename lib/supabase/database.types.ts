@@ -125,6 +125,7 @@ export type Database = {
         Update: Partial<{
           name: string;
           slug: string;
+          mode: Database['public']['Enums']['app_mode'];
           parent_id: string | null;
           short_description: string | null;
           icon_key: string | null;
@@ -370,14 +371,41 @@ export type Database = {
           status?: Database['public']['Enums']['content_status'];
         };
         Update: Partial<{
+          command: string;
           name: string;
+          slug: string;
+          mode: Database['public']['Enums']['app_mode'];
           short_description: string;
+          intention: string | null;
+          use_cases: string[];
+          tags: string[];
           category_id: string | null;
+          expected_input: string | null;
+          minimal_context: string | null;
+          sufficient_context: string | null;
+          required_variables: string[];
+          optional_variables: string[];
+          default_values: string | null;
+          expected_output: string | null;
+          output_format: string | null;
+          quality_criteria: string | null;
+          preserve_rules: string | null;
+          avoid_rules: string | null;
+          limitations: string | null;
+          fallback_if_incomplete: string | null;
+          input_type: Database['public']['Enums']['input_type'];
+          output_type: Database['public']['Enums']['output_type'];
+          risk_level: Database['public']['Enums']['risk_level'];
+          priority: string;
           status: Database['public']['Enums']['content_status'];
           is_free: boolean;
           is_featured: boolean;
           is_new: boolean;
+          show_image_card: boolean;
+          thumbnail_spec: string | null;
+          admin_notes: string | null;
           sort_order: number;
+          published_at: string | null;
           updated_by: string | null;
         }>;
         Relationships: [];
@@ -503,6 +531,49 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      admin_get_prompt_versions: {
+        Args: { p_prompt_id: string };
+        Returns: {
+          variant_id: string;
+          provider_key: string;
+          provider_name: string;
+          compatibility: Database['public']['Enums']['compatibility_level'];
+          variant_status: Database['public']['Enums']['content_status'];
+          version_id: string | null;
+          version_label: string | null;
+          payload: string | null;
+          qcm: Json | null;
+          qcm_trigger: string | null;
+        }[];
+      };
+      admin_new_prompt_version: {
+        Args: {
+          p_variant_id: string;
+          p_payload: string;
+          p_qcm?: Json;
+          p_qcm_trigger?: string;
+        };
+        Returns: string;
+      };
+      admin_publish_prompt: { Args: { p_prompt_id: string }; Returns: undefined };
+      admin_set_access: {
+        Args: { p_user_id: string; p_active: boolean; p_reason?: string };
+        Returns: undefined;
+      };
+      admin_set_category_status: {
+        Args: {
+          p_category_id: string;
+          p_status: Database['public']['Enums']['content_status'];
+        };
+        Returns: undefined;
+      };
+      admin_set_prompt_status: {
+        Args: {
+          p_prompt_id: string;
+          p_status: Database['public']['Enums']['content_status'];
+        };
+        Returns: undefined;
+      };
       consume_rate_limit: {
         Args: { p_bucket: string; p_limit: number; p_subject: string; p_window_seconds: number };
         Returns: boolean;
