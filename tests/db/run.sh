@@ -37,6 +37,14 @@ fi
 
 run() { if [[ -n "$RUNAS" ]]; then $RUNAS "$@"; else "$@"; fi }
 
+# Les fichiers SQL sont fournis a psql par redirection plutot que par -f :
+# le shell les ouvre avec les droits de l'appelant (root), la ou -f les ferait
+# lire par le compte postgres. Sur un runner GitHub, le depot est cheque sous
+# /home/runner, que ce compte ne peut pas traverser, et chaque -f echouait sur
+# "Permission denied". La redirection ne change rien au comportement : avec
+# ON_ERROR_STOP, psql sort toujours en non-zero et interrompt le script des la
+# premiere erreur.
+
 echo "==> Initialisation du cluster de test"
 run "$PG_BIN/initdb" -D "$DATA_DIR" -U postgres --auth=trust --no-sync >/dev/null
 run "$PG_BIN/pg_ctl" -D "$DATA_DIR" -o "-k $SOCKET_DIR -h '' -c fsync=off" -w start >/dev/null
@@ -47,24 +55,24 @@ PSQL=("$PG_BIN/psql" -v ON_ERROR_STOP=1 -q --no-psqlrc)
 run "$PG_BIN/createdb" -h "$SOCKET_DIR" -U postgres "$DB_NAME"
 
 echo "==> Environnement Supabase simule"
-run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -f "$ROOT/tests/db/supabase_stub.sql" >/dev/null
+run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$ROOT/tests/db/supabase_stub.sql"
 
 echo "==> Application des migrations"
 for file in "$ROOT"/supabase/migrations/*.sql; do
   printf '    %s\n' "$(basename "$file")"
-  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -f "$file" >/dev/null
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
 done
 
 echo "==> Jeu de donnees de test"
-run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -f "$ROOT/tests/db/fixtures.sql" >/dev/null
+run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$ROOT/tests/db/fixtures.sql"
 
 if [[ -f "$ROOT/supabase/seed/catalogue.sql" ]]; then
   # Applique deux fois : le seed doit etre idempotent (aucun doublon).
   echo "==> Import du catalogue (x2, verification d'idempotence)"
   run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" \
-    -f "$ROOT/supabase/seed/catalogue.sql" >/dev/null
+    >/dev/null < "$ROOT/supabase/seed/catalogue.sql"
   run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" \
-    -f "$ROOT/supabase/seed/catalogue.sql" >/dev/null
+    >/dev/null < "$ROOT/supabase/seed/catalogue.sql"
 fi
 
 # Le seed factorise les valeurs communes : on verifie que la base contient
@@ -115,7 +123,7 @@ echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do
   name="$(basename "$file")"
-  if run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -f "$file" >/tmp/pgtest.out 2>&1; then
+  if run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/tmp/pgtest.out 2>&1 < "$file"; then
     printf '    \033[32mOK\033[0m   %s\n' "$name"
   else
     printf '    \033[31mFAIL\033[0m %s\n' "$name"
