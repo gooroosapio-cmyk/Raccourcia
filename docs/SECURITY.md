@@ -22,6 +22,24 @@
 SQL sont en plus revoques pour ces roles. Le payload ne sort donc que par la
 fonction `resolve_prompt`, apres ses six controles.
 
+Le flou applique aux cartes verrouillees n'est **pas** une mesure de securite,
+et ne doit jamais etre presente comme telle. Tout ce qu'une carte affiche est
+deja de la metadonnee publique — les memes champs sont servis sans
+authentification sur les pages `/r/[slug]`. Un flou CSS se retire en trois
+clics dans les outils de developpement : le considerer comme une protection
+donnerait une fausse assurance, ce qui est plus dangereux que de ne rien
+flouter du tout.
+
+La protection reelle tient en trois points, et elle est ailleurs : `payload`
+et `qcm` ne figurent jamais dans les colonnes du catalogue, les privileges SQL
+et la RLS refusent `prompt_versions` a `anon` comme a `authenticated`, et le
+contenu ne sort que par `resolve_prompt` apres ses six controles.
+
+Le flou ne porte donc que sur le visuel, jamais sur le titre ni la
+description : son role est commercial. Un raccourci qu'on ne comprend pas ne
+donne pas envie de s'abonner, et masquer un texte deja public ailleurs serait
+incoherent autant qu'inutile.
+
 Regles d'implementation cote frontend :
 
 - ne jamais precharger un payload pendant le scroll ou l'ouverture d'une carte ;

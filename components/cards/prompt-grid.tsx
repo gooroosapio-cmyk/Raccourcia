@@ -43,6 +43,7 @@ export function PromptGrid({
             prompt={prompt}
             provider={provider}
             locked={locked && !prompt.isFree}
+            free={locked && prompt.isFree}
             onOpen={open}
           />
         ))}

@@ -23,11 +23,14 @@ export function PromptCard({
   prompt,
   provider,
   locked,
+  free = false,
   onOpen,
 }: {
   prompt: PromptCardData;
   provider: string;
   locked: boolean;
+  /** Raccourci offert, vu par quelqu'un qui n'a pas encore l'acces a vie. */
+  free?: boolean;
   onOpen: (prompt: PromptCardData) => void;
 }) {
   const router = useRouter();
@@ -44,25 +47,41 @@ export function PromptCard({
         className="flex flex-1 flex-col text-left"
       >
         {prompt.showImageCard ? (
-          <div className="relative aspect-[4/3] w-full bg-[color:var(--color-canvas)]">
-            {prompt.thumbnailUrl ? (
-              <Image
-                src={prompt.thumbnailUrl}
-                alt={prompt.thumbnailAlt ?? ''}
-                fill
-                sizes="(max-width: 430px) 50vw, 200px"
-                loading="lazy"
-                className="object-cover"
-              />
-            ) : (
-              // Repli typographique tant que l'admin n'a pas mis de visuel :
-              // la carte reste lisible et n'affiche pas de cadre vide.
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-2">
-                <span className="truncate font-mono text-sm font-semibold text-[color:var(--color-brand)]">
-                  {prompt.command}
-                </span>
-              </div>
-            )}
+          <div className="relative aspect-[4/3] w-full overflow-hidden bg-[color:var(--color-canvas)]">
+            {/*
+              Verrouille : le visuel est floute. C'est un signal commercial, pas
+              une protection — le payload premium n'atteint jamais le client, il
+              ne sort que par resolve_prompt apres ses six controles. Le titre et
+              la description restent nets : un raccourci qu'on ne comprend pas
+              ne donne pas envie de s'abonner.
+              L'agrandissement evite les bords transparents que laisse le flou.
+            */}
+            <div
+              className={
+                locked
+                  ? 'absolute inset-0 scale-110 blur-[7px] transition-[filter] duration-[var(--duration-fast)]'
+                  : 'absolute inset-0'
+              }
+            >
+              {prompt.thumbnailUrl ? (
+                <Image
+                  src={prompt.thumbnailUrl}
+                  alt={prompt.thumbnailAlt ?? ''}
+                  fill
+                  sizes="(max-width: 430px) 50vw, 200px"
+                  loading="lazy"
+                  className="object-cover"
+                />
+              ) : (
+                // Repli typographique tant que l'admin n'a pas mis de visuel :
+                // la carte reste lisible et n'affiche pas de cadre vide.
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-2">
+                  <span className="truncate font-mono text-sm font-semibold text-[color:var(--color-brand)]">
+                    {prompt.command}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         ) : null}
 
@@ -71,8 +90,10 @@ export function PromptCard({
             <span className="truncate font-mono text-[15px] font-semibold text-[color:var(--color-night)]">
               {prompt.command}
             </span>
-            {prompt.isNew ? <Badge tone="nouveau">Nouveau</Badge> : null}
-            {!prompt.isNew && locked ? <Badge tone="premium">Membre</Badge> : null}
+            {/* Un seul badge : "Gratuit" prime, c'est le seul qui appelle une action. */}
+            {free ? <Badge tone="gratuit">Gratuit</Badge> : null}
+            {!free && prompt.isNew ? <Badge tone="nouveau">Nouveau</Badge> : null}
+            {!free && !prompt.isNew && locked ? <Badge tone="premium">Membre</Badge> : null}
           </div>
 
           <p className="line-clamp-2 text-[13px] leading-snug text-[color:var(--color-muted)]">
