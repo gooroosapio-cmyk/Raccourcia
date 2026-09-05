@@ -29,6 +29,19 @@ export function FormError({ message }: { message?: string }) {
   );
 }
 
+/** Message positif sous le formulaire : issue favorable qui n'est pas une erreur. */
+export function FormNotice({ message }: { message?: string }) {
+  if (!message) return null;
+  return (
+    <p
+      role="status"
+      className="rounded-[color:var(--radius-control)] bg-[#F0FDF4] px-3 py-2 text-[13px] leading-relaxed text-[color:var(--color-success)]"
+    >
+      {message}
+    </p>
+  );
+}
+
 /** Champ de formulaire : label visible, erreur sous le champ (Spec UX/UI, 18). */
 export function Field({
   label,
