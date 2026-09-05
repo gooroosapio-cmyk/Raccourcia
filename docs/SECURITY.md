@@ -10,6 +10,7 @@
 | `profiles`                  | Aucun    | Son profil                | Support limite     |
 | `purchases`, `entitlements` | Aucun    | Les siens                 | Gestion support    |
 | `webhook_events`            | Aucun    | Aucun                     | Lecture technique  |
+| `pending_licenses`          | Aucun    | Aucun                     | Lecture technique  |
 | `admin_audit_logs`          | Aucun    | Aucun                     | Lecture            |
 | `security_events`           | Aucun    | Aucun                     | Super admin        |
 
@@ -45,6 +46,46 @@ HMAC-SHA256 (pepper en variable d'environnement) est conservee dans
 l'idempotence est garantie par la base, pas par le code. `purchases` est unique
 par `external_order_id` et `entitlements` unique par `(user_id, product_id)`.
 Le meme evenement rejoue 20 fois produit un achat et un droit, pas davantage.
+
+## Webhook Chariow : vente et licence sans ordre garanti
+
+Chariow envoie la vente (`successful.sale`) et la licence (`license.issued`)
+comme deux notifications independantes. Mesure sur trois achats reels : un
+ecart de -3 ms a +1,3 s, et la licence est arrivee **avant** la vente une
+fois sur trois. Un traitement qui suppose l'ordre inverse rejette la bonne
+licence juste apres le paiement.
+
+`process_chariow_sale` et `process_chariow_license` (migration
+`20260905070000_chariow_ingestion.sql`) sont donc commutatives dans les deux
+sens, chacune serialisee par email via `pg_advisory_xact_lock` pour resister
+a une arrivee reellement simultanee :
+
+- une licence sans vente connue est scellee dans `pending_licenses`, orpheline ;
+- une vente completee adopte la licence orpheline la plus recente du meme email ;
+- une licence qui arrive apres une vente completee sans licence la rejoint
+  directement.
+
+`pending_licenses` conserve la ligne meme apres adoption (audit, support), et
+ne stocke jamais la licence en clair : seule son empreinte HMAC, deja calculee
+par `fingerprintLicense`, y transite.
+
+Avant le hachage, `fingerprintLicense` normalise les tirets et la casse ainsi
+que les confusions **O/0** et **I/1** : une licence retapee a la main doit
+matcher, cote acheteur comme cote Chariow.
+
+Le payload journalise dans `webhook_events` est expurgé de deux champs avant
+ecriture (`scrubChariowPayload`) : `license.key` (la licence en clair) et
+`checkout.url` (qui porte l'email et le telephone de l'acheteur dans sa
+chaine de requete).
+
+**A verifier avant la mise en production :** le nom exact de l'en-tete de
+signature et l'algorithme utilises par Chariow n'ont pas ete confirmes
+(`chariow.dev` et `help.chariow.com` sont hors de portee reseau depuis
+l'environnement de developpement). `lib/webhooks/chariow.ts` implemente
+HMAC-SHA256 du corps brut sur l'en-tete `x-chariow-signature`, l'hypothese la
+plus repandue pour ce type d'integration ; a confirmer dans le tableau de
+bord Chariow (Developpeur > Pulses > ce Pulse) ou via un envoi de test avant
+de considerer le webhook operationnel.
 
 ## Anti-partage
 
@@ -95,6 +136,8 @@ execute les scenarios obligatoires :
 | `04_commerce_idempotence`              | 20 webhooks = 1 droit ; remboursement ; restauration  |
 | `05_role_escalation`                   | Un admin ne s'attribue pas super_admin                |
 | `06_catalogue_import`                  | 151 raccourcis, tous copiables, Analyse masque        |
+| `08_admin_operations`                  | Versionnage, refus de publication incomplete, cascade |
+| `09_chariow_ingestion`                 | Vente/licence dans les deux ordres, rejeu, privileges |
 
 Ces tests ont ete valides par mutation : casser volontairement la RLS de
 `prompt_versions`, la cascade de visibilite ou le controle d'entitlement fait

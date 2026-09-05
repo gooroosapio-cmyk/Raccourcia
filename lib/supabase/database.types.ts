@@ -193,6 +193,34 @@ export type Database = {
         Update: Partial<{ prompt_id: string; user_id: string }>;
         Relationships: [];
       };
+      pending_licenses: {
+        Row: {
+          adopted_at: string | null;
+          adopted_purchase_id: string | null;
+          chariow_customer_id: string | null;
+          chariow_license_id: string;
+          chariow_product_id: string | null;
+          created_at: string;
+          customer_email: string;
+          id: string;
+          issued_at: string;
+          license_fingerprint: string;
+          source_event_id: string | null;
+        };
+        Insert: {
+          chariow_license_id: string;
+          customer_email: string;
+          license_fingerprint: string;
+          issued_at: string;
+          chariow_customer_id?: string | null;
+          chariow_product_id?: string | null;
+          adopted_purchase_id?: string | null;
+          adopted_at?: string | null;
+          source_event_id?: string | null;
+        };
+        Update: Partial<{ adopted_purchase_id: string | null; adopted_at: string | null }>;
+        Relationships: [];
+      };
       products: {
         Row: {
           access_type: Database['public']['Enums']['access_type'];
@@ -583,6 +611,14 @@ export type Database = {
       has_role: { Args: { p_role: Database['public']['Enums']['app_role'] }; Returns: boolean };
       is_admin: { Args: Record<string, never>; Returns: boolean };
       is_super_admin: { Args: Record<string, never>; Returns: boolean };
+      process_chariow_license: {
+        Args: { p_payload: Json; p_source_event_id: string; p_license_fingerprint: string };
+        Returns: undefined;
+      };
+      process_chariow_sale: {
+        Args: { p_payload: Json; p_source_event_id: string };
+        Returns: string;
+      };
       purge_rate_limit_counters: { Args: Record<string, never>; Returns: undefined };
       register_app_session: { Args: { p_device_label?: string }; Returns: number };
       resolve_prompt: {

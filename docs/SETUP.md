@@ -82,7 +82,29 @@ npm run verify        # format, lint, types, tests unitaires
 (`apt-get install postgresql-16 postgresql-contrib-16`). Il cree un cluster
 jetable, ne touche a aucune base distante, et le supprime en sortant.
 
-## 7. Regenerer les types TypeScript
+## 7. Brancher le Pulse Chariow
+
+1. Deployer d'abord sur Vercel : le Pulse doit pointer vers une URL vivante
+   (`https://votre-domaine/api/webhooks/chariow`), sinon Chariow ne recevra
+   qu'un 404.
+2. Definir `CHARIOW_WEBHOOK_SECRET` (secret du Pulse) et `CHARIOW_API_KEY`
+   sur Vercel, jamais en `NEXT_PUBLIC_*`.
+3. Cote Chariow (Developpeur > Pulses), creer le Pulse sur cette URL pour les
+   evenements `successful.sale` et `license.issued`.
+4. Rattacher chaque produit vendu a son produit RaccourcIA : renseigner
+   `products.chariow_product_id` avec l'identifiant Chariow (`product.id` du
+   payload). Sans ce rattachement, la vente est quand meme enregistree, mais
+   `/admin` signale une "vente sans produit reconnu".
+5. Envoyer un evenement de test depuis Chariow et verifier dans `/admin` que
+   la ligne apparait (lecture technique de `webhook_events` reservee aux
+   admins).
+
+**A confirmer avant le premier envoi reel** : le nom exact de l'en-tete de
+signature et l'algorithme utilises par Chariow n'ont pas ete verifies contre
+leur documentation (`docs/SECURITY.md` en explique la raison et l'hypothese
+retenue par defaut dans `lib/webhooks/chariow.ts`).
+
+## 8. Regenerer les types TypeScript
 
 Apres toute migration, une fois l'acces Supabase disponible :
 

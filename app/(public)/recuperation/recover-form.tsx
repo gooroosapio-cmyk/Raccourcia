@@ -10,7 +10,7 @@ export function RecoverForm() {
   return (
     <form action={action} className="mt-6 space-y-4">
       <Field label="Email de l achat" name="email" type="email" autoComplete="email" />
-      <Field label="Licence" name="license" autoComplete="off" placeholder="XXXX-XXXX-XXXX" />
+      <Field label="Licence" name="license" autoComplete="off" placeholder="XXXX-XXXX" />
       <Field
         label="Nouveau mot de passe"
         name="password"

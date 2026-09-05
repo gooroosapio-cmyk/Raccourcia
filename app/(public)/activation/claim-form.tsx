@@ -14,7 +14,7 @@ export function ClaimForm() {
         label="Licence"
         name="license"
         autoComplete="off"
-        placeholder="XXXX-XXXX-XXXX"
+        placeholder="XXXX-XXXX"
         hint="Elle figure sur votre confirmation d achat."
       />
       <Field

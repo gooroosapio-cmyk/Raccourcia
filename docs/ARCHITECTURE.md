@@ -95,6 +95,7 @@ Le retour arriere consiste a repasser les categories en brouillon.
 | `/app/favoris`, `/app/recents` | Vues personnelles du meme catalogue                           |
 | `/compte`                      | Acces a vie, appareils, securite, deconnexion                 |
 | `/api/resolve-prompt`          | Seule sortie du prompt complet, `no-store`                    |
+| `/api/webhooks/chariow`        | Ingestion vente + licence, voir `docs/SECURITY.md`            |
 | `/admin`                       | Tableau de bord : uniquement des alertes actionnables         |
 | `/admin/raccourcis`            | Liste filtrable, creation, fiche d'edition et publication     |
 | `/admin/categories`            | Hierarchie, activation et desactivation en cascade            |

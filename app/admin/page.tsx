@@ -62,6 +62,20 @@ export default async function AdminDashboardPage() {
         </section>
       ) : null}
 
+      {dashboard.unmatchedPurchases > 0 ? (
+        <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-warning)] bg-[#FFF8EE] p-4">
+          <h2 className="text-[15px] font-medium text-[color:var(--color-night)]">
+            {dashboard.unmatchedPurchases} vente
+            {dashboard.unmatchedPurchases > 1 ? 's' : ''} sans produit reconnu
+          </h2>
+          <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+            Chariow a envoye un identifiant de produit qui ne correspond a aucun produit du
+            catalogue. La vente est bien enregistree ; rattachez l identifiant Chariow au bon
+            produit pour que ce type de vente soit reconnu a l avenir.
+          </p>
+        </section>
+      ) : null}
+
       {dashboard.incomplete.length > 0 ? (
         <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-warning)] bg-[#FFF8EE] p-4">
           <h2 className="text-[15px] font-medium text-[color:var(--color-night)]">

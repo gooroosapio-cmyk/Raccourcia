@@ -32,6 +32,7 @@ export type AdminDashboard = {
   byMode: Record<Enums<'app_mode'>, number>;
   hiddenCategories: number;
   incomplete: AdminPromptRow[];
+  unmatchedPurchases: number;
   recentActivity: {
     id: string;
     action: string;
@@ -67,15 +68,23 @@ const ROW_COLUMNS = 'id, command, name, mode, status, is_free, updated_at, categ
 export async function getAdminDashboard(): Promise<AdminDashboard> {
   const supabase = await createClient();
 
-  const [{ data: prompts }, { data: categories }, { data: logs }] = await Promise.all([
-    supabase.from('prompts').select('id, mode, status'),
-    supabase.from('categories').select('id, is_visible'),
-    supabase
-      .from('admin_audit_logs')
-      .select('id, action, entity_type, created_at')
-      .order('created_at', { ascending: false })
-      .limit(8),
-  ]);
+  const [{ data: prompts }, { data: categories }, { data: logs }, { count: unmatchedPurchases }] =
+    await Promise.all([
+      supabase.from('prompts').select('id, mode, status'),
+      supabase.from('categories').select('id, is_visible'),
+      supabase
+        .from('admin_audit_logs')
+        .select('id, action, entity_type, created_at')
+        .order('created_at', { ascending: false })
+        .limit(8),
+      // Vente encaissee mais dont le produit Chariow n'est rattache a aucun
+      // produit du catalogue : signale un chariow_product_id manquant.
+      supabase
+        .from('purchases')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'completed')
+        .is('product_id', null),
+    ]);
 
   const rows = prompts ?? [];
   const byMode = { image: 0, texte: 0, analyse: 0 } as Record<Enums<'app_mode'>, number>;
@@ -98,6 +107,7 @@ export async function getAdminDashboard(): Promise<AdminDashboard> {
     byMode,
     hiddenCategories: (categories ?? []).filter((row) => !row.is_visible).length,
     incomplete: ((incomplete ?? []) as unknown as Parameters<typeof toRow>[0][]).map(toRow),
+    unmatchedPurchases: unmatchedPurchases ?? 0,
     recentActivity: (logs ?? []).map((log) => ({
       id: log.id,
       action: log.action,
