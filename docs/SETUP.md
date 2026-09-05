@@ -118,10 +118,17 @@ jetable, ne touche a aucune base distante, et le supprime en sortant.
    la ligne apparait (lecture technique de `webhook_events` reservee aux
    admins).
 
-**A confirmer avant le premier envoi reel** : le nom exact de l'en-tete de
-signature et l'algorithme utilises par Chariow n'ont pas ete verifies contre
-leur documentation (`docs/SECURITY.md` en explique la raison et l'hypothese
-retenue par defaut dans `lib/webhooks/chariow.ts`).
+**Signature** : conforme a la specification Chariow (guide "Pulse Security"),
+detaillee dans `docs/SECURITY.md`. Retenir que la cle est le secret complet,
+prefixe `whsec_` compris, et que la valeur comparee porte le prefixe
+`sha256=`.
+
+**Le piege a connaitre** : si `products.chariow_product_id` n'est pas
+renseigne (etape 4 ci-dessus), `process_chariow_sale` ne rapproche aucun
+produit et l'achat est enregistre avec `product_id` a NULL. A l'activation,
+`claimAccess` ne cree alors aucun droit : le compte est bien cree, l'achat
+marque reclame, et le membre se retrouve sans acces. Aucune erreur nulle
+part. Renseigner cet identifiant avant la premiere vente reelle.
 
 ## 8. Regenerer les types TypeScript
 

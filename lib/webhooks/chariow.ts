@@ -6,15 +6,19 @@ import { serverEnv } from '@/lib/env';
 /**
  * Verification de signature du Pulse Chariow.
  *
- * A CONFIRMER AVANT MISE EN PRODUCTION : le nom exact de l'en-tete et
- * l'algorithme de signature n'ont pas ete verifies contre la documentation
- * Chariow (chariow.dev et help.chariow.com sont hors de portee reseau
- * depuis cet environnement de developpement). Cette implementation part de
- * la convention la plus repandue pour ce type d'integration (HMAC-SHA256
- * du corps brut, en hexadecimal, cle = secret du Pulse) : verifier ce
- * detail dans le tableau de bord Chariow (Developpeur > Pulses > ce Pulse)
- * ou via l'envoi d'un evenement de test, et ajuster SIGNATURE_HEADER et le
- * calcul ci-dessous si necessaire.
+ * Conforme a la specification officielle (chariow.dev, guide "Pulse
+ * Security") : l'en-tete `x-chariow-signature` porte
+ * `"sha256=" + hex(hmac_sha256(corps_brut, secret_du_pulse))`.
+ *
+ * Trois details que la specification impose :
+ *  - le prefixe litteral `sha256=` fait partie de la valeur comparee ;
+ *  - la cle est le secret complet, prefixe `whsec_` inclus : ni decode en
+ *    base64, ni ampute de son prefixe ;
+ *  - le corps est signe tel qu'il a ete recu, avant tout JSON.parse.
+ *
+ * Chariow n'envoie pas d'horodatage : la protection contre le rejeu est
+ * assuree par l'idempotence de `webhook_events`, pas par une fenetre de
+ * validite.
  */
 export const CHARIOW_SIGNATURE_HEADER = 'x-chariow-signature';
 
@@ -22,7 +26,9 @@ export function verifyChariowSignature(rawBody: string, headerValue: string | nu
   const secret = serverEnv().CHARIOW_WEBHOOK_SECRET;
   if (!secret || !headerValue) return false;
 
-  const expected = Buffer.from(createHmac('sha256', secret).update(rawBody).digest('hex'), 'utf8');
+  // Le prefixe `sha256=` est signifiant : il fait partie de la valeur envoyee.
+  const digest = createHmac('sha256', secret).update(rawBody).digest('hex');
+  const expected = Buffer.from(`sha256=${digest}`, 'utf8');
   const provided = Buffer.from(headerValue.trim(), 'utf8');
   if (expected.length !== provided.length) return false;
   return timingSafeEqual(expected, provided);

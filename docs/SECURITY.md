@@ -79,14 +79,24 @@ ecriture (`scrubChariowPayload`) : `license.key` (la licence en clair) et
 `checkout.url` (qui porte l'email et le telephone de l'acheteur dans sa
 chaine de requete).
 
-**A verifier avant la mise en production :** le nom exact de l'en-tete de
-signature et l'algorithme utilises par Chariow n'ont pas ete confirmes
-(`chariow.dev` et `help.chariow.com` sont hors de portee reseau depuis
-l'environnement de developpement). `lib/webhooks/chariow.ts` implemente
-HMAC-SHA256 du corps brut sur l'en-tete `x-chariow-signature`, l'hypothese la
-plus repandue pour ce type d'integration ; a confirmer dans le tableau de
-bord Chariow (Developpeur > Pulses > ce Pulse) ou via un envoi de test avant
-de considerer le webhook operationnel.
+**Signature du Pulse (specification Chariow confirmee).** L'en-tete est
+`x-chariow-signature` et sa valeur vaut
+`"sha256=" + hex(hmac_sha256(corps_brut, secret_du_pulse))`. Trois points que
+la specification impose et qu'il est facile de manquer :
+
+- le prefixe litteral `sha256=` fait partie de la valeur comparee — le hex nu
+  ne correspond a rien ;
+- la cle est le secret complet, prefixe `whsec_` inclus : ni ampute de son
+  prefixe, ni decode en base64 (contrairement a la convention Svix, dont le
+  prefixe `whsec_` pourrait faire croire qu'elle s'applique) ;
+- le corps est signe tel qu'il est recu, avant tout `JSON.parse`.
+
+Chariow n'envoie aucun horodatage : il n'y a donc pas de fenetre de validite
+a verifier. La protection contre le rejeu est l'idempotence de
+`webhook_events`. Chariow fournit par ailleurs `x-pulse-delivery-id` comme
+cle d'idempotence de livraison ; `deriveExternalEventId` s'appuie plutot sur
+l'identifiant metier (`sale.id`, `license.id`), ce qui deduplique aussi les
+rejeux manuels, auxquels Chariow attribue une nouvelle livraison.
 
 ## Anti-partage
 
