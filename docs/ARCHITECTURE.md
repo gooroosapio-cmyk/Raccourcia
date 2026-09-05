@@ -102,6 +102,7 @@ supprimee, et l'interface le dit.
 | `/api/webhooks/chariow`        | Ingestion vente + licence, voir `docs/SECURITY.md`            |
 | `/admin`                       | Tableau de bord : uniquement des alertes actionnables         |
 | `/admin/raccourcis`            | Liste filtrable, creation, fiche d'edition et publication     |
+| `/admin/analytics`             | Ce qui est copie, et ce qui dort                              |
 | `/admin/categories`            | Hierarchie, activation et desactivation en cascade            |
 | `/admin/membres`               | Recherche d'un compte, deblocage d'acces pour le support      |
 | `/admin/parametres`            | Reglages `app_config`, sans redeploiement                     |
@@ -124,6 +125,7 @@ securite.
 | `admin_set_category_status` | Desactive une categorie et toute sa descendance                 |
 | `admin_get_prompt_versions` | Seule lecture admin des payloads                                |
 | `admin_set_access`          | Accorde ou revoque l'acces a vie, avec journalisation           |
+| `admin_analytics_*`         | Agregats de copie, jamais le detail par personne                |
 
 `prompt_versions` reste fermee a toute requete client, administrateur compris :
 la table n'a aucune policy de lecture et ses privileges SQL sont revoques. Le
@@ -135,6 +137,32 @@ de publier", jamais `CATEGORIE_REQUISE`.
 
 Avant de publier, la fiche affiche un apercu fidele de la carte telle que le
 membre la verra, y compris l'absence de visuel pour un raccourci texte.
+
+## Analytics
+
+Les agregations vivent en base, dans cinq fonctions `admin_analytics_*`
+(migration `20260905080000_analytics.sql`). L'interface ne rapatrie jamais
+`copy_events` ligne a ligne : compter des copies en JavaScript imposerait de
+transferer toute la table et exposerait qui a copie quoi.
+
+Ce qui est mesure sert une decision :
+
+| Mesure                    | Decision qu'elle appelle                              |
+| ------------------------- | ----------------------------------------------------- |
+| Copies par jour           | Voir l'effet d'une publication ou d'une communication |
+| Les plus copies           | Savoir ce qui merite un visuel, une mise en avant     |
+| Publies sans aucune copie | Reecrire, mieux classer, ou archiver                  |
+| Par IA, par ecran         | Ou investir : quelle IA, carte ou fiche               |
+| Achats non actives        | Le seul chiffre qui coute de l'argent : relancer      |
+
+Aucune de ces fonctions ne descend au niveau d'une personne. La fenetre
+d'observation est bornee entre 1 et 365 jours cote base : une valeur aberrante
+ne declenche pas un balayage complet.
+
+Les graphiques sont mono-serie, donc mono-couleur : la longueur porte la
+valeur et la teinte ne code rien de plus. Les chiffres sont ecrits a cote des
+barres plutot que dans une infobulle, parce qu'il n'y a pas de survol sur
+mobile. Les jours sans copie sont dessines a zero, jamais omis.
 
 ## Panne reseau et contenu absent
 

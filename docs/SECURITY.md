@@ -11,6 +11,7 @@
 | `purchases`, `entitlements` | Aucun    | Les siens                 | Gestion support    |
 | `webhook_events`            | Aucun    | Aucun                     | Lecture technique  |
 | `pending_licenses`          | Aucun    | Aucun                     | Lecture technique  |
+| `copy_events` (agregats)    | Aucun    | Ses copies                | Totaux seulement   |
 | `admin_audit_logs`          | Aucun    | Aucun                     | Lecture            |
 | `security_events`           | Aucun    | Aucun                     | Super admin        |
 
@@ -138,6 +139,7 @@ execute les scenarios obligatoires :
 | `06_catalogue_import`                  | 151 raccourcis, tous copiables, Analyse masque        |
 | `08_admin_operations`                  | Versionnage, refus de publication incomplete, cascade |
 | `09_chariow_ingestion`                 | Vente/licence dans les deux ordres, rejeu, privileges |
+| `10_analytics`                         | Agregats justes, fenetre bornee, refus hors admin     |
 
 Ces tests ont ete valides par mutation : casser volontairement la RLS de
 `prompt_versions`, la cascade de visibilite ou le controle d'entitlement fait

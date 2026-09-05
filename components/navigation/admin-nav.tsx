@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 const SECTIONS = [
   { href: '/admin', label: 'Tableau de bord' },
   { href: '/admin/raccourcis', label: 'Raccourcis' },
+  { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/categories', label: 'Categories' },
   { href: '/admin/membres', label: 'Membres' },
   { href: '/admin/parametres', label: 'Parametres' },

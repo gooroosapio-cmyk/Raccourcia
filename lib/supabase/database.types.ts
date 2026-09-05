@@ -559,6 +559,48 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      admin_analytics_breakdown: {
+        Args: { p_days?: number };
+        Returns: { dimension: string; key: string; label: string | null; copies: number }[];
+      };
+      admin_analytics_daily: {
+        Args: { p_days?: number };
+        Returns: { day: string; copies: number }[];
+      };
+      admin_analytics_overview: {
+        Args: { p_days?: number };
+        Returns: {
+          copies_period: number;
+          copies_total: number;
+          active_members: number;
+          members_with_access: number;
+          purchases_completed: number;
+          purchases_unclaimed: number;
+          prompts_published: number;
+          prompts_copied: number;
+        }[];
+      };
+      admin_analytics_top_prompts: {
+        Args: { p_days?: number; p_limit?: number };
+        Returns: {
+          prompt_id: string;
+          command: string;
+          name: string;
+          mode: Database['public']['Enums']['app_mode'];
+          copies: number;
+          members: number;
+        }[];
+      };
+      admin_analytics_unused_prompts: {
+        Args: { p_days?: number; p_limit?: number };
+        Returns: {
+          prompt_id: string;
+          command: string;
+          name: string;
+          mode: Database['public']['Enums']['app_mode'];
+          published_at: string | null;
+        }[];
+      };
       admin_get_prompt_versions: {
         Args: { p_prompt_id: string };
         Returns: {
