@@ -26,18 +26,37 @@ npx supabase db push          # applique supabase/migrations/ dans l'ordre
 ## 3. Importer le catalogue
 
 ```bash
-npm run catalogue:import      # regenere supabase/seed/catalogue.sql
+python3 scripts/extract-catalogue.py   # tableur v2 -> data/catalogue/*.json
+npm run catalogue:import               # regenere supabase/seed/catalogue.sql
 npx supabase db execute --file supabase/seed/catalogue.sql
 ```
 
-Resultat attendu : 63 categories, 151 raccourcis, 453 variantes IA,
-453 versions courantes.
+Resultat attendu : 30 categories (10 + 20 sous-categories), 250 raccourcis,
+750 variantes IA, 750 versions courantes.
 Le fichier est idempotent, il peut etre rejoue sans creer de doublon.
 
-> Le seed factorise ce qui est commun a un mode (contexte attendu, format de
-> sortie, garde-fous, QCM) et reconstitue le payload depuis son modele
-> canonique. Le texte stocke reste rigoureusement celui du catalogue
-> editorial : `tests/db/run.sh` le verifie octet par octet.
+**Sans la CLI Supabase** (pas de mot de passe base a portee de main, ou
+application depuis un navigateur) :
+
+```bash
+npm run db:bundle             # produit .tmp/sql/ pret a coller
+```
+
+Coller ensuite dans Supabase > SQL Editor, **dans l'ordre des numeros** :
+`01-schema.sql` d'abord, puis les onze `02-catalogue-XX.sql`. Chaque fichier
+tient dans l'editeur et s'applique dans sa propre transaction ; l'ordre
+compte, car les raccourcis ont besoin de leurs categories et les versions de
+leurs variantes.
+
+> L'extraction s'arrete si la feuille `Audit_Controles` du tableur contient
+> une ligne en ERREUR : le tableur porte son propre controle qualite et
+> demande de bloquer la publication dans ce cas.
+
+> Le seed ne stocke ni les phrases partagees ni les payloads : les premieres
+> passent par un dictionnaire par colonne, les seconds sont reconstruits par
+> Postgres depuis leur modele canonique. Le texte obtenu reste rigoureusement
+> celui du catalogue editorial : `tests/db/run.sh` compare 44 champs par
+> raccourci, le payload et le bloc QCM, octet par octet.
 
 > Apres la mise en production, **Supabase devient la seule source de verite**.
 > Le tableur `data/source/` redevient une archive d'export, jamais un second

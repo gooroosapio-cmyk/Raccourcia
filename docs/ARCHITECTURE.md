@@ -27,6 +27,18 @@ la vente est synchronisee une fois, puis l'acces depend d'un entitlement local.
 - **Gouvernance** : `admin_audit_logs`, `security_events`, `rate_limit_counters`,
   `app_config`
 
+### Taxonomie v2.0 : deux domaines, 10 categories, 20 sous-categories
+
+Le catalogue editorial v2.0 expose **deux domaines** : Image (110 raccourcis)
+et Texte (140). Les raccourcis d'analyse ne forment plus un domaine : ils sont
+ranges dans Texte > Travail & pilotage > Analyser & decider. La valeur
+`analyse` reste dans l'enum `app_mode` — rien n'est supprime — mais plus aucun
+raccourci ne la porte et la navigation ne l'expose plus.
+
+Le tableur porte lui-meme la hierarchie et l'ordre d'affichage : le seed n'a
+rien a inventer. Les categories devenues sans objet sont archivees, jamais
+supprimees.
+
 ### Categories : 2 niveaux et desactivation en cascade
 
 `categories.parent_id` porte la hierarchie, limitee a deux niveaux par trigger.
@@ -65,22 +77,14 @@ erreur qu'un prompt inexistant, pour ne pas reveler ce qui existe en interne.
 
 `app_config` porte la configuration runtime, modifiable depuis `/admin` :
 
-| Cle                      | Effet                                        |
-| ------------------------ | -------------------------------------------- |
-| `mode_analyse_enabled`   | Affiche le mode Analyse dans la bibliotheque |
-| `public_catalog_enabled` | Autorise les pages publiques partageables    |
-| `max_active_sessions`    | Sessions simultanees par compte (defaut 3)   |
+| Cle                      | Effet                                      |
+| ------------------------ | ------------------------------------------ |
+| `public_catalog_enabled` | Autorise les pages publiques partageables  |
+| `max_active_sessions`    | Sessions simultanees par compte (defaut 3) |
 
-### Activer le mode Analyse
-
-Les 40 raccourcis Analyse sont importes et prets, mais leurs categories sont
-livrees en `draft` : rien n'est visible, ni pour les membres ni publiquement.
-Pour ouvrir le mode, en deux etapes et sans aucun code :
-
-1. `/admin` > Parametres > `mode_analyse_enabled` = `true` (affiche le segment),
-2. `/admin` > Categories > publier les 5 categories `analyse-*`.
-
-Le retour arriere consiste a repasser les categories en brouillon.
+`mode_analyse_enabled` subsiste en base mais n'a plus d'effet : Analyse n'est
+plus un domaine depuis le catalogue v2.0. La ligne est conservee plutot que
+supprimee, et l'interface le dit.
 
 ## Parcours et routes
 

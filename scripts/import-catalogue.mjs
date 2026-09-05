@@ -322,6 +322,19 @@ for (const row of prompts) {
   });
 }
 
+/**
+ * Tranches d'insertion des raccourcis.
+ *
+ * Une instruction unique de 370 Ko ne passe pas dans tous les canaux
+ * d'application (l'API Supabase notamment) : on la coupe en tranches
+ * independantes, chacune idempotente comme l'ensemble.
+ */
+const PROMPTS_PER_CHUNK = 42;
+const promptChunks = [];
+for (let index = 0; index < promptRows.length; index += PROMPTS_PER_CHUNK) {
+  promptChunks.push(promptRows.slice(index, index + PROMPTS_PER_CHUNK));
+}
+
 const obsoleteNote = `${parentCategories.length + childCategories.length} categories v2`;
 
 // --- Generation SQL ---------------------------------------------------------
@@ -366,28 +379,16 @@ on conflict (slug) do update
   set name = excluded.name, parent_id = excluded.parent_id, mode = excluded.mode,
       status = excluded.status, sort_order = excluded.sort_order;
 
--- --- Jeux de questions ------------------------------------------------
--- Le bloc numerote du prompt copiable est reconstruit depuis le QCM lui-meme :
--- stocker les deux serait stocker deux fois le meme texte.
-create temporary table seed_qcm_sets on commit drop as
-select
-  d.key,
-  d.qcm,
-  (
-    select string_agg(
-      e.ord || '. ' || (e.item ->> 'question') || ' ' || (
-        select string_agg(chr(64 + o::int) || '. ' || opt, ' ' order by o)
-        from jsonb_array_elements_text(e.item -> 'options') with ordinality as t(opt, o)
-      ),
-      chr(10) order by e.ord
-    )
-    from jsonb_array_elements(d.qcm) with ordinality as e(item, ord)
-  ) as qcm_block
-from jsonb_to_recordset(${jsonLiteral(qcmSets)}::jsonb) as d(key text, qcm jsonb);
-
--- --- Raccourcis -------------------------------------------------------
+${promptChunks
+  .map(
+    (
+      chunk,
+      index,
+    ) => `-- --- Raccourcis, tranche ${index + 1}/${promptChunks.length} (${chunk.length}) ---
 -- Les colonnes factorisees sont relues dans leur dictionnaire par indice :
--- chaque phrase partagee n'apparait qu'une fois dans ce fichier.
+-- chaque phrase partagee n'apparait qu'une fois par tranche. Chaque tranche
+-- est applicable seule, ce qui permet de rejouer le catalogue morceau par
+-- morceau lorsque le canal d'application limite la taille d'une requete.
 insert into public.prompts (
   external_ref, command, name, slug, mode, category_id, short_description, intention,
   use_cases, usage_example, tags, required_variables, optional_variables, max_questions,
@@ -407,7 +408,7 @@ ${SHARED_COLUMNS.map((column) => `  ${dictExpression(column)},`).join('\n')}
   d.catalog_version, d.revised_at::date,
   'published'::public.content_status, coalesce(d.show_image_card, false),
   d.sort_order, now()
-from jsonb_to_recordset(${jsonLiteral(promptRows)}::jsonb)
+from jsonb_to_recordset(${jsonLiteral(chunk)}::jsonb)
   as d(
     external_ref text, command text, name text, slug text, mode text, category_slug text,
     short_description text, intention text, use_cases text[], usage_example text, tags text[],
@@ -429,7 +430,9 @@ ${SHARED_COLUMNS.map((column) => `  ${column} = excluded.${column},`).join('\n')
   risk_level = excluded.risk_level, priority = excluded.priority,
   source_status = excluded.source_status, catalog_version = excluded.catalog_version,
   revised_at = excluded.revised_at, show_image_card = excluded.show_image_card,
-  sort_order = excluded.sort_order;
+  sort_order = excluded.sort_order;`,
+  )
+  .join('\n\n')}
 
 -- --- Categories v1 devenues sans objet --------------------------------
 -- Archivees, jamais supprimees : leurs raccourcis ont deja rejoint la
@@ -463,6 +466,25 @@ on conflict (prompt_id, provider_id) do update set
   status = excluded.status;
 
 -- --- Versions de payload ----------------------------------------------
+-- Le bloc numerote du prompt copiable est reconstruit depuis le QCM lui-meme :
+-- stocker les deux serait stocker deux fois le meme texte. La table vit le
+-- temps de la transaction, elle doit donc etre creee avec l'insertion.
+create temporary table seed_qcm_sets on commit drop as
+select
+  d.key,
+  d.qcm,
+  (
+    select string_agg(
+      e.ord || '. ' || (e.item ->> 'question') || ' ' || (
+        select string_agg(chr(64 + o::int) || '. ' || opt, ' ' order by o)
+        from jsonb_array_elements_text(e.item -> 'options') with ordinality as t(opt, o)
+      ),
+      chr(10) order by e.ord
+    )
+    from jsonb_array_elements(d.qcm) with ordinality as e(item, ord)
+  ) as qcm_block
+from jsonb_to_recordset(${jsonLiteral(qcmSets)}::jsonb) as d(key text, qcm jsonb);
+
 -- La version precedente n'est jamais ecrasee : elle est retiree du courant
 -- et reste consultable (Regle R12). Seules les variantes qui recoivent une
 -- version v2.0 sont touchees.
