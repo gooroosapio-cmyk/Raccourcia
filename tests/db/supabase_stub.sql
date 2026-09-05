@@ -25,11 +25,16 @@ $$;
 
 grant usage on schema public, extensions, auth, storage to anon, authenticated, service_role;
 
-alter default privileges in schema public
-  grant select, insert, update, delete on tables to authenticated;
-alter default privileges in schema public grant select on tables to anon;
-alter default privileges in schema public
-  grant select, insert, update, delete on tables to service_role;
+-- Volontairement, aucun privilege par defaut sur les tables n'est accorde
+-- ici. Le stub en accordait autrefois aux trois roles clients, ce qui le
+-- rendait plus permissif que la production : les tables y heritaient de
+-- droits que le projet reel n'avait pas. Les scenarios passaient donc au
+-- vert alors que la production refusait tout au niveau `GRANT`, avant meme
+-- d'atteindre la RLS.
+--
+-- C'est desormais a `..._grant_base_privileges.sql` d'etablir cette base.
+-- Les tests valident ainsi la couche de privileges telle qu'elle sera
+-- reellement deployee.
 alter default privileges in schema public grant usage, select on sequences to anon, authenticated;
 
 create table if not exists auth.users (
