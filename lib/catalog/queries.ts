@@ -2,6 +2,7 @@ import 'server-only';
 
 import { cache } from 'react';
 import { createClient } from '@/lib/supabase/server';
+import { getAccessState } from '@/lib/access/entitlement';
 import { publicEnv } from '@/lib/env';
 import {
   CATALOG_PAGE_SIZE,
@@ -179,6 +180,9 @@ export type CatalogPage = { items: PromptCard[]; hasMore: boolean };
 export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> {
   const supabase = await createClient();
   const favorites = await getFavoriteIds();
+  // Memoise par requete : l'appel ci-dessous ne coute rien de plus a la page,
+  // qui interroge deja l'etat d'acces en parallele.
+  const { hasLifetimeAccess } = await getAccessState();
 
   const pageSize = query.pageSize ?? CATALOG_PAGE_SIZE;
   const from = (query.page - 1) * pageSize;
@@ -214,6 +218,13 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
   if (query.provider) {
     request = request.eq('prompt_variants.ai_providers.key', query.provider);
+  }
+
+  // Sans acces, les raccourcis gratuits passent devant, quel que soit le tri
+  // choisi : ce sont les seuls que le visiteur peut reellement copier, il doit
+  // donc les trouver sans les chercher. Le tri demande s'applique ensuite.
+  if (!hasLifetimeAccess) {
+    request = request.order('is_free', { ascending: false });
   }
 
   if (query.sort === 'nouveaux') {

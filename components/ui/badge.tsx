@@ -4,12 +4,13 @@ export function Badge({
   tone = 'neutre',
 }: {
   children: React.ReactNode;
-  tone?: 'neutre' | 'premium' | 'nouveau';
+  tone?: 'neutre' | 'premium' | 'nouveau' | 'gratuit';
 }) {
   const tones = {
     neutre: 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]',
     premium: 'bg-[#FFF3E0] text-[color:var(--color-warning)]',
     nouveau: 'bg-[color:var(--color-brand)] text-white',
+    gratuit: 'bg-[#F0FDF4] text-[color:var(--color-success)]',
   } as const;
 
   return (
