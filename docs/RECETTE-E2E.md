@@ -92,42 +92,45 @@ Etat verifie apres application :
 
 L'auditeur Supabase ne remonte aucun avertissement nouveau.
 
-**Historique des migrations.** L'application via MCP avait enregistre la
-migration sous la version `20260905122619`, la ou le depot porte
-`20260905070000`. La ligne a ete corrigee (`update` sur
-`supabase_migrations.schema_migrations`, une seule ligne touchee, empreinte
-des `statements` inchangee), et `chariow_ingestion` se range desormais a sa
-place chronologique, entre `admin_operations` et `analytics`.
+**Historique des migrations — aligne.** L'application via MCP avait enregistre
+`chariow_ingestion` sous la version `20260905122619`, la ou le depot porte
+`20260905070000`. La correction a mis au jour un ecart plus large, anterieur a
+cette recette : les 13 autres migrations portaient elles aussi des versions
+generees cote serveur, distinctes de celles du depot. Le projet n'avait donc
+jamais ete synchronisable par `supabase db push`, qui aurait tente de rejouer
+les 14 fichiers et echoue des le premier (`create type ... already exists`).
 
-Cette correction a mis au jour un ecart plus large, **anterieur a cette
-recette** : les 13 autres migrations portent elles aussi en production des
-versions distinctes de celles du depot, generees cote serveur lors de leur
-application.
+Les 14 lignes de `supabase_migrations.schema_migrations` portent desormais la
+version de leur fichier. Le renumerotage etait un pur reetiquetage : les noms
+concordaient deja un a un et dans le meme ordre, aucune version cible n'entrait
+en collision avec une version existante, et l'operation n'a touche que la
+colonne `version`.
 
-| Migration                    | Version depot  | Version production |
-| ---------------------------- | -------------- | ------------------ |
-| `extensions_and_types`       | 20260904120000 | 20260904233033     |
-| `identity`                   | 20260904120100 | 20260904234025     |
-| `authorization_helpers`      | 20260904120200 | 20260904234040     |
-| `commerce`                   | 20260904120300 | 20260904234135     |
-| `catalog`                    | 20260904120400 | 20260905003152     |
-| `usage_and_governance`       | 20260904120500 | 20260905003345     |
-| `rls`                        | 20260904120600 | 20260905003451     |
-| `resolve_prompt`             | 20260904120700 | 20260905003518     |
-| `storage_and_reference_data` | 20260904120800 | 20260905004540     |
-| `harden_function_privileges` | 20260905050000 | 20260905045107     |
-| `admin_operations`           | 20260905060000 | 20260905055201     |
-| `chariow_ingestion`          | 20260905070000 | 20260905070000     |
-| `analytics`                  | 20260905080000 | 20260905113614     |
-| `catalogue_v2`               | 20260905090000 | 20260905113638     |
+Invariant verifie avant et apres : l'empreinte
+`md5(string_agg(name || md5(statements) order by version))` vaut
+`ac37f038...` dans les deux cas. Une valeur identique prouve a la fois que le
+SQL de chaque ligne est inchange et que le tri par version restitue la meme
+sequence de noms — donc aucun reordonnancement. Aucune ligne ne perd ses
+`statements`, et le schema lui-meme n'a pas ete touche : 22 tables, 33
+fonctions, 35 policies, 151 raccourcis, 453 versions, 93 categories,
+1 utilisateur, comme avant l'operation.
 
-Les 14 noms concordent, dans le meme ordre : le renumerotage eventuel serait
-un simple reetiquetage, sans reordonnancement. En l'etat, `supabase db push`
-depuis le depot considererait les 13 lignes non alignees comme non appliquees
-et tenterait de les rejouer, ce qui echouerait des la premiere
-(`create type ... already exists`). Le projet n'a donc jamais ete synchronise
-par `db push` ; il reste a decider si on aligne les 13 lignes restantes ou si
-on assume un autre canal de deploiement.
+| Migration                    | Version (depot et production) |
+| ---------------------------- | ----------------------------- |
+| `extensions_and_types`       | 20260904120000                |
+| `identity`                   | 20260904120100                |
+| `authorization_helpers`      | 20260904120200                |
+| `commerce`                   | 20260904120300                |
+| `catalog`                    | 20260904120400                |
+| `usage_and_governance`       | 20260904120500                |
+| `rls`                        | 20260904120600                |
+| `resolve_prompt`             | 20260904120700                |
+| `storage_and_reference_data` | 20260904120800                |
+| `harden_function_privileges` | 20260905050000                |
+| `admin_operations`           | 20260905060000                |
+| `chariow_ingestion`          | 20260905070000                |
+| `analytics`                  | 20260905080000                |
+| `catalogue_v2`               | 20260905090000                |
 
 ### 5.2 `analytics_window` : `search_path` mutable
 
