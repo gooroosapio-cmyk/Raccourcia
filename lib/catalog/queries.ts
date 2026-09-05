@@ -3,7 +3,14 @@ import 'server-only';
 import { cache } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { publicEnv } from '@/lib/env';
-import { CATALOG_PAGE_SIZE, CONFIG_FALLBACKS, CONFIG_KEYS, STORAGE_BUCKETS } from '@/lib/constants';
+import {
+  CATALOG_PAGE_SIZE,
+  CONFIG_FALLBACKS,
+  CONFIG_KEYS,
+  MODES,
+  STORAGE_BUCKETS,
+  type Mode,
+} from '@/lib/constants';
 import type { CategoryNode, PromptCard, PromptDetail } from '@/lib/catalog/types';
 import type { Enums } from '@/lib/supabase/database.types';
 import type { CatalogQuery } from '@/lib/validation/schemas';
@@ -28,10 +35,6 @@ export const getPublicConfig = cache(async () => {
   };
 
   return {
-    modeAnalyseEnabled: read<boolean>(
-      CONFIG_KEYS.MODE_ANALYSE_ENABLED,
-      CONFIG_FALLBACKS[CONFIG_KEYS.MODE_ANALYSE_ENABLED],
-    ),
     publicCatalogEnabled: read<boolean>(
       CONFIG_KEYS.PUBLIC_CATALOG_ENABLED,
       CONFIG_FALLBACKS[CONFIG_KEYS.PUBLIC_CATALOG_ENABLED],
@@ -39,10 +42,14 @@ export const getPublicConfig = cache(async () => {
   };
 });
 
-/** Modes reellement proposes : Analyse n'apparait qu'une fois active. */
-export async function getAvailableModes(): Promise<Enums<'app_mode'>[]> {
-  const { modeAnalyseEnabled } = await getPublicConfig();
-  return modeAnalyseEnabled ? ['image', 'texte', 'analyse'] : ['image', 'texte'];
+/**
+ * Domaines proposes dans la bibliotheque.
+ *
+ * Le catalogue v2.0 n'en expose que deux : l'analyse est devenue une
+ * sous-categorie de Texte, elle n'a plus de segment propre (Regles R01, R03).
+ */
+export function getAvailableModes(): readonly Mode[] {
+  return MODES;
 }
 
 /**

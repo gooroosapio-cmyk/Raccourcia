@@ -74,11 +74,17 @@ if [[ -f "$ROOT/supabase/seed/catalogue.sql" ]]; then
   run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -o /tmp/pgdump.json -c "
     select coalesce(jsonb_agg(to_jsonb(x)), '[]'::jsonb) from (
       select p.external_ref, p.command::text, p.name, p.mode::text, p.short_description,
-             p.intention, p.use_cases, p.tags, p.required_variables, p.optional_variables,
-             p.expected_input, p.minimal_context, p.sufficient_context, p.default_values,
+             p.intention, p.use_cases, p.usage_example, p.tags,
+             p.required_variables, p.optional_variables,
+             p.minimal_context, p.sufficient_context, p.default_values,
              p.expected_output, p.output_format, p.quality_criteria, p.preserve_rules,
-             p.avoid_rules, p.limitations, p.fallback_if_incomplete, p.admin_notes,
-             p.thumbnail_spec, p.risk_level::text, p.priority, p.show_image_card,
+             p.avoid_rules, p.limitations, p.fallback_if_incomplete,
+             p.usage_conditions, p.primary_input, p.accepted_inputs, p.attachment_rule,
+             p.blocking_condition, p.questionnaire_mode, p.max_questions,
+             p.thumbnail_spec, p.thumbnail_layout, p.copy_rule,
+             p.test_nominal, p.test_incomplete_context, p.test_blocking,
+             p.risk_level::text, p.priority, p.source_status, p.catalog_version,
+             p.show_image_card,
              (select count(*) from public.prompt_variants v where v.prompt_id = p.id) as variant_count,
              (select count(*) from public.prompt_variants v
                 join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
@@ -86,9 +92,20 @@ if [[ -f "$ROOT/supabase/seed/catalogue.sql" ]]; then
              (select distinct pv.payload from public.prompt_variants v
                 join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
               where v.prompt_id = p.id) as payload,
+             (select distinct pv.qcm from public.prompt_variants v
+                join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
+              where v.prompt_id = p.id) as qcm,
              (select distinct pv.qcm_trigger from public.prompt_variants v
                 join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
-              where v.prompt_id = p.id) as qcm_trigger
+              where v.prompt_id = p.id) as qcm_trigger,
+             -- Bloc QCM tel qu'il apparait dans le payload, extrait entre
+             -- l'en-tete des questions et la section EXECUTION.
+             nullif(substring(
+               (select distinct pv.payload from public.prompt_variants v
+                  join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
+                where v.prompt_id = p.id)
+               from 'maximum [0-9]+\.' || chr(10) || '(.*)' || chr(10) || chr(10) || '3\. EXÉCUTION'
+             ), '') as qcm_block
       from public.prompts p where p.external_ref like 'RCI-%'
     ) x;"
   if node "$ROOT/tests/db/verify-fidelity.mjs" /tmp/pgdump.json; then :; else exit 1; fi

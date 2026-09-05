@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { getAdminDashboard } from '@/lib/admin/queries';
-import { MODE_LABELS } from '@/lib/constants';
+import { MODES, MODE_LABELS } from '@/lib/constants';
 
 export const metadata = { title: 'Tableau de bord' };
 
@@ -32,7 +32,7 @@ export default async function AdminDashboardPage() {
           Par mode
         </h2>
         <ul className="mt-3 space-y-2">
-          {(['image', 'texte', 'analyse'] as const).map((mode) => (
+          {MODES.map((mode) => (
             <li key={mode} className="flex items-center justify-between text-[15px]">
               <span className="text-[color:var(--color-ink)]">{MODE_LABELS[mode]}</span>
               <span className="font-medium text-[color:var(--color-night)]">

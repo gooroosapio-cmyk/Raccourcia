@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 /**
- * Genere supabase/seed/catalogue.sql a partir de data/catalogue/*.json.
+ * Genere supabase/seed/catalogue.sql a partir de data/catalogue/*.json (v2.0).
  *
  * Le SQL produit est compact : les donnees voyagent sous forme de tableaux
  * JSON deroules par jsonb_to_recordset, et chaque table recoit une seule
  * instruction. Le fichier reste idempotent : le rejouer met a jour les lignes
  * existantes sans creer de doublon et sans ecraser les visuels ajoutes
  * depuis /admin.
+ *
+ * Les 250 payloads suivent un modele unique, verifie octet par octet contre
+ * le tableur : le seed porte le modele, Postgres le remplit depuis les champs
+ * deja inseres. Rien n'est recopie deux fois.
  *
  *   npm run catalogue:import
  */
@@ -26,13 +30,10 @@ const read = (name) => JSON.parse(readFileSync(join(DATA, name), 'utf8'));
 
 const prompts = read('prompts.json');
 const qcmRows = read('qcm.json');
-const taxonomy = read('taxonomie-map.json');
+const taxonomy = read('taxonomie.json');
 
-/**
- * Serialise un tableau d'objets en litteral JSON dollar-quote.
- * Les cles nulles sont omises : jsonb_to_recordset les rendra NULL, et le SQL
- * retombe alors sur la valeur commune du mode.
- */
+const warnings = [];
+
 function jsonLiteral(rows) {
   const compact = rows.map((row) =>
     Object.fromEntries(Object.entries(row).filter(([, value]) => value !== null)),
@@ -62,103 +63,75 @@ function slugify(value) {
     .replace(/^-|-$/g, '');
 }
 
-/**
- * Decoupe "Ton ? A. Clair B. Premium C. Autre" en question + options,
- * afin que l'interface puisse afficher un QCM court plutot qu'un bloc de texte.
- */
-function parseQcmQuestion(raw) {
-  const text = raw.trim();
-  const firstOption = text.search(/\s[A-D]\.\s/);
-  if (firstOption === -1) return { question: text, options: [] };
+// --- Taxonomie --------------------------------------------------------------
+// Le tableur v2 porte lui-meme la hierarchie et l'ordre d'affichage :
+// 10 categories, 20 sous-categories, deux domaines publics.
+const MODE_BY_DOMAIN = { IMAGE: 'image', TEXTE: 'texte' };
 
-  const question = text.slice(0, firstOption).trim();
-  const options = text
-    .slice(firstOption)
-    .split(/\s(?=[A-D]\.\s)/)
-    .map((part) => part.replace(/^[A-D]\.\s*/, '').trim())
-    .filter(Boolean);
-
-  return { question, options };
-}
-
-// --- Taxonomie -------------------------------------------------------------
-const familyLabel = (family) => taxonomy.familyLabels[family] ?? family;
-
-/** "domaine::famille" -> slug de la categorie de rattachement */
-const familyIndex = new Map();
 const parentCategories = [];
 const childCategories = [];
+const parentSlugByKey = new Map();
+const categorySlugByKey = new Map();
+const knownSlugs = new Set();
 
-for (const [domain, config] of Object.entries(taxonomy.modes)) {
-  let order = 0;
-  for (const group of config.groups) {
-    order += 1;
-    parentCategories.push({
-      slug: group.slug,
-      mode: config.mode,
-      name: group.name,
-      status: config.status,
-      sort_order: order,
-    });
-
-    let childOrder = 0;
-    for (const family of group.families) {
-      const key = `${domain}::${family}`;
-      if (config.flat) {
-        familyIndex.set(key, group.slug);
-        continue;
-      }
-      childOrder += 1;
-      const childSlug = `${group.slug}-${slugify(family)}`;
-      childCategories.push({
-        slug: childSlug,
-        parent_slug: group.slug,
-        mode: config.mode,
-        name: familyLabel(family),
-        status: config.status,
-        sort_order: childOrder,
-      });
-      familyIndex.set(key, childSlug);
-    }
+for (const row of taxonomy) {
+  const mode = MODE_BY_DOMAIN[row.domaine];
+  if (!mode) {
+    warnings.push(`Taxonomie : domaine inconnu "${row.domaine}".`);
+    continue;
   }
+
+  const parentKey = `${row.domaine}::${row.categorie}`;
+  let parentSlug = parentSlugByKey.get(parentKey);
+  if (!parentSlug) {
+    parentSlug = `${mode}-${slugify(row.categorie)}`;
+    parentSlugByKey.set(parentKey, parentSlug);
+    parentCategories.push({
+      slug: parentSlug,
+      mode,
+      name: row.categorie,
+      status: 'published',
+      sort_order: Number(row.ordre_categorie ?? 0),
+    });
+    knownSlugs.add(parentSlug);
+  }
+
+  const childSlug = `${parentSlug}-${slugify(row.sous_categorie)}`;
+  if (knownSlugs.has(childSlug)) {
+    warnings.push(`Taxonomie : slug en collision "${childSlug}".`);
+    continue;
+  }
+  knownSlugs.add(childSlug);
+  childCategories.push({
+    slug: childSlug,
+    parent_slug: parentSlug,
+    mode,
+    name: row.sous_categorie,
+    status: row.statut === 'actif' ? 'published' : 'draft',
+    sort_order: Number(row.ordre_sous_categorie ?? 0),
+  });
+  categorySlugByKey.set(`${row.domaine}::${row.categorie}::${row.sous_categorie}`, childSlug);
 }
 
-// --- QCM par prompt --------------------------------------------------------
+// --- QCM par prompt ---------------------------------------------------------
 const qcmByPrompt = new Map();
 for (const row of qcmRows) {
   const list = qcmByPrompt.get(row.prompt_id) ?? [];
-  list.push({ order: Number(row.ordre ?? 0), question: row.question });
+  list.push(row);
   qcmByPrompt.set(row.prompt_id, list);
 }
-
-// --- Compatibilite ---------------------------------------------------------
-const PROVIDERS = ['chatgpt', 'claude', 'gemini'];
-
-/** Traduit la colonne compat_* du tableur en niveau + note honnete. */
-function compatibility(raw) {
-  const value = (raw ?? '').toLowerCase();
-  if (!value) return { level: 'non_supporte', note: null };
-  if (value === 'excellent') return { level: 'excellent', note: null };
-  if (value === 'bon') return { level: 'bon', note: null };
-  if (value.includes('utilisable') || value.includes('selon interface')) {
-    return {
-      level: 'partiel',
-      note: "Le prompt est utilisable ; l'execution de l'image depend de l'interface.",
-    };
-  }
-  return { level: 'partiel', note: raw };
+for (const list of qcmByPrompt.values()) {
+  list.sort((a, b) => Number(a.ordre ?? 0) - Number(b.ordre ?? 0));
 }
 
-const MODE_BY_DOMAIN = { image: 'image', ecrire: 'texte', analyser: 'analyse' };
-
+// --- Factorisation par mode -------------------------------------------------
 /**
- * Le tableur remplit une douzaine de colonnes a l'identique pour tous les
- * raccourcis d'un meme domaine (contexte attendu, format de sortie, criteres
- * qualite, garde-fous...). On les factorise par mode : le seed ne les ecrit
- * qu'une fois et chaque raccourci n'y deroge que s'il a une valeur propre.
+ * Le tableur remplit une quinzaine de colonnes a l'identique pour tous les
+ * raccourcis d'un meme domaine (contexte, format de sortie, criteres qualite,
+ * garde-fous, regle de copie...). On les factorise par mode : le seed ne les
+ * ecrit qu'une fois et chaque raccourci n'y deroge que s'il a une valeur propre.
  */
 const SHARED_BY_MODE = {
-  expected_input: 'entree_attendue',
   minimal_context: 'contexte_minimal',
   sufficient_context: 'contexte_suffisant',
   default_values: 'valeurs_defaut',
@@ -167,57 +140,98 @@ const SHARED_BY_MODE = {
   quality_criteria: 'criteres_qualite',
   preserve_rules: 'a_preserver',
   avoid_rules: 'a_eviter',
+  limitations: 'limites',
   fallback_if_incomplete: 'fallback_si_incomplet',
-  admin_notes: 'admin_notes',
-  qcm_trigger: 'qcm_declencheur',
+  usage_conditions: 'conditions_utilisation',
+  primary_input: 'entree_primaire',
+  accepted_inputs: 'entrees_acceptees',
+  attachment_rule: 'piece_jointe',
+  blocking_condition: 'condition_blocage',
+  questionnaire_mode: 'questionnaire_mode',
+  thumbnail_spec: 'spec_image_temoin',
+  thumbnail_layout: 'spec_miniature',
+  copy_rule: 'regle_copie',
+  test_nominal: 'test_nominal',
+  test_incomplete_context: 'test_contexte_incomplet',
+  test_blocking: 'test_blocage',
 };
 
-/** Valeur majoritaire d'une colonne pour un mode donne. */
-function dominantValue(rows, column) {
-  const counts = new Map();
-  for (const row of rows) {
-    const value = row[column] ?? null;
-    counts.set(value, (counts.get(value) ?? 0) + 1);
+/** Le declencheur de QCM appartient a la version, pas au raccourci. */
+const SHARED_BY_VERSION = { qcm_trigger: 'declencheur_questions' };
+
+/** Ordre de reference des colonnes factorisees, partage par le SQL genere. */
+const SHARED_COLUMNS = Object.keys(SHARED_BY_MODE);
+
+/**
+ * Dictionnaire par colonne.
+ *
+ * Chacune de ces colonnes ne prend qu'une poignee de valeurs distinctes sur
+ * tout le catalogue (le tableur emploie une formulation pour les raccourcis
+ * d'origine et une autre pour les nouveaux). Plutot que de recopier la phrase
+ * 250 fois, on ecrit chaque valeur une seule fois et le raccourci n'en porte
+ * que l'indice : c'est ce qui garde le seed sous les 150 Ko.
+ */
+const dictionaries = new Map();
+
+for (const [column, source] of Object.entries({ ...SHARED_BY_MODE, ...SHARED_BY_VERSION })) {
+  const values = [];
+  const indexByValue = new Map();
+  for (const row of prompts) {
+    const value = row[source] ?? null;
+    if (!indexByValue.has(value)) {
+      indexByValue.set(value, values.length);
+      values.push(value);
+    }
   }
-  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+  dictionaries.set(column, { values, indexByValue });
 }
+
+/** Indice de la valeur dans le dictionnaire de la colonne. */
+function dictIndex(column, value) {
+  return dictionaries.get(column).indexByValue.get(value ?? null);
+}
+
+/** `('["a","b"]'::jsonb ->> d.x_idx)` : la valeur est relue par son indice. */
+function dictExpression(column) {
+  const json = JSON.stringify(dictionaries.get(column).values);
+  if (json.includes(TAG)) throw new Error(`Le delimiteur ${TAG} apparait dans les donnees.`);
+  return `(${TAG}${json}${TAG}::jsonb ->> d.${column}_idx)`;
+}
+
+// --- Compatibilite IA -------------------------------------------------------
+// Le tableur decrit la capacite en une phrase par domaine, sans promesse
+// absolue (Regle R14) : une ligne par couple (mode, IA) suffit.
+const PROVIDERS = ['chatgpt', 'claude', 'gemini'];
+const compatByModeProvider = new Map();
+
+/** Le type d'entree normalise pilote la logique ; primary_input reste le mot du tableur. */
+const INPUT_TYPE = {
+  image: 'image',
+  texte: 'text',
+  document: 'document',
+  'URL ou document': 'mixed',
+  'tableau/données': 'mixed',
+};
 
 // --- Construction des jeux de donnees ---------------------------------------
 const promptRows = [];
-const compatByModeProvider = new Map();
-let variantCount = 0;
 const versionRows = [];
-const warnings = [];
 const qcmSets = [];
 const qcmKeyBySignature = new Map();
-
-const modeDefaults = Object.entries(MODE_BY_DOMAIN).map(([domain, mode]) => {
-  const rows = prompts.filter((row) => row.domain === domain);
-  const entry = { mode };
-  for (const [column, source] of Object.entries(SHARED_BY_MODE)) {
-    entry[column] = rows.length ? dominantValue(rows, source) : null;
-  }
-  return entry;
-});
-const defaultsByMode = new Map(modeDefaults.map((entry) => [entry.mode, entry]));
-
-/** N'ecrit la valeur que si elle differe de la valeur commune du mode. */
-function override(mode, column, value) {
-  const shared = defaultsByMode.get(mode)?.[column] ?? null;
-  const actual = value ?? null;
-  return actual === shared ? null : actual;
-}
+let variantCount = 0;
 
 for (const row of prompts) {
-  const mode = MODE_BY_DOMAIN[row.domain];
+  const mode = MODE_BY_DOMAIN[row.domaine];
   if (!mode) {
-    warnings.push(`${row.id} : domaine inconnu "${row.domain}", ligne ignoree.`);
+    warnings.push(`${row.id} : domaine inconnu "${row.domaine}", ligne ignoree.`);
     continue;
   }
 
-  const categorySlug = familyIndex.get(`${row.domain}::${row.family}`);
+  const categorySlug = categorySlugByKey.get(
+    `${row.domaine}::${row.categorie}::${row.sous_categorie}`,
+  );
   if (!categorySlug) {
-    warnings.push(`${row.id} : famille "${row.family}" absente de taxonomie-map.json.`);
+    warnings.push(`${row.id} : sous-categorie "${row.sous_categorie}" absente de Taxonomie.`);
     continue;
   }
 
@@ -228,9 +242,9 @@ for (const row of prompts) {
   }
 
   const isImage = mode === 'image';
-  const useCases = splitList(row.exemples_usage, '|').length
-    ? splitList(row.exemples_usage, '|')
-    : splitList(row.exemples_usage, ';');
+  // Les anciens raccourcis ANALYSER produisent une analyse, meme reclasses
+  // sous TEXTE > Travail & pilotage > Analyser & decider (Regle R03).
+  const isAnalysis = (row.id ?? '').startsWith('RCI-ANA');
 
   promptRows.push({
     external_ref: row.id,
@@ -241,96 +255,92 @@ for (const row of prompts) {
     category_slug: categorySlug,
     short_description: row.description_courte,
     intention: row.intention,
-    use_cases: useCases,
+    use_cases: row.cas_usage_principal ? [row.cas_usage_principal] : [],
+    usage_example: row.exemple_usage,
     tags: splitList(row.tags),
-    expected_input: override(mode, 'expected_input', row.entree_attendue),
-    minimal_context: override(mode, 'minimal_context', row.contexte_minimal),
-    sufficient_context: override(mode, 'sufficient_context', row.contexte_suffisant),
     required_variables: splitList(row.variables_requises),
     optional_variables: splitList(row.variables_optionnelles),
-    default_values: override(mode, 'default_values', row.valeurs_defaut),
-    expected_output: override(mode, 'expected_output', row.sortie_attendue),
-    output_format: override(mode, 'output_format', row.format_sortie),
-    quality_criteria: override(mode, 'quality_criteria', row.criteres_qualite),
-    preserve_rules: override(mode, 'preserve_rules', row.a_preserver),
-    avoid_rules: override(mode, 'avoid_rules', row.a_eviter),
-    limitations: row.limites,
-    fallback_if_incomplete: override(mode, 'fallback_if_incomplete', row.fallback_si_incomplet),
-    input_type: isImage ? 'image' : row.domain === 'analyser' ? 'document' : 'text',
-    output_type: isImage ? 'image' : row.domain === 'analyser' ? 'analysis' : 'text',
-    risk_level: row.niveau_risque ?? 'faible',
-    priority: row.priorite_v1 ?? 'P0',
+    max_questions: Number(row.nombre_questions_max ?? 1),
+    // Colonnes factorisees : seul l'indice du dictionnaire voyage.
+    ...Object.fromEntries(
+      Object.entries(SHARED_BY_MODE).map(([column, source]) => [
+        `${column}_idx`,
+        dictIndex(column, row[source]),
+      ]),
+    ),
+    input_type: INPUT_TYPE[row.entree_primaire] ?? 'mixed',
+    output_type: isImage ? 'image' : isAnalysis ? 'analysis' : 'text',
+    risk_level: (row.niveau_risque ?? 'faible').replace('élevé', 'eleve'),
+    priority: row.priorite ?? 'P0',
+    source_status: row.source_status,
+    catalog_version: row.version,
+    revised_at: row.date_revision,
+    // Regle R13 : seuls les raccourcis IMAGE imposent une carte visuelle.
     show_image_card: isImage,
-    thumbnail_spec: row.thumbnail_spec,
-    admin_notes: override(mode, 'admin_notes', row.admin_notes),
     sort_order: promptRows.length + 1,
   });
 
-  // La compatibilite annoncee ne depend que du mode : on l'ecrit une fois par
-  // couple (mode, IA) plutot que 453 fois.
   for (const provider of PROVIDERS) {
-    const { level, note } = compatibility(row[`compat_${provider}`]);
     const key = `${mode}::${provider}`;
     if (!compatByModeProvider.has(key)) {
       compatByModeProvider.set(key, {
         mode,
         provider_key: provider,
-        compatibility: level,
-        compatibility_note: note,
-        // Une compatibilite inconnue reste en brouillon : l'interface ne doit
-        // jamais promettre une IA non verifiee (Regle R05).
-        status: level === 'non_supporte' ? 'draft' : 'published',
+        // Le tableur decrit une capacite, pas une garantie : le niveau reste
+        // "bon" et la phrase exacte du catalogue porte la nuance.
+        compatibility: 'bon',
+        compatibility_note: row[`compat_${provider}`] ?? null,
+        status: 'published',
       });
     }
     variantCount += 1;
   }
 
-  // QCM : au maximum 3 questions courtes (Regle R04). Le catalogue ne compte
-  // que quelques jeux distincts, on les deduplique par cle.
-  const qcm = (qcmByPrompt.get(row.id) ?? [])
-    .sort((a, b) => a.order - b.order)
-    .slice(0, 3)
-    .map((entry) => parseQcmQuestion(entry.question));
-  const qcmSignature = JSON.stringify(qcm);
-  let qcmKey = qcmKeyBySignature.get(qcmSignature);
+  // QCM : 3 questions maximum (Regle R07). Plusieurs raccourcis partagent le
+  // meme jeu de questions : on le deduplique.
+  const questions = (qcmByPrompt.get(row.id) ?? []).slice(0, 3);
+  const qcm = questions.map((entry) => ({
+    question: entry.question,
+    options: splitList(entry.choix, '|'),
+    variable: entry.variable,
+    valeur_defaut: entry.valeur_defaut,
+  }));
+
+  const signature = JSON.stringify(qcm);
+  let qcmKey = qcmKeyBySignature.get(signature);
   if (!qcmKey) {
     qcmKey = `qcm-${qcmKeyBySignature.size + 1}`;
-    qcmKeyBySignature.set(qcmSignature, qcmKey);
-    qcmSets.push({
-      key: qcmKey,
-      qcm,
-      // Bloc numerote tel qu'il apparait dans le prompt copiable.
-      qcm_block: (qcmByPrompt.get(row.id) ?? [])
-        .sort((a, b) => a.order - b.order)
-        .slice(0, 3)
-        .map((entry, index) => `${index + 1}. ${entry.question.trim()}`)
-        .join('\n'),
-    });
+    qcmKeyBySignature.set(signature, qcmKey);
+    qcmSets.push({ key: qcmKey, qcm });
   }
 
   versionRows.push({
     external_ref: row.id,
-    version_label: row.version ?? 'v1.0',
+    version_label: row.version ?? 'v2.0',
     qcm_key: qcmKey,
-    qcm_trigger: override(mode, 'qcm_trigger', row.qcm_declencheur),
+    qcm_trigger_idx: dictIndex('qcm_trigger', row.declencheur_questions),
   });
 }
 
+const obsoleteNote = `${parentCategories.length + childCategories.length} categories v2`;
+
 // --- Generation SQL ---------------------------------------------------------
 const sql = `-- =====================================================================
--- RaccourcIA - import initial du catalogue editorial
+-- RaccourcIA - import du catalogue editorial v2.0
 -- GENERE AUTOMATIQUEMENT par scripts/import-catalogue.mjs. Ne pas editer.
 --
 -- Ce fichier est idempotent : il peut etre rejoue sans creer de doublon.
 -- Apres mise en production, Supabase devient la seule source de verite
 -- runtime : les modifications se font dans /admin, pas ici.
 --
--- Les valeurs identiques pour tous les raccourcis d'un meme mode (contexte
--- attendu, format de sortie, criteres qualite, garde-fous, QCM) sont ecrites
--- une seule fois et recomposees a l'insertion.
+-- Les 151 raccourcis d'origine conservent leur identifiant editorial et
+-- leur historique : ils sont mis a jour, jamais recrees. 99 raccourcis
+-- s'ajoutent. Les categories v1 devenues sans objet sont archivees, jamais
+-- supprimees.
 --
 -- ${parentCategories.length} categories, ${childCategories.length} sous-categories,
--- ${promptRows.length} raccourcis, ${variantCount} variantes IA.
+-- ${promptRows.length} raccourcis, ${variantCount} variantes IA,
+-- ${qcmSets.length} jeux de QCM distincts.
 -- =====================================================================
 
 begin;
@@ -342,7 +352,8 @@ select d.slug, null, d.mode::public.app_mode, d.name,
 from jsonb_to_recordset(${jsonLiteral(parentCategories)}::jsonb)
   as d(slug text, mode text, name text, status text, sort_order integer)
 on conflict (slug) do update
-  set name = excluded.name, mode = excluded.mode, sort_order = excluded.sort_order;
+  set name = excluded.name, mode = excluded.mode, status = excluded.status,
+      sort_order = excluded.sort_order;
 
 -- --- Sous-categories --------------------------------------------------
 insert into public.categories (slug, parent_id, mode, name, status, sort_order)
@@ -352,82 +363,92 @@ from jsonb_to_recordset(${jsonLiteral(childCategories)}::jsonb)
   as d(slug text, parent_slug text, mode text, name text, status text, sort_order integer)
 join public.categories p on p.slug = d.parent_slug
 on conflict (slug) do update
-  set name = excluded.name, parent_id = excluded.parent_id, sort_order = excluded.sort_order;
+  set name = excluded.name, parent_id = excluded.parent_id, mode = excluded.mode,
+      status = excluded.status, sort_order = excluded.sort_order;
 
--- --- Valeurs communes par mode ----------------------------------------
--- Table temporaire de la transaction : elle disparait au commit.
-create temporary table seed_mode_defaults on commit drop as
-select * from jsonb_to_recordset(${jsonLiteral(modeDefaults)}::jsonb)
-  as d(
-    mode text, expected_input text, minimal_context text, sufficient_context text,
-    default_values text, expected_output text, output_format text, quality_criteria text,
-    preserve_rules text, avoid_rules text, fallback_if_incomplete text,
-    admin_notes text, qcm_trigger text
-  );
-
+-- --- Jeux de questions ------------------------------------------------
+-- Le bloc numerote du prompt copiable est reconstruit depuis le QCM lui-meme :
+-- stocker les deux serait stocker deux fois le meme texte.
 create temporary table seed_qcm_sets on commit drop as
-select * from jsonb_to_recordset(${jsonLiteral(qcmSets)}::jsonb)
-  as d(key text, qcm jsonb, qcm_block text);
+select
+  d.key,
+  d.qcm,
+  (
+    select string_agg(
+      e.ord || '. ' || (e.item ->> 'question') || ' ' || (
+        select string_agg(chr(64 + o::int) || '. ' || opt, ' ' order by o)
+        from jsonb_array_elements_text(e.item -> 'options') with ordinality as t(opt, o)
+      ),
+      chr(10) order by e.ord
+    )
+    from jsonb_array_elements(d.qcm) with ordinality as e(item, ord)
+  ) as qcm_block
+from jsonb_to_recordset(${jsonLiteral(qcmSets)}::jsonb) as d(key text, qcm jsonb);
 
 -- --- Raccourcis -------------------------------------------------------
+-- Les colonnes factorisees sont relues dans leur dictionnaire par indice :
+-- chaque phrase partagee n'apparait qu'une fois dans ce fichier.
 insert into public.prompts (
   external_ref, command, name, slug, mode, category_id, short_description, intention,
-  use_cases, tags, expected_input, minimal_context, sufficient_context,
-  required_variables, optional_variables, default_values, expected_output, output_format,
-  quality_criteria, preserve_rules, avoid_rules, limitations, fallback_if_incomplete,
-  input_type, output_type, risk_level, priority, status, show_image_card,
-  thumbnail_spec, admin_notes, sort_order, published_at
+  use_cases, usage_example, tags, required_variables, optional_variables, max_questions,
+${SHARED_COLUMNS.map((column) => `  ${column},`).join('\n')}
+  input_type, output_type, risk_level, priority, source_status, catalog_version, revised_at,
+  status, show_image_card, sort_order, published_at
 )
 select
   d.external_ref, d.command::extensions.citext, d.name, d.slug, d.mode::public.app_mode, c.id,
   d.short_description, d.intention,
-  coalesce(d.use_cases, '{}'), coalesce(d.tags, '{}'),
-  coalesce(d.expected_input, m.expected_input),
-  coalesce(d.minimal_context, m.minimal_context),
-  coalesce(d.sufficient_context, m.sufficient_context),
+  coalesce(d.use_cases, '{}'), d.usage_example, coalesce(d.tags, '{}'),
   coalesce(d.required_variables, '{}'), coalesce(d.optional_variables, '{}'),
-  coalesce(d.default_values, m.default_values),
-  coalesce(d.expected_output, m.expected_output),
-  coalesce(d.output_format, m.output_format),
-  coalesce(d.quality_criteria, m.quality_criteria),
-  coalesce(d.preserve_rules, m.preserve_rules),
-  coalesce(d.avoid_rules, m.avoid_rules),
-  d.limitations,
-  coalesce(d.fallback_if_incomplete, m.fallback_if_incomplete),
+  d.max_questions,
+${SHARED_COLUMNS.map((column) => `  ${dictExpression(column)},`).join('\n')}
   d.input_type::public.input_type, d.output_type::public.output_type,
-  d.risk_level::public.risk_level, d.priority,
+  d.risk_level::public.risk_level, d.priority, d.source_status,
+  d.catalog_version, d.revised_at::date,
   'published'::public.content_status, coalesce(d.show_image_card, false),
-  d.thumbnail_spec, coalesce(d.admin_notes, m.admin_notes), d.sort_order, now()
+  d.sort_order, now()
 from jsonb_to_recordset(${jsonLiteral(promptRows)}::jsonb)
   as d(
     external_ref text, command text, name text, slug text, mode text, category_slug text,
-    short_description text, intention text, use_cases text[], tags text[],
-    expected_input text, minimal_context text, sufficient_context text,
-    required_variables text[], optional_variables text[], default_values text,
-    expected_output text, output_format text, quality_criteria text,
-    preserve_rules text, avoid_rules text, limitations text, fallback_if_incomplete text,
-    input_type text, output_type text, risk_level text, priority text,
-    show_image_card boolean, thumbnail_spec text, admin_notes text, sort_order integer
+    short_description text, intention text, use_cases text[], usage_example text, tags text[],
+    required_variables text[], optional_variables text[], max_questions smallint,
+${SHARED_COLUMNS.map((column) => `    ${column}_idx integer,`).join('\n')}
+    input_type text, output_type text, risk_level text, priority text, source_status text,
+    catalog_version text, revised_at text, show_image_card boolean, sort_order integer
   )
 join public.categories c on c.slug = d.category_slug
-join seed_mode_defaults m on m.mode = d.mode
 on conflict (external_ref) do update set
-  name = excluded.name, short_description = excluded.short_description,
-  intention = excluded.intention, use_cases = excluded.use_cases, tags = excluded.tags,
-  category_id = excluded.category_id, expected_input = excluded.expected_input,
-  minimal_context = excluded.minimal_context, sufficient_context = excluded.sufficient_context,
-  required_variables = excluded.required_variables,
-  optional_variables = excluded.optional_variables, default_values = excluded.default_values,
-  expected_output = excluded.expected_output, output_format = excluded.output_format,
-  quality_criteria = excluded.quality_criteria, preserve_rules = excluded.preserve_rules,
-  avoid_rules = excluded.avoid_rules, limitations = excluded.limitations,
-  fallback_if_incomplete = excluded.fallback_if_incomplete,
+  command = excluded.command, name = excluded.name, slug = excluded.slug,
+  mode = excluded.mode, category_id = excluded.category_id,
+  short_description = excluded.short_description, intention = excluded.intention,
+  use_cases = excluded.use_cases, usage_example = excluded.usage_example,
+  tags = excluded.tags, required_variables = excluded.required_variables,
+  optional_variables = excluded.optional_variables, max_questions = excluded.max_questions,
+${SHARED_COLUMNS.map((column) => `  ${column} = excluded.${column},`).join('\n')}
+  input_type = excluded.input_type, output_type = excluded.output_type,
   risk_level = excluded.risk_level, priority = excluded.priority,
-  show_image_card = excluded.show_image_card, thumbnail_spec = excluded.thumbnail_spec,
-  admin_notes = excluded.admin_notes;
+  source_status = excluded.source_status, catalog_version = excluded.catalog_version,
+  revised_at = excluded.revised_at, show_image_card = excluded.show_image_card,
+  sort_order = excluded.sort_order;
+
+-- --- Categories v1 devenues sans objet --------------------------------
+-- Archivees, jamais supprimees : leurs raccourcis ont deja rejoint la
+-- taxonomie v2 juste au-dessus, et l'historique reste consultable.
+update public.categories
+   set status = 'archived'
+ where slug not in (
+   select d.slug from jsonb_to_recordset(
+     ${jsonLiteral([...parentCategories, ...childCategories].map((c) => ({ slug: c.slug })))}::jsonb
+   ) as d(slug text)
+ )
+   and status <> 'archived'
+   and not exists (
+     select 1 from public.prompts p
+     where p.category_id = public.categories.id and p.status = 'published'
+   );
 
 -- --- Variantes par IA -------------------------------------------------
--- La compatibilite annoncee depend du mode, pas du raccourci : une ligne par
+-- La capacite annoncee depend du mode, pas du raccourci : une ligne par
 -- couple (mode, IA) suffit a produire les trois variantes de chaque prompt.
 insert into public.prompt_variants (prompt_id, provider_id, compatibility, compatibility_note, status)
 select p.id, pr.id, d.compatibility::public.compatibility_level, d.compatibility_note,
@@ -442,10 +463,22 @@ on conflict (prompt_id, provider_id) do update set
   status = excluded.status;
 
 -- --- Versions de payload ----------------------------------------------
--- Les 151 payloads du catalogue suivent un modele unique : plutot que de
--- recopier 230 Ko de texte, le seed porte le modele et Postgres le remplit
--- depuis les champs deja inseres. Le texte stocke est rigoureusement celui
--- du catalogue editorial (verifie octet par octet par tests/db/run.sh).
+-- La version precedente n'est jamais ecrasee : elle est retiree du courant
+-- et reste consultable (Regle R12). Seules les variantes qui recoivent une
+-- version v2.0 sont touchees.
+update public.prompt_versions existing
+   set is_current = false, status = 'retired'
+  from public.prompt_variants v
+  join public.prompts p on p.id = v.prompt_id
+ where existing.variant_id = v.id
+   and existing.is_current
+   and existing.version_label <> ${TAG}v2.0${TAG}
+   and p.external_ref like 'RCI-%';
+
+-- Les 250 payloads suivent un modele unique : plutot que de recopier 330 Ko
+-- de texte, le seed porte le modele et Postgres le remplit depuis les champs
+-- deja inseres. Le texte stocke est rigoureusement celui du catalogue
+-- editorial (verifie octet par octet par tests/db/run.sh).
 --
 -- Le payload initial est identique pour les trois IA : chaque variante recoit
 -- le meme texte. L'admin pourra ensuite faire diverger une version par IA
@@ -456,44 +489,45 @@ select
   v.id,
   d.version_label,
   format(
-    $tpl$[RaccourcIA - %s]
-
-Role: tu executes un raccourci %s pour produire: %s.
+    $tpl$[RaccourcIA %s]
+Rôle: exécuter « %s ».
 Objectif: %s
-Description: %s
 
-Contexte et detection:
-- Analyse d'abord les pieces jointes, le message utilisateur et les contraintes visibles.
-- Si le contexte suffit, execute directement sans poser de question.
-- Si une information indispensable manque, pose uniquement 1 a 3 QCM courts, puis attends la reponse.
-- Variables a controler: %s.
+1. CONTEXTE
+Analyse d'abord le message, la conversation et les pièces jointes. N'invente aucune donnée. Si le contexte suffit, exécute immédiatement.
+Entrée primaire: %s. Entrées acceptées: %s.
+Variables indispensables: %s.
 
-QCM conditionnel a utiliser seulement si necessaire:
+2. QUESTIONS CONDITIONNELLES
+Mode: %s. Ne pose que les questions réellement bloquantes, maximum %s.
 %s
 
-Execution:
-- Respecte strictement les informations fournies par l'utilisateur.
-- N'invente pas de faits, de chiffres, de sources, de marques ou de contraintes absentes.
-- Adapte la sortie au contexte final de l'utilisateur, pas a un exemple generique.
-- Si une demande est impossible dans l'interface, produis le meilleur prompt final reutilisable.
+3. EXÉCUTION
+%s
+Préserver: %s
+Éviter: %s
+Blocage: %s
 
-A preserver: %s
-A eviter: %s
+4. SORTIE
+%s
 
-Format de sortie attendu: %s
-Controle qualite avant reponse: %s$tpl$,
-    p.command::text, p.mode::text, p.name, p.intention, p.short_description,
-    array_to_string(p.required_variables, ', '), q.qcm_block,
-    p.preserve_rules, p.avoid_rules, p.output_format, p.quality_criteria
+5. CONTRÔLE QUALITÉ
+%s
+Signale brièvement toute hypothèse ou limite qui change la fiabilité du résultat.$tpl$,
+    p.command::text, p.name, p.intention,
+    p.primary_input, p.accepted_inputs,
+    array_to_string(p.required_variables, '; '),
+    p.questionnaire_mode, p.max_questions, q.qcm_block,
+    p.short_description, p.preserve_rules, p.avoid_rules, p.blocking_condition,
+    p.output_format, p.quality_criteria
   ),
   q.qcm,
-  coalesce(d.qcm_trigger, m.qcm_trigger),
+  ${dictExpression('qcm_trigger')},
   'published'::public.version_status, true, now()
 from jsonb_to_recordset(${jsonLiteral(versionRows)}::jsonb)
-  as d(external_ref text, version_label text, qcm_key text, qcm_trigger text)
+  as d(external_ref text, version_label text, qcm_key text, qcm_trigger_idx integer)
 join public.prompts p on p.external_ref = d.external_ref
 join public.prompt_variants v on v.prompt_id = p.id
-join seed_mode_defaults m on m.mode = p.mode::text
 join seed_qcm_sets q on q.key = d.qcm_key
 where not exists (
   select 1 from public.prompt_versions existing
@@ -506,9 +540,10 @@ commit;
 mkdirSync(dirname(OUTPUT), { recursive: true });
 writeFileSync(OUTPUT, sql, 'utf8');
 
-console.log(`Categories       : ${parentCategories.length + childCategories.length}`);
+console.log(`Categories       : ${obsoleteNote}`);
 console.log(`Raccourcis       : ${promptRows.length} / ${prompts.length}`);
 console.log(`Variantes IA     : ${variantCount}`);
+console.log(`Jeux de QCM      : ${qcmSets.length}`);
 console.log(`Taille du seed   : ${(sql.length / 1024).toFixed(0)} Ko`);
 console.log(`Fichier genere   : supabase/seed/catalogue.sql`);
 

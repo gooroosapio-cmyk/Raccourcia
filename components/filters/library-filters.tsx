@@ -18,7 +18,7 @@ export function LibraryFilters({
   categorySlug,
   search,
 }: {
-  modes: Mode[];
+  modes: readonly Mode[];
   mode: Mode;
   categories: CategoryNode[];
   categorySlug?: string;

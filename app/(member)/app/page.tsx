@@ -19,7 +19,7 @@ export default async function DiscoverPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const modes = await getAvailableModes();
+  const modes = getAvailableModes();
 
   const requested = typeof params.mode === 'string' ? params.mode : undefined;
   const mode: Mode = modes.includes(requested as Mode) ? (requested as Mode) : modes[0]!;

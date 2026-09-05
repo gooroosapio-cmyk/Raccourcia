@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { listAdminPrompts } from '@/lib/admin/queries';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
 import { StatusBadge } from '@/components/ui/status-badge';
-import { CONTENT_STATUS, MODES, MODE_LABELS } from '@/lib/constants';
+import { CONTENT_STATUS, MODES, MODE_LABELS, type Mode } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 export const metadata = { title: 'Raccourcis' };
@@ -23,7 +23,7 @@ export default async function AdminPromptsPage({
 
   const filters = {
     search: asString(params.q),
-    mode: MODES.includes(mode as Enums<'app_mode'>) ? (mode as Enums<'app_mode'>) : undefined,
+    mode: MODES.includes(mode as Mode) ? (mode as Mode) : undefined,
     status: CONTENT_STATUS.includes(status as Enums<'content_status'>)
       ? (status as Enums<'content_status'>)
       : undefined,

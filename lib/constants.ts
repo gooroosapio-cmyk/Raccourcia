@@ -6,11 +6,23 @@
 export const CONTENT_STATUS = ['draft', 'published', 'archived'] as const;
 export type ContentStatus = (typeof CONTENT_STATUS)[number];
 
-/** Modes racines du catalogue. `analyse` reste derriere un feature flag en V1. */
-export const MODES = ['image', 'texte', 'analyse'] as const;
+/**
+ * Domaines exposes par la navigation. Le catalogue v2.0 n'en compte que deux
+ * (Regle R01) : les raccourcis d'analyse sont ranges dans
+ * Texte > Travail & pilotage > Analyser & decider (Regle R03).
+ */
+export const MODES = ['image', 'texte'] as const;
 export type Mode = (typeof MODES)[number];
 
-export const MODE_LABELS: Record<Mode, string> = {
+/**
+ * Valeurs historiques de `app_mode`. `analyse` n'est plus un domaine public
+ * mais reste dans l'enum : aucune donnee n'est perdue et un contenu ancien
+ * garde un libelle lisible.
+ */
+export const STORED_MODES = ['image', 'texte', 'analyse'] as const;
+export type StoredMode = (typeof STORED_MODES)[number];
+
+export const MODE_LABELS: Record<StoredMode, string> = {
   image: 'Image',
   texte: 'Texte',
   analyse: 'Analyse',
@@ -28,6 +40,16 @@ export type PurchaseStatus = (typeof PURCHASE_STATUS)[number];
 export const PROVIDER_KEYS = ['chatgpt', 'claude', 'gemini'] as const;
 export type ProviderKey = (typeof PROVIDER_KEYS)[number];
 
+/** D'ou part une copie. Alimente `copy_events.surface`. */
+export const SURFACES = ['carte', 'detail', 'page-publique'] as const;
+export type Surface = (typeof SURFACES)[number];
+
+export const SURFACE_LABELS: Record<Surface, string> = {
+  carte: 'Depuis la carte',
+  detail: 'Depuis la fiche',
+  'page-publique': 'Page publique',
+};
+
 export const MEDIA_KINDS = ['thumbnail', 'before', 'after', 'example', 'cover'] as const;
 export type MediaKind = (typeof MEDIA_KINDS)[number];
 
@@ -36,14 +58,12 @@ export type RiskLevel = (typeof RISK_LEVELS)[number];
 
 /** Cles de configuration runtime, modifiables depuis /admin sans redeploiement. */
 export const CONFIG_KEYS = {
-  MODE_ANALYSE_ENABLED: 'mode_analyse_enabled',
   MAX_ACTIVE_SESSIONS: 'max_active_sessions',
   PUBLIC_CATALOG_ENABLED: 'public_catalog_enabled',
 } as const;
 
 /** Valeur par defaut si la table app_config est injoignable. */
 export const CONFIG_FALLBACKS = {
-  [CONFIG_KEYS.MODE_ANALYSE_ENABLED]: false,
   [CONFIG_KEYS.MAX_ACTIVE_SESSIONS]: 3,
   [CONFIG_KEYS.PUBLIC_CATALOG_ENABLED]: true,
 } as const;

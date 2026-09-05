@@ -10,7 +10,7 @@ export const metadata = { title: 'Parametres' };
  * l'administrateur lit "Mode Analyse", pas "mode_analyse_enabled".
  */
 const LABELS: Record<string, string> = {
-  mode_analyse_enabled: 'Mode Analyse',
+  mode_analyse_enabled: 'Mode Analyse (sans effet depuis le catalogue v2)',
   public_catalog_enabled: 'Pages publiques partageables',
   max_active_sessions: 'Appareils connectes par compte',
   free_prompt_limit: 'Raccourcis gratuits de demonstration',

@@ -1,0 +1,66 @@
+[
+  {
+    "commande_a": "/summary",
+    "commande_b": "/docsynthese",
+    "niveau_proximite": "Proches",
+    "intention_a": "Source unique et résumé fidèle",
+    "intention_b": "Croisement de plusieurs sources, contradictions et décisions",
+    "decision": "Conserver les deux"
+  },
+  {
+    "commande_a": "/landingcopy",
+    "commande_b": "/salespage",
+    "niveau_proximite": "Proches",
+    "intention_a": "Landing courte et modulaire",
+    "intention_b": "Argumentaire long-form avec objections",
+    "decision": "Conserver les deux"
+  },
+  {
+    "commande_a": "/crosssection",
+    "commande_b": "/cutaway",
+    "niveau_proximite": "Proches",
+    "intention_a": "Plan de coupe complet",
+    "intention_b": "Ouverture locale d'une coque",
+    "decision": "Conserver les deux"
+  },
+  {
+    "commande_a": "/miniature",
+    "commande_b": "/tiltshift",
+    "niveau_proximite": "Proches",
+    "intention_a": "Reconstruction en diorama physique",
+    "intention_b": "Effet optique sur scène réelle",
+    "decision": "Conserver les deux"
+  },
+  {
+    "commande_a": "/blueprint",
+    "commande_b": "/floorplan",
+    "niveau_proximite": "Proches",
+    "intention_a": "Plan technique d'un objet ou système",
+    "intention_b": "Organisation spatiale et circulation d'un lieu",
+    "decision": "Conserver les deux"
+  },
+  {
+    "commande_a": "/tiktokscript",
+    "commande_b": "/scriptvideo",
+    "niveau_proximite": "Proches",
+    "intention_a": "Vidéo verticale courte avec codes TikTok",
+    "intention_b": "Script vidéo générique multiformat",
+    "decision": "Conserver les deux"
+  },
+  {
+    "commande_a": "/infographic",
+    "commande_b": "/timelinevisual",
+    "niveau_proximite": "Proches",
+    "intention_a": "Synthèse visuelle thématique",
+    "intention_b": "Chronologie ordonnée par dates",
+    "decision": "Conserver les deux"
+  },
+  {
+    "commande_a": "/comic",
+    "commande_b": "/cinematicstill",
+    "niveau_proximite": "Proches",
+    "intention_a": "Illustration BD avec encrage",
+    "intention_b": "Photogramme réaliste de cinéma",
+    "decision": "Conserver les deux"
+  }
+]

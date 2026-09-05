@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { MODES, PROVIDER_KEYS, CATALOG_PAGE_SIZE } from '@/lib/constants';
+import { MODES, PROVIDER_KEYS, SURFACES, CATALOG_PAGE_SIZE } from '@/lib/constants';
 
 /**
  * Schemas d'entree serveur. Aucune confiance n'est accordee au client :
@@ -9,7 +9,7 @@ import { MODES, PROVIDER_KEYS, CATALOG_PAGE_SIZE } from '@/lib/constants';
 export const resolvePromptInput = z.object({
   promptId: z.string().uuid(),
   provider: z.enum(PROVIDER_KEYS),
-  surface: z.enum(['carte', 'detail', 'page-publique']).default('detail'),
+  surface: z.enum(SURFACES).default('detail'),
 });
 
 export type ResolvePromptInput = z.infer<typeof resolvePromptInput>;
