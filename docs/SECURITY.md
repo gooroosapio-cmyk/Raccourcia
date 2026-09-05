@@ -53,6 +53,35 @@ chaque session Supabase (claim `session_id` du JWT). Au-dela de
 `max_active_sessions` (defaut 3), l'interface propose de deconnecter un appareil
 plutot que de bloquer. Aucun fingerprinting materiel.
 
+## Privileges de fonctions
+
+Postgres accorde `EXECUTE` a `PUBLIC` par defaut : toute fonction du schema
+`public` devient un endpoint `/rest/v1/rpc/`. La migration
+`..._harden_function_privileges.sql` revoque ce privilege partout ou il n'a
+pas lieu d'etre. Deux failles reelles remontees par l'audit Supabase ont ete
+corrigees ainsi :
+
+- `consume_rate_limit` et `purge_rate_limit_counters` etaient appelables par
+  n'importe qui. Un visiteur pouvait epuiser le quota d'un autre compte, ou
+  vider toutes les fenetres et neutraliser le rate limiting. Reserve au
+  `service_role`.
+- `has_active_entitlement(uuid)` acceptait un identifiant arbitraire : un
+  membre pouvait sonder l'acces d'un autre compte. La fonction ne repond plus
+  que pour l'appelant lui-meme, ou pour un administrateur.
+
+Restent volontairement executables :
+
+| Fonction                                                      | Pourquoi                                                                                                  |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `is_admin`, `is_super_admin`, `has_role`                      | Appelees par les policies RLS, evaluees avec les droits de l'appelant. Ne revelent que son propre statut. |
+| `has_active_entitlement`, `current_app_session_is_active`     | Idem, et desormais limitees a l'appelant.                                                                 |
+| `resolve_prompt`, `track_prompt_view`, `register_app_session` | RPC membres assumees, reservees a `authenticated`.                                                        |
+
+`rate_limit_counters` a RLS active sans aucune policy : c'est un refus total
+volontaire, la table n'est ecrite que par une fonction `SECURITY DEFINER`.
+`rls_auto_enable` est un garde-fou fourni par Supabase, qui active RLS
+automatiquement sur toute nouvelle table de `public`.
+
 ## Tests de securite automatises
 
 `./tests/db/run.sh` rejoue toutes les migrations sur un Postgres jetable puis

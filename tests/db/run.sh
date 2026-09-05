@@ -67,6 +67,33 @@ if [[ -f "$ROOT/supabase/seed/catalogue.sql" ]]; then
     -f "$ROOT/supabase/seed/catalogue.sql" >/dev/null
 fi
 
+# Le seed factorise les valeurs communes : on verifie que la base contient
+# bien, champ par champ, ce que decrit le catalogue editorial source.
+if [[ -f "$ROOT/supabase/seed/catalogue.sql" ]]; then
+  echo "==> Fidelite du catalogue"
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -o /tmp/pgdump.json -c "
+    select coalesce(jsonb_agg(to_jsonb(x)), '[]'::jsonb) from (
+      select p.external_ref, p.command::text, p.name, p.mode::text, p.short_description,
+             p.intention, p.use_cases, p.tags, p.required_variables, p.optional_variables,
+             p.expected_input, p.minimal_context, p.sufficient_context, p.default_values,
+             p.expected_output, p.output_format, p.quality_criteria, p.preserve_rules,
+             p.avoid_rules, p.limitations, p.fallback_if_incomplete, p.admin_notes,
+             p.thumbnail_spec, p.risk_level::text, p.priority, p.show_image_card,
+             (select count(*) from public.prompt_variants v where v.prompt_id = p.id) as variant_count,
+             (select count(*) from public.prompt_variants v
+                join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
+              where v.prompt_id = p.id) as current_version_count,
+             (select distinct pv.payload from public.prompt_variants v
+                join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
+              where v.prompt_id = p.id) as payload,
+             (select distinct pv.qcm_trigger from public.prompt_variants v
+                join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
+              where v.prompt_id = p.id) as qcm_trigger
+      from public.prompts p where p.external_ref like 'RCI-%'
+    ) x;"
+  if node "$ROOT/tests/db/verify-fidelity.mjs" /tmp/pgdump.json; then :; else exit 1; fi
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

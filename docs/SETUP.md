@@ -30,8 +30,14 @@ npm run catalogue:import      # regenere supabase/seed/catalogue.sql
 npx supabase db execute --file supabase/seed/catalogue.sql
 ```
 
-Resultat attendu : 63 categories, 151 raccourcis, 453 variantes IA.
+Resultat attendu : 63 categories, 151 raccourcis, 453 variantes IA,
+453 versions courantes.
 Le fichier est idempotent, il peut etre rejoue sans creer de doublon.
+
+> Le seed factorise ce qui est commun a un mode (contexte attendu, format de
+> sortie, garde-fous, QCM) et reconstitue le payload depuis son modele
+> canonique. Le texte stocke reste rigoureusement celui du catalogue
+> editorial : `tests/db/run.sh` le verifie octet par octet.
 
 > Apres la mise en production, **Supabase devient la seule source de verite**.
 > Le tableur `data/source/` redevient une archive d'export, jamais un second
