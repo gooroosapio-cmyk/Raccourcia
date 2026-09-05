@@ -1,0 +1,77 @@
+[
+  {
+    "id": "R01",
+    "regle": "Deux domaines",
+    "description": "La navigation publique expose uniquement IMAGE et TEXTE."
+  },
+  {
+    "id": "R02",
+    "regle": "Taxonomie finale",
+    "description": "Une fiche appartient à une seule catégorie et une seule sous-catégorie; les tags assurent les usages transverses."
+  },
+  {
+    "id": "R03",
+    "regle": "Analyse intégrée",
+    "description": "Tous les anciens prompts ANALYSER sont classés dans TEXTE > Travail & pilotage > Analyser & décider."
+  },
+  {
+    "id": "R04",
+    "regle": "Commande globale",
+    "description": "La commande commence par /, respecte ^/[a-z][a-z0-9_]{2,31}$ et reste unique dans tout le catalogue."
+  },
+  {
+    "id": "R05",
+    "regle": "Copie",
+    "description": "Le bouton Copier envoie payload_copiable complet et journalise prompt_id, version et IA choisie."
+  },
+  {
+    "id": "R06",
+    "regle": "Contexte d'abord",
+    "description": "Le modèle lit message, conversation et pièces jointes avant toute question."
+  },
+  {
+    "id": "R07",
+    "regle": "QCM conditionnel",
+    "description": "Maximum 3 questions; ne jamais redemander une donnée explicitement fournie ou déductible avec confiance."
+  },
+  {
+    "id": "R08",
+    "regle": "Blocage",
+    "description": "Si une source obligatoire manque, demander la source ou livrer une grille; ne jamais simuler son contenu."
+  },
+  {
+    "id": "R09",
+    "regle": "Image",
+    "description": "Vérifier droits et consentement; conserver l'original; signaler les simulations techniques et temporelles."
+  },
+  {
+    "id": "R10",
+    "regle": "Texte sensible",
+    "description": "Distinguer faits, hypothèses et recommandations; validation humaine en droit, santé, finance, sécurité et crise."
+  },
+  {
+    "id": "R11",
+    "regle": "Publication",
+    "description": "Publier seulement statut=publié, commande unique, payload non vide, version testée et métadonnées complètes."
+  },
+  {
+    "id": "R12",
+    "regle": "Versioning",
+    "description": "Conserver l'ID stable; incrémenter la version lors d'un changement de comportement; archiver sans réutiliser l'ID."
+  },
+  {
+    "id": "R13",
+    "regle": "Miniatures",
+    "description": "Les prompts IMAGE utilisent un avant/après comparable; les prompts TEXTE n'imposent pas d'image décorative."
+  },
+  {
+    "id": "R14",
+    "regle": "Compatibilité",
+    "description": "Décrire la capacité sans promesse absolue; prévoir un fallback vers un prompt final si l'outil n'exécute pas l'action."
+  },
+  {
+    "id": "R15",
+    "regle": "Tests",
+    "description": "Chaque prompt possède un test nominal, un test de contexte incomplet et un test de blocage."
+  }
+]

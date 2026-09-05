@@ -1,0 +1,72 @@
+[
+  {
+    "id": "A01",
+    "controle": "Total prompts",
+    "valeur_obtenue": "250",
+    "valeur_attendue": "250",
+    "statut": "OK"
+  },
+  {
+    "id": "A02",
+    "controle": "Commandes uniques",
+    "valeur_obtenue": "250",
+    "valeur_attendue": "250",
+    "statut": "OK"
+  },
+  {
+    "id": "A03",
+    "controle": "Identifiants uniques",
+    "valeur_obtenue": "250",
+    "valeur_attendue": "250",
+    "statut": "OK"
+  },
+  {
+    "id": "A04",
+    "controle": "Domaines",
+    "valeur_obtenue": "2",
+    "valeur_attendue": "2",
+    "statut": "OK"
+  },
+  {
+    "id": "A05",
+    "controle": "Catégories",
+    "valeur_obtenue": "10",
+    "valeur_attendue": "10",
+    "statut": "OK"
+  },
+  {
+    "id": "A06",
+    "controle": "Questions <= 3",
+    "valeur_obtenue": "3",
+    "valeur_attendue": "3",
+    "statut": "OK"
+  },
+  {
+    "id": "A07",
+    "controle": "Champs obligatoires complets",
+    "valeur_obtenue": "0",
+    "valeur_attendue": "0",
+    "statut": "OK"
+  },
+  {
+    "id": "A08",
+    "controle": "Sous-catégories finales",
+    "valeur_obtenue": "20",
+    "valeur_attendue": "20",
+    "statut": "OK"
+  },
+  {
+    "id": "A09",
+    "controle": "Doublons sémantiques corrigés",
+    "valeur_obtenue": "8",
+    "valeur_attendue": "8",
+    "statut": "OK"
+  },
+  {
+    "id": "A10",
+    "controle": "Avertissements non bloquants",
+    "valeur_obtenue": "0",
+    "valeur_attendue": "0",
+    "statut": "OK"
+  }
+]

@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+/*
+ * RaccourcIA - Design system, Direction 03 (Spec UX/UI V1, section 15).
+ * Palette derivee du logo : blanc dominant, bleu electrique pour l'action,
+ * bleu nuit pour la hierarchie. Le bleu clair est un fond, jamais un texte.
+ */
+@theme {
+  --color-brand: #1463ff;
+  --color-brand-strong: #0f4fd8;
+  --color-night: #0b163f;
+  --color-sky: #eaf2ff;
+  --color-canvas: #f7f9fc;
+  --color-surface: #ffffff;
+  --color-ink: #111827;
+  --color-muted: #667085;
+  --color-line: #e4e9f2;
+  --color-success: #16a34a;
+  --color-warning: #e88a00;
+  --color-danger: #dc2626;
+
+  /* Rayons : 10-12px petits composants, 16px cartes, 20-24px sheets. */
+  --radius-control: 10px;
+  --radius-card: 16px;
+  --radius-sheet: 22px;
+
+  /* Transitions courtes : 150-250ms (section 17). */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  /* Corps mobile cible 15-16px (section 15). */
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  /* Safe areas iOS/Android pour la barre basse et les bottom sheets. */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Cible tactile minimale de 44x44px pour toute action recurrente. */
+.touch-target {
+  min-block-size: 44px;
+  min-inline-size: 44px;
+}
+
+/* Aucune animation decorative ne doit ralentir la copie. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}

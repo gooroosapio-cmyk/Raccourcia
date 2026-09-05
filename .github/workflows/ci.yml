@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  app:
+    name: Lint, types, tests, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build
+        env:
+          # Valeurs factices : le build ne doit dependre d'aucun secret reel.
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key-value
+          NEXT_PUBLIC_SITE_URL: https://example.com
+
+  database:
+    name: Migrations, RLS et idempotence
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Le seed doit correspondre exactement aux donnees du catalogue.
+      - name: Verifier que le seed est a jour
+        run: |
+          npm run catalogue:import
+          git diff --exit-code supabase/seed/catalogue.sql
+      - name: Installer PostgreSQL 16
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 postgresql-contrib-16
+      - name: Rejouer les migrations et les tests de securite
+        run: sudo PG_BIN=/usr/lib/postgresql/16/bin ./tests/db/run.sh

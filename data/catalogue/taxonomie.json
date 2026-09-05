@@ -1,0 +1,182 @@
+[
+  {
+    "domaine": "IMAGE",
+    "categorie": "Technique & pédagogique",
+    "sous_categorie": "Vue technique",
+    "nombre_prompts": "15",
+    "ordre_categorie": "1",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "IMAGE",
+    "categorie": "Technique & pédagogique",
+    "sous_categorie": "Information visuelle",
+    "nombre_prompts": "6",
+    "ordre_categorie": "1",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  },
+  {
+    "domaine": "IMAGE",
+    "categorie": "Produit & publicité",
+    "sous_categorie": "Produit & e-commerce",
+    "nombre_prompts": "14",
+    "ordre_categorie": "2",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "IMAGE",
+    "categorie": "Produit & publicité",
+    "sous_categorie": "Campagnes & social",
+    "nombre_prompts": "8",
+    "ordre_categorie": "2",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  },
+  {
+    "domaine": "IMAGE",
+    "categorie": "Retouche & transformation",
+    "sous_categorie": "Retouche ciblée",
+    "nombre_prompts": "17",
+    "ordre_categorie": "3",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "IMAGE",
+    "categorie": "Retouche & transformation",
+    "sous_categorie": "Lieux & lifestyle",
+    "nombre_prompts": "9",
+    "ordre_categorie": "3",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  },
+  {
+    "domaine": "IMAGE",
+    "categorie": "Portrait & identité",
+    "sous_categorie": "Portrait & beauté",
+    "nombre_prompts": "11",
+    "ordre_categorie": "4",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "IMAGE",
+    "categorie": "Portrait & identité",
+    "sous_categorie": "Mode & identité",
+    "nombre_prompts": "3",
+    "ordre_categorie": "4",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  },
+  {
+    "domaine": "IMAGE",
+    "categorie": "Styles & effets",
+    "sous_categorie": "Cinéma & spectaculaire",
+    "nombre_prompts": "17",
+    "ordre_categorie": "5",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "IMAGE",
+    "categorie": "Styles & effets",
+    "sous_categorie": "Illustration & matières",
+    "nombre_prompts": "10",
+    "ordre_categorie": "5",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Business & croissance",
+    "sous_categorie": "Offre & stratégie",
+    "nombre_prompts": "8",
+    "ordre_categorie": "1",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Business & croissance",
+    "sous_categorie": "Marketing & acquisition",
+    "nombre_prompts": "12",
+    "ordre_categorie": "1",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Communication & contenu",
+    "sous_categorie": "Marque & éditorial",
+    "nombre_prompts": "16",
+    "ordre_categorie": "2",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Communication & contenu",
+    "sous_categorie": "Relation & réseaux",
+    "nombre_prompts": "13",
+    "ordre_categorie": "2",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Travail & pilotage",
+    "sous_categorie": "Documents & opérations",
+    "nombre_prompts": "18",
+    "ordre_categorie": "3",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Travail & pilotage",
+    "sous_categorie": "Analyser & décider",
+    "nombre_prompts": "41",
+    "ordre_categorie": "3",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Produit & expérience",
+    "sous_categorie": "Produit & UX",
+    "nombre_prompts": "6",
+    "ordre_categorie": "4",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Produit & expérience",
+    "sous_categorie": "Support & tech",
+    "nombre_prompts": "8",
+    "ordre_categorie": "4",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Apprentissage & carrière",
+    "sous_categorie": "Carrière & recrutement",
+    "nombre_prompts": "6",
+    "ordre_categorie": "5",
+    "ordre_sous_categorie": "1",
+    "statut": "actif"
+  },
+  {
+    "domaine": "TEXTE",
+    "categorie": "Apprentissage & carrière",
+    "sous_categorie": "Études & créativité",
+    "nombre_prompts": "12",
+    "ordre_categorie": "5",
+    "ordre_sous_categorie": "2",
+    "statut": "actif"
+  }
+]
