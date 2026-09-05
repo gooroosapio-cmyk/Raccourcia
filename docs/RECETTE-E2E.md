@@ -132,11 +132,24 @@ fonctions, 35 policies, 151 raccourcis, 453 versions, 93 categories,
 | `analytics`                  | 20260905080000                |
 | `catalogue_v2`               | 20260905090000                |
 
-### 5.2 `analytics_window` : `search_path` mutable
+### 5.2 `analytics_window` : `search_path` mutable — corrige
 
-Seule fonction du schema `public` sans `search_path` fige (avertissement
-`0011_function_search_path_mutable`). Son `EXECUTE` n'est accorde a personne,
-donc le risque est faible, mais la migration de durcissement l'a manquee.
+`analytics_window` etait la seule fonction du schema `public` sans
+`search_path` fige (avertissement `0011_function_search_path_mutable`). Son
+`EXECUTE` n'etant accorde a personne, le risque reel etait faible, mais la
+migration de durcissement l'avait manquee.
+
+Corrige par `20260905100000_harden_analytics_window.sql`. Le corps n'utilise
+que `least`, `greatest` et `coalesce`, qui sont des constructions du langage
+et non des fonctions resolues via `search_path` : le figer a vide ne casse
+aucune resolution de nom.
+
+Etat verifie apres application : `proconfig` vaut `search_path=""`, la
+fonction reste `SECURITY INVOKER`, son `EXECUTE` n'est accorde a aucun role,
+et le bornage est intact (`null` donne 30, `0` et `-5` donnent 1, `30` donne
+30, `99999` donne 365). L'auditeur Supabase ne remonte plus cet
+avertissement. Les 11 scenarios de `tests/db/run.sh` passent sur les 15
+migrations rejouees a neuf.
 
 ### 5.3 Protection des mots de passe compromis desactivee
 

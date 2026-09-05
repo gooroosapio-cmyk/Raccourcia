@@ -119,6 +119,11 @@ Restent volontairement executables :
 | `has_active_entitlement`, `current_app_session_is_active`     | Idem, et desormais limitees a l'appelant.                                                                 |
 | `resolve_prompt`, `track_prompt_view`, `register_app_session` | RPC membres assumees, reservees a `authenticated`.                                                        |
 
+La migration `..._harden_analytics_window.sql` complete ce durcissement :
+`analytics_window` etait la derniere fonction du schema sans `search_path`
+fige. Son corps ne s'appuyant que sur des constructions du langage, le figer
+a vide ne change aucune resolution de nom.
+
 `rate_limit_counters` a RLS active sans aucune policy : c'est un refus total
 volontaire, la table n'est ecrite que par une fonction `SECURITY DEFINER`.
 `rls_auto_enable` est un garde-fou fourni par Supabase, qui active RLS
