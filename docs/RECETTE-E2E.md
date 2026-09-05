@@ -92,13 +92,42 @@ Etat verifie apres application :
 
 L'auditeur Supabase ne remonte aucun avertissement nouveau.
 
-**Reste a aligner :** l'application via MCP a enregistre la migration sous la
-version `20260905122619`, alors que le depot porte `20260905070000`. Un
-`supabase db push` depuis le depot considererait donc le fichier comme non
-applique et tenterait de le rejouer, ce qui echouerait sur
-`create table public.pending_licenses`. A corriger par
-`supabase migration repair --status applied 20260905070000`, ou en renommant
-le fichier du depot pour qu'il porte la version enregistree.
+**Historique des migrations.** L'application via MCP avait enregistre la
+migration sous la version `20260905122619`, la ou le depot porte
+`20260905070000`. La ligne a ete corrigee (`update` sur
+`supabase_migrations.schema_migrations`, une seule ligne touchee, empreinte
+des `statements` inchangee), et `chariow_ingestion` se range desormais a sa
+place chronologique, entre `admin_operations` et `analytics`.
+
+Cette correction a mis au jour un ecart plus large, **anterieur a cette
+recette** : les 13 autres migrations portent elles aussi en production des
+versions distinctes de celles du depot, generees cote serveur lors de leur
+application.
+
+| Migration                    | Version depot  | Version production |
+| ---------------------------- | -------------- | ------------------ |
+| `extensions_and_types`       | 20260904120000 | 20260904233033     |
+| `identity`                   | 20260904120100 | 20260904234025     |
+| `authorization_helpers`      | 20260904120200 | 20260904234040     |
+| `commerce`                   | 20260904120300 | 20260904234135     |
+| `catalog`                    | 20260904120400 | 20260905003152     |
+| `usage_and_governance`       | 20260904120500 | 20260905003345     |
+| `rls`                        | 20260904120600 | 20260905003451     |
+| `resolve_prompt`             | 20260904120700 | 20260905003518     |
+| `storage_and_reference_data` | 20260904120800 | 20260905004540     |
+| `harden_function_privileges` | 20260905050000 | 20260905045107     |
+| `admin_operations`           | 20260905060000 | 20260905055201     |
+| `chariow_ingestion`          | 20260905070000 | 20260905070000     |
+| `analytics`                  | 20260905080000 | 20260905113614     |
+| `catalogue_v2`               | 20260905090000 | 20260905113638     |
+
+Les 14 noms concordent, dans le meme ordre : le renumerotage eventuel serait
+un simple reetiquetage, sans reordonnancement. En l'etat, `supabase db push`
+depuis le depot considererait les 13 lignes non alignees comme non appliquees
+et tenterait de les rejouer, ce qui echouerait des la premiere
+(`create type ... already exists`). Le projet n'a donc jamais ete synchronise
+par `db push` ; il reste a decider si on aligne les 13 lignes restantes ou si
+on assume un autre canal de deploiement.
 
 ### 5.2 `analytics_window` : `search_path` mutable
 
