@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 import { claimAccess, type ActionState } from '@/lib/actions/auth';
-import { Field, FormError, SubmitButton } from '@/components/ui/form-status';
+import { Field, FormError, FormNotice, SubmitButton } from '@/components/ui/form-status';
 
 export function ClaimForm() {
   const [state, action] = useActionState<ActionState, FormData>(claimAccess, {});
@@ -25,6 +25,7 @@ export function ClaimForm() {
         hint="8 caracteres minimum."
       />
       <FormError message={state.error} />
+      <FormNotice message={state.success} />
       <SubmitButton>Activer mon acces</SubmitButton>
     </form>
   );

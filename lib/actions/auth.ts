@@ -115,25 +115,46 @@ export async function claimAccess(_prev: ActionState, formData: FormData): Promi
     };
   }
 
-  const { data: created, error: createError } = await admin.auth.admin.createUser({
-    email,
-    password: parsed.data.password,
-    email_confirm: true,
-  });
+  // Un compte peut deja exister pour cet email : rachat, ou compte ouvert par
+  // une autre voie. Sans ce cas, `createUser` echouait et l'acheteur restait
+  // sans issue : la recuperation, elle, exige un achat deja rattache. Il avait
+  // paye et ne pouvait ni activer, ni recuperer.
+  const { data: existing } = await admin
+    .from('profiles')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
 
-  if (createError || !created.user) {
-    return { error: 'Impossible de creer le compte. Reessayez ou contactez le support.' };
+  let userId: string;
+
+  if (existing) {
+    // Le mot de passe du compte existant n'est jamais remplace ici : la licence
+    // prouve l'achat, pas la possession du compte. Changer un mot de passe
+    // reste le seul fait de la recuperation, qui devient justement accessible
+    // une fois l'achat rattache ci-dessous.
+    userId = existing.id;
+  } else {
+    const { data: created, error: createError } = await admin.auth.admin.createUser({
+      email,
+      password: parsed.data.password,
+      email_confirm: true,
+    });
+
+    if (createError || !created.user) {
+      return { error: 'Impossible de creer le compte. Reessayez ou contactez le support.' };
+    }
+    userId = created.user.id;
   }
 
   await admin
     .from('purchases')
-    .update({ user_id: created.user.id, claimed_at: new Date().toISOString() })
+    .update({ user_id: userId, claimed_at: new Date().toISOString() })
     .eq('id', purchase.id);
 
   if (purchase.product_id) {
     await admin.from('entitlements').upsert(
       {
-        user_id: created.user.id,
+        user_id: userId,
         product_id: purchase.product_id,
         access_type: 'lifetime',
         status: 'active',
@@ -144,7 +165,21 @@ export async function claimAccess(_prev: ActionState, formData: FormData): Promi
   }
 
   const supabase = await createClient();
-  await supabase.auth.signInWithPassword({ email, password: parsed.data.password });
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password: parsed.data.password,
+  });
+
+  // Compte preexistant dont le mot de passe saisi n'est pas celui du compte :
+  // l'acces est acquis, il ne manque que la connexion. On le dit clairement
+  // plutot que de rediriger vers un espace membre qui renverrait au login.
+  if (signInError) {
+    return {
+      success:
+        'Votre acces a ete ajoute a votre compte existant. Connectez-vous avec votre mot de passe habituel, ou passez par la recuperation si vous l avez oublie.',
+    };
+  }
+
   await registerCurrentSession(deviceLabelFromUserAgent(userAgent));
 
   redirect('/app');
