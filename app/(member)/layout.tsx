@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { Logo } from '@/components/ui/logo';
@@ -35,23 +34,21 @@ export default async function MemberLayout({ children }: { children: React.React
           <Logo className="text-lg" />
         </header>
         {/*
-          La fenetre d'offre lit les parametres d'URL : Next impose une
-          frontiere Suspense autour de `useSearchParams`. Le repli est le
-          contenu nu, jamais une page vide.
+          Aucune frontiere Suspense ici : elle ferait envoyer la coquille avant
+          que les pages reservees aient decide de rediriger, et leur garde
+          deviendrait une simple redirection cliente.
         */}
-        <Suspense fallback={<main className="flex-1 px-5 pb-24">{children}</main>}>
-          <PaywallProvider
-            hasAccess={hasLifetimeAccess}
-            offre={{
-              purchaseUrl: config.purchaseUrl,
-              price: config.price,
-              freeCount: counts.free,
-              totalCount: counts.total,
-            }}
-          >
-            <main className="flex-1 px-5 pb-24">{children}</main>
-          </PaywallProvider>
-        </Suspense>
+        <PaywallProvider
+          hasAccess={hasLifetimeAccess}
+          offre={{
+            purchaseUrl: config.purchaseUrl,
+            price: config.price,
+            freeCount: counts.free,
+            totalCount: counts.total,
+          }}
+        >
+          <main className="flex-1 px-5 pb-24">{children}</main>
+        </PaywallProvider>
         <BottomNav />
       </div>
     </ToastProvider>
