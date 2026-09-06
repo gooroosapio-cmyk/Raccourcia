@@ -21,7 +21,7 @@ export default async function NewPromptPage() {
           Nouveau raccourci
         </h1>
         <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-          Le raccourci est cree en brouillon. Vous ajoutez ensuite le prompt complet de chaque IA et
+          Le raccourci est créé en brouillon. Vous ajoutez ensuite le prompt complet de chaque IA et
           les visuels, puis vous publiez.
         </p>
       </div>

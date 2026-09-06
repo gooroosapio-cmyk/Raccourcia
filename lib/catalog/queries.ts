@@ -218,9 +218,9 @@ function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
 
   return {
     beforeUrl: mediaUrl(before.storage_path),
-    beforeAlt: before.alt ?? 'Visuel de depart',
+    beforeAlt: before.alt ?? 'Visuel de départ',
     afterUrl: mediaUrl(after.storage_path),
-    afterAlt: after.alt ?? 'Resultat obtenu avec la commande',
+    afterAlt: after.alt ?? 'Résultat obtenu avec la commande',
   };
 }
 

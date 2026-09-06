@@ -53,20 +53,20 @@ export function CopyCommandButton({
       const data = (await response.json()) as { payload?: string; error?: string };
       if (!response.ok || !data.payload) {
         setEtat('repos');
-        show(data.error ?? 'Copie impossible. Reessayez.', 'erreur');
+        show(data.error ?? 'Copie impossible. Réessayez.', 'erreur');
         return;
       }
 
       await navigator.clipboard.writeText(data.payload);
       setEtat('copie');
-      show('Commande copiee');
+      show('Commande copiée');
       navigator.vibrate?.(10);
       // La coche est une confirmation breve : le bouton doit redevenir
       // utilisable tout de suite, on copie souvent deux fois de suite.
       setTimeout(() => setEtat('repos'), 1400);
     } catch {
       setEtat('repos');
-      show('Copie impossible. Reessayez.', 'erreur');
+      show('Copie impossible. Réessayez.', 'erreur');
     }
   }, [locked, onLockedClick, promptId, provider, show, surface]);
 

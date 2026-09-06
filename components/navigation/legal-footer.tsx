@@ -8,21 +8,21 @@ import Link from 'next/link';
  */
 export function LegalFooter({ className = '' }: { className?: string }) {
   const liens = [
-    { href: '/legal/mentions', label: 'Mentions legales' },
-    { href: '/legal/confidentialite', label: 'Confidentialite' },
+    { href: '/legal/mentions', label: 'Mentions légales' },
+    { href: '/legal/confidentialite', label: 'Confidentialité' },
     { href: '/legal/conditions', label: 'Conditions' },
   ];
 
   return (
     <footer className={`text-[12px] text-[color:var(--color-muted)] ${className}`}>
-      <nav aria-label="Informations legales" className="flex flex-wrap gap-x-4 gap-y-1">
+      <nav aria-label="Informations légales" className="flex flex-wrap gap-x-4 gap-y-1">
         {liens.map((lien) => (
           <Link key={lien.href} href={lien.href} className="underline underline-offset-2">
             {lien.label}
           </Link>
         ))}
       </nav>
-      <p className="mt-2">RaccourcIA - bibliotheque de commandes pour ChatGPT, Claude et Gemini.</p>
+      <p className="mt-2">RaccourcIA — bibliothèque de commandes pour ChatGPT, Claude et Gemini.</p>
     </footer>
   );
 }

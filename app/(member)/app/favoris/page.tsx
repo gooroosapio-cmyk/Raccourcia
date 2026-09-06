@@ -39,7 +39,7 @@ export default async function FavoritesPage() {
         locked={!hasLifetimeAccess}
         emptyState={
           <EmptyState
-            title="Aucun favori pour l instant."
+            title="Aucun favori pour l’instant."
             body="Ajoutez vos commandes preferees pour les retrouver ici."
             actionLabel="Parcourir la bibliotheque"
             actionHref="/app"

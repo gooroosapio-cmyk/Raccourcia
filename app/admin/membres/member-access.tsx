@@ -36,7 +36,7 @@ export function MemberAccessForm({ userId, hasAccess }: { userId: string; hasAcc
             : 'bg-[color:var(--color-brand)] text-white'
         }`}
       >
-        {hasAccess ? 'Retirer l acces a vie' : 'Accorder l acces a vie'}
+        {hasAccess ? 'Retirer l’accès à vie' : 'Accorder l’accès à vie'}
       </button>
 
       <AdminFeedback state={state} />

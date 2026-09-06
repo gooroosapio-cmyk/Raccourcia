@@ -24,7 +24,7 @@ export default function GlobalError({ reset }: { error: Error; reset: () => void
             Une erreur est survenue.
           </p>
           <p style={{ marginTop: 4, fontSize: 13, color: '#667085' }}>
-            Reessayez dans un instant, vos donnees sont intactes.
+            Réessayez dans un instant, vos données sont intactes.
           </p>
           <button
             type="button"

@@ -79,7 +79,7 @@ export function BeforeAfterMedia({
       </span>
 
       <Etiquette position="gauche">Avant</Etiquette>
-      <Etiquette position="droite">Apres</Etiquette>
+      <Etiquette position="droite">Après</Etiquette>
 
       <figcaption className="sr-only">
         {command} : a gauche, {media.beforeAlt}. A droite, {media.afterAlt}.
@@ -137,7 +137,7 @@ export function ResultMedia({
     >
       <Image
         src={url}
-        alt={alt ?? `Resultat obtenu avec ${command}`}
+        alt={alt ?? `Résultat obtenu avec ${command}`}
         fill
         sizes={sizes}
         priority={priority}

@@ -24,7 +24,7 @@ export default async function AdminMembersPage({
       <div>
         <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Membres</h1>
         <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-          Retrouvez un compte par son adresse e-mail pour verifier ou debloquer son acces.
+          Retrouvez un compte par son adresse e-mail pour vérifier ou debloquer son accès.
         </p>
       </div>
 
@@ -50,8 +50,8 @@ export default async function AdminMembersPage({
       {members.length === 0 ? (
         <p className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-5 text-center text-[15px] text-[color:var(--color-muted)]">
           {search
-            ? 'Aucun compte ne correspond a cette recherche.'
-            : 'Aucun compte pour l instant.'}
+            ? 'Aucun compte ne correspond à cette recherche.'
+            : 'Aucun compte pour l’instant.'}
         </p>
       ) : (
         <ul className="space-y-2">
@@ -84,7 +84,7 @@ export default async function AdminMembersPage({
                       : 'bg-[color:var(--color-canvas)] text-[color:var(--color-muted)]'
                   }`}
                 >
-                  {member.hasAccess ? 'Acces a vie' : 'Sans acces'}
+                  {member.hasAccess ? 'Accès à vie' : 'Sans accès'}
                 </span>
               </div>
 

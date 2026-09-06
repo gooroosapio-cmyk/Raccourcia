@@ -1,20 +1,20 @@
 'use client';
 
+import { AILogo } from '@/components/brand/ai-logos';
 import { AccessBadge } from '@/components/cards/access-badge';
-import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
-import { OutputFormatList } from '@/components/detail/output-format-list';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
- * Carte d'une commande texte.
+ * Carte d'une commande texte, au meme gabarit que la carte image.
  *
- * Aucune fausse comparaison photographique : une commande texte ne produit
- * pas d'image, lui en inventer une tromperait sur le resultat. La carte
- * montre ce qu'elle a de vrai : la commande, ce qu'elle produit, un cas
- * d'usage court et le format de sortie.
+ * Les deux familles cohabitent dans une seule grille : une carte plus courte
+ * pour le texte creerait des trous en quinconce a chaque changement de mode.
+ * La zone haute est donc typographique — un extrait du resultat attendu, pose
+ * sur une trame legere — et jamais une photographie d'illustration, qui
+ * promettrait une image que la commande ne produit pas.
  */
 export function TextPromptCard({
   prompt,
@@ -35,56 +35,65 @@ export function TextPromptCard({
   const exemple = prompt.useCases[0];
 
   return (
-    <article className="anim-apparition overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
+    <article className="anim-apparition relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => onOpen(prompt)}
-        aria-label={`Ouvrir la fiche de ${prompt.command}`}
-        className="block w-full px-4 pb-3 pt-3.5 text-left"
+        className="flex flex-1 flex-col text-left"
       >
-        <div className="flex items-center justify-between gap-2">
-          <span className="commande truncate text-[19px] font-semibold text-[color:var(--color-brand)]">
+        <span className="relative flex aspect-[4/3] w-full flex-col justify-center gap-1.5 overflow-hidden bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-2.5">
+          <span aria-hidden="true" className="flex flex-col gap-1">
+            <span className="block h-[3px] w-10 rounded-full bg-[color:var(--color-brand)]/35" />
+            <span className="block h-[3px] w-full rounded-full bg-[color:var(--color-brand)]/18" />
+            <span className="block h-[3px] w-4/5 rounded-full bg-[color:var(--color-brand)]/18" />
+            <span className="block h-[3px] w-11/12 rounded-full bg-[color:var(--color-brand)]/18" />
+          </span>
+
+          {exemple ? (
+            <span className="line-clamp-2 text-[length:var(--texte-meta)] italic leading-[1.35] text-[color:var(--color-muted)]">
+              {exemple}
+            </span>
+          ) : null}
+        </span>
+
+        <span className="flex flex-1 flex-col gap-1 px-2.5 pb-2 pt-2">
+          <span className="commande truncate text-[length:var(--texte-commande-carte)] font-bold text-[color:var(--color-brand)]">
             {prompt.command}
           </span>
-          <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
-        </div>
 
-        {/* Ce que fait ce raccourci, pas le format qu'il produit.
-            `result_summary` decrit la sortie et se repete a l'identique sur
-            toute une famille : « Texte final pret a publier » sur cent
-            quatre-vingt-dix cartes ne permet pas de choisir. Le format est
-            deja dit par la puce ci-dessous. */}
-        <p className="mt-1.5 line-clamp-2 text-[15px] leading-snug text-[color:var(--color-night)]">
-          {prompt.shortDescription || prompt.resultSummary}
-        </p>
+          {/* Ce que fait ce raccourci, pas le format qu'il produit :
+              `result_summary` se repete a l'identique sur toute une famille. */}
+          <span className="line-clamp-2 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)]">
+            {prompt.shortDescription || prompt.resultSummary}
+          </span>
 
-        {exemple ? (
-          // La troncature porte sur le texte, pas sur l'encadre : `overflow`
-          // coupe au bord de la zone de remplissage, et une troisieme ligne
-          // venait deborder a moitie dans le padding.
-          <p className="mt-2.5 rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 py-2 text-[13px] leading-snug text-[color:var(--color-muted)]">
-            <span className="line-clamp-2">{exemple}</span>
-          </p>
-        ) : null}
-
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <OutputFormatList formats={prompt.outputFormats} compact />
-          {compatibles.length > 0 ? <CompatibilityList providers={compatibles} compact /> : null}
-        </div>
+          {compatibles.length > 0 ? (
+            <span className="mt-auto flex items-center gap-1 pt-1">
+              {compatibles.slice(0, 3).map((entry) => (
+                <AILogo key={entry.key} providerKey={entry.key} name={entry.name} taille={15} />
+              ))}
+            </span>
+          ) : null}
+        </span>
       </button>
 
-      <div className="flex items-center gap-2 border-t border-[color:var(--color-line)] px-3 py-2.5">
-        <div className="min-w-0 flex-1">
-          <CopyCommandButton
-            promptId={prompt.id}
-            provider={actif?.key ?? 'chatgpt'}
-            surface="carte"
-            locked={locked}
-            compact
-            onLockedClick={ouvrirOffre}
-          />
-        </div>
-        <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} />
+      <span className="pointer-events-none absolute left-1.5 top-1.5">
+        <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
+      </span>
+
+      <div className="absolute right-0.5 top-0.5">
+        <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} sur />
+      </div>
+
+      <div className="border-t border-[color:var(--color-line)] p-2">
+        <CopyCommandButton
+          promptId={prompt.id}
+          provider={actif?.key ?? 'chatgpt'}
+          surface="carte"
+          locked={locked}
+          compact
+          onLockedClick={ouvrirOffre}
+        />
       </div>
     </article>
   );

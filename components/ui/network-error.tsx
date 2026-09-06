@@ -30,7 +30,7 @@ export function NetworkError({ onRetry }: { onRetry?: () => void }) {
         Connexion interrompue.
       </p>
       <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-        Vos commandes sont bien la. Reessayez dans un instant.
+        Vos commandes sont bien là. Réessayez dans un instant.
       </p>
       <button
         type="button"

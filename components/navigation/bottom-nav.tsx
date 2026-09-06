@@ -8,9 +8,9 @@ import { usePathname } from 'next/navigation';
  * (Spec UX/UI, 5). Les actions recurrentes restent a portee de pouce.
  */
 const ITEMS = [
-  { href: '/app', label: 'Decouvrir', icon: DiscoverIcon },
+  { href: '/app', label: 'Découvrir', icon: DiscoverIcon },
   { href: '/app/favoris', label: 'Favoris', icon: HeartIcon },
-  { href: '/app/recents', label: 'Recents', icon: ClockIcon },
+  { href: '/app/recents', label: 'Récents', icon: ClockIcon },
   { href: '/compte', label: 'Compte', icon: AccountIcon },
 ] as const;
 

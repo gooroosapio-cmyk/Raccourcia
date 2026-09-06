@@ -62,7 +62,7 @@ function VariantBlock({
             {variant.providerName}
           </p>
           <p className="text-[12px] text-[color:var(--color-muted)]">
-            {variant.versionLabel ? `Version ${variant.versionLabel}` : 'Aucun prompt enregistre'}
+            {variant.versionLabel ? `Version ${variant.versionLabel}` : 'Aucun prompt enregistré'}
           </p>
         </div>
 
@@ -95,7 +95,7 @@ function VariantBlock({
           mono
           required
           defaultValue={variant.payload ?? ''}
-          hint="C est ce texte que le membre recoit dans son presse-papiers."
+          hint="C’est ce texte que le membre reçoit dans son presse-papiers."
         />
         <AdminFeedback state={versionState} />
         <AdminSubmit tone="secondaire">Enregistrer une nouvelle version</AdminSubmit>

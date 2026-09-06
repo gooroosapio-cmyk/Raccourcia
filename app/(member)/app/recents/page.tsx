@@ -6,7 +6,7 @@ import { EmptyState } from '@/components/ui/states';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
 
-export const metadata = { title: 'Recents' };
+export const metadata = { title: 'Récents' };
 
 export default async function RecentsPage() {
   let hasLifetimeAccess: boolean;
@@ -18,7 +18,7 @@ export default async function RecentsPage() {
     if (isCatalogUnavailable(error)) {
       return (
         <div className="space-y-4 pt-1">
-          <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Recents</h1>
+          <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Récents</h1>
           <NetworkError />
         </div>
       );
@@ -33,13 +33,13 @@ export default async function RecentsPage() {
 
   return (
     <div className="space-y-4 pt-1">
-      <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Recents</h1>
+      <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Récents</h1>
       <PromptGrid
         prompts={recents}
         locked={!hasLifetimeAccess}
         emptyState={
           <EmptyState
-            title="Rien de recent."
+            title="Rien de récent."
             body="Les commandes que vous copiez apparaissent ici, la plus recente en premier."
             actionLabel="Parcourir la bibliotheque"
             actionHref="/app"

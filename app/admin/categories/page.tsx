@@ -2,7 +2,7 @@ import { listAdminCategories } from '@/lib/admin/queries';
 import { CategoryCreateForm, CategoryRow } from '@/app/admin/categories/category-forms';
 import { MODES, MODE_LABELS } from '@/lib/constants';
 
-export const metadata = { title: 'Categories' };
+export const metadata = { title: 'Catégories' };
 
 /**
  * Categories, groupees par mode et par hierarchie.
@@ -17,10 +17,10 @@ export default async function AdminCategoriesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Categories</h1>
+        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Catégories</h1>
         <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-          Desactiver une categorie masque ses raccourcis et ses sous-categories cote membre. Les
-          donnees restent intactes et reapparaissent des la reactivation.
+          Désactiver une catégorie masque ses raccourcis et ses sous-catégories cote membre. Les
+          données restent intactes et reapparaissent des la reactivation.
         </p>
       </div>
 
@@ -56,10 +56,10 @@ export default async function AdminCategoriesPage() {
 
       <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
         <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-muted)]">
-          Nouvelle categorie
+          Nouvelle catégorie
         </h2>
         <p className="mt-1 text-[12px] leading-relaxed text-[color:var(--color-muted)]">
-          Elle est creee desactivee : activez-la quand elle contient des raccourcis.
+          Elle est créée désactivée : activez-la quand elle contient des raccourcis.
         </p>
         <div className="mt-3">
           <CategoryCreateForm categories={categories} />

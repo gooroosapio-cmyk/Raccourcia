@@ -53,7 +53,7 @@ export function BarList({ bars, empty }: { bars: Bar[]; empty: string }) {
 export function DailyColumns({ days }: { days: { day: string; copies: number }[] }) {
   if (days.length === 0) {
     return (
-      <p className="text-[13px] text-[color:var(--color-muted)]">Aucune copie sur la periode.</p>
+      <p className="text-[13px] text-[color:var(--color-muted)]">Aucune copie sur la période.</p>
     );
   }
 

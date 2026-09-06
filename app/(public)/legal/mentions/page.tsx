@@ -1,18 +1,18 @@
 import { getLegalInfo } from '@/lib/catalog/queries';
 import { LegalPage, LegalSection, LegalValue } from '@/components/legal/legal-page';
 
-export const metadata = { title: 'Mentions legales' };
+export const metadata = { title: 'Mentions légales' };
 
 export default async function MentionsPage() {
   const info = await getLegalInfo();
 
   return (
     <LegalPage
-      titre="Mentions legales"
+      titre="Mentions légales"
       intro="Ces mentions encadrent l acces au site et au service RaccourcIA."
       miseAJour={info.legal_updated_at}
     >
-      <LegalSection titre="Editeur du service">
+      <LegalSection titre="Éditeur du service">
         <p>
           Le site RaccourcIA est edite par{' '}
           <LegalValue info={info} cle="legal_editor" fallback="raison sociale" />,{' '}
@@ -37,35 +37,35 @@ export default async function MentionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Hebergement">
+      <LegalSection titre="Hébergement">
         <p>
           Le service est heberge par{' '}
           <LegalValue info={info} cle="legal_host" fallback="nom de l hebergeur" />, situe{' '}
           <LegalValue info={info} cle="legal_host_address" fallback="adresse de l hebergeur" />.
-          Contact : <LegalValue info={info} cle="legal_host_contact" fallback="contact" />.
+          Contact : <LegalValue info={info} cle="legal_host_contact" fallback="contact" />.
         </p>
       </LegalSection>
 
-      <LegalSection titre="Propriete intellectuelle">
+      <LegalSection titre="Propriété intellectuelle">
         <p>
-          La structure du site, ses textes, visuels, marques, logos, bases de donnees et elements
+          La structure du site, ses textes, visuels, marques, logos, bases de données et elements
           graphiques sont proteges. Sauf autorisation ecrite prealable, toute reproduction,
           representation, extraction ou exploitation, totale ou partielle, est interdite.
         </p>
         <p>
-          Les droits sur les contenus produits par des services tiers d intelligence artificielle
-          restent soumis aux conditions de ces services et aux droits eventuels de tiers.
+          Les droits sur les contenus produits par des services tiers d’intelligence artificielle
+          restent soumis aux conditions de ces services et aux droits éventuels de tiers.
         </p>
       </LegalSection>
 
-      <LegalSection titre="Responsabilite">
+      <LegalSection titre="Responsabilité">
         <p>
           RaccourcIA s efforce de maintenir des informations exactes et un service disponible, sans
           garantir l absence d erreur, d interruption ou l adequation a un besoin particulier.
         </p>
         <p>
-          L utilisateur reste seul responsable de l usage des commandes, des resultats generes, des
-          donnees qu il fournit aux outils d IA et du respect des droits de tiers.
+          L’utilisateur reste seul responsable de l’usage des commandes, des résultats générés, des
+          données qu’il fournit aux outils d’IA et du respect des droits de tiers.
         </p>
       </LegalSection>
 

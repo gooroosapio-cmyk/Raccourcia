@@ -34,7 +34,7 @@ export function NewPromptForm({ categories }: { categories: AdminCategory[] }) {
       <AdminField
         label="Commande"
         name="command"
-        hint="Commence par une barre oblique, en minuscules. Exemple : /portrait-studio"
+        hint="Commence par une barre oblique, en minuscules. Exemple : /portrait-studio"
       />
       <AdminField label="Titre" name="name" hint="Ce que le membre lit sur la carte." />
       <AdminTextarea
@@ -42,7 +42,7 @@ export function NewPromptForm({ categories }: { categories: AdminCategory[] }) {
         name="shortDescription"
         rows={2}
         required
-        hint="Une phrase orientee resultat."
+        hint="Une phrase orientee résultat."
       />
 
       <label className="block">
@@ -61,13 +61,13 @@ export function NewPromptForm({ categories }: { categories: AdminCategory[] }) {
       </label>
 
       <label className="block">
-        <span className="text-[13px] font-medium text-[color:var(--color-night)]">Categorie</span>
+        <span className="text-[13px] font-medium text-[color:var(--color-night)]">Catégorie</span>
         <select
           name="categoryId"
           defaultValue=""
           className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
         >
-          <option value="">A classer plus tard</option>
+          <option value="">À classer plus tard</option>
           {options.map((option) => (
             <option key={option.id} value={option.id}>
               {option.label}
@@ -75,12 +75,12 @@ export function NewPromptForm({ categories }: { categories: AdminCategory[] }) {
           ))}
         </select>
         <span className="mt-1 block text-[12px] text-[color:var(--color-muted)]">
-          Une categorie sera obligatoire au moment de publier.
+          Une catégorie sera obligatoire au moment de publier.
         </span>
       </label>
 
       <AdminFeedback state={state} />
-      <AdminSubmit>Creer le brouillon</AdminSubmit>
+      <AdminSubmit>Créer le brouillon</AdminSubmit>
     </form>
   );
 }

@@ -40,7 +40,7 @@ export function ConfigForm({ entry, label }: { entry: AdminConfigEntry; label: s
             className="h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
           >
             <option value="true">Active</option>
-            <option value="false">Desactive</option>
+            <option value="false">Désactivé</option>
           </select>
         </label>
       ) : (

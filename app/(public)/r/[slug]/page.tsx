@@ -110,13 +110,13 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
       ) : null}
 
       {prompt.inputExamples.length > 0 ? (
-        <Section titre="Exemples d entrees">
+        <Section titre="Exemples d’entrées">
           <InputExampleList inputs={prompt.inputExamples} />
         </Section>
       ) : null}
 
       {prompt.outputFormats.length > 0 ? (
-        <Section titre="Resultat">
+        <Section titre="Résultat">
           <OutputFormatList formats={prompt.outputFormats} />
         </Section>
       ) : null}
@@ -131,28 +131,28 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
         {hasLifetimeAccess ? (
           <>
             <p className="text-[15px] font-semibold text-[color:var(--color-night)]">
-              Votre acces est actif.
+              Votre accès est actif.
             </p>
             <Link
               href={`/app?q=${encodeURIComponent(prompt.command)}`}
               className="mt-3 flex h-13 items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-[15px] font-semibold text-white"
             >
-              Ouvrir dans la bibliotheque
+              Ouvrir dans la bibliothèque
             </Link>
           </>
         ) : (
           <>
             <p className="text-[15px] font-semibold text-[color:var(--color-night)]">
-              Cette commande est reservee aux membres.
+              Cette commande est réservée aux membres.
             </p>
             <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-              Acces a vie, paiement unique, toutes les commandes incluses.
+              Accès à vie, paiement unique, toutes les commandes incluses.
             </p>
             <Link
               href="/offre"
               className="mt-3 flex h-13 items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-[15px] font-semibold text-white"
             >
-              Voir l offre
+              Voir l’offre
             </Link>
           </>
         )}

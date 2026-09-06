@@ -1,3 +1,4 @@
+import { AILogo } from '@/components/brand/ai-logos';
 import type { Enums } from '@/lib/supabase/database.types';
 
 type Provider = { key: string; name: string; compatibility: Enums<'compatibility_level'> };
@@ -7,6 +8,9 @@ type Provider = { key: string; name: string; compatibility: Enums<'compatibility
  *
  * Seules les IA declarees compatibles apparaissent : afficher les trois
  * logos en permanence donnerait une promesse que le raccourci ne tient pas.
+ *
+ * Le logo de chaque marque remplace la pastille de couleur : un rond bleu ne
+ * disait pas « Gemini », il fallait lire le nom a cote pour le savoir.
  */
 export function CompatibilityList({
   providers,
@@ -27,7 +31,7 @@ export function CompatibilityList({
       <p className="flex items-center gap-1.5 text-[12px] text-[color:var(--color-muted)]">
         {providers.map((entry) => (
           <span key={entry.key} className="flex items-center gap-1">
-            <ProviderDot providerKey={entry.key} />
+            <AILogo providerKey={entry.key} name={entry.name} taille={14} decoratif />
             {entry.name}
           </span>
         ))}
@@ -52,7 +56,7 @@ export function CompatibilityList({
         if (!onSelect) {
           return (
             <span key={entry.key} className={apparence}>
-              <ProviderDot providerKey={entry.key} inverse={actif} />
+              <AILogo providerKey={entry.key} name={entry.name} taille={18} decoratif />
               {entry.name}
             </span>
           );
@@ -66,31 +70,11 @@ export function CompatibilityList({
             aria-pressed={actif}
             className={apparence}
           >
-            <ProviderDot providerKey={entry.key} inverse={actif} />
+            <AILogo providerKey={entry.key} name={entry.name} taille={18} decoratif />
             {entry.name}
           </button>
         );
       })}
     </div>
-  );
-}
-
-/**
- * Pastille de couleur par IA. Un rond suffit a distinguer trois marques et
- * n'emprunte aucun logo dont nous n'avons pas les droits.
- */
-function ProviderDot({ providerKey, inverse = false }: { providerKey: string; inverse?: boolean }) {
-  const couleurs: Record<string, string> = {
-    chatgpt: '#10a37f',
-    claude: '#d97757',
-    gemini: '#4285f4',
-  };
-
-  return (
-    <span
-      aria-hidden="true"
-      className="inline-block h-2 w-2 shrink-0 rounded-full"
-      style={{ backgroundColor: inverse ? '#ffffff' : (couleurs[providerKey] ?? 'currentColor') }}
-    />
   );
 }

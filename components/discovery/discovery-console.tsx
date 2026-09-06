@@ -95,7 +95,7 @@ export function DiscoveryConsole({
   ]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
       <div className="flex items-center gap-2">
         <SearchField value={terme} onChange={setTerme} />
         <FilterButton count={actifs} onClick={() => setPanneauOuvert(true)} />
@@ -143,7 +143,7 @@ function SearchField({ value, onChange }: { value: string; onChange: (v: string)
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder="Rechercher une commande..."
-        className="h-13 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] pl-11 pr-10 text-[15px] outline-none transition-[border-color,box-shadow] duration-[var(--duration-fast)] placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-brand)] focus:shadow-[0_0_0_3px_var(--color-brand-soft)]"
+        className="h-[50px] w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] pl-11 pr-10 text-[15px] outline-none transition-[border-color,box-shadow] duration-[var(--duration-fast)] placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-brand)] focus:shadow-[0_0_0_3px_var(--color-brand-soft)]"
       />
       {value ? (
         <button
@@ -176,7 +176,7 @@ function FilterButton({ count, onClick }: { count: number; onClick: () => void }
       type="button"
       onClick={onClick}
       aria-label={count > 0 ? `Ouvrir les filtres, ${count} actifs` : 'Ouvrir les filtres'}
-      className="relative flex h-13 w-13 shrink-0 items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[color:var(--color-night)] transition-colors duration-[var(--duration-fast)] active:bg-[color:var(--color-sky)]"
+      className="relative flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[color:var(--color-night)] transition-colors duration-[var(--duration-fast)] active:bg-[color:var(--color-sky)]"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
@@ -236,7 +236,7 @@ function ModeSegmentedControl({
             type="button"
             aria-selected={actif}
             onClick={() => onSelect(value)}
-            className={`relative z-10 h-11 rounded-[9px] text-[15px] font-semibold transition-colors duration-[var(--duration-fast)] ${
+            className={`relative z-10 h-[44px] rounded-[9px] text-[length:var(--texte-corps)] font-semibold transition-colors duration-[var(--duration-fast)] ${
               actif ? 'text-white' : 'text-[color:var(--color-night)]'
             }`}
           >
@@ -308,7 +308,7 @@ function Chip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`h-10 shrink-0 whitespace-nowrap rounded-full px-4 text-[14px] font-medium transition-colors duration-[var(--duration-fast)] ${
+      className={`h-9 shrink-0 whitespace-nowrap rounded-full px-3.5 text-[length:var(--texte-carte)] font-medium transition-colors duration-[var(--duration-fast)] ${
         active
           ? 'bg-[color:var(--color-brand)] text-white'
           : 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'
