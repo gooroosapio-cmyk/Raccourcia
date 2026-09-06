@@ -78,8 +78,10 @@ export function ImagePromptCard({
             <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
           </div>
 
+          {/* Ce que fait ce raccourci, pas le format qu'il produit :
+              `result_summary` se repete a l'identique sur toute une famille. */}
           <p className="line-clamp-2 text-[15px] leading-snug text-[color:var(--color-night)]">
-            {prompt.resultSummary}
+            {prompt.shortDescription || prompt.resultSummary}
           </p>
 
           {compatibles.length > 0 ? <CompatibilityList providers={compatibles} compact /> : null}
