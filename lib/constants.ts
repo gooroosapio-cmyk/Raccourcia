@@ -60,12 +60,16 @@ export type RiskLevel = (typeof RISK_LEVELS)[number];
 export const CONFIG_KEYS = {
   MAX_ACTIVE_SESSIONS: 'max_active_sessions',
   PUBLIC_CATALOG_ENABLED: 'public_catalog_enabled',
+  PURCHASE_URL: 'purchase_url',
 } as const;
 
 /** Valeur par defaut si la table app_config est injoignable. */
 export const CONFIG_FALLBACKS = {
   [CONFIG_KEYS.MAX_ACTIVE_SESSIONS]: 3,
   [CONFIG_KEYS.PUBLIC_CATALOG_ENABLED]: true,
+  // Boutique Chariow. En configuration et non en dur : changer d'offre ou de
+  // boutique ne doit pas demander un redeploiement.
+  [CONFIG_KEYS.PURCHASE_URL]: 'https://oqyokpqq.mychariow.store/prd_kn3gxkco',
 } as const;
 
 /** Nombre d'elements charges par page de bibliotheque (section 11.3). */

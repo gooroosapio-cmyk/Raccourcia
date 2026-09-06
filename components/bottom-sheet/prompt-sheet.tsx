@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { CopyButton } from '@/components/cards/copy-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
+import { usePaywall } from '@/components/paywall/paywall-provider';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -28,7 +28,7 @@ export function PromptSheet({
   locked: boolean;
   onClose: () => void;
 }) {
-  const router = useRouter();
+  const { open: ouvrirOffre } = usePaywall();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   // Le retour arriere ferme d'abord la couche active, puis remonte la
@@ -199,7 +199,7 @@ export function PromptSheet({
               provider={active?.key ?? 'chatgpt'}
               surface="detail"
               locked={locked}
-              onLockedClick={() => router.push('/activation')}
+              onLockedClick={ouvrirOffre}
             />
           </div>
         </div>
