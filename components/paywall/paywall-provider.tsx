@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { OfferSheet } from '@/components/paywall/offer-sheet';
 import type { Offre } from '@/components/paywall/upgrade-panel';
@@ -8,25 +8,36 @@ import type { Offre } from '@/components/paywall/upgrade-panel';
 /** Delai avant ouverture spontanee, pour un visiteur sans acces. */
 const DELAI_OUVERTURE_MS = 45_000;
 
-const PaywallContext = createContext<{ open: () => void }>({ open: () => {} });
+/**
+ * La demande d'ouverture passe par un emetteur de module, pas par un
+ * contexte React.
+ *
+ * Un fournisseur de contexte devrait envelopper tout l'espace membre. Cette
+ * enveloppe cliente fait envoyer la coquille avant que les pages aient fini
+ * de rendre : le `redirect()` des espaces reserves devient alors une
+ * redirection cliente au lieu d'un 307, et la garde ne tient plus sans
+ * JavaScript.
+ *
+ * `PaywallLayer` est donc une feuille, posee a cote du contenu.
+ */
+const abonnes = new Set<() => void>();
 
 /** Ouvre la fenetre d'offre depuis n'importe quel composant client. */
+export function openPaywall() {
+  for (const abonne of abonnes) abonne();
+}
+
+/** Conserve l'ergonomie d'un hook pour les composants qui l'utilisaient. */
 export function usePaywall() {
-  return useContext(PaywallContext);
+  return { open: openPaywall };
 }
 
 /**
- * Pilote la fenetre d'offre pour les visiteurs sans acces a vie.
+ * Fenetre d'offre des visiteurs sans acces a vie.
  *
  * Trois declencheurs : une copie refusee, l'arrivee sur le catalogue depuis
- * un espace reserve (`?offre=1`, pose par la redirection serveur), et le
- * simple temps passe.
- *
- * Ce composant ne lit pas les parametres d'URL. `useSearchParams` imposerait
- * une frontiere Suspense autour de toute la coquille membre, et Next enverrait
- * alors la reponse avant que les pages reservees aient decide de rediriger :
- * leur garde deviendrait une redirection cliente, sans effet sans JavaScript.
- * C'est la page `/app` qui lit le parametre et monte `PaywallAutoOpen`.
+ * un espace reserve (`?offre=1`, pose par la redirection serveur et relaye
+ * par `PaywallAutoOpen`), et le simple temps passe.
  *
  * L'ouverture spontanee n'a lieu qu'une fois par visite. Reproposer sans fin
  * transformerait la fenetre en harcelement, et ferait fuir un visiteur qui
@@ -36,15 +47,7 @@ export function usePaywall() {
  * offertes : le visiteur n'est jamais laisse devant une page qu'il ne peut
  * pas utiliser.
  */
-export function PaywallProvider({
-  hasAccess,
-  offre,
-  children,
-}: {
-  hasAccess: boolean;
-  offre: Offre;
-  children: React.ReactNode;
-}) {
+export function PaywallLayer({ hasAccess, offre }: { hasAccess: boolean; offre: Offre }) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -56,6 +59,13 @@ export function PaywallProvider({
     dejaProposee.current = true;
     setOuverte(true);
   }, [hasAccess]);
+
+  useEffect(() => {
+    abonnes.add(open);
+    return () => {
+      abonnes.delete(open);
+    };
+  }, [open]);
 
   // Ouverture spontanee, une seule fois par visite.
   useEffect(() => {
@@ -78,12 +88,8 @@ export function PaywallProvider({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [pathname, router]);
 
-  return (
-    <PaywallContext.Provider value={{ open }}>
-      {children}
-      {ouverte ? <OfferSheet offre={offre} onClose={close} /> : null}
-    </PaywallContext.Provider>
-  );
+  if (!ouverte) return null;
+  return <OfferSheet offre={offre} onClose={close} />;
 }
 
 /**
@@ -93,11 +99,9 @@ export function PaywallProvider({
  * apres un renvoi depuis un espace reserve. N'affiche rien par lui-meme.
  */
 export function PaywallAutoOpen() {
-  const { open } = usePaywall();
-
   useEffect(() => {
-    open();
-  }, [open]);
+    openPaywall();
+  }, []);
 
   return null;
 }
