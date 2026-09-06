@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { OfferSheet } from '@/components/paywall/offer-sheet';
 import type { Offre } from '@/components/paywall/upgrade-panel';
 
@@ -22,6 +22,12 @@ export function usePaywall() {
  * un espace reserve (`?offre=1`, pose par la redirection serveur), et le
  * simple temps passe.
  *
+ * Ce composant ne lit pas les parametres d'URL. `useSearchParams` imposerait
+ * une frontiere Suspense autour de toute la coquille membre, et Next enverrait
+ * alors la reponse avant que les pages reservees aient decide de rediriger :
+ * leur garde deviendrait une redirection cliente, sans effet sans JavaScript.
+ * C'est la page `/app` qui lit le parametre et monte `PaywallAutoOpen`.
+ *
  * L'ouverture spontanee n'a lieu qu'une fois par visite. Reproposer sans fin
  * transformerait la fenetre en harcelement, et ferait fuir un visiteur qui
  * n'a pas encore eu le temps de juger le catalogue.
@@ -41,13 +47,9 @@ export function PaywallProvider({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const params = useSearchParams();
-  const renvoye = params.get('offre') === '1';
 
-  // Le renvoi depuis un espace reserve ouvre la fenetre des le premier rendu :
-  // c'est un etat initial, pas un effet de bord a declencher apres coup.
-  const [ouverte, setOuverte] = useState(() => !hasAccess && renvoye);
-  const dejaProposee = useRef(!hasAccess && renvoye);
+  const [ouverte, setOuverte] = useState(false);
+  const dejaProposee = useRef(false);
 
   const open = useCallback(() => {
     if (hasAccess) return;
@@ -70,9 +72,11 @@ export function PaywallProvider({
       router.push('/app');
       return;
     }
-    if (renvoye) router.replace('/app');
+    // Le parametre a fait son office : le laisser rouvrirait la fenetre au
+    // moindre retour arriere. Lu ici, hors rendu, il ne coute aucun Suspense.
+    if (window.location.search.includes('offre=1')) router.replace('/app');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [pathname, renvoye, router]);
+  }, [pathname, router]);
 
   return (
     <PaywallContext.Provider value={{ open }}>
@@ -80,4 +84,20 @@ export function PaywallProvider({
       {ouverte ? <OfferSheet offre={offre} onClose={close} /> : null}
     </PaywallContext.Provider>
   );
+}
+
+/**
+ * Ouvre la fenetre a l'arrivee, quand la page l'a decide cote serveur.
+ *
+ * Monte uniquement par `/app` lorsque l'URL porte `?offre=1`, c'est-a-dire
+ * apres un renvoi depuis un espace reserve. N'affiche rien par lui-meme.
+ */
+export function PaywallAutoOpen() {
+  const { open } = usePaywall();
+
+  useEffect(() => {
+    open();
+  }, [open]);
+
+  return null;
 }

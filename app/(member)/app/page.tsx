@@ -2,6 +2,7 @@ import { getAccessState } from '@/lib/access/entitlement';
 import { getAvailableModes, getCatalogPage, getCategories } from '@/lib/catalog/queries';
 import { DiscoveryConsole } from '@/components/discovery/discovery-console';
 import { PromptGrid } from '@/components/cards/prompt-grid';
+import { PaywallAutoOpen } from '@/components/paywall/paywall-provider';
 import { EmptyState } from '@/components/ui/states';
 import { catalogQuery } from '@/lib/validation/schemas';
 import { NetworkError } from '@/components/ui/network-error';
@@ -72,8 +73,16 @@ export default async function DiscoverPage({
     query.search || query.categorySlug || query.access || query.provider || query.output,
   );
 
+  // Renvoi depuis un espace reserve : c'est le serveur qui a pose le
+  // parametre, c'est donc lui qui decide d'ouvrir la fenetre. Le composant
+  // client n'a plus a lire l'URL, et la coquille evite une frontiere
+  // Suspense qui affaiblirait la garde des pages reservees.
+  const renvoye = lire('offre') === '1' && !hasLifetimeAccess;
+
   return (
     <div className="space-y-4 pt-1">
+      {renvoye ? <PaywallAutoOpen /> : null}
+
       <DiscoveryConsole
         modes={modes}
         mode={mode}
