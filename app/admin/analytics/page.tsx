@@ -89,7 +89,7 @@ export default async function AdminAnalyticsPage({
 
       <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
         <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-muted)]">
-          Les plus copies
+          Les plus copiés
         </h2>
         <div className="mt-3">
           <BarList

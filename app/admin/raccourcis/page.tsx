@@ -48,7 +48,7 @@ export default async function AdminPromptsPage({
 
       {items.length === 0 ? (
         <p className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-5 text-center text-[15px] text-[color:var(--color-muted)]">
-          Aucun raccourci ne correspond a ces filtres.
+          Aucun raccourci ne correspond à ces filtres.
         </p>
       ) : (
         <ul className="space-y-2">

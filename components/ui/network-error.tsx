@@ -38,7 +38,7 @@ export function NetworkError({ onRetry }: { onRetry?: () => void }) {
         disabled={pending}
         className="mt-4 inline-flex h-11 items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] px-4 text-sm font-medium text-white disabled:opacity-60"
       >
-        {pending ? 'Nouvelle tentative...' : 'Reessayer'}
+        {pending ? 'Nouvelle tentative...' : 'Réessayer'}
       </button>
     </div>
   );

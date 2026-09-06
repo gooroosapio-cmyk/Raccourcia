@@ -10,7 +10,7 @@ export default function RecoveryPage() {
         Récupérer mon accès
       </h1>
       <p className="mt-1 text-[15px] leading-relaxed text-[color:var(--color-muted)]">
-        Indiquez l’email de votre achat et votre licence, puis definissez un nouveau mot de passe.
+        Indiquez l’email de votre achat et votre licence, puis définissez un nouveau mot de passe.
       </p>
 
       <RecoverForm />

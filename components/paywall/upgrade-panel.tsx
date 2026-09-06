@@ -25,8 +25,8 @@ export function UpgradePanel({ offre, compact = false }: { offre: Offre; compact
       corps: `Les ${offre.totalCount} commandes, en Image et en Texte, sans exception.`,
     },
     {
-      titre: 'Nouveautes incluses',
-      corps: 'Les commandes ajoutees ensuite sont comprises, sans rien repayer.',
+      titre: 'Nouveautés incluses',
+      corps: 'Les commandes ajoutées ensuite sont comprises, sans rien repayer.',
     },
     {
       titre: 'Accès immédiat',
@@ -50,7 +50,7 @@ export function UpgradePanel({ offre, compact = false }: { offre: Offre; compact
           compact ? 'text-[14px]' : 'mx-auto max-w-[38ch] text-[16px]'
         }`}
       >
-        Vous pouvez copier {offre.freeCount} commandes librement. L acces a vie ouvre les{' '}
+        Vous pouvez copier {offre.freeCount} commandes librement. L’accès à vie ouvre les{' '}
         {offre.totalCount}, en un seul paiement.
       </p>
 

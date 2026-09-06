@@ -41,7 +41,7 @@ export default function GlobalError({ reset }: { error: Error; reset: () => void
               fontWeight: 500,
             }}
           >
-            Reessayer
+            Réessayer
           </button>
         </div>
       </body>

@@ -7,7 +7,7 @@ export const metadata = { title: 'Catégories' };
 /**
  * Categories, groupees par mode et par hierarchie.
  *
- * Desactiver une categorie est l'action la plus lourde de consequences du
+ * Désactiver une categorie est l'action la plus lourde de consequences du
  * back-office : elle est donc toujours accompagnee du nombre de raccourcis
  * concernes et du rappel que rien n'est supprime.
  */

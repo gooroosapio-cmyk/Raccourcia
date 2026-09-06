@@ -160,7 +160,7 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
 
       {prompt.categoryName ? (
         <p className="mt-6 text-[13px] text-[color:var(--color-muted)]">
-          Categorie : {prompt.categoryName}
+          Catégorie : {prompt.categoryName}
         </p>
       ) : null}
     </article>

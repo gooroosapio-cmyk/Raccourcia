@@ -82,7 +82,7 @@ export function BeforeAfterMedia({
       <Etiquette position="droite">Après</Etiquette>
 
       <figcaption className="sr-only">
-        {command} : a gauche, {media.beforeAlt}. A droite, {media.afterAlt}.
+        {command} : à gauche, {media.beforeAlt}. À droite, {media.afterAlt}.
       </figcaption>
     </figure>
   );

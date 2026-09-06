@@ -110,7 +110,7 @@ export function CategoryRow({
   const hiddenByParent = published && !category.isVisible;
 
   const children = categories.filter((item) => item.parentId === category.id);
-  // Desactiver emporte la descendance : on annonce le total reellement masque,
+  // Désactiver emporte la descendance : on annonce le total reellement masque,
   // pas seulement les raccourcis attaches directement.
   const affectedCount =
     category.promptCount + children.reduce((total, child) => total + child.promptCount, 0);
@@ -154,7 +154,7 @@ export function CategoryRow({
                 : 'bg-[color:var(--color-brand)] text-white'
             }`}
           >
-            {published ? 'Desactiver' : 'Activer'}
+            {published ? 'Désactiver' : 'Activer'}
           </button>
         </form>
 
@@ -174,7 +174,7 @@ export function CategoryRow({
 
       {published ? (
         <p className="mt-2 text-[12px] leading-relaxed text-[color:var(--color-muted)]">
-          Desactiver masque {affectedCount} raccourci{affectedCount > 1 ? 's' : ''}
+          Désactiver masque {affectedCount} raccourci{affectedCount > 1 ? 's' : ''}
           {children.length > 0 ? ' et toutes ses sous-catégories' : ''}. Rien n est supprime.
         </p>
       ) : null}
