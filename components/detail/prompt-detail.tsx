@@ -146,7 +146,7 @@ export function PromptDetailSheet({
               ref={fermerRef}
               type="button"
               onClick={onClose}
-              aria-label="Revenir a la liste"
+              aria-label="Revenir à la liste"
               className="touch-target inline-flex items-center justify-center rounded-full text-[color:var(--color-night)]"
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -190,7 +190,7 @@ export function PromptDetailSheet({
                 onClick={() => prompt.beforeAfter && setAgrandi(true)}
                 aria-label={
                   prompt.beforeAfter
-                    ? 'Agrandir la comparaison avant et apres'
+                    ? 'Agrandir la comparaison avant et après'
                     : 'Aucun visuel disponible'
                 }
                 disabled={!prompt.beforeAfter}
@@ -247,7 +247,7 @@ export function PromptDetailSheet({
           ) : null}
 
           {prompt.inputExamples.length > 0 ? (
-            <Section titre="Exemples d entrees">
+            <Section titre="Exemples d’entrées">
               <InputExampleList inputs={prompt.inputExamples} />
               {prompt.expectedInput ? (
                 <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
@@ -272,7 +272,7 @@ export function PromptDetailSheet({
               />
               {partiel ? (
                 <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-warning)]">
-                  La commande fonctionne, mais la generation de l image depend de l interface de
+                  La commande fonctionne, mais la génération de l’image dépend de l’interface de
                   cette IA.
                 </p>
               ) : null}
@@ -287,7 +287,7 @@ export function PromptDetailSheet({
 
           {prompt.requiredVariables.length > 0 ? (
             <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-              S adapte a votre contexte. Si une information manque, l IA posera une ou deux
+              S’adapte à votre contexte. Si une information manque, l’IA posera une ou deux
               questions courtes.
             </p>
           ) : null}
@@ -308,7 +308,7 @@ export function PromptDetailSheet({
         <button
           type="button"
           onClick={() => setAgrandi(false)}
-          aria-label="Fermer l agrandissement"
+          aria-label="Fermer l’agrandissement"
           className="anim-fondu fixed inset-0 z-[70] flex items-center justify-center bg-[color:var(--color-night)]/90 p-4"
         >
           <div className="w-full max-w-3xl">

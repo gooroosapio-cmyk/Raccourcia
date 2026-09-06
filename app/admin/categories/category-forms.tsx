@@ -59,14 +59,14 @@ export function CategoryCreateForm({ categories }: { categories: AdminCategory[]
 
       <label className="block">
         <span className="text-[13px] font-medium text-[color:var(--color-night)]">
-          Categorie parente
+          Catégorie parente
         </span>
         <select
           name="parentId"
           defaultValue=""
           className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
         >
-          <option value="">Aucune : categorie principale</option>
+          <option value="">Aucune : catégorie principale</option>
           <ParentOptions categories={categories} />
         </select>
         <span className="mt-1 block text-[12px] text-[color:var(--color-muted)]">
@@ -76,7 +76,7 @@ export function CategoryCreateForm({ categories }: { categories: AdminCategory[]
 
       <AdminTextarea label="Description courte" name="shortDescription" rows={2} />
       <AdminField
-        label="Ordre d affichage"
+        label="Ordre d’affichage"
         name="sortOrder"
         type="number"
         defaultValue="0"
@@ -84,7 +84,7 @@ export function CategoryCreateForm({ categories }: { categories: AdminCategory[]
       />
 
       <AdminFeedback state={state} />
-      <AdminSubmit>Creer la categorie</AdminSubmit>
+      <AdminSubmit>Créer la catégorie</AdminSubmit>
     </form>
   );
 }
@@ -138,7 +138,7 @@ export function CategoryRow({
 
       {hiddenByParent ? (
         <p className="mt-2 text-[12px] leading-relaxed text-[color:var(--color-warning)]">
-          Masquee car sa categorie parente est desactivee.
+          Masquee car sa catégorie parente est désactivée.
         </p>
       ) : null}
 
@@ -175,7 +175,7 @@ export function CategoryRow({
       {published ? (
         <p className="mt-2 text-[12px] leading-relaxed text-[color:var(--color-muted)]">
           Desactiver masque {affectedCount} raccourci{affectedCount > 1 ? 's' : ''}
-          {children.length > 0 ? ' et toutes ses sous-categories' : ''}. Rien n est supprime.
+          {children.length > 0 ? ' et toutes ses sous-catégories' : ''}. Rien n est supprime.
         </p>
       ) : null}
 
@@ -208,14 +208,14 @@ export function CategoryRow({
 
           <label className="block">
             <span className="text-[13px] font-medium text-[color:var(--color-night)]">
-              Categorie parente
+              Catégorie parente
             </span>
             <select
               name="parentId"
               defaultValue={category.parentId ?? ''}
               className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
             >
-              <option value="">Aucune : categorie principale</option>
+              <option value="">Aucune : catégorie principale</option>
               <ParentOptions categories={categories.filter((item) => item.id !== category.id)} />
             </select>
           </label>
@@ -227,7 +227,7 @@ export function CategoryRow({
             defaultValue={category.shortDescription ?? ''}
           />
           <AdminField
-            label="Ordre d affichage"
+            label="Ordre d’affichage"
             name="sortOrder"
             type="number"
             defaultValue={String(category.sortOrder)}

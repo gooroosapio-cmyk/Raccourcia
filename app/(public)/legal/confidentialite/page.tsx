@@ -16,12 +16,12 @@ export default async function ConfidentialitePage() {
         <p>
           Le responsable du traitement est{' '}
           <LegalValue info={info} cle="legal_editor" fallback="raison sociale" />, joignable a{' '}
-          <LegalValue info={info} cle="legal_privacy_email" fallback="email confidentialite" />, a l
+          <LegalValue info={info} cle="legal_privacy_email" fallback="email confidentialite" />, à l
           adresse <LegalValue info={info} cle="legal_address" fallback="adresse" />.
         </p>
       </LegalSection>
 
-      <LegalSection titre="Donnees collectees">
+      <LegalSection titre="Données collectées">
         <p>
           Selon l usage du service, RaccourcIA peut traiter : identite et coordonnees (nom, email) ;
           donnees de compte ; donnees de facturation et de paiement, traitees le cas echeant par le
@@ -37,13 +37,13 @@ export default async function ConfidentialitePage() {
 
       <LegalSection titre="Finalites et fondements">
         <p>
-          Les donnees sont utilisees pour creer et gerer le compte, fournir l acces au catalogue,
+          Les données sont utilisees pour créer et gerer le compte, fournir l’accès au catalogue,
           securiser le service, repondre au support, gerer la facturation, produire des statistiques
-          d usage agregees, et envoyer des communications lorsque l utilisateur y a consenti.
+          d’usage agregees, et envoyer des communications lorsque l’utilisateur y a consenti.
         </p>
         <p>
-          Les traitements reposent, selon le cas, sur l execution du contrat, le respect d
-          obligations legales, l interet legitime de securite et de gestion du service, ou le
+          Les traitements reposent, selon le cas, sur l’exécution du contrat, le respect d
+          obligations légales, l’interet legitime de sécurité et de gestion du service, où le
           consentement.
         </p>
       </LegalSection>
@@ -70,7 +70,7 @@ export default async function ConfidentialitePage() {
           <LegalValue info={info} cle="legal_retention_account" fallback="duree" />. Pieces et
           donnees de facturation : pendant la duree legale applicable. Demandes de support :{' '}
           <LegalValue info={info} cle="legal_retention_support" fallback="duree" />. Journaux de
-          securite : <LegalValue info={info} cle="legal_retention_logs" fallback="duree" />.
+          sécurité : <LegalValue info={info} cle="legal_retention_logs" fallback="duree" />.
         </p>
       </LegalSection>
 
@@ -80,11 +80,11 @@ export default async function ConfidentialitePage() {
           ou la limitation du traitement de vos donnees, dans les limites prevues par la loi.
           Adressez votre demande a{' '}
           <LegalValue info={info} cle="legal_privacy_email" fallback="email confidentialite" /> avec
-          un justificatif d identite si necessaire.
+          un justificatif d’identité si nécessaire.
         </p>
         <p>
-          Vous pouvez egalement saisir l Autorite de Protection des Donnees a Caractere Personnel
-          competente.
+          Vous pouvez également saisir l’Autorite de Protection des Données a Caractere Personnel
+          compétente.
         </p>
       </LegalSection>
 
@@ -95,7 +95,7 @@ export default async function ConfidentialitePage() {
           surveillance de securite.
         </p>
         <p>
-          Aucun systeme n etant totalement sur, l utilisateur doit egalement proteger ses
+          Aucun système n’etant totalement sur, l’utilisateur doit également proteger ses
           identifiants et signaler toute utilisation suspecte.
         </p>
       </LegalSection>
@@ -107,8 +107,8 @@ export default async function ConfidentialitePage() {
           audience tierce n est utilise, et aucune banniere de consentement n est donc necessaire.
         </p>
         <p>
-          Si cette situation evoluait, un bandeau de preferences serait mis en place avant tout
-          depot de cookie soumis a consentement.
+          Si cette situation evoluait, un bandeau de préférences serait mis en place avant tout
+          dépôt de cookie soumis a consentement.
         </p>
       </LegalSection>
     </LegalPage>

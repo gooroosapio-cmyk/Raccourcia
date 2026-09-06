@@ -12,7 +12,7 @@ import { isCatalogUnavailable } from '@/lib/catalog/errors';
 import type { FiltresAvances } from '@/components/discovery/filter-sheet';
 import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE, type Mode } from '@/lib/constants';
 
-export const metadata = { title: 'Decouvrir' };
+export const metadata = { title: 'Découvrir' };
 
 /**
  * Bibliotheque des commandes. Rendue cote serveur : le client ne recoit que
@@ -126,7 +126,7 @@ export default async function DiscoverPage({
             />
           ) : (
             <EmptyState
-              title="Rien a afficher ici"
+              title="Rien à afficher ici"
               body="Ce mode ne contient pas encore de commande publiee."
             />
           )
@@ -146,7 +146,7 @@ export default async function DiscoverPage({
           </div>
         ) : (
           <p className="pt-1 text-center text-[13px] text-[color:var(--color-muted)]">
-            Affinez la recherche ou choisissez une categorie pour reduire la liste.
+            Affinez la recherche ou choisissez une catégorie pour reduire la liste.
           </p>
         )
       ) : null}

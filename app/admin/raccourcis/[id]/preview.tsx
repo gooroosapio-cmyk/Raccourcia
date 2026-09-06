@@ -68,7 +68,7 @@ export function PromptPreview({ prompt }: { prompt: AdminPromptDetail }) {
 
       {publishedProviders.length === 0 ? (
         <p className="mt-3 text-[12px] leading-relaxed text-[color:var(--color-warning)]">
-          Aucune IA activee : ce raccourci ne peut pas encore etre publie.
+          Aucune IA activée : ce raccourci ne peut pas encore être publié.
         </p>
       ) : null}
     </section>

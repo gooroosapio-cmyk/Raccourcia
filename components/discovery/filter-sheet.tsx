@@ -174,7 +174,7 @@ export function FilterSheet({
           >
             {/* Le compte n'est affiche que s'il est encore juste : des que le
                 brouillon change, il ne decrit plus la liste. */}
-            {inchange ? `Voir les ${resultCount} resultats` : 'Voir les resultats'}
+            {inchange ? `Voir les ${resultCount} résultats` : 'Voir les résultats'}
           </button>
         </div>
       </div>

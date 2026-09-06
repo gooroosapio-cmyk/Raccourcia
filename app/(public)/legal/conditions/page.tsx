@@ -1,7 +1,7 @@
 import { getLegalInfo, getPublicConfig } from '@/lib/catalog/queries';
 import { LegalPage, LegalSection, LegalValue } from '@/components/legal/legal-page';
 
-export const metadata = { title: 'Conditions generales' };
+export const metadata = { title: 'Conditions générales' };
 
 export default async function ConditionsPage() {
   const [info, config] = await Promise.all([getLegalInfo(), getPublicConfig()]);
@@ -12,7 +12,7 @@ export default async function ConditionsPage() {
 
   return (
     <LegalPage
-      titre="Conditions generales d utilisation et de vente"
+      titre="Conditions générales d’utilisation et de vente"
       intro="Ces conditions regissent l acces au service RaccourcIA et, le cas echeant, l achat d un acces."
       miseAJour={info.legal_updated_at}
     >
@@ -22,12 +22,12 @@ export default async function ConditionsPage() {
           et ressources associees pour des outils d intelligence artificielle.
         </p>
         <p>
-          En creant un compte, en utilisant le service ou en passant commande, l utilisateur accepte
+          En creant un compte, en utilisant le service ou en passant commande, l’utilisateur accepte
           les presentes conditions. En cas de desaccord, il ne doit pas utiliser le service.
         </p>
       </LegalSection>
 
-      <LegalSection titre="Acces au service">
+      <LegalSection titre="Accès au service">
         <p>
           L acces requiert un equipement compatible, une connexion Internet et un compte. RaccourcIA
           peut faire evoluer, maintenir, suspendre temporairement ou securiser le service. Les
@@ -49,24 +49,24 @@ export default async function ConditionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Regles d usage">
+      <LegalSection titre="Règles d’usage">
         <p>
           Il est interdit de copier massivement le catalogue, de contourner les limitations
-          techniques, d extraire la base de donnees, de redistribuer les commandes comme produit
-          concurrent, de porter atteinte aux droits de tiers, de tenter d acceder a des comptes ou
-          systemes non autorises, ou d utiliser le service a des fins illicites.
+          techniques, d’extraire la base de données, de redistribuer les commandes comme produit
+          concurrent, de porter atteinte aux droits de tiers, de tenter d’acceder a des comptes ou
+          systemes non autorises, ou d’utiliser le service a des fins illicites.
         </p>
       </LegalSection>
 
-      <LegalSection titre="Outils d intelligence artificielle tiers">
+      <LegalSection titre="Outils d’intelligence artificielle tiers">
         <p>
           Les commandes peuvent etre utilisees avec des services tiers tels que ChatGPT, Claude ou
           Gemini. RaccourcIA n est ni affilie, ni responsable de leurs disponibilites, politiques,
           tarifs, resultats ou traitements de donnees.
         </p>
         <p>
-          L utilisateur doit respecter leurs conditions et ne fournir que les donnees qu il est
-          autorise a partager. Les resultats generes doivent etre verifies avant tout usage
+          L’utilisateur doit respecter leurs conditions et ne fournir que les données qu’il est
+          autorise a partager. Les résultats générés doivent être verifies avant tout usage
           professionnel, juridique, medical, financier, publicitaire ou de publication.
         </p>
       </LegalSection>
@@ -74,26 +74,26 @@ export default async function ConditionsPage() {
       <LegalSection titre="Prix, commande et paiement">
         <p>
           {prix
-            ? `L acces a vie est propose au prix de ${prix}, en un paiement unique. Ce prix, la devise, les taxes eventuelles, le contenu et les modalites de paiement sont affiches avant validation.`
-            : 'Lorsque des offres payantes sont proposees, leur prix, devise, taxes eventuelles, duree d acces, contenu et modalites de paiement sont affiches avant validation.'}
+            ? `L’accès à vie est propose au prix de ${prix}, en un paiement unique. Ce prix, la devise, les taxes éventuelles, le contenu et les modalités de paiement sont affichés avant validation.`
+            : 'Lorsque des offres payantes sont proposées, leur prix, devise, taxes éventuelles, durée d’accès, contenu et modalités de paiement sont affichés avant validation.'}
         </p>
         <p>
           La commande devient ferme apres confirmation du paiement par{' '}
           <LegalValue info={info} cle="legal_payment_provider" fallback="prestataire de paiement" />
-          . Une confirmation est adressee a l adresse indiquee lors de l achat.
+          . Une confirmation est adressée à l’adresse indiquée lors de l’achat.
         </p>
         <p>
-          Les acces a vie sont personnels, non transferables et ne donnent pas le droit de partager
-          l acces ou le contenu du service.
+          Les accès à vie sont personnels, non transférables et ne donnent pas le droit de partager
+          l’accès où le contenu du service.
         </p>
       </LegalSection>
 
-      <LegalSection titre="Retractation, remboursements et acces numerique">
+      <LegalSection titre="Retractation, remboursements et accès numérique">
         <p>
-          Lorsque la loi accorde un droit de retractation, ses conditions d exercice sont precisees
-          avant commande. Si l utilisateur demande l execution immediate d un contenu ou service
-          numerique, il reconnait, lorsque la loi le prevoit, perdre son droit de retractation des
-          le debut de l execution.
+          Lorsque la loi accordé un droit de rétractation, ses conditions d’exercice sont precisees
+          avant commande. Si l’utilisateur demande l’exécution immediate d’un contenu ou service
+          numérique, il reconnait, lorsque la loi le prevoit, perdre son droit de rétractation des
+          le debut de l’exécution.
         </p>
         <p>
           Hors obligation legale ou erreur imputable a RaccourcIA, les remboursements sont regis par
@@ -109,8 +109,8 @@ export default async function ConditionsPage() {
           contenus du service pour ses besoins propres, pendant la duree de son acces.
         </p>
         <p>
-          Cette licence n autorise pas la revente, la publication en bibliotheque concurrente, la
-          diffusion massive ou la creation d un service derive a partir du catalogue.
+          Cette licence n’autorise pas la revente, la publication en bibliothèque concurrente, la
+          diffusion massive où la création d’un service dérivé à partir du catalogue.
         </p>
       </LegalSection>
 
@@ -127,10 +127,10 @@ export default async function ConditionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Duree, resiliation et modifications">
+      <LegalSection titre="Duree, résiliation et modifications">
         <p>
-          Les conditions s appliquent pendant toute l utilisation du service. L utilisateur peut
-          cesser d utiliser le service ou demander la suppression de son compte selon les modalites
+          Les conditions s’appliquent pendant toute l’utilisation du service. L’utilisateur peut
+          cesser d’utiliser le service ou demander la suppression de son compte selon les modalités
           indiquees.
         </p>
         <p>
@@ -140,12 +140,12 @@ export default async function ConditionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Droit applicable et reglement des litiges">
+      <LegalSection titre="Droit applicable et règlement des litiges">
         <p>
           Les presentes sont regies par le droit ivoirien, sous reserve des protections imperatives
           applicables au consommateur. Les parties chercheront d abord une solution amiable via{' '}
           <LegalValue info={info} cle="legal_support_email" fallback="email support" />. A defaut,
-          le litige releve des juridictions competentes selon les regles applicables.
+          le litige relevé des juridictions compétentes selon les règles applicables.
         </p>
         <p className="text-[13px] text-[color:var(--color-muted)]">
           References reglementaires indicatives : loi ivoirienne n 2013-450 du 19 juin 2013 relative

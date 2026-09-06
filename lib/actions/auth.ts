@@ -38,14 +38,14 @@ export async function signIn(_prev: ActionState, formData: FormData): Promise<Ac
     password: formData.get('password'),
   });
   if (!parsed.success) {
-    return { error: 'Verifiez votre email et votre mot de passe.' };
+    return { error: 'Vérifiez votre email et votre mot de passe.' };
   }
 
   const { ipHash, userAgent } = await requestFingerprint();
   const { allowed } = await consumeRateLimit('connexion', `${ipHash}:${parsed.data.email}`);
   if (!allowed) {
     await logSecurityEvent('connexion_rate_limited', ipHash);
-    return { error: 'Trop de tentatives. Reessayez dans quelques minutes.' };
+    return { error: 'Trop de tentatives. Réessayez dans quelques minutes.' };
   }
 
   const supabase = await createClient();
@@ -81,7 +81,7 @@ export async function claimAccess(_prev: ActionState, formData: FormData): Promi
   });
   if (!parsed.success) {
     return {
-      error: 'Verifiez les informations saisies. Le mot de passe fait 8 caracteres minimum.',
+      error: 'Vérifiez les informations saisies. Le mot de passe fait 8 caractères minimum.',
     };
   }
 
@@ -89,7 +89,7 @@ export async function claimAccess(_prev: ActionState, formData: FormData): Promi
   const { allowed } = await consumeRateLimit('activation', `${ipHash}:${parsed.data.email}`);
   if (!allowed) {
     await logSecurityEvent('activation_rate_limited', ipHash);
-    return { error: 'Trop de tentatives. Reessayez dans une trentaine de minutes.' };
+    return { error: 'Trop de tentatives. Réessayez dans une trentaine de minutes.' };
   }
 
   const email = normalizeEmail(parsed.data.email);
@@ -111,7 +111,7 @@ export async function claimAccess(_prev: ActionState, formData: FormData): Promi
   // Un achat deja rattache ne peut pas etre revendique par un autre compte.
   if (purchase.user_id) {
     return {
-      error: 'Cet acces est deja rattache a un compte. Connectez-vous, ou recuperez votre acces.',
+      error: 'Cet accès est déjà rattaché à un compte. Connectez-vous, ou récupérez votre accès.',
     };
   }
 
@@ -141,7 +141,7 @@ export async function claimAccess(_prev: ActionState, formData: FormData): Promi
     });
 
     if (createError || !created.user) {
-      return { error: 'Impossible de creer le compte. Reessayez ou contactez le support.' };
+      return { error: 'Impossible de créer le compte. Réessayez ou contactez le support.' };
     }
     userId = created.user.id;
   }
@@ -176,7 +176,7 @@ export async function claimAccess(_prev: ActionState, formData: FormData): Promi
   if (signInError) {
     return {
       success:
-        'Votre acces a ete ajoute a votre compte existant. Connectez-vous avec votre mot de passe habituel, ou passez par la recuperation si vous l avez oublie.',
+        'Votre accès a été ajouté à votre compte existant. Connectez-vous avec votre mot de passe habituel, ou passez par la récupération si vous l’avez oublié.',
     };
   }
 
@@ -196,14 +196,14 @@ export async function recoverAccess(_prev: ActionState, formData: FormData): Pro
     password: formData.get('password'),
   });
   if (!parsed.success) {
-    return { error: 'Verifiez les informations saisies.' };
+    return { error: 'Vérifiez les informations saisies.' };
   }
 
   const { ipHash, userAgent } = await requestFingerprint();
   const { allowed } = await consumeRateLimit('recuperation', `${ipHash}:${parsed.data.email}`);
   if (!allowed) {
     await logSecurityEvent('recuperation_rate_limited', ipHash);
-    return { error: 'Trop de tentatives. Reessayez dans une trentaine de minutes.' };
+    return { error: 'Trop de tentatives. Réessayez dans une trentaine de minutes.' };
   }
 
   const email = normalizeEmail(parsed.data.email);
@@ -226,7 +226,7 @@ export async function recoverAccess(_prev: ActionState, formData: FormData): Pro
     password: parsed.data.password,
   });
   if (error) {
-    return { error: 'Impossible de mettre a jour le mot de passe. Contactez le support.' };
+    return { error: 'Impossible de mettre à jour le mot de passe. Contactez le support.' };
   }
 
   const supabase = await createClient();
@@ -253,8 +253,8 @@ export async function revokeSession(_prev: ActionState, formData: FormData): Pro
     .update({ status: 'revoked', revoked_at: new Date().toISOString() })
     .eq('id', parsed.data.sessionId);
 
-  if (error) return { error: 'Impossible de deconnecter cet appareil.' };
+  if (error) return { error: 'Impossible de déconnecter cet appareil.' };
 
   revalidatePath('/compte');
-  return { success: 'Appareil deconnecte.' };
+  return { success: 'Appareil déconnecté.' };
 }

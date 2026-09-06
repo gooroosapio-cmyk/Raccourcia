@@ -8,16 +8,16 @@ const SECTIONS = [
   { href: '/admin', label: 'Tableau de bord' },
   { href: '/admin/raccourcis', label: 'Raccourcis' },
   { href: '/admin/analytics', label: 'Analytics' },
-  { href: '/admin/categories', label: 'Categories' },
+  { href: '/admin/categories', label: 'Catégories' },
   { href: '/admin/membres', label: 'Membres' },
-  { href: '/admin/parametres', label: 'Parametres' },
+  { href: '/admin/parametres', label: 'Paramètres' },
 ] as const;
 
 export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Sections d administration" className="-mx-5 mt-3 overflow-x-auto px-5">
+    <nav aria-label="Sections d’administration" className="-mx-5 mt-3 overflow-x-auto px-5">
       <ul className="flex w-max gap-2">
         {SECTIONS.map((section) => {
           const active =

@@ -1,7 +1,7 @@
 import { listAdminConfig } from '@/lib/admin/queries';
 import { ConfigForm } from '@/app/admin/parametres/config-forms';
 
-export const metadata = { title: 'Parametres' };
+export const metadata = { title: 'Paramètres' };
 
 /**
  * Reglages modifiables sans redeploiement.
@@ -12,32 +12,32 @@ export const metadata = { title: 'Parametres' };
 const LABELS: Record<string, string> = {
   mode_analyse_enabled: 'Mode Analyse (sans effet depuis le catalogue v2)',
   public_catalog_enabled: 'Pages publiques partageables',
-  max_active_sessions: 'Appareils connectes par compte',
-  free_prompt_limit: 'Commandes gratuites de demonstration',
+  max_active_sessions: 'Appareils connectés par compte',
+  free_prompt_limit: 'Commandes gratuites de démonstration',
   purchase_url: 'Page de vente',
   price_regular: 'Prix de reference (barre)',
   price_current: 'Prix affiche',
   price_currency: 'Devise',
 
-  legal_editor: 'Editeur : raison sociale',
-  legal_editor_form: 'Editeur : forme juridique',
-  legal_capital: 'Editeur : capital',
-  legal_registration: 'Editeur : RCCM',
-  legal_address: 'Editeur : adresse du siege',
-  legal_representative: 'Editeur : representant legal',
+  legal_editor: 'Editeur : raison sociale',
+  legal_editor_form: 'Editeur : forme juridique',
+  legal_capital: 'Editeur : capital',
+  legal_registration: 'Editeur : RCCM',
+  legal_address: 'Editeur : adresse du siège',
+  legal_representative: 'Editeur : représentant légal',
   legal_publication_director: 'Directeur de la publication',
-  legal_host: 'Hebergeur : nom',
-  legal_host_address: 'Hebergeur : adresse',
-  legal_host_contact: 'Hebergeur : contact',
-  legal_contact_email: 'Contact general',
-  legal_privacy_email: 'Contact donnees personnelles',
+  legal_host: 'Hebergeur : nom',
+  legal_host_address: 'Hebergeur : adresse',
+  legal_host_contact: 'Hebergeur : contact',
+  legal_contact_email: 'Contact général',
+  legal_privacy_email: 'Contact données personnelles',
   legal_support_email: 'Contact support',
   legal_payment_provider: 'Prestataire de paiement',
-  legal_refund_policy: 'Regles de remboursement',
-  legal_retention_account: 'Conservation : donnees de compte',
-  legal_retention_support: 'Conservation : demandes de support',
-  legal_retention_logs: 'Conservation : journaux de securite',
-  legal_updated_at: 'Date de version du cadre legal',
+  legal_refund_policy: 'Règles de remboursement',
+  legal_retention_account: 'Conservation : données de compte',
+  legal_retention_support: 'Conservation : demandes de support',
+  legal_retention_logs: 'Conservation : journaux de sécurité',
+  legal_updated_at: 'Date de version du cadre légal',
 };
 
 /**
@@ -47,17 +47,17 @@ const LABELS: Record<string, string> = {
 const GROUPES = [
   {
     titre: 'Service',
-    description: 'Prennent effet immediatement, sans nouvelle mise en ligne.',
+    description: 'Prennent effet immédiatement, sans nouvelle mise en ligne.',
     test: (cle: string) => !cle.startsWith('legal_') && !cle.startsWith('price_'),
   },
   {
     titre: 'Offre',
     description:
-      'Le prix affiche doit correspondre a la fiche produit Chariow. Un prix de reference inferieur ou egal au prix affiche n est pas barre.',
+      'Le prix affiche doit correspondre à la fiche produit Chariow. Un prix de référence inférieur ou egal au prix affiche n’est pas barre.',
     test: (cle: string) => cle.startsWith('price_'),
   },
   {
-    titre: 'Cadre legal',
+    titre: 'Cadre légal',
     description:
       'Ces informations alimentent les mentions legales, la politique de confidentialite et les conditions. Un champ vide s affiche publiquement comme "a completer".',
     test: (cle: string) => cle.startsWith('legal_'),
@@ -73,9 +73,9 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Parametres</h1>
+        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Paramètres</h1>
         <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-          Ces reglages prennent effet immediatement, sans nouvelle mise en ligne.
+          Ces réglages prennent effet immédiatement, sans nouvelle mise en ligne.
         </p>
       </div>
 
@@ -89,7 +89,7 @@ export default async function AdminSettingsPage() {
 
       {entries.length === 0 ? (
         <p className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-5 text-center text-[15px] text-[color:var(--color-muted)]">
-          Aucun parametre disponible.
+          Aucun paramètre disponible.
         </p>
       ) : (
         GROUPES.map((groupe) => {

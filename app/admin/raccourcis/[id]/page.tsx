@@ -51,14 +51,15 @@ export default async function AdminPromptPage({ params }: { params: Promise<{ id
 
       <Section
         title="Prompt complet par IA"
-        hint="Enregistrer cree une nouvelle version. La precedente est conservee, jamais ecrasee."
+        hint="Enregistrer créé une nouvelle version. La précédente est conservée, jamais écrasée."
       >
         <PromptVersionForms promptId={prompt.id} variants={prompt.variants} />
       </Section>
 
-      <Section title="Visuels" hint="Miniature pour la carte, avant et apres pour montrer l effet.">
+      <Section title="Visuels" hint="Miniature pour la carte, avant et après pour montrer l’effet.">
         <PromptMediaManager
           promptId={prompt.id}
+          command={prompt.command}
           media={prompt.media}
           requiresPair={prompt.showImageCard}
         />

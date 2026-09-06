@@ -74,7 +74,7 @@ export const INPUT_EXAMPLE_LABELS: Record<InputExampleKind, string> = {
   photo_produit: 'Photo de produit',
   photo_lieu: 'Photo de lieu',
   photo_personne: 'Photo de personne',
-  capture_ecran: 'Capture d ecran',
+  capture_ecran: 'Capture d’écran',
   document_pdf: 'Document PDF',
   texte_brut: 'Texte brut',
   tableau: 'Tableau',
@@ -111,10 +111,10 @@ export const OUTPUT_FORMAT_LABELS: Record<OutputFormatKind, string> = {
 /** Precision courte affichee sous chaque format, quand elle aide. */
 export const OUTPUT_FORMAT_HINTS: Partial<Record<OutputFormatKind, string>> = {
   image: 'visuel final',
-  texte: 'contenu pret a publier',
+  texte: 'contenu prêt a publier',
   pdf: 'rapport structure',
   tableur: 'tableau exploitable',
-  code: 'extrait pret a coller',
+  code: 'extrait prêt à coller',
 };
 
 export const RISK_LEVELS = ['faible', 'moyen', 'eleve'] as const;

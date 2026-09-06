@@ -7,7 +7,7 @@ export function SignOutButton() {
         type="submit"
         className="flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[15px] font-medium text-[color:var(--color-night)]"
       >
-        Se deconnecter
+        Se déconnecter
       </button>
     </form>
   );

@@ -29,8 +29,8 @@ export function UpgradePanel({ offre, compact = false }: { offre: Offre; compact
       corps: 'Les commandes ajoutees ensuite sont comprises, sans rien repayer.',
     },
     {
-      titre: 'Acces immediat',
-      corps: 'Jusqu a 3 appareils avec le meme compte, favoris et historique compris.',
+      titre: 'Accès immédiat',
+      corps: 'Jusqu’à 3 appareils avec le même compte, favoris et historique compris.',
     },
   ];
 
@@ -97,7 +97,7 @@ export function UpgradePanel({ offre, compact = false }: { offre: Offre; compact
         href="/activation"
         className="mt-2 flex h-12 w-full items-center justify-center text-[14px] font-medium text-[color:var(--color-brand)] underline underline-offset-2"
       >
-        J ai deja un acces
+        J’ai déjà un accès
       </Link>
     </div>
   );

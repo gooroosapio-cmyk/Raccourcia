@@ -32,7 +32,7 @@ export async function toggleFavorite(promptId: string): Promise<FavoriteResult> 
   const { error } = await supabase
     .from('favorites')
     .insert({ prompt_id: parsed.data.promptId, user_id: user.id });
-  if (error) return { error: 'Impossible d ajouter ce favori.' };
+  if (error) return { error: 'Impossible d’ajouter ce favori.' };
 
   revalidatePath('/app/favoris');
   return { isFavorite: true };

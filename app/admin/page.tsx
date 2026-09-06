@@ -51,13 +51,13 @@ export default async function AdminDashboardPage() {
             {dashboard.hiddenCategories > 1 ? 's' : ''}
           </h2>
           <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-            Leurs raccourcis n apparaissent pas dans la bibliotheque. Les donnees sont conservees.
+            Leurs raccourcis n’apparaissent pas dans la bibliothèque. Les données sont conservées.
           </p>
           <Link
             href="/admin/categories"
             className="mt-3 inline-flex h-11 items-center rounded-[color:var(--radius-control)] bg-[color:var(--color-sky)] px-3 text-sm font-medium text-[color:var(--color-night)]"
           >
-            Voir les categories
+            Voir les catégories
           </Link>
         </section>
       ) : null}
@@ -84,7 +84,7 @@ export default async function AdminDashboardPage() {
             {dashboard.incomplete.length > 1 ? 's' : ''} sans categorie
           </h2>
           <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-            Ils resteront invisibles tant qu ils ne sont pas classes.
+            Ils resteront invisibles tant qu’ils ne sont pas classes.
           </p>
           <ul className="mt-3 space-y-1">
             {dashboard.incomplete.map((prompt) => (
@@ -103,11 +103,11 @@ export default async function AdminDashboardPage() {
 
       <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
         <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-muted)]">
-          Activite recente
+          Activite récente
         </h2>
         {dashboard.recentActivity.length === 0 ? (
           <p className="mt-2 text-[13px] text-[color:var(--color-muted)]">
-            Aucune action enregistree pour l instant.
+            Aucune action enregistrée pour l’instant.
           </p>
         ) : (
           <ul className="mt-3 divide-y divide-[color:var(--color-line)]">
@@ -132,7 +132,7 @@ export default async function AdminDashboardPage() {
         href="/admin/raccourcis/nouveau"
         className="flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] font-medium text-white"
       >
-        Creer un raccourci
+        Créer un raccourci
       </Link>
     </div>
   );

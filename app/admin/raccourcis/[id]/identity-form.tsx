@@ -60,7 +60,7 @@ export function PromptIdentityForm({
         name="shortDescription"
         defaultValue={prompt.shortDescription}
         rows={2}
-        hint="Une phrase orientee resultat, visible sur la carte."
+        hint="Une phrase orientee résultat, visible sur la carte."
       />
 
       <label className="block">
@@ -79,13 +79,13 @@ export function PromptIdentityForm({
       </label>
 
       <label className="block">
-        <span className="text-[13px] font-medium text-[color:var(--color-night)]">Categorie</span>
+        <span className="text-[13px] font-medium text-[color:var(--color-night)]">Catégorie</span>
         <select
           name="categoryId"
           defaultValue={prompt.categoryId ?? ''}
           className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
         >
-          <option value="">Aucune categorie</option>
+          <option value="">Aucune catégorie</option>
           {options.map((option) => (
             <option key={option.id} value={option.id}>
               {option.label}
@@ -93,12 +93,12 @@ export function PromptIdentityForm({
           ))}
         </select>
         <span className="mt-1 block text-[12px] text-[color:var(--color-muted)]">
-          Une categorie est obligatoire pour publier.
+          Une catégorie est obligatoire pour publier.
         </span>
       </label>
 
       <AdminTextarea
-        label="Promesse de resultat"
+        label="Promesse de résultat"
         name="resultSummary"
         defaultValue={prompt.resultSummary ?? ''}
         rows={2}
@@ -113,7 +113,7 @@ export function PromptIdentityForm({
           label: INPUT_EXAMPLE_LABELS[kind],
         }))}
         selected={prompt.inputExamples}
-        hint="Ce que la commande sait reellement traiter. 4 maximum, affiches en tuiles sur la fiche."
+        hint="Ce que la commande sait reellement traiter. 4 maximum, affichés en tuiles sur la fiche."
       />
 
       <AdminCheckboxGroup
@@ -128,11 +128,11 @@ export function PromptIdentityForm({
       />
 
       <AdminTextarea
-        label="Cas d usage"
+        label="Cas d’usage"
         name="useCases"
         defaultValue={prompt.useCases.join('\n')}
         rows={3}
-        hint="Un par ligne, 3 maximum affiches. Surtout utile pour les prompts ecrits."
+        hint="Un par ligne, 3 maximum affichés. Surtout utile pour les prompts écrits."
       />
       <AdminTextarea
         label="Tags"
@@ -142,7 +142,7 @@ export function PromptIdentityForm({
         hint="Separes par un point-virgule."
       />
       <AdminTextarea
-        label="Conseil d utilisation"
+        label="Conseil d’utilisation"
         name="expectedInput"
         defaultValue={prompt.expectedInput ?? ''}
         rows={2}
@@ -174,20 +174,20 @@ export function PromptIdentityForm({
           label="Carte avec visuel"
           name="showImageCard"
           defaultChecked={prompt.showImageCard}
-          hint="A laisser desactive pour les prompts texte."
+          hint="A laisser désactivé pour les prompts texte."
         />
         <AdminToggle
           label="Gratuit"
           name="isFree"
           defaultChecked={prompt.isFree}
-          hint="Copiable sans achat, sert de demonstration."
+          hint="Copiable sans achat, sert de démonstration."
         />
         <AdminToggle label="Mis en avant" name="isFeatured" defaultChecked={prompt.isFeatured} />
         <AdminToggle label="Nouveau" name="isNew" defaultChecked={prompt.isNew} />
       </div>
 
       <AdminFeedback state={state} />
-      <AdminSubmit>Enregistrer l identite</AdminSubmit>
+      <AdminSubmit>Enregistrer l’identité</AdminSubmit>
     </form>
   );
 }

@@ -29,7 +29,7 @@ export default async function AdminAnalyticsPage({
       <div>
         <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Analytics</h1>
         <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-          Ce que les membres copient reellement. Les chiffres sont agreges : ils ne disent jamais
+          Ce que les membres copient reellement. Les chiffres sont agrégés : ils ne disent jamais
           qui a copie quoi.
         </p>
       </div>
@@ -61,18 +61,18 @@ export default async function AdminAnalyticsPage({
           value={data.activeMembers}
           hint="Ont copie au moins une fois"
         />
-        <Stat label="Acces a vie actifs" value={data.membersWithAccess} />
+        <Stat label="Accès à vie actifs" value={data.membersWithAccess} />
         <Stat
-          label="Achats non actives"
+          label="Achats non actifs"
           value={data.purchasesUnclaimed}
           tone={data.purchasesUnclaimed > 0 ? 'warning' : undefined}
-          hint="Payes, sans compte cree"
+          hint="Payes, sans compte créé"
         />
       </section>
 
       {data.purchasesUnclaimed > 0 ? (
         <p className="rounded-[color:var(--radius-card)] border border-[color:var(--color-warning)] bg-[#FFF8EE] p-3 text-[13px] leading-relaxed text-[color:var(--color-night)]">
-          {data.purchasesUnclaimed} personne{data.purchasesUnclaimed > 1 ? 's ont' : ' a'} paye sans
+          {data.purchasesUnclaimed} personne{data.purchasesUnclaimed > 1 ? 's’ont' : ' a'} paye sans
           jamais activer son acces. C est le seul chiffre de cette page qui coute de l argent :
           reprenez contact avec {data.purchasesUnclaimed > 1 ? 'ces acheteurs' : 'cet acheteur'}.
         </p>
@@ -124,7 +124,7 @@ export default async function AdminAnalyticsPage({
 
         <div className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
           <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-muted)]">
-            Depuis quel ecran
+            Depuis quel écran
           </h2>
           <div className="mt-3">
             <BarList bars={data.bySurface} empty="Aucune copie sur la periode." />

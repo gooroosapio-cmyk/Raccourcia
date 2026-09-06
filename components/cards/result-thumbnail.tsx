@@ -29,7 +29,7 @@ export function ResultThumbnail({
     <div className="relative aspect-[4/3] w-full overflow-hidden bg-[color:var(--color-canvas)]">
       <Image
         src={url}
-        alt={alt ?? `Resultat obtenu avec ${command}`}
+        alt={alt ?? `Résultat obtenu avec ${command}`}
         fill
         // Deux colonnes sur mobile, trois sur tablette, quatre au-dela : on
         // ne telecharge jamais une image de pleine largeur pour une demi-carte.

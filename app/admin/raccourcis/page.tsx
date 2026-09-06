@@ -67,7 +67,7 @@ export default async function AdminPromptsPage({
                   </p>
                   <p className="mt-0.5 text-[12px] text-[color:var(--color-muted)]">
                     {MODE_LABELS[prompt.mode]}
-                    {prompt.categoryName ? ` - ${prompt.categoryName}` : ' - sans categorie'}
+                    {prompt.categoryName ? ` - ${prompt.categoryName}` : ' - sans catégorie'}
                   </p>
                 </div>
                 <StatusBadge status={prompt.status} />

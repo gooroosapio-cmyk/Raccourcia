@@ -32,38 +32,38 @@ export type AdminActionState = { error?: string; success?: string };
  */
 function readableError(message: string): string {
   if (message.includes('CATEGORIE_REQUISE')) {
-    return 'Choisissez une categorie avant de publier.';
+    return 'Choisissez une catégorie avant de publier.';
   }
   if (message.includes('DESCRIPTION_REQUISE')) {
     return 'Ajoutez une description courte avant de publier.';
   }
   if (message.includes('VERSION_REQUISE')) {
-    return 'Renseignez le prompt complet d au moins une IA avant de publier.';
+    return 'Renseignez le prompt complet d’au moins une IA avant de publier.';
   }
   if (message.includes('PAYLOAD_REQUIRED')) {
-    return 'Le prompt complet ne peut pas etre vide.';
+    return 'Le prompt complet ne peut pas être vide.';
   }
   if (message.includes('FORBIDDEN')) {
     return "Cette action demande un role d'administration.";
   }
   if (message.includes('duplicate key') && message.includes('command')) {
-    return 'Cette commande existe deja dans le catalogue.';
+    return 'Cette commande existe déjà dans le catalogue.';
   }
   if (message.includes('duplicate key') && message.includes('slug')) {
-    return 'Ce slug est deja utilise.';
+    return 'Ce slug est déjà utilise.';
   }
   // Les gardes-fous de hierarchie des categories parlent deja francais :
   // les masquer derriere un message generique priverait l'admin de la raison.
-  if (message.includes('hierarchie des categories')) {
-    return 'La hierarchie est limitee a deux niveaux : choisissez une categorie principale.';
+  if (message.includes('hierarchie des catégories')) {
+    return 'La hierarchie est limitée à deux niveaux : choisissez une catégorie principale.';
   }
-  if (message.includes('mode de sa categorie parente')) {
-    return 'Une sous-categorie doit avoir le meme mode que sa categorie parente.';
+  if (message.includes('mode de sa catégorie parente')) {
+    return 'Une sous-catégorie doit avoir le même mode que sa catégorie parente.';
   }
   if (message.includes('sa propre parente')) {
-    return 'Une categorie ne peut pas etre sa propre parente.';
+    return 'Une catégorie ne peut pas être sa propre parente.';
   }
-  return 'Action impossible. Verifiez les informations saisies.';
+  return 'Action impossible. Vérifiez les informations saisies.';
 }
 
 /** Convertit une valeur de case a cocher HTML en booleen. */
@@ -86,7 +86,7 @@ export async function createPrompt(
     categoryId: formData.get('categoryId') || undefined,
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? 'Verifiez les informations saisies.' };
+    return { error: parsed.error.issues[0]?.message ?? 'Vérifiez les informations saisies.' };
   }
 
   const supabase = await createClient();
@@ -159,7 +159,7 @@ export async function updatePromptIdentity(
   });
 
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? 'Verifiez les informations saisies.' };
+    return { error: parsed.error.issues[0]?.message ?? 'Vérifiez les informations saisies.' };
   }
 
   const supabase = await createClient();
@@ -191,7 +191,7 @@ export async function updatePromptIdentity(
 
   revalidatePath(`/admin/raccourcis/${promptId}`);
   revalidatePath('/app');
-  return { success: 'Modifications enregistrees.' };
+  return { success: 'Modifications enregistrées.' };
 }
 
 /**
@@ -224,7 +224,7 @@ export async function savePromptVersion(
   if (error) return { error: readableError(error.message) };
 
   revalidatePath(`/admin/raccourcis/${parsed.data.promptId}`);
-  return { success: 'Nouvelle version enregistree. La precedente est conservee.' };
+  return { success: 'Nouvelle version enregistrée. La précédente est conservée.' };
 }
 
 /** Active ou desactive une IA pour ce raccourci. */
@@ -251,7 +251,7 @@ export async function setVariantPublished(
 
   revalidatePath(`/admin/raccourcis/${parsed.data.promptId}`);
   revalidatePath('/app');
-  return { success: parsed.data.published ? 'IA activee.' : 'IA desactivee.' };
+  return { success: parsed.data.published ? 'IA activée.' : 'IA désactivée.' };
 }
 
 export async function setPromptStatus(
@@ -286,7 +286,7 @@ export async function setPromptStatus(
     if (prompt?.show_image_card && manquants.length > 0) {
       return {
         error:
-          'Ajoutez les visuels Avant et Apres avant de publier, ou desactivez la carte avec visuel.',
+          'Ajoutez les visuels Avant et Après avant de publier, ou désactivez la carte avec visuel.',
       };
     }
   }
@@ -303,9 +303,9 @@ export async function setPromptStatus(
   revalidatePath('/app');
 
   const labels = {
-    published: 'Raccourci publie. Il est visible par les membres.',
-    draft: 'Raccourci repasse en brouillon. Il n est plus visible.',
-    archived: 'Raccourci archive. Les donnees sont conservees.',
+    published: 'Raccourci publié. Il est visible par les membres.',
+    draft: 'Raccourci repasse en brouillon. Il n’est plus visible.',
+    archived: 'Raccourci archivé. Les données sont conservées.',
   } as const;
 
   return { success: labels[parsed.data.status] };
@@ -329,7 +329,7 @@ export async function saveCategory(
     sortOrder: formData.get('sortOrder') ?? 0,
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? 'Verifiez les informations saisies.' };
+    return { error: parsed.error.issues[0]?.message ?? 'Vérifiez les informations saisies.' };
   }
 
   const supabase = await createClient();
@@ -351,7 +351,7 @@ export async function saveCategory(
 
   revalidatePath('/admin/categories');
   revalidatePath('/app');
-  return { success: parsed.data.id ? 'Categorie enregistree.' : 'Categorie creee en brouillon.' };
+  return { success: parsed.data.id ? 'Catégorie enregistrée.' : 'Catégorie créée en brouillon.' };
 }
 
 export async function setCategoryStatus(
@@ -378,9 +378,9 @@ export async function setCategoryStatus(
   revalidatePath('/app');
 
   const labels = {
-    published: 'Categorie publiee. Ses raccourcis redeviennent visibles.',
-    draft: 'Categorie desactivee. Ses raccourcis sont masques, rien n est supprime.',
-    archived: 'Categorie archivee. Ses raccourcis sont masques, rien n est supprime.',
+    published: 'Catégorie publiée. Ses raccourcis redeviennent visibles.',
+    draft: 'Catégorie désactivée. Ses raccourcis sont masqués, rien n’est supprime.',
+    archived: 'Catégorie archivée. Ses raccourcis sont masqués, rien n’est supprime.',
   } as const;
 
   return { success: labels[parsed.data.status] };
@@ -438,7 +438,7 @@ export async function createMediaTicket(input: {
     .from(STORAGE_BUCKETS.PROMPT_MEDIA)
     .createSignedUploadUrl(path);
 
-  if (error || !data) return { error: 'Envoi impossible pour le moment. Reessayez.' };
+  if (error || !data) return { error: 'Envoi impossible pour le moment. Réessayez.' };
 
   return { path: data.path, token: data.token };
 }
@@ -512,7 +512,7 @@ export async function registerPromptMedia(
 
   revalidatePath(`/admin/raccourcis/${parsed.data.promptId}`);
   revalidatePath('/app');
-  return { success: 'Visuel enregistre.' };
+  return { success: 'Visuel enregistré.' };
 }
 
 export async function deletePromptMedia(
@@ -542,7 +542,7 @@ export async function deletePromptMedia(
 
   revalidatePath(`/admin/raccourcis/${parsed.data.promptId}`);
   revalidatePath('/app');
-  return { success: 'Visuel retire.' };
+  return { success: 'Visuel retiré.' };
 }
 
 // --- Support et parametres --------------------------------------------------
@@ -571,7 +571,7 @@ export async function setMemberAccess(
 
   revalidatePath('/admin/membres');
   return {
-    success: parsed.data.active ? 'Acces a vie accorde.' : 'Acces retire. Le compte est conserve.',
+    success: parsed.data.active ? 'Accès à vie accordé.' : 'Accès retiré. Le compte est conserve.',
   };
 }
 
@@ -603,5 +603,5 @@ export async function setConfigValue(
 
   revalidatePath('/admin/parametres');
   revalidatePath('/app');
-  return { success: 'Parametre enregistre.' };
+  return { success: 'Parametre enregistré.' };
 }
