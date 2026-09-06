@@ -41,6 +41,29 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq postgresql-client
 
+      - name: Verifier que la base est joignable
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          # La connexion directe de Supabase (db.<ref>.supabase.co) ne resout
+          # qu'en IPv6. Les runners GitHub n'ont pas d'IPv6 : psql echoue sur
+          # un « Network is unreachable » qui ne dit pas pourquoi. On le dit.
+          if [ -z "${PGURL:-}" ]; then
+            echo "Le secret SUPABASE_DB_URL est vide ou absent de l environnement production."
+            exit 1
+          fi
+          if printf '%s' "$PGURL" | grep -q '@db\..*\.supabase\.co'; then
+            echo "L URI pointe vers la connexion directe (db.<ref>.supabase.co), joignable"
+            echo "en IPv6 uniquement. Les runners GitHub n ont pas d IPv6."
+            echo
+            echo "Remplacer le secret SUPABASE_DB_URL par l URI « Session pooler »,"
+            echo "affichee dans Supabase > bouton Connect. Elle est en IPv4 et son"
+            echo "hote se termine par .pooler.supabase.com."
+            exit 1
+          fi
+          psql "$PGURL" -At -c 'select 1' > /dev/null
+          echo "Base joignable."
+
       - name: Etat avant import
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
