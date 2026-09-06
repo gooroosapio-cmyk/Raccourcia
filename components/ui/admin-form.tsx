@@ -156,3 +156,50 @@ export function AdminFeedback({ state }: { state: AdminActionState }) {
   }
   return null;
 }
+
+/**
+ * Choix multiple parmi une liste fermee.
+ *
+ * Les entrees et les formats de sortie ne se saisissent pas librement :
+ * l'interface publique associe une icone et un libelle a chaque valeur, qu'un
+ * texte tape a la main rendrait impossible a retrouver.
+ */
+export function AdminCheckboxGroup({
+  legend,
+  name,
+  options,
+  selected,
+  hint,
+}: {
+  legend: string;
+  name: string;
+  options: { value: string; label: string }[];
+  selected: string[];
+  hint?: string;
+}) {
+  return (
+    <fieldset>
+      <legend className="text-[13px] font-medium text-[color:var(--color-night)]">{legend}</legend>
+      {hint ? (
+        <p className="mt-1 text-[12px] leading-relaxed text-[color:var(--color-muted)]">{hint}</p>
+      ) : null}
+      <div className="mt-2 flex flex-wrap gap-2">
+        {options.map((option) => (
+          <label
+            key={option.value}
+            className="touch-target inline-flex cursor-pointer items-center gap-2 rounded-full border border-[color:var(--color-line)] px-3 text-[13px] text-[color:var(--color-night)] has-[:checked]:border-[color:var(--color-brand)] has-[:checked]:bg-[color:var(--color-sky)]"
+          >
+            <input
+              type="checkbox"
+              name={name}
+              value={option.value}
+              defaultChecked={selected.includes(option.value)}
+              className="h-4 w-4 accent-[color:var(--color-brand)]"
+            />
+            {option.label}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}

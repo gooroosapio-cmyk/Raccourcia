@@ -8,11 +8,14 @@ import {
   CATALOG_PAGE_SIZE,
   CONFIG_FALLBACKS,
   CONFIG_KEYS,
+  LEGAL_KEYS,
   MODES,
   STORAGE_BUCKETS,
+  type LegalKey,
   type Mode,
 } from '@/lib/constants';
-import type { CategoryNode, PromptCard, PromptDetail } from '@/lib/catalog/types';
+import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
+import type { BeforeAfter, CategoryNode, PromptCard, PromptDetail } from '@/lib/catalog/types';
 import type { Enums } from '@/lib/supabase/database.types';
 import type { CatalogQuery } from '@/lib/validation/schemas';
 import { CatalogUnavailableError } from '@/lib/catalog/errors';
@@ -35,13 +38,55 @@ export const getPublicConfig = cache(async () => {
     return (row?.value as T) ?? fallback;
   };
 
+  const regular = read<number>(
+    CONFIG_KEYS.PRICE_REGULAR,
+    CONFIG_FALLBACKS[CONFIG_KEYS.PRICE_REGULAR],
+  );
+  const current = read<number>(
+    CONFIG_KEYS.PRICE_CURRENT,
+    CONFIG_FALLBACKS[CONFIG_KEYS.PRICE_CURRENT],
+  );
+
   return {
     publicCatalogEnabled: read<boolean>(
       CONFIG_KEYS.PUBLIC_CATALOG_ENABLED,
       CONFIG_FALLBACKS[CONFIG_KEYS.PUBLIC_CATALOG_ENABLED],
     ),
     purchaseUrl: read<string>(CONFIG_KEYS.PURCHASE_URL, CONFIG_FALLBACKS[CONFIG_KEYS.PURCHASE_URL]),
+    price: {
+      current,
+      // Un prix de reference n'est barre que s'il est reellement superieur.
+      // Barrer un montant egal ou inferieur serait une fausse remise.
+      regular: regular > current ? regular : null,
+      currency: read<string>(
+        CONFIG_KEYS.PRICE_CURRENCY,
+        CONFIG_FALLBACKS[CONFIG_KEYS.PRICE_CURRENCY],
+      ),
+    },
   };
+});
+
+/**
+ * Informations legales de l'editeur.
+ *
+ * Une valeur absente reste absente : la page publique affiche alors une
+ * mention "a completer" explicite. Inventer une raison sociale ou une adresse
+ * serait plus grave qu'une page visiblement inachevee.
+ */
+export const getLegalInfo = cache(async (): Promise<Record<LegalKey, string>> => {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('app_config')
+    .select('key, value')
+    .in('key', LEGAL_KEYS as unknown as string[]);
+
+  const entries = LEGAL_KEYS.map((key) => {
+    const row = data?.find((entry) => entry.key === key);
+    const value = typeof row?.value === 'string' ? row.value.trim() : '';
+    return [key, value] as const;
+  });
+
+  return Object.fromEntries(entries) as Record<LegalKey, string>;
 });
 
 /**
@@ -106,9 +151,10 @@ export const getCategories = cache(async (mode: Enums<'app_mode'>): Promise<Cate
 
 /** Colonnes publiques d'un raccourci. `payload` n'y figure jamais. */
 const CARD_COLUMNS = `
-  id, command, name, slug, mode, short_description, use_cases, tags,
+  id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
   show_image_card, is_free, is_new, is_featured, risk_level, sort_order,
   intention, expected_input, limitations, required_variables,
+  input_examples, output_formats,
   prompt_variants!inner(compatibility, status, ai_providers!inner(key, name, is_active)),
   prompt_media(kind, storage_path, alt, sort_order)
 `;
@@ -120,6 +166,9 @@ type CardRow = {
   slug: string;
   mode: Enums<'app_mode'>;
   short_description: string;
+  result_summary: string | null;
+  input_examples: InputExampleKind[] | null;
+  output_formats: OutputFormatKind[] | null;
   use_cases: string[];
   tags: string[];
   show_image_card: boolean;
@@ -144,6 +193,31 @@ type CardRow = {
   }[];
 };
 
+/**
+ * Comparaison Avant/Apres, ou rien.
+ *
+ * Les deux visuels sont exiges ensemble. Retomber sur l'image d'entree faute
+ * de resultat afficherait une transformation qui n'a pas eu lieu ; c'est le
+ * seul cas ou ne rien montrer vaut mieux que montrer quelque chose.
+ */
+function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
+  const pick = (kind: Enums<'media_kind'>) =>
+    (media ?? [])
+      .filter((entry) => entry.kind === kind)
+      .sort((a, b) => a.sort_order - b.sort_order)[0] ?? null;
+
+  const before = pick('before');
+  const after = pick('after');
+  if (!before || !after) return null;
+
+  return {
+    beforeUrl: mediaUrl(before.storage_path),
+    beforeAlt: before.alt ?? 'Visuel de depart',
+    afterUrl: mediaUrl(after.storage_path),
+    afterAlt: after.alt ?? 'Resultat obtenu avec la commande',
+  };
+}
+
 function toCard(row: CardRow, favorites: Set<string>): PromptCard {
   const thumbnail =
     row.prompt_media
@@ -157,6 +231,12 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     slug: row.slug,
     mode: row.mode,
     shortDescription: row.short_description,
+    // La promesse de resultat prime ; a defaut, la description courte, qui
+    // dit deja ce que le raccourci fait.
+    resultSummary: row.result_summary?.trim() || row.short_description,
+    beforeAfter: toBeforeAfter(row.prompt_media),
+    inputExamples: row.input_examples ?? [],
+    outputFormats: row.output_formats ?? [],
     useCases: row.use_cases ?? [],
     tags: row.tags ?? [],
     showImageCard: row.show_image_card,
@@ -240,6 +320,16 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
   if (query.provider) {
     request = request.eq('prompt_variants.ai_providers.key', query.provider);
+  }
+
+  if (query.access) {
+    request = request.eq('is_free', query.access === 'gratuit');
+  }
+
+  if (query.output) {
+    // `contains` sur un tableau : une commande peut produire plusieurs
+    // formats, on garde celles qui produisent au moins celui demande.
+    request = request.contains('output_formats', [query.output]);
   }
 
   // Sans acces, les raccourcis gratuits passent devant, quel que soit le tri

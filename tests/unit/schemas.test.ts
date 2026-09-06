@@ -42,3 +42,26 @@ describe('claimAccessInput', () => {
     expect(() => claimAccessInput.parse({ license: 'ABC-123456' })).toThrow();
   });
 });
+
+describe('catalogQuery, filtres avances', () => {
+  it('accepte les trois axes de filtre', () => {
+    const parsed = catalogQuery.parse({ acces: undefined, access: 'gratuit', output: 'image' });
+    expect(parsed.access).toBe('gratuit');
+    expect(parsed.output).toBe('image');
+  });
+
+  it('refuse un format de sortie inconnu', () => {
+    // Un parametre d'URL bricole ne doit jamais atteindre la requete.
+    expect(() => catalogQuery.parse({ output: 'hologramme' })).toThrow();
+  });
+
+  it('refuse un niveau d acces inconnu', () => {
+    expect(() => catalogQuery.parse({ access: 'admin' })).toThrow();
+  });
+
+  it('laisse les filtres absents indefinis', () => {
+    const parsed = catalogQuery.parse({});
+    expect(parsed.access).toBeUndefined();
+    expect(parsed.output).toBeUndefined();
+  });
+});

@@ -148,6 +148,9 @@ export async function updatePromptIdentity(
     expectedInput: formData.get('expectedInput') ?? undefined,
     limitations: formData.get('limitations') ?? undefined,
     adminNotes: formData.get('adminNotes') ?? undefined,
+    resultSummary: formData.get('resultSummary') ?? undefined,
+    inputExamples: formData.getAll('inputExamples'),
+    outputFormats: formData.getAll('outputFormats'),
     showImageCard: checked(formData, 'showImageCard'),
     isFree: checked(formData, 'isFree'),
     isFeatured: checked(formData, 'isFeatured'),
@@ -173,6 +176,9 @@ export async function updatePromptIdentity(
       expected_input: parsed.data.expectedInput ?? null,
       limitations: parsed.data.limitations ?? null,
       admin_notes: parsed.data.adminNotes ?? null,
+      result_summary: parsed.data.resultSummary ?? null,
+      input_examples: parsed.data.inputExamples,
+      output_formats: parsed.data.outputFormats,
       show_image_card: parsed.data.showImageCard,
       is_free: parsed.data.isFree,
       is_featured: parsed.data.isFeatured,
@@ -260,6 +266,30 @@ export async function setPromptStatus(
   if (!parsed.success) return { error: 'Statut invalide.' };
 
   const supabase = await createClient();
+
+  // Une carte visuelle sans comparaison complete ne montre rien de ce que la
+  // commande produit. On refuse la publication plutot que de laisser passer
+  // une fiche muette, que personne ne reviendra completer.
+  if (parsed.data.status === 'published') {
+    const { data: prompt } = await supabase
+      .from('prompts')
+      .select('show_image_card, prompt_media(kind)')
+      .eq('id', parsed.data.promptId)
+      .maybeSingle();
+
+    const media = (prompt?.prompt_media ?? []) as { kind: string }[];
+    const manquants = ['before', 'after'].filter(
+      (kind) => !media.some((entry) => entry.kind === kind),
+    );
+
+    if (prompt?.show_image_card && manquants.length > 0) {
+      return {
+        error:
+          'Ajoutez les visuels Avant et Apres avant de publier, ou desactivez la carte avec visuel.',
+      };
+    }
+  }
+
   const { error } = await supabase.rpc('admin_set_prompt_status', {
     p_prompt_id: parsed.data.promptId,
     p_status: parsed.data.status,

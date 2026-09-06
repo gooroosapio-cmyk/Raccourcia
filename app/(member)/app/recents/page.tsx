@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getRecents } from '@/lib/catalog/queries';
 import { PromptGrid } from '@/components/cards/prompt-grid';
+import { EmptyState } from '@/components/ui/states';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
 
@@ -38,20 +38,12 @@ export default async function RecentsPage() {
         prompts={recents}
         locked={!hasLifetimeAccess}
         emptyState={
-          <div className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-5 text-center">
-            <p className="text-[15px] font-medium text-[color:var(--color-night)]">
-              Rien de recent.
-            </p>
-            <p className="mt-1 text-[13px] text-[color:var(--color-muted)]">
-              Les raccourcis que vous copiez apparaitront ici.
-            </p>
-            <Link
-              href="/app"
-              className="mt-4 inline-flex h-11 items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] px-4 text-sm font-medium text-white"
-            >
-              Parcourir la bibliotheque
-            </Link>
-          </div>
+          <EmptyState
+            title="Rien de recent."
+            body="Les commandes que vous copiez apparaissent ici, la plus recente en premier."
+            actionLabel="Parcourir la bibliotheque"
+            actionHref="/app"
+          />
         }
       />
     </div>

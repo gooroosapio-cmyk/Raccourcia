@@ -169,6 +169,9 @@ export type AdminPromptDetail = {
   expectedInput: string | null;
   limitations: string | null;
   adminNotes: string | null;
+  resultSummary: string | null;
+  inputExamples: Enums<'input_example_kind'>[];
+  outputFormats: Enums<'output_format_kind'>[];
   variants: {
     variantId: string;
     providerKey: string;
@@ -190,6 +193,7 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
       `id, external_ref, command, name, slug, mode, status, category_id, short_description,
        intention, use_cases, tags, show_image_card, is_free, is_featured, is_new,
        expected_input, limitations, admin_notes,
+       result_summary, input_examples, output_formats,
        prompt_media(id, kind, storage_path, alt, sort_order)`,
     )
     .eq('id', id)
@@ -222,6 +226,9 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
     expected_input: string | null;
     limitations: string | null;
     admin_notes: string | null;
+    result_summary: string | null;
+    input_examples: Enums<'input_example_kind'>[] | null;
+    output_formats: Enums<'output_format_kind'>[] | null;
     prompt_media: {
       id: string;
       kind: Enums<'media_kind'>;
@@ -251,6 +258,9 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
     expectedInput: row.expected_input,
     limitations: row.limitations,
     adminNotes: row.admin_notes,
+    resultSummary: row.result_summary,
+    inputExamples: row.input_examples ?? [],
+    outputFormats: row.output_formats ?? [],
     variants: (versions ?? []).map((entry) => ({
       variantId: entry.variant_id,
       providerKey: entry.provider_key,

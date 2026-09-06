@@ -14,7 +14,7 @@ export default async function SignInPage({
     <div className="mx-auto max-w-sm pt-6">
       <h1 className="text-2xl font-semibold text-[color:var(--color-night)]">Se connecter</h1>
       <p className="mt-1 text-[15px] text-[color:var(--color-muted)]">
-        Retrouvez votre bibliotheque de raccourcis.
+        Retrouvez votre bibliotheque de commandes.
       </p>
 
       <SignInForm suite={suite} />

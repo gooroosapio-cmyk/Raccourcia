@@ -53,6 +53,70 @@ export const SURFACE_LABELS: Record<Surface, string> = {
 export const MEDIA_KINDS = ['thumbnail', 'before', 'after', 'example', 'cover'] as const;
 export type MediaKind = (typeof MEDIA_KINDS)[number];
 
+/**
+ * Entrees qu'un raccourci accepte. Liste fermee : chaque valeur porte une
+ * icone et un libelle, qu'une chaine libre rendrait impossibles a associer.
+ */
+export const INPUT_EXAMPLE_KINDS = [
+  'photo_produit',
+  'photo_lieu',
+  'photo_personne',
+  'capture_ecran',
+  'document_pdf',
+  'texte_brut',
+  'tableau',
+  'url',
+  'brief',
+] as const;
+export type InputExampleKind = (typeof INPUT_EXAMPLE_KINDS)[number];
+
+export const INPUT_EXAMPLE_LABELS: Record<InputExampleKind, string> = {
+  photo_produit: 'Photo de produit',
+  photo_lieu: 'Photo de lieu',
+  photo_personne: 'Photo de personne',
+  capture_ecran: 'Capture d ecran',
+  document_pdf: 'Document PDF',
+  texte_brut: 'Texte brut',
+  tableau: 'Tableau',
+  url: 'Lien web',
+  brief: 'Brief',
+};
+
+/** Formats reellement produits par un raccourci. */
+export const OUTPUT_FORMAT_KINDS = [
+  'image',
+  'texte',
+  'pdf',
+  'document',
+  'presentation',
+  'tableur',
+  'code',
+  'audio',
+  'video',
+] as const;
+export type OutputFormatKind = (typeof OUTPUT_FORMAT_KINDS)[number];
+
+export const OUTPUT_FORMAT_LABELS: Record<OutputFormatKind, string> = {
+  image: 'Image',
+  texte: 'Texte',
+  pdf: 'PDF',
+  document: 'Document',
+  presentation: 'Presentation',
+  tableur: 'Tableur',
+  code: 'Code',
+  audio: 'Audio',
+  video: 'Video',
+};
+
+/** Precision courte affichee sous chaque format, quand elle aide. */
+export const OUTPUT_FORMAT_HINTS: Partial<Record<OutputFormatKind, string>> = {
+  image: 'visuel final',
+  texte: 'contenu pret a publier',
+  pdf: 'rapport structure',
+  tableur: 'tableau exploitable',
+  code: 'extrait pret a coller',
+};
+
 export const RISK_LEVELS = ['faible', 'moyen', 'eleve'] as const;
 export type RiskLevel = (typeof RISK_LEVELS)[number];
 
@@ -61,6 +125,9 @@ export const CONFIG_KEYS = {
   MAX_ACTIVE_SESSIONS: 'max_active_sessions',
   PUBLIC_CATALOG_ENABLED: 'public_catalog_enabled',
   PURCHASE_URL: 'purchase_url',
+  PRICE_REGULAR: 'price_regular',
+  PRICE_CURRENT: 'price_current',
+  PRICE_CURRENCY: 'price_currency',
 } as const;
 
 /** Valeur par defaut si la table app_config est injoignable. */
@@ -70,7 +137,40 @@ export const CONFIG_FALLBACKS = {
   // Boutique Chariow. En configuration et non en dur : changer d'offre ou de
   // boutique ne doit pas demander un redeploiement.
   [CONFIG_KEYS.PURCHASE_URL]: 'https://oqyokpqq.mychariow.store/prd_kn3gxkco',
+  // Un prix de repli a zero n'affiche rien plutot qu'un montant faux : mieux
+  // vaut une offre sans prix qu'une offre au mauvais prix.
+  [CONFIG_KEYS.PRICE_REGULAR]: 0,
+  [CONFIG_KEYS.PRICE_CURRENT]: 0,
+  [CONFIG_KEYS.PRICE_CURRENCY]: 'FCFA',
 } as const;
+
+/**
+ * Informations que seul l'editeur detient. Elles vivent en configuration :
+ * les ecrire dans le depot obligerait a un deploiement pour chaque correction
+ * et y ferait entrer des donnees nominatives.
+ */
+export const LEGAL_KEYS = [
+  'legal_editor',
+  'legal_editor_form',
+  'legal_capital',
+  'legal_registration',
+  'legal_address',
+  'legal_representative',
+  'legal_publication_director',
+  'legal_host',
+  'legal_host_address',
+  'legal_host_contact',
+  'legal_contact_email',
+  'legal_privacy_email',
+  'legal_support_email',
+  'legal_payment_provider',
+  'legal_refund_policy',
+  'legal_retention_account',
+  'legal_retention_support',
+  'legal_retention_logs',
+  'legal_updated_at',
+] as const;
+export type LegalKey = (typeof LEGAL_KEYS)[number];
 
 /** Nombre d'elements charges par page de bibliotheque (section 11.3). */
 export const CATALOG_PAGE_SIZE = 20;

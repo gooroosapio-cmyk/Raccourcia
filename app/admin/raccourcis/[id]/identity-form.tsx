@@ -4,13 +4,21 @@ import { useActionState } from 'react';
 
 import { updatePromptIdentity, type AdminActionState } from '@/lib/actions/admin';
 import {
+  AdminCheckboxGroup,
   AdminField,
   AdminFeedback,
   AdminSubmit,
   AdminTextarea,
   AdminToggle,
 } from '@/components/ui/admin-form';
-import { MODES, MODE_LABELS } from '@/lib/constants';
+import {
+  INPUT_EXAMPLE_KINDS,
+  INPUT_EXAMPLE_LABELS,
+  MODES,
+  MODE_LABELS,
+  OUTPUT_FORMAT_KINDS,
+  OUTPUT_FORMAT_LABELS,
+} from '@/lib/constants';
 import type { AdminCategory, AdminPromptDetail } from '@/lib/admin/queries';
 
 /**
@@ -88,6 +96,36 @@ export function PromptIdentityForm({
           Une categorie est obligatoire pour publier.
         </span>
       </label>
+
+      <AdminTextarea
+        label="Promesse de resultat"
+        name="resultSummary"
+        defaultValue={prompt.resultSummary ?? ''}
+        rows={2}
+        hint="Ce que le membre obtient, en une phrase. A defaut, la description courte est reprise."
+      />
+
+      <AdminCheckboxGroup
+        legend="Exemples d entrees"
+        name="inputExamples"
+        options={INPUT_EXAMPLE_KINDS.map((kind) => ({
+          value: kind,
+          label: INPUT_EXAMPLE_LABELS[kind],
+        }))}
+        selected={prompt.inputExamples}
+        hint="Ce que la commande sait reellement traiter. 4 maximum, affiches en tuiles sur la fiche."
+      />
+
+      <AdminCheckboxGroup
+        legend="Formats de sortie"
+        name="outputFormats"
+        options={OUTPUT_FORMAT_KINDS.map((kind) => ({
+          value: kind,
+          label: OUTPUT_FORMAT_LABELS[kind],
+        }))}
+        selected={prompt.outputFormats}
+        hint="Ce que la commande produit vraiment. Ne pas tout cocher par defaut."
+      />
 
       <AdminTextarea
         label="Cas d usage"
