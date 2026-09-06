@@ -39,17 +39,32 @@ export function CompatibilityList({
     <div className="flex flex-wrap gap-2">
       {providers.map((entry) => {
         const actif = entry.key === selected;
+        const apparence = `touch-target inline-flex items-center gap-1.5 rounded-full px-3.5 text-[14px] font-medium transition-colors duration-[var(--duration-fast)] ${
+          actif
+            ? 'bg-[color:var(--color-brand)] text-white'
+            : 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'
+        }`;
+
+        // Sans choix a faire, la liste enonce les IA compatibles : c'est une
+        // information, pas une commande. Un bouton y serait une cible de 44 px
+        // qui ne repond a rien — et la fiche publique est rendue sur le
+        // serveur, ou un gestionnaire d'evenement ne peut pas exister.
+        if (!onSelect) {
+          return (
+            <span key={entry.key} className={apparence}>
+              <ProviderDot providerKey={entry.key} inverse={actif} />
+              {entry.name}
+            </span>
+          );
+        }
+
         return (
           <button
             key={entry.key}
             type="button"
-            onClick={() => onSelect?.(entry.key)}
+            onClick={() => onSelect(entry.key)}
             aria-pressed={actif}
-            className={`touch-target inline-flex items-center gap-1.5 rounded-full px-3.5 text-[14px] font-medium transition-colors duration-[var(--duration-fast)] ${
-              actif
-                ? 'bg-[color:var(--color-brand)] text-white'
-                : 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'
-            }`}
+            className={apparence}
           >
             <ProviderDot providerKey={entry.key} inverse={actif} />
             {entry.name}

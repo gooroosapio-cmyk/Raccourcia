@@ -6,7 +6,7 @@ name: Catalogue
 # demande de taper le nom de la base visee. Un catalogue s'importe quand on
 # l'a decide, pas parce qu'une branche a bouge.
 #
-# Les 107 lots portent chacun leur controle de completude : le premier qui
+# Les 108 lots portent chacun leur controle de completude : le premier qui
 # n'atteint pas son compte leve, `ON_ERROR_STOP` arrete la serie, et rien ne
 # passe en silence. C'est l'absence de ce controle qui avait laisse 99
 # raccourcis en arriere lors de l'import precedent.
