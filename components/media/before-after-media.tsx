@@ -154,10 +154,16 @@ export function ResultMedia({
  * On ne duplique jamais l'image d'entree pour combler le manque : la carte
  * assume l'absence de visuel plutot que d'annoncer une transformation qui
  * n'est pas montree.
+ *
+ * Il occupe une bande, pas le cadre 16:10 d'une vraie image. Un vide de la
+ * taille d'une photo repoussait la carte suivante hors de l'ecran : sur un
+ * telephone, on ne voyait plus qu'une commande a la fois, et parcourir la
+ * bibliotheque devenait impossible. Le cadre plein reste pour les visuels
+ * reels, qui eux meritent la place.
  */
 export function MediaPlaceholder({ command }: { command: string }) {
   return (
-    <div className="relative flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-[color:var(--radius-card)] bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-4">
+    <div className="relative flex h-[92px] w-full items-center justify-center overflow-hidden rounded-[color:var(--radius-card)] bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-4">
       <span className="commande truncate text-[18px] font-semibold text-[color:var(--color-brand)]">
         {command}
       </span>

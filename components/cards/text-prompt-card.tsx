@@ -49,13 +49,21 @@ export function TextPromptCard({
           <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
         </div>
 
+        {/* Ce que fait ce raccourci, pas le format qu'il produit.
+            `result_summary` decrit la sortie et se repete a l'identique sur
+            toute une famille : « Texte final pret a publier » sur cent
+            quatre-vingt-dix cartes ne permet pas de choisir. Le format est
+            deja dit par la puce ci-dessous. */}
         <p className="mt-1.5 line-clamp-2 text-[15px] leading-snug text-[color:var(--color-night)]">
-          {prompt.resultSummary}
+          {prompt.shortDescription || prompt.resultSummary}
         </p>
 
         {exemple ? (
-          <p className="mt-2.5 line-clamp-2 rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 py-2 text-[13px] leading-snug text-[color:var(--color-muted)]">
-            {exemple}
+          // La troncature porte sur le texte, pas sur l'encadre : `overflow`
+          // coupe au bord de la zone de remplissage, et une troisieme ligne
+          // venait deborder a moitie dans le padding.
+          <p className="mt-2.5 rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 py-2 text-[13px] leading-snug text-[color:var(--color-muted)]">
+            <span className="line-clamp-2">{exemple}</span>
           </p>
         ) : null}
 
