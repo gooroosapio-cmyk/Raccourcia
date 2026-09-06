@@ -64,8 +64,13 @@ const modeDe = (domaine) => (domaine === 'IMAGE' ? 'image' : 'texte');
  * une valeur accentuee a l'enum : deux orthographes pour un meme niveau se
  * termineraient en filtres qui ne trouvent rien.
  */
-const RISQUES = { faible: 'faible', moyen: 'moyen', 'élevé': 'eleve', eleve: 'eleve' };
-const risqueDe = (v) => RISQUES[String(v || '').trim().toLowerCase()] ?? 'moyen';
+const RISQUES = { faible: 'faible', moyen: 'moyen', élevé: 'eleve', eleve: 'eleve' };
+const risqueDe = (v) =>
+  RISQUES[
+    String(v || '')
+      .trim()
+      .toLowerCase()
+  ] ?? 'moyen';
 
 /**
  * `input_type` et `output_type` sont des enums fermes ; le classeur y met des
@@ -80,7 +85,12 @@ function entreeDe(valeur) {
   return 'text';
 }
 
-const sortieDe = (valeur) => (String(valeur || '').toLowerCase().includes('image') ? 'image' : 'text');
+const sortieDe = (valeur) =>
+  String(valeur || '')
+    .toLowerCase()
+    .includes('image')
+    ? 'image'
+    : 'text';
 
 // ---------------------------------------------------------------------
 // Lot 1 : les treize categories
@@ -451,11 +461,16 @@ for (let i = 0; i < nbLots; i += 1) {
   const tranche = lignesPrompts.slice(i * TAILLE_LOT, (i + 1) * TAILLE_LOT);
   cumul += tranche.length;
   const numero = String(i + 2).padStart(3, '0');
-  ecrire(`${numero}_prompts_${numero}.sql`, lotPrompts(i + 2, tranche, cumul, lignesPrompts.length));
+  ecrire(
+    `${numero}_prompts_${numero}.sql`,
+    lotPrompts(i + 2, tranche, cumul, lignesPrompts.length),
+  );
 }
 
 console.log(`${fichiers.length} lots ecrits dans supabase/seed/v3/`);
 for (const f of fichiers) {
   console.log(`  ${f.nom.padEnd(24)} ${(f.taille / 1024).toFixed(0)} Ko`);
 }
-console.log(`\nTotal : ${lignesPrompts.length} raccourcis, ${qcm.length} questions, ${compat.length} regles de compatibilite.`);
+console.log(
+  `\nTotal : ${lignesPrompts.length} raccourcis, ${qcm.length} questions, ${compat.length} regles de compatibilite.`,
+);
