@@ -1,6 +1,6 @@
 'use client';
 
-import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
+import { MediaPlaceholder, ResultMedia } from '@/components/media/before-after-media';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
@@ -13,6 +13,10 @@ import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
  *
  * Une colonne sur mobile : deux cartes cote a cote tronquaient la commande et
  * la promesse, or ce sont les deux seules choses qui font choisir.
+ *
+ * La carte montre le resultat seul, pas la comparaison : deux vignettes
+ * cote a cote y seraient trop petites pour se lire. L'Avant/Apres s'ouvre sur
+ * la fiche, ou il y a la place de le regarder.
  *
  * Le visuel verrouille est floute. C'est un signal commercial, pas une
  * protection : le contenu premium n'atteint jamais le client, il ne sort que
@@ -48,9 +52,10 @@ export function ImagePromptCard({
         <div className="relative">
           {/* L'agrandissement evite les bords transparents que laisse le flou. */}
           <div className={locked ? 'scale-[1.06] blur-[8px]' : undefined}>
-            {prompt.beforeAfter ? (
-              <BeforeAfterMedia
-                media={prompt.beforeAfter}
+            {prompt.thumbnailUrl ? (
+              <ResultMedia
+                url={prompt.thumbnailUrl}
+                alt={prompt.thumbnailAlt}
                 command={prompt.command}
                 priority={priority}
                 sizes="(max-width: 640px) 100vw, 600px"

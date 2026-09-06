@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { getAccessState } from '@/lib/access/entitlement';
 import { getAvailableModes, getCatalogPage, getCategories } from '@/lib/catalog/queries';
 import { DiscoveryConsole } from '@/components/discovery/discovery-console';
@@ -8,7 +10,7 @@ import { catalogQuery } from '@/lib/validation/schemas';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
 import type { FiltresAvances } from '@/components/discovery/filter-sheet';
-import type { Mode } from '@/lib/constants';
+import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE, type Mode } from '@/lib/constants';
 
 export const metadata = { title: 'Decouvrir' };
 
@@ -41,6 +43,13 @@ export default async function DiscoverPage({
     page: lire('page') ?? 1,
   });
 
+  // La bibliotheque s'affiche par lots cumules : « Voir plus » n'ouvre pas une
+  // page suivante, il rallonge la liste. Une pagination numerotee ferait
+  // perdre les cartes deja parcourues a chaque clic, et sur un telephone
+  // personne ne revient en arriere pour les retrouver.
+  const lots = Math.min(query.page, CATALOG_MAX_LOTS);
+  const requete = { ...query, page: 1, pageSize: CATALOG_PAGE_SIZE * lots };
+
   let hasLifetimeAccess: boolean;
   let categories: Awaited<ReturnType<typeof getCategories>>;
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
@@ -49,7 +58,7 @@ export default async function DiscoverPage({
     [{ hasLifetimeAccess }, categories, page] = await Promise.all([
       getAccessState(),
       getCategories(mode),
-      getCatalogPage(query),
+      getCatalogPage(requete),
     ]);
   } catch (error) {
     // Un catalogue injoignable n'est pas un catalogue vide.
@@ -78,6 +87,17 @@ export default async function DiscoverPage({
   // client n'a plus a lire l'URL, et la coquille evite une frontiere
   // Suspense qui affaiblirait la garde des pages reservees.
   const renvoye = lire('offre') === '1' && !hasLifetimeAccess;
+
+  // Le lot suivant reprend les filtres en cours : « Voir plus » ne doit jamais
+  // reouvrir un catalogue different de celui qu'on regarde.
+  const suivante = new URLSearchParams();
+  suivante.set('mode', mode);
+  if (query.categorySlug) suivante.set('categorie', query.categorySlug);
+  if (query.search) suivante.set('q', query.search);
+  if (query.access) suivante.set('acces', query.access);
+  if (query.provider) suivante.set('ia', query.provider);
+  if (query.output) suivante.set('sortie', query.output);
+  suivante.set('page', String(lots + 1));
 
   return (
     <div className="space-y-4 pt-1">
@@ -114,9 +134,21 @@ export default async function DiscoverPage({
       />
 
       {page.hasMore ? (
-        <p className="pt-1 text-center text-[13px] text-[color:var(--color-muted)]">
-          Affinez la recherche ou choisissez une categorie pour reduire la liste.
-        </p>
+        lots < CATALOG_MAX_LOTS ? (
+          <div className="pt-1">
+            <Link
+              href={`/app?${suivante.toString()}`}
+              scroll={false}
+              className="flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[15px] font-medium text-[color:var(--color-night)]"
+            >
+              Voir plus de commandes
+            </Link>
+          </div>
+        ) : (
+          <p className="pt-1 text-center text-[13px] text-[color:var(--color-muted)]">
+            Affinez la recherche ou choisissez une categorie pour reduire la liste.
+          </p>
+        )
       ) : null}
     </div>
   );

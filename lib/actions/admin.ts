@@ -12,7 +12,8 @@ import {
   categoryStatusInput,
   configInput,
   mediaDeleteInput,
-  mediaUploadInput,
+  mediaRegisterInput,
+  mediaTicketInput,
   newPromptInput,
   promptIdentityInput,
   promptStatusInput,
@@ -390,58 +391,128 @@ export async function setCategoryStatus(
 const ALLOWED_TYPES = ['image/webp', 'image/avif', 'image/png', 'image/jpeg'];
 const MAX_BYTES = 10 * 1024 * 1024;
 
+export type MediaTicket = { error: string } | { path: string; token: string };
+
 /**
- * Envoie un visuel dans Supabase Storage.
+ * Autorise un envoi, sans faire transiter le fichier par le serveur.
+ *
+ * Une action serveur plafonne le corps de la requete a 1 Mo, et l'hebergeur a
+ * quelques megaoctets de plus. Une photo de telephone depasse les deux : le
+ * formulaire precedent annoncait 10 Mo et levait bien avant, ce qui affichait
+ * la page d'erreur globale sans jamais dire pourquoi.
+ *
+ * Le navigateur depose donc le fichier directement dans le bucket, muni d'une
+ * autorisation a usage unique delivree ici. Elle ne vaut que pour ce chemin,
+ * ne donne aucun droit de lecture ailleurs, et n'expose aucune cle : la
+ * verification d'administration reste entiere, cote serveur.
  *
  * Le chemin est versionne par horodatage : remplacer une image ne casse pas
  * le cache CDN des anciennes (Blueprint Backend V1, 9.2).
  */
-export async function uploadPromptMedia(
+export async function createMediaTicket(input: {
+  promptId: string;
+  kind: string;
+  contentType: string;
+  size: number;
+}): Promise<MediaTicket> {
+  await assertAdmin();
+
+  const parsed = mediaTicketInput.safeParse(input);
+  if (!parsed.success) {
+    // Le schema porte deja les deux bornes ; on les redit en clair plutot que
+    // de renvoyer un message de validation generique.
+    if (!ALLOWED_TYPES.includes(input.contentType)) {
+      return { error: 'Formats acceptes : WebP, AVIF, PNG ou JPEG.' };
+    }
+    if (input.size > MAX_BYTES) {
+      return { error: 'Image trop lourde. 10 Mo maximum.' };
+    }
+    return { error: 'Visuel invalide.' };
+  }
+
+  const supabase = await createClient();
+  const extension = EXTENSIONS[parsed.data.contentType];
+  const path = `prompts/${parsed.data.promptId}/${parsed.data.kind}-${Date.now()}.${extension}`;
+
+  const { data, error } = await supabase.storage
+    .from(STORAGE_BUCKETS.PROMPT_MEDIA)
+    .createSignedUploadUrl(path);
+
+  if (error || !data) return { error: 'Envoi impossible pour le moment. Reessayez.' };
+
+  return { path: data.path, token: data.token };
+}
+
+/**
+ * L'extension vient du type declare, jamais du nom de fichier.
+ *
+ * Un nom de fichier est saisi par l'utilisateur : le laisser decider de
+ * l'extension stockee reviendrait a lui laisser choisir ce que le CDN servira.
+ */
+const EXTENSIONS: Record<string, string> = {
+  'image/webp': 'webp',
+  'image/avif': 'avif',
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+};
+
+/**
+ * Enregistre le visuel une fois depose.
+ *
+ * Un seul visuel par type et par raccourci : renvoyer un Avant remplace le
+ * precedent au lieu d'empiler des doublons dont personne ne saurait lequel
+ * s'affiche.
+ */
+export async function registerPromptMedia(
   _prev: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
   await assertAdmin();
 
-  const parsed = mediaUploadInput.safeParse({
+  const parsed = mediaRegisterInput.safeParse({
     promptId: formData.get('promptId'),
     kind: formData.get('kind'),
+    path: formData.get('path'),
     alt: formData.get('alt') ?? undefined,
   });
   if (!parsed.success) return { error: 'Informations de visuel invalides.' };
 
-  const file = formData.get('file');
-  if (!(file instanceof File) || file.size === 0) {
-    return { error: 'Choisissez une image.' };
-  }
-  if (!ALLOWED_TYPES.includes(file.type)) {
-    return { error: 'Formats acceptes : WebP, AVIF, PNG ou JPEG.' };
-  }
-  if (file.size > MAX_BYTES) {
-    return { error: 'Image trop lourde. 10 Mo maximum.' };
+  // Le chemin vient du navigateur : on refuse tout ce qui ne designe pas le
+  // raccourci vise, quel que soit ce que le client raconte.
+  const prefixe = `prompts/${parsed.data.promptId}/`;
+  if (!parsed.data.path.startsWith(prefixe) || parsed.data.path.includes('..')) {
+    return { error: 'Chemin de visuel refuse.' };
   }
 
   const supabase = await createClient();
-  const extension = file.name.split('.').pop()?.toLowerCase() ?? 'webp';
-  const path = `prompts/${parsed.data.promptId}/${parsed.data.kind}-${Date.now()}.${extension}`;
 
-  const { error: uploadError } = await supabase.storage
-    .from(STORAGE_BUCKETS.PROMPT_MEDIA)
-    .upload(path, file, { contentType: file.type, upsert: false });
-
-  if (uploadError) return { error: 'Envoi impossible. Reessayez.' };
+  const { data: anciens } = await supabase
+    .from('prompt_media')
+    .select('id, storage_path')
+    .eq('prompt_id', parsed.data.promptId)
+    .eq('kind', parsed.data.kind);
 
   const { error } = await supabase.from('prompt_media').insert({
     prompt_id: parsed.data.promptId,
     kind: parsed.data.kind,
-    storage_path: path,
+    storage_path: parsed.data.path,
     alt: parsed.data.alt ?? null,
   });
 
   if (error) return { error: readableError(error.message) };
 
+  // Le remplacement n'efface qu'apres une insertion reussie : en cas d'echec,
+  // l'ancien visuel est toujours la.
+  for (const ancien of anciens ?? []) {
+    await supabase.from('prompt_media').delete().eq('id', ancien.id);
+    if (ancien.storage_path) {
+      await supabase.storage.from(STORAGE_BUCKETS.PROMPT_MEDIA).remove([ancien.storage_path]);
+    }
+  }
+
   revalidatePath(`/admin/raccourcis/${parsed.data.promptId}`);
   revalidatePath('/app');
-  return { success: 'Visuel ajoute.' };
+  return { success: 'Visuel enregistre.' };
 }
 
 export async function deletePromptMedia(

@@ -175,6 +175,15 @@ export type LegalKey = (typeof LEGAL_KEYS)[number];
 /** Nombre d'elements charges par page de bibliotheque (section 11.3). */
 export const CATALOG_PAGE_SIZE = 20;
 
+/**
+ * Nombre maximal de lots affichables d'un seul tenant.
+ *
+ * Dix lots couvrent le plus grand mode du catalogue : au-dela, ce n'est plus
+ * une bibliotheque qu'on parcourt mais une liste qu'on subit, et la recherche
+ * ou les categories font mieux le travail.
+ */
+export const CATALOG_MAX_LOTS = 10;
+
 export const STORAGE_BUCKETS = {
   PUBLIC_ASSETS: 'public-assets',
   CATEGORY_MEDIA: 'category-media',
