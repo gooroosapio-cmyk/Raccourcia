@@ -8,7 +8,7 @@ export default async function ConfidentialitePage() {
 
   return (
     <LegalPage
-      titre="Politique de confidentialite"
+      titre="Politique de confidentialité"
       intro="Cette politique explique comment RaccourcIA traite les donnees personnelles de ses utilisateurs. Reference : loi ivoirienne n 2013-450 du 19 juin 2013 relative a la protection des donnees a caractere personnel."
       miseAJour={info.legal_updated_at}
     >
@@ -35,7 +35,7 @@ export default async function ConfidentialitePage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Finalites et fondements">
+      <LegalSection titre="Finalités et fondements">
         <p>
           Les données sont utilisees pour créer et gerer le compte, fournir l’accès au catalogue,
           securiser le service, repondre au support, gerer la facturation, produire des statistiques
@@ -64,7 +64,7 @@ export default async function ConfidentialitePage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Durees de conservation">
+      <LegalSection titre="Durées de conservation">
         <p>
           Donnees de compte : pendant la duree du compte, puis{' '}
           <LegalValue info={info} cle="legal_retention_account" fallback="duree" />. Pieces et
@@ -88,7 +88,7 @@ export default async function ConfidentialitePage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Securite">
+      <LegalSection titre="Sécurité">
         <p>
           RaccourcIA applique des mesures organisationnelles et techniques raisonnables : controle
           des acces, chiffrement en transit, limitation des habilitations, sauvegardes et

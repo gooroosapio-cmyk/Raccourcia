@@ -258,7 +258,7 @@ export function PromptDetailSheet({
           ) : null}
 
           {prompt.outputFormats.length > 0 ? (
-            <Section titre="Resultat">
+            <Section titre="Résultat">
               <OutputFormatList formats={prompt.outputFormats} />
             </Section>
           ) : null}

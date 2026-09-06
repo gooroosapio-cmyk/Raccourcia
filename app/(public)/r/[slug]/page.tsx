@@ -116,7 +116,7 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
       ) : null}
 
       {prompt.outputFormats.length > 0 ? (
-        <Section titre="Resultat">
+        <Section titre="Résultat">
           <OutputFormatList formats={prompt.outputFormats} />
         </Section>
       ) : null}

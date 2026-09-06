@@ -88,7 +88,7 @@ export default async function ConditionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Retractation, remboursements et accès numérique">
+      <LegalSection titre="Rétractation, remboursements et accès numérique">
         <p>
           Lorsque la loi accordé un droit de rétractation, ses conditions d’exercice sont precisees
           avant commande. Si l’utilisateur demande l’exécution immediate d’un contenu ou service
@@ -102,7 +102,7 @@ export default async function ConditionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Propriete intellectuelle et licence">
+      <LegalSection titre="Propriété intellectuelle et licence">
         <p>
           Sous reserve du paiement integral des sommes dues, RaccourcIA accorde a l utilisateur une
           licence personnelle, non exclusive, non cessible et non sous-licenciable d utilisation des
@@ -114,7 +114,7 @@ export default async function ConditionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Responsabilite">
+      <LegalSection titre="Responsabilité">
         <p>
           Les contenus sont fournis a titre d assistance creative et informationnelle. RaccourcIA ne
           garantit pas un resultat precis, l originalite, l exactitude ou la conformite des contenus
@@ -127,7 +127,7 @@ export default async function ConditionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Duree, résiliation et modifications">
+      <LegalSection titre="Durée, résiliation et modifications">
         <p>
           Les conditions s’appliquent pendant toute l’utilisation du service. L’utilisateur peut
           cesser d’utiliser le service ou demander la suppression de son compte selon les modalités

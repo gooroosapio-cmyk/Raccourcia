@@ -12,7 +12,7 @@ export default async function MentionsPage() {
       intro="Ces mentions encadrent l acces au site et au service RaccourcIA."
       miseAJour={info.legal_updated_at}
     >
-      <LegalSection titre="Editeur du service">
+      <LegalSection titre="Éditeur du service">
         <p>
           Le site RaccourcIA est edite par{' '}
           <LegalValue info={info} cle="legal_editor" fallback="raison sociale" />,{' '}
@@ -37,7 +37,7 @@ export default async function MentionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Hebergement">
+      <LegalSection titre="Hébergement">
         <p>
           Le service est heberge par{' '}
           <LegalValue info={info} cle="legal_host" fallback="nom de l hebergeur" />, situe{' '}
@@ -46,7 +46,7 @@ export default async function MentionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Propriete intellectuelle">
+      <LegalSection titre="Propriété intellectuelle">
         <p>
           La structure du site, ses textes, visuels, marques, logos, bases de données et elements
           graphiques sont proteges. Sauf autorisation ecrite prealable, toute reproduction,
@@ -58,7 +58,7 @@ export default async function MentionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection titre="Responsabilite">
+      <LegalSection titre="Responsabilité">
         <p>
           RaccourcIA s efforce de maintenir des informations exactes et un service disponible, sans
           garantir l absence d erreur, d interruption ou l adequation a un besoin particulier.

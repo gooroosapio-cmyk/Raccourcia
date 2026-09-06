@@ -45,12 +45,12 @@ export default async function AdminPromptPage({ params }: { params: Promise<{ id
 
       <PromptPreview prompt={prompt} />
 
-      <Section title="Identite">
+      <Section title="Identité">
         <PromptIdentityForm prompt={prompt} categories={categories} />
       </Section>
 
       <Section
-        title="Prompt complet par IA"
+        title="Contenu complet par IA"
         hint="Enregistrer créé une nouvelle version. La précédente est conservée, jamais écrasée."
       >
         <PromptVersionForms promptId={prompt.id} variants={prompt.variants} />
