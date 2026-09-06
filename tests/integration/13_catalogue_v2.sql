@@ -1,5 +1,9 @@
 -- Catalogue V2 : ce que l'import doit avoir produit, compte par compte.
 --
+-- L'import ne publie rien : les nouveaux raccourcis et les treize categories
+-- arrivent en brouillon, et c'est la bascule de navigation qui les expose.
+-- Les comptes ci-dessous ignorent donc le statut.
+--
 -- L'import precedent avait ete applique par morceaux sans compter ce qui
 -- passait : 99 raccourcis sur 250 ne sont jamais arrives, et rien ne l'a
 -- signale. Ce fichier existe pour que cela ne puisse plus arriver en silence.

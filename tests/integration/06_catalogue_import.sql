@@ -45,10 +45,13 @@ begin
   -- sous-categorie. Un deuxieme niveau obligeait a deux gestes pour atteindre
   -- une commande, sur un ecran ou l'on n'en a qu'un. Son compte exact est
   -- verifie par 13_catalogue_v2.sql.
+  -- Avant la bascule, la navigation tourne sur l'ancienne taxonomie ; apres,
+  -- sur les treize categories. Dans les deux cas au moins une categorie
+  -- publiee doit exister, sinon le rail de puces est vide.
   select count(*) into v_parents
   from public.categories
-  where parent_id is null and status = 'published' and external_ref is not null;
-  perform tests_assert(v_parents > 0, 'Aucune categorie du catalogue en vigueur.');
+  where parent_id is null and status = 'published';
+  perform tests_assert(v_parents > 0, 'Aucune categorie publiee : le rail de puces serait vide.');
 
   -- La hierarchie reste a deux niveaux : aucune categorie petite-fille.
   select count(*) into v_depth

@@ -27,7 +27,7 @@ const OUT = join(ROOT, 'supabase', 'seed', 'v3');
 const TAG = '$raccourcia$';
 
 /** Taille d'un lot de raccourcis. Assez petit pour qu'un echec reste lisible. */
-const TAILLE_LOT = 40;
+const TAILLE_LOT = 8;
 
 const read = (nom) => JSON.parse(readFileSync(join(DATA, `${nom}.json`), 'utf8'));
 
@@ -109,8 +109,10 @@ insert into public.categories
 select
   d.external_ref, d.mode::public.app_mode, d.slug, d.name, d.short_description,
   d.description_long, d.sort_order, d.fallback_image_path,
-  -- Publiees mais invisibles : elles n'apparaitront qu'a la bascule.
-  'published'::public.content_status, false, null
+  -- En brouillon jusqu'a la bascule. "is_visible" est derivee du statut par
+  -- declencheur : une categorie publiee est forcement visible, le statut est
+  -- donc le seul levier qui les tient hors de l'ecran.
+  'draft'::public.content_status, false, null
 from jsonb_to_recordset(${litteralJson(lignesFamilles)}::jsonb) as d(
   external_ref text, mode text, slug text, name text, short_description text,
   description_long text, sort_order int, fallback_image_path text
@@ -279,7 +281,10 @@ select
   l.card_image_mode::public.card_image_mode, l.default_image_path, l.default_image_alt,
   l.legacy_category, l.legacy_subcategory, l.sort_order, l.usage_example,
   l.test_nominal, l.test_incomplete_context, l.test_blocking, l.catalog_version,
-  l.source_status, 'published'::public.content_status, now()
+  -- Un raccourci nouveau arrive en brouillon : il n'apparait qu'a la bascule,
+  -- en meme temps que les categories qui l'accueillent. Un raccourci deja
+  -- publie garde son statut, l'ON CONFLICT ne le touche pas.
+  l.source_status, 'draft'::public.content_status, null
 from lot_prompts l
 join public.categories c on c.external_ref = l.family_ref
 on conflict (external_ref) do update
