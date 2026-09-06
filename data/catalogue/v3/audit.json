@@ -1,0 +1,106 @@
+[
+  {
+    "audit_id": "A01",
+    "contrôle": "Total prompts",
+    "actual": 320,
+    "expected": 320,
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A02",
+    "contrôle": "Commandes uniques",
+    "actual": 320,
+    "expected": 320,
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A03",
+    "contrôle": "Identifiants uniques",
+    "actual": 320,
+    "expected": 320,
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A04",
+    "contrôle": "Commandes historiques conservées",
+    "actual": 250,
+    "expected": 250,
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A05",
+    "contrôle": "Familles IMAGE",
+    "actual": 6,
+    "expected": 6,
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A06",
+    "contrôle": "Familles TEXTE",
+    "actual": 7,
+    "expected": 7,
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A07",
+    "contrôle": "QCM maximum",
+    "actual": 3,
+    "expected": 3,
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A08",
+    "contrôle": "Sorties IMAGE correctes",
+    "actual": 130,
+    "expected": 130,
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A09",
+    "contrôle": "Images par défaut",
+    "actual": 320,
+    "expected": 320,
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A10",
+    "contrôle": "Prompts gratuits seed",
+    "actual": 16,
+    "expected": 16,
+    "status": "OK",
+    "severity": "information"
+  },
+  {
+    "audit_id": "A11",
+    "contrôle": "Prompts Finance & gestion",
+    "actual": 31,
+    "expected": ">=30",
+    "status": "OK",
+    "severity": "bloquant"
+  },
+  {
+    "audit_id": "A12",
+    "contrôle": "Descriptions dupliquées",
+    "actual": 0,
+    "expected": 0,
+    "status": "OK",
+    "severity": "qualité"
+  },
+  {
+    "audit_id": "A13",
+    "contrôle": "Avertissements",
+    "actual": 0,
+    "expected": 0,
+    "status": "OK",
+    "severity": "qualité"
+  }
+]
