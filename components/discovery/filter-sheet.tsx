@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { SheetCloseButton } from '@/components/ui/sheet-close';
 
 /**
  * Filtres avances, tels qu'ils voyagent dans l'URL.
@@ -91,9 +92,12 @@ export function FilterSheet({
 
   return (
     <div className="fixed inset-0 z-[55] flex items-end justify-center">
-      <button
-        type="button"
-        aria-label="Fermer les filtres"
+      {/* Le fond referme au toucher, mais il n'est pas annonce : la croix
+          porte deja ce nom, et deux commandes homonymes se suivant dans la
+          lecture vocale ne disent pas laquelle fait quoi. Le clavier a la
+          croix et la touche Echap. */}
+      <div
+        aria-hidden="true"
         onClick={onClose}
         className="anim-fondu absolute inset-0 bg-[color:var(--color-night)]/45"
       />
@@ -111,22 +115,9 @@ export function FilterSheet({
           >
             Filtres
           </h2>
-          <button
-            ref={fermerRef}
-            type="button"
-            onClick={onClose}
-            aria-label="Fermer"
-            className="touch-target -mr-2 inline-flex items-center justify-center rounded-full text-[color:var(--color-muted)]"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="m6 6 12 12M18 6 6 18"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+          <span className="-mr-2">
+            <SheetCloseButton ref={fermerRef} onClose={onClose} libelle="Fermer les filtres" />
+          </span>
         </header>
 
         <div className="space-y-5 px-5 py-4">

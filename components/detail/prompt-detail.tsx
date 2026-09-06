@@ -8,6 +8,7 @@ import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { InputExampleList } from '@/components/detail/input-example-list';
 import { OutputFormatList } from '@/components/detail/output-format-list';
+import { SheetCloseButton } from '@/components/ui/sheet-close';
 import { SheetDragHandle, useSheetDrag } from '@/components/ui/sheet-drag';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { useToast } from '@/components/ui/toast';
@@ -120,9 +121,12 @@ export function PromptDetailSheet({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
-      <button
-        type="button"
-        aria-label="Fermer la fiche"
+      {/* Le fond referme au toucher, mais il n'est pas annonce : la croix
+          porte deja ce nom, et deux commandes homonymes se suivant dans la
+          lecture vocale ne disent pas laquelle fait quoi. Le clavier a la
+          croix et la touche Echap. */}
+      <div
+        aria-hidden="true"
         onClick={onClose}
         style={{ opacity: glissement.opaciteFond }}
         className="anim-fondu absolute inset-0 bg-[color:var(--color-night)]/45"
@@ -142,23 +146,7 @@ export function PromptDetailSheet({
           <SheetDragHandle />
 
           <header className="flex items-center justify-between gap-1 border-b border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-2 py-1.5">
-            <button
-              ref={fermerRef}
-              type="button"
-              onClick={onClose}
-              aria-label="Revenir à la liste"
-              className="touch-target inline-flex items-center justify-center rounded-full text-[color:var(--color-night)]"
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M15 5 8 12l7 7"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+            <SheetCloseButton ref={fermerRef} onClose={onClose} libelle="Fermer la fiche" />
 
             <div className="flex items-center">
               <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} />
@@ -305,13 +293,18 @@ export function PromptDetailSheet({
       </div>
 
       {agrandi && prompt.beforeAfter && !locked ? (
-        <button
-          type="button"
-          onClick={() => setAgrandi(false)}
-          aria-label="Fermer l’agrandissement"
-          className="anim-fondu fixed inset-0 z-[70] flex items-center justify-center bg-[color:var(--color-night)]/90 p-4"
-        >
-          <div className="w-full max-w-3xl">
+        <div className="anim-fondu fixed inset-0 z-[70] flex items-center justify-center p-4">
+          {/* Le fond reste cliquable — c'est le geste attendu d'une visionneuse
+              — mais il ne peut plus etre le seul : rien a l'ecran ne disait
+              qu'on pouvait en sortir. La croix le dit, et donne au clavier une
+              cible qu'un fond n'offre pas. */}
+          <div
+            aria-hidden="true"
+            onClick={() => setAgrandi(false)}
+            className="absolute inset-0 bg-[color:var(--color-night)]/90"
+          />
+
+          <div className="relative w-full max-w-3xl">
             <BeforeAfterMedia
               media={prompt.beforeAfter}
               command={prompt.command}
@@ -319,7 +312,15 @@ export function PromptDetailSheet({
               priority
             />
           </div>
-        </button>
+
+          <span className="absolute right-3 top-3">
+            <SheetCloseButton
+              onClose={() => setAgrandi(false)}
+              libelle="Fermer l’agrandissement"
+              sombre
+            />
+          </span>
+        </div>
       ) : null}
     </div>
   );
