@@ -27,7 +27,7 @@ const OUT = join(ROOT, 'supabase', 'seed', 'v3');
 const TAG = '$raccourcia$';
 
 /** Taille d'un lot de raccourcis. Assez petit pour qu'un echec reste lisible. */
-const TAILLE_LOT = 8;
+const TAILLE_LOT = 3;
 
 const read = (nom) => JSON.parse(readFileSync(join(DATA, `${nom}.json`), 'utf8'));
 
@@ -443,14 +443,14 @@ const ecrire = (nom, contenu) => {
   fichiers.push({ nom, taille: contenu.length });
 };
 
-ecrire('01_categories.sql', lot1);
+ecrire('001_categories.sql', lot1);
 
 const nbLots = Math.ceil(lignesPrompts.length / TAILLE_LOT);
 let cumul = 0;
 for (let i = 0; i < nbLots; i += 1) {
   const tranche = lignesPrompts.slice(i * TAILLE_LOT, (i + 1) * TAILLE_LOT);
   cumul += tranche.length;
-  const numero = String(i + 2).padStart(2, '0');
+  const numero = String(i + 2).padStart(3, '0');
   ecrire(`${numero}_prompts_${numero}.sql`, lotPrompts(i + 2, tranche, cumul, lignesPrompts.length));
 }
 

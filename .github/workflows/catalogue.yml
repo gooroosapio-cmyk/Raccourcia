@@ -1,0 +1,122 @@
+name: Catalogue
+
+# Applique le catalogue a une base Supabase, lot par lot, dans l'ordre.
+#
+# Ce n'est pas un deploiement automatique : le declenchement est manuel et
+# demande de taper le nom de la base visee. Un catalogue s'importe quand on
+# l'a decide, pas parce qu'une branche a bouge.
+#
+# Les 107 lots portent chacun leur controle de completude : le premier qui
+# n'atteint pas son compte leve, `ON_ERROR_STOP` arrete la serie, et rien ne
+# passe en silence. C'est l'absence de ce controle qui avait laisse 99
+# raccourcis en arriere lors de l'import precedent.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Taper "raccourcia" pour confirmer l import en production'
+        required: true
+        type: string
+
+jobs:
+  import:
+    name: Importer le catalogue
+    runs-on: ubuntu-latest
+    # `production` porte le secret et, si l'environnement est protege, une
+    # validation humaine avant execution.
+    environment: production
+
+    steps:
+      - name: Verifier la confirmation
+        if: inputs.confirmation != 'raccourcia'
+        run: |
+          echo "Confirmation absente ou incorrecte : import annule."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - name: Installer psql
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client
+
+      - name: Etat avant import
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          psql "$PGURL" -At -c "
+            select 'raccourcis=' || count(*) ||
+                   ' publies=' || count(*) filter (where status = 'published')
+            from public.prompts;"
+
+      - name: Appliquer les lots
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          total=$(ls supabase/seed/v3/*.sql | wc -l)
+          n=0
+          for fichier in supabase/seed/v3/*.sql; do
+            n=$((n + 1))
+            printf '  [%3d/%3d] %s\n' "$n" "$total" "$(basename "$fichier")"
+            # Redirection plutot que -f : psql lit alors le fichier avec les
+            # droits de l'appelant, pas ceux du compte postgres.
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Bascule de navigation'
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
+            < supabase/seed/bascule-navigation-v2.sql
+
+      - name: Controle final
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          psql "$PGURL" -v ON_ERROR_STOP=1 -At -c "
+            do \$\$
+            declare
+              v_prompts integer;
+              v_cat integer;
+              v_questions integer;
+              v_orphelins integer;
+            begin
+              select count(*) into v_prompts from public.prompts where catalog_version = 'v2.1';
+              select count(*) into v_cat from public.categories where external_ref is not null;
+              select count(*) into v_questions from public.prompt_questions;
+
+              select count(*) into v_orphelins
+              from public.prompts p
+              where p.catalog_version = 'v2.1'
+                and not exists (
+                  select 1 from public.prompt_variants v
+                  join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
+                  where v.prompt_id = p.id
+                );
+
+              if v_prompts <> 320 then
+                raise exception 'Import incomplet : % raccourcis au lieu de 320.', v_prompts;
+              end if;
+              if v_cat <> 13 then
+                raise exception 'Import incomplet : % categories au lieu de 13.', v_cat;
+              end if;
+              if v_questions <> 594 then
+                raise exception 'Import incomplet : % questions au lieu de 594.', v_questions;
+              end if;
+              if v_orphelins > 0 then
+                raise exception '% raccourcis sans version copiable.', v_orphelins;
+              end if;
+
+              raise notice 'Catalogue complet : % raccourcis, % categories, % questions.',
+                v_prompts, v_cat, v_questions;
+            end \$\$;"
+
+      - name: Etat apres import
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          psql "$PGURL" -At -c "
+            select mode || ' : ' || count(*) || ' raccourcis, dont ' ||
+                   count(*) filter (where status = 'published') || ' publies'
+            from public.prompts where catalog_version = 'v2.1'
+            group by mode order by mode;"

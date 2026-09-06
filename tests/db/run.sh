@@ -129,6 +129,10 @@ if compgen -G "$ROOT/supabase/seed/v3/*.sql" > /dev/null; then
     for file in "$ROOT"/supabase/seed/v3/*.sql; do
       run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
     done
+    # La bascule vient apres les lots : elle refuse de s'executer sur un
+    # catalogue partiel, et c'est elle qui expose les treize categories.
+    run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null \
+      < "$ROOT/supabase/seed/bascule-navigation-v2.sql"
   done
   run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
     select '    ' || count(*) || ' raccourcis, ' ||
