@@ -113,7 +113,7 @@ export function PromptDetailSheet({
         return;
       }
       await navigator.clipboard.writeText(url);
-      show('Lien copie');
+      show('Lien copié');
     } catch {
       // Un partage annule par l'utilisateur n'est pas une erreur a signaler.
     }

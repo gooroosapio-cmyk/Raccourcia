@@ -7,7 +7,7 @@ export const metadata = { title: 'Paramètres' };
  * Reglages modifiables sans redeploiement.
  *
  * Les libelles parlent le vocabulaire du produit, jamais celui de la table :
- * l'administrateur lit "Prix affiche", pas "price_current".
+ * l'administrateur lit "Prix affiché", pas "price_current".
  */
 const LABELS: Record<string, string> = {
   mode_analyse_enabled: 'Mode Analyse (sans effet depuis le catalogue v2)',
@@ -15,8 +15,8 @@ const LABELS: Record<string, string> = {
   max_active_sessions: 'Appareils connectés par compte',
   free_prompt_limit: 'Commandes gratuites de démonstration',
   purchase_url: 'Page de vente',
-  price_regular: 'Prix de reference (barre)',
-  price_current: 'Prix affiche',
+  price_regular: 'Prix de référence (barré)',
+  price_current: 'Prix affiché',
   price_currency: 'Devise',
 
   legal_editor: 'Editeur : raison sociale',
@@ -59,7 +59,7 @@ const GROUPES = [
   {
     titre: 'Cadre légal',
     description:
-      'Ces informations alimentent les mentions legales, la politique de confidentialite et les conditions. Un champ vide s affiche publiquement comme "a completer".',
+      'Ces informations alimentent les mentions légales, la politique de confidentialité et les conditions. Un champ vide s affiche publiquement comme "a completer".',
     test: (cle: string) => cle.startsWith('legal_'),
   },
 ];

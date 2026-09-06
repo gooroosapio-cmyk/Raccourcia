@@ -22,7 +22,7 @@ export function PromptVersionForms({
   if (variants.length === 0) {
     return (
       <p className="text-[13px] text-[color:var(--color-muted)]">
-        Aucune IA configuree pour ce raccourci.
+        Aucune IA configurée pour ce raccourci.
       </p>
     );
   }
@@ -78,7 +78,7 @@ function VariantBlock({
                 : 'bg-[color:var(--color-canvas)] text-[color:var(--color-muted)]'
             }`}
           >
-            {published ? 'Active' : 'Desactivee'}
+            {published ? 'Active' : 'Désactivée'}
           </button>
         </form>
       </div>

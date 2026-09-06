@@ -68,7 +68,7 @@ export function LegalValue({
 
   return (
     <span className="rounded bg-[color:var(--color-member-soft)] px-1 text-[color:var(--color-member)]">
-      {fallback} : a completer
+      {fallback} : à compléter
     </span>
   );
 }

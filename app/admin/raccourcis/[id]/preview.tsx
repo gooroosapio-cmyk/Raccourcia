@@ -19,7 +19,7 @@ export function PromptPreview({ prompt }: { prompt: AdminPromptDetail }) {
   return (
     <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-canvas)] p-4">
       <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-muted)]">
-        Apercu de la carte
+        Aperçu de la carte
       </h2>
 
       <div className="mt-3 w-[calc(50%-6px)] min-w-[160px] overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)]">

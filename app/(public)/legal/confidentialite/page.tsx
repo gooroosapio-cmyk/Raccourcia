@@ -1,7 +1,7 @@
 import { getLegalInfo } from '@/lib/catalog/queries';
 import { LegalPage, LegalSection, LegalValue } from '@/components/legal/legal-page';
 
-export const metadata = { title: 'Politique de confidentialite' };
+export const metadata = { title: 'Politique de confidentialité' };
 
 export default async function ConfidentialitePage() {
   const info = await getLegalInfo();

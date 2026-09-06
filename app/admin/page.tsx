@@ -84,7 +84,7 @@ export default async function AdminDashboardPage() {
             {dashboard.incomplete.length > 1 ? 's' : ''} sans categorie
           </h2>
           <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-            Ils resteront invisibles tant qu’ils ne sont pas classes.
+            Ils resteront invisibles tant qu’ils ne sont pas classés.
           </p>
           <ul className="mt-3 space-y-1">
             {dashboard.incomplete.map((prompt) => (

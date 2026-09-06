@@ -51,13 +51,13 @@ export default async function OfferPage() {
       )}
 
       <p className="mt-8 text-center text-[12px] leading-relaxed text-[color:var(--color-muted)]">
-        L acces a vie est personnel et non transferable.{' '}
+        L’accès à vie est personnel et non transférable.{' '}
         <Link href="/legal/conditions" className="underline underline-offset-2">
           Conditions générales
         </Link>{' '}
         et{' '}
         <Link href="/legal/confidentialite" className="underline underline-offset-2">
-          politique de confidentialite
+          politique de confidentialité
         </Link>
         .
       </p>

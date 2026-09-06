@@ -72,8 +72,8 @@ export function CopyCommandButton({
 
   const libelle = locked
     ? compact
-      ? 'Debloquer'
-      : 'Debloquer pour copier'
+      ? 'Débloquer'
+      : 'Débloquer pour copier'
     : etat === 'copie'
       ? 'Copie'
       : compact
@@ -93,7 +93,7 @@ export function CopyCommandButton({
       // Jamais desactive pendant le chargement : la largeur resterait la meme
       // mais le bouton paraitrait casse. On garde l'etat visible a la place.
       aria-busy={etat === 'chargement'}
-      aria-label={locked ? 'Debloquer RaccourcIA pour copier cette commande' : 'Copier la commande'}
+      aria-label={locked ? 'Débloquer RaccourcIA pour copier cette commande' : 'Copier la commande'}
       className={`touch-target inline-flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] font-semibold transition-[background-color,transform] duration-[var(--duration-fast)] active:scale-[0.98] ${
         compact ? 'h-11 px-3 text-[13px]' : 'h-13 px-4 text-[15px]'
       } ${ton}`}

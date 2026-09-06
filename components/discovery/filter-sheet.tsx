@@ -22,7 +22,7 @@ const GROUPES = [
     titre: 'Acces',
     options: [
       { valeur: 'gratuit', libelle: 'Gratuits' },
-      { valeur: 'membre', libelle: 'Reserves aux membres' },
+      { valeur: 'membre', libelle: 'Réservés aux membres' },
     ],
   },
   {
@@ -156,7 +156,7 @@ export function FilterSheet({
             onClick={() => setBrouillon({})}
             className="h-13 flex-1 rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] text-[15px] font-semibold text-[color:var(--color-night)]"
           >
-            Reinitialiser
+            Réinitialiser
           </button>
           <button
             type="button"

@@ -163,7 +163,7 @@ function Emplacement({
       setEnvoi(false);
       // Le message brut de Storage est technique ; on dit ce qui est
       // actionnable et on garde la cause dans la console pour le diagnostic.
-      console.error('Depot du visuel refuse', error);
+      console.error('Dépôt du visuel refusé', error);
       setEtat({ error: 'Le dépôt a échoué. Vérifiez votre connexion et réessayez.' });
       return;
     }
