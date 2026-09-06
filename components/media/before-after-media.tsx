@@ -107,6 +107,48 @@ function Etiquette({
 }
 
 /**
+ * Le resultat seul, pour la carte de la bibliotheque.
+ *
+ * Une carte se parcourt au pouce : deux vignettes cote a cote y font deux
+ * images de 90 px que personne ne lit. La carte montre donc ce que la
+ * commande produit ; la comparaison, qui demande a etre regardee, s'ouvre sur
+ * la fiche.
+ */
+export function ResultMedia({
+  url,
+  alt,
+  command,
+  priority = false,
+  sizes = '(max-width: 640px) 100vw, 600px',
+  rounded = true,
+}: {
+  url: string;
+  alt: string | null;
+  command: string;
+  priority?: boolean;
+  sizes?: string;
+  rounded?: boolean;
+}) {
+  return (
+    <div
+      className={`relative aspect-[16/10] w-full overflow-hidden bg-[color:var(--color-canvas)] ${
+        rounded ? 'rounded-[color:var(--radius-card)]' : ''
+      }`}
+    >
+      <Image
+        src={url}
+        alt={alt ?? `Resultat obtenu avec ${command}`}
+        fill
+        sizes={sizes}
+        priority={priority}
+        loading={priority ? undefined : 'lazy'}
+        className="object-cover"
+      />
+    </div>
+  );
+}
+
+/**
  * Repli quand la comparaison n'est pas encore renseignee.
  *
  * On ne duplique jamais l'image d'entree pour combler le manque : la carte

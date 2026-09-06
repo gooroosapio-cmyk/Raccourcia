@@ -1,30 +1,34 @@
 'use client';
 
 import Image from 'next/image';
-import { useActionState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useActionState, useRef, useState, useTransition } from 'react';
 
-import { deletePromptMedia, uploadPromptMedia, type AdminActionState } from '@/lib/actions/admin';
-import { AdminFeedback, AdminSubmit } from '@/components/ui/admin-form';
-import { MEDIA_KINDS } from '@/lib/constants';
+import {
+  createMediaTicket,
+  deletePromptMedia,
+  registerPromptMedia,
+  type AdminActionState,
+} from '@/lib/actions/admin';
+import { AdminFeedback } from '@/components/ui/admin-form';
+import { createClient } from '@/lib/supabase/client';
+import { STORAGE_BUCKETS } from '@/lib/constants';
 import type { AdminPromptDetail } from '@/lib/admin/queries';
-import type { Enums } from '@/lib/supabase/database.types';
-
-const KIND_LABELS: Record<Enums<'media_kind'>, string> = {
-  thumbnail: 'Miniature',
-  before: 'Avant',
-  after: 'Apres',
-  example: 'Exemple',
-  cover: 'Couverture',
-};
 
 /**
- * Envoi et retrait des visuels, depuis le telephone.
+ * Les visuels d'un raccourci, en deux emplacements nommes.
  *
- * La carte image repose sur une paire Avant/Apres. Le bloc en tete dit
- * lequel des deux manque : sans lui, l'administrateur envoie un visuel, voit
- * la carte inchangee et croit a une panne.
+ * Un menu deroulant listant cinq types demandait a l'administrateur de savoir
+ * lequel alimente quoi. Il n'y a que deux images a fournir, et chacune a une
+ * place a l'ecran : l'Apres illustre la carte dans la bibliotheque, la paire
+ * s'ouvre cote a cote sur la fiche. Les emplacements le disent.
  *
- * `capture` n'est pas force : l'admin choisit sa galerie ou son appareil photo.
+ * Le fichier ne passe pas par le serveur. Une action serveur plafonne le
+ * corps de la requete a 1 Mo et l'hebergeur a quelques megaoctets : une photo
+ * de telephone depassait les deux, et l'envoi echouait sur la page d'erreur
+ * globale sans jamais dire pourquoi. Le navigateur depose donc directement
+ * dans le bucket, avec une autorisation a usage unique delivree par le
+ * serveur, qui seul verifie que l'appelant est administrateur.
  */
 export function PromptMediaManager({
   promptId,
@@ -36,17 +40,13 @@ export function PromptMediaManager({
   /** Vrai pour une commande a carte visuelle : la paire y est exigee. */
   requiresPair: boolean;
 }) {
-  const [uploadState, uploadAction] = useActionState<AdminActionState, FormData>(
-    uploadPromptMedia,
-    {},
-  );
   const [deleteState, deleteAction] = useActionState<AdminActionState, FormData>(
     deletePromptMedia,
     {},
   );
 
-  const avant = media.find((item) => item.kind === 'before');
-  const apres = media.find((item) => item.kind === 'after');
+  const avant = media.find((item) => item.kind === 'before') ?? null;
+  const apres = media.find((item) => item.kind === 'after') ?? null;
   const manquants = [!avant && 'Avant', !apres && 'Apres'].filter(Boolean);
 
   return (
@@ -60,116 +60,196 @@ export function PromptMediaManager({
           }`}
         >
           {manquants.length === 0
-            ? 'Comparaison complete : la carte affiche le vrai avant / apres.'
-            : `Fiche incomplete : il manque le visuel ${manquants.join(' et ')}. La carte affiche une vignette typographique en attendant. Ne jamais reutiliser l image Avant comme resultat.`}
+            ? 'Comparaison complete. La carte montre l Apres, la fiche ouvre les deux cote a cote.'
+            : `Il manque le visuel ${manquants.join(' et ')}. La carte affiche une vignette typographique en attendant. Ne jamais reutiliser l image Avant comme resultat.`}
         </div>
       ) : null}
 
-      {media.length > 0 ? (
-        <ul className="grid grid-cols-2 gap-3">
-          {media.map((item) => (
-            <li
-              key={item.id}
-              className="overflow-hidden rounded-[color:var(--radius-control)] border border-[color:var(--color-line)]"
-            >
-              <div className="relative aspect-[16/10] bg-[color:var(--color-canvas)]">
-                <Image
-                  src={item.url}
-                  alt={item.alt ?? ''}
-                  fill
-                  sizes="200px"
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-2">
-                <div className="flex items-center justify-between gap-1">
-                  <span className="text-[12px] font-medium text-[color:var(--color-night)]">
-                    {KIND_LABELS[item.kind]}
-                  </span>
-                  <form action={deleteAction}>
-                    <input type="hidden" name="promptId" value={promptId} />
-                    <input type="hidden" name="mediaId" value={item.id} />
-                    <button
-                      type="submit"
-                      className="touch-target px-2 text-[12px] font-medium text-[color:var(--color-danger)]"
-                    >
-                      Retirer
-                    </button>
-                  </form>
-                </div>
-                {/* Le texte alternatif est verifiable d'un coup d'oeil : deux
-                    images identiques trahissent une paire mal renseignee. */}
-                <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-[color:var(--color-muted)]">
-                  {item.alt ?? 'Aucun texte alternatif'}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-[13px] text-[color:var(--color-muted)]">
-          Aucun visuel. La carte affiche une vignette typographique en attendant.
-        </p>
-      )}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Emplacement
+          promptId={promptId}
+          kind="before"
+          titre="Avant"
+          role="Point de depart. Visible seulement sur la fiche ouverte."
+          media={avant}
+          onDelete={deleteAction}
+        />
+        <Emplacement
+          promptId={promptId}
+          kind="after"
+          titre="Apres"
+          role="Resultat. C est cette image qui illustre la carte."
+          media={apres}
+          onDelete={deleteAction}
+        />
+      </div>
 
       <AdminFeedback state={deleteState} />
 
-      <form
-        action={uploadAction}
-        className="space-y-3 border-t border-[color:var(--color-line)] pt-4"
+      <p className="text-[12px] leading-relaxed text-[color:var(--color-muted)]">
+        WebP ou AVIF de preference, sinon PNG ou JPEG. 10 Mo maximum. Cadrage 16:10, meme angle pour
+        l Avant et l Apres. Renvoyer une image remplace la precedente.
+      </p>
+    </div>
+  );
+}
+
+type VisuelExistant = AdminPromptDetail['media'][number] | null;
+
+/**
+ * Un emplacement : ce qu'il contient, ou ce qu'il attend.
+ *
+ * Vide, il se presente comme une zone a remplir plutot que comme un
+ * formulaire : il n'y a qu'un geste a faire, choisir un fichier.
+ */
+function Emplacement({
+  promptId,
+  kind,
+  titre,
+  role,
+  media,
+  onDelete,
+}: {
+  promptId: string;
+  kind: 'before' | 'after';
+  titre: string;
+  role: string;
+  media: VisuelExistant;
+  onDelete: (formData: FormData) => void;
+}) {
+  const router = useRouter();
+  const champ = useRef<HTMLInputElement>(null);
+  const [alt, setAlt] = useState(media?.alt ?? '');
+  const [etat, setEtat] = useState<AdminActionState>({});
+  const [progression, setProgression] = useState<number | null>(null);
+  const [, demarrer] = useTransition();
+
+  async function envoyer(file: File) {
+    setEtat({});
+    setProgression(0);
+
+    const ticket = await createMediaTicket({
+      promptId,
+      kind,
+      contentType: file.type,
+      size: file.size,
+    });
+
+    if ('error' in ticket) {
+      setProgression(null);
+      setEtat({ error: ticket.error });
+      return;
+    }
+
+    const supabase = createClient();
+    const { error } = await supabase.storage
+      .from(STORAGE_BUCKETS.PROMPT_MEDIA)
+      .uploadToSignedUrl(ticket.path, ticket.token, file, { contentType: file.type });
+
+    if (error) {
+      setProgression(null);
+      // Le message brut de Storage est technique ; on dit ce qui est
+      // actionnable et on garde la cause dans la console pour le diagnostic.
+      console.error('Depot du visuel refuse', error);
+      setEtat({ error: 'Le depot a echoue. Verifiez votre connexion et reessayez.' });
+      return;
+    }
+
+    setProgression(100);
+
+    const formData = new FormData();
+    formData.set('promptId', promptId);
+    formData.set('kind', kind);
+    formData.set('path', ticket.path);
+    if (alt.trim()) formData.set('alt', alt.trim());
+
+    const resultat = await registerPromptMedia({}, formData);
+
+    setProgression(null);
+    setEtat(resultat);
+    if (resultat.success) demarrer(() => router.refresh());
+  }
+
+  return (
+    <div className="rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-3">
+      <p className="text-[14px] font-semibold text-[color:var(--color-night)]">{titre}</p>
+      <p className="mt-0.5 text-[12px] leading-snug text-[color:var(--color-muted)]">{role}</p>
+
+      <div className="relative mt-2.5 aspect-[16/10] overflow-hidden rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)]">
+        {media ? (
+          <Image
+            src={media.url}
+            alt={media.alt ?? ''}
+            fill
+            sizes="320px"
+            className="object-cover"
+          />
+        ) : (
+          <span className="absolute inset-0 flex items-center justify-center text-[13px] text-[color:var(--color-muted)]">
+            Aucune image
+          </span>
+        )}
+
+        {progression !== null ? (
+          <span className="absolute inset-0 flex items-center justify-center bg-white/85 text-[13px] font-medium text-[color:var(--color-night)]">
+            Envoi en cours...
+          </span>
+        ) : null}
+      </div>
+
+      <input
+        ref={champ}
+        type="file"
+        accept="image/webp,image/avif,image/png,image/jpeg"
+        className="sr-only"
+        onChange={(evenement) => {
+          const file = evenement.target.files?.[0];
+          // Le champ est remis a zero : rechoisir le meme fichier apres une
+          // erreur doit relancer un envoi.
+          evenement.target.value = '';
+          if (file) void envoyer(file);
+        }}
+      />
+
+      <button
+        type="button"
+        onClick={() => champ.current?.click()}
+        disabled={progression !== null}
+        className="touch-target mt-2.5 flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-[15px] font-medium text-white disabled:opacity-60"
       >
-        <input type="hidden" name="promptId" value={promptId} />
+        {media ? `Remplacer l ${titre}` : `Choisir l image ${titre}`}
+      </button>
 
-        <label className="block">
-          <span className="text-[13px] font-medium text-[color:var(--color-night)]">Type</span>
-          <select
-            name="kind"
-            // On propose d'abord ce qui manque : c'est presque toujours ce que
-            // l'administrateur vient envoyer.
-            defaultValue={!avant ? 'before' : !apres ? 'after' : 'thumbnail'}
-            className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
+      <label className="mt-2.5 block">
+        <span className="text-[12px] font-medium text-[color:var(--color-night)]">
+          Texte alternatif
+        </span>
+        <input
+          value={alt}
+          onChange={(evenement) => setAlt(evenement.target.value)}
+          type="text"
+          maxLength={200}
+          placeholder={titre === 'Avant' ? 'Ce que montre le depart' : 'Ce que montre le resultat'}
+          className="mt-1 h-11 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[14px]"
+        />
+      </label>
+
+      <div className="mt-2 min-h-[1px]">
+        <AdminFeedback state={etat} />
+      </div>
+
+      {media ? (
+        <form action={onDelete} className="mt-2">
+          <input type="hidden" name="promptId" value={promptId} />
+          <input type="hidden" name="mediaId" value={media.id} />
+          <button
+            type="submit"
+            className="touch-target w-full text-[12px] font-medium text-[color:var(--color-danger)]"
           >
-            {MEDIA_KINDS.map((kind) => (
-              <option key={kind} value={kind}>
-                {KIND_LABELS[kind]}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="block">
-          <span className="text-[13px] font-medium text-[color:var(--color-night)]">Image</span>
-          <input
-            type="file"
-            name="file"
-            accept="image/webp,image/avif,image/png,image/jpeg"
-            required
-            className="mt-1 block w-full text-[13px] text-[color:var(--color-muted)] file:mr-3 file:h-11 file:rounded-[color:var(--radius-control)] file:border-0 file:bg-[color:var(--color-sky)] file:px-3 file:text-[13px] file:font-medium file:text-[color:var(--color-night)]"
-          />
-          <span className="mt-1 block text-[12px] text-[color:var(--color-muted)]">
-            WebP ou AVIF de preference, sinon PNG ou JPEG. 10 Mo maximum. Cadrage 16:10, meme angle
-            pour l Avant et l Apres.
-          </span>
-        </label>
-
-        <label className="block">
-          <span className="text-[13px] font-medium text-[color:var(--color-night)]">
-            Texte alternatif
-          </span>
-          <input
-            name="alt"
-            type="text"
-            maxLength={200}
-            className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
-          />
-          <span className="mt-1 block text-[12px] text-[color:var(--color-muted)]">
-            Decrit ce que montre l image. Distinct pour l Avant et pour l Apres.
-          </span>
-        </label>
-
-        <AdminFeedback state={uploadState} />
-        <AdminSubmit tone="secondaire">Envoyer le visuel</AdminSubmit>
-      </form>
+            Retirer
+          </button>
+        </form>
+      ) : null}
     </div>
   );
 }

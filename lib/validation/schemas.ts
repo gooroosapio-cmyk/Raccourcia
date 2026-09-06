@@ -31,7 +31,12 @@ export const catalogQuery = z.object({
   access: z.enum(['gratuit', 'membre']).optional(),
   output: z.enum(OUTPUT_FORMAT_KINDS).optional(),
   page: z.coerce.number().int().min(1).max(100).default(1),
-  pageSize: z.coerce.number().int().min(1).max(50).default(CATALOG_PAGE_SIZE),
+  // La bibliotheque s'affiche par lots cumules : la page en demande
+  // `CATALOG_PAGE_SIZE * lot` d'un coup. La borne couvre le plus grand mode
+  // du catalogue. Cette valeur n'est jamais lue depuis l'URL : la page
+  // construit l'objet elle-meme, un visiteur ne peut donc pas s'en servir
+  // pour reclamer tout le catalogue en une requete.
+  pageSize: z.coerce.number().int().min(1).max(240).default(CATALOG_PAGE_SIZE),
 });
 
 export type CatalogQuery = z.infer<typeof catalogQuery>;

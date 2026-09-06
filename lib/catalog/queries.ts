@@ -127,10 +127,16 @@ export function getAvailableModes(): readonly Mode[] {
  */
 export const getCategories = cache(async (mode: Enums<'app_mode'>): Promise<CategoryNode[]> => {
   const supabase = await createClient();
+  // La visibilite est filtree ici, explicitement, et non laissee a la RLS.
+  // Sa clause est `is_visible or is_admin()` : sans ce filtre, un
+  // administrateur qui parcourt la bibliotheque voit les categories
+  // archivees que personne d'autre ne voit, et la navigation change de forme
+  // selon qui regarde.
   const { data, error } = await supabase
     .from('categories')
     .select('id, slug, name, mode, parent_id, sort_order')
     .eq('mode', mode)
+    .eq('is_visible', true)
     .order('sort_order', { ascending: true });
 
   if (error) throw new CatalogUnavailableError(error);
@@ -219,10 +225,14 @@ function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
 }
 
 function toCard(row: CardRow, favorites: Set<string>): PromptCard {
-  const thumbnail =
-    row.prompt_media
-      ?.filter((media) => media.kind === 'thumbnail' || media.kind === 'after')
+  // L'Apres prime : c'est le resultat, donc ce qui fait choisir. La miniature
+  // ne sert que de repli pour les raccourcis qui en ont une sans paire.
+  const parType = (kind: Enums<'media_kind'>) =>
+    (row.prompt_media ?? [])
+      .filter((media) => media.kind === kind)
       .sort((a, b) => a.sort_order - b.sort_order)[0] ?? null;
+
+  const thumbnail = parType('after') ?? parType('thumbnail');
 
   return {
     id: row.id,

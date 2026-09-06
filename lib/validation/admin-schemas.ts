@@ -105,9 +105,35 @@ export const categoryStatusInput = z.object({
   status: z.enum(CONTENT_STATUS),
 });
 
-export const mediaUploadInput = z.object({
+/**
+ * Demande d'une autorisation d'envoi.
+ *
+ * Le fichier ne transite plus par le serveur : le navigateur le depose
+ * directement dans le bucket avec une autorisation a usage unique. Seuls son
+ * type et sa taille sont annonces ici, et ils sont verifies avant que
+ * l'autorisation ne soit delivree.
+ */
+export const mediaTicketInput = z.object({
   promptId: z.string().uuid(),
   kind: z.enum(MEDIA_KINDS),
+  contentType: z.enum(['image/webp', 'image/avif', 'image/png', 'image/jpeg']),
+  size: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(10 * 1024 * 1024),
+});
+
+/**
+ * Enregistrement du visuel une fois depose.
+ *
+ * Le chemin n'est pas repris tel quel du navigateur : l'action verifie qu'il
+ * correspond bien au raccourci vise avant d'ecrire quoi que ce soit.
+ */
+export const mediaRegisterInput = z.object({
+  promptId: z.string().uuid(),
+  kind: z.enum(MEDIA_KINDS),
+  path: z.string().trim().min(1).max(400),
   alt: z.string().trim().max(200).optional(),
 });
 
