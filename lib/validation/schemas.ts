@@ -1,5 +1,11 @@
 import { z } from 'zod';
-import { MODES, PROVIDER_KEYS, SURFACES, CATALOG_PAGE_SIZE } from '@/lib/constants';
+import {
+  MODES,
+  OUTPUT_FORMAT_KINDS,
+  PROVIDER_KEYS,
+  SURFACES,
+  CATALOG_PAGE_SIZE,
+} from '@/lib/constants';
 
 /**
  * Schemas d'entree serveur. Aucune confiance n'est accordee au client :
@@ -20,6 +26,10 @@ export const catalogQuery = z.object({
   provider: z.enum(PROVIDER_KEYS).optional(),
   search: z.string().trim().max(80).optional(),
   sort: z.enum(['populaires', 'nouveaux', 'alpha']).default('populaires'),
+  // Filtres avances. Chacun est une valeur d'une liste fermee : une valeur
+  // inconnue arrivant par l'URL est ignoree, jamais transmise a la requete.
+  access: z.enum(['gratuit', 'membre']).optional(),
+  output: z.enum(OUTPUT_FORMAT_KINDS).optional(),
   page: z.coerce.number().int().min(1).max(100).default(1),
   pageSize: z.coerce.number().int().min(1).max(50).default(CATALOG_PAGE_SIZE),
 });

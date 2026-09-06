@@ -162,18 +162,53 @@ automatiquement sur toute nouvelle table de `public`.
 `./tests/db/run.sh` rejoue toutes les migrations sur un Postgres jetable puis
 execute les scenarios obligatoires :
 
-| Fichier                                | Verifie                                               |
-| -------------------------------------- | ----------------------------------------------------- |
-| `01_premium_content_is_never_readable` | Aucune lecture de payload, aucune fuite inter-comptes |
-| `02_resolve_prompt_controls`           | Les six controles de resolution, un par un            |
-| `03_category_deactivation_cascade`     | Desactivation, cascade, conservation, reactivation    |
-| `04_commerce_idempotence`              | 20 webhooks = 1 droit ; remboursement ; restauration  |
-| `05_role_escalation`                   | Un admin ne s'attribue pas super_admin                |
-| `06_catalogue_import`                  | 151 raccourcis, tous copiables, Analyse masque        |
-| `08_admin_operations`                  | Versionnage, refus de publication incomplete, cascade |
-| `09_chariow_ingestion`                 | Vente/licence dans les deux ordres, rejeu, privileges |
-| `10_analytics`                         | Agregats justes, fenetre bornee, refus hors admin     |
+| Fichier                                | Verifie                                                    |
+| -------------------------------------- | ---------------------------------------------------------- |
+| `01_premium_content_is_never_readable` | Aucune lecture de payload, aucune fuite inter-comptes      |
+| `02_resolve_prompt_controls`           | Les six controles de resolution, un par un                 |
+| `03_category_deactivation_cascade`     | Desactivation, cascade, conservation, reactivation         |
+| `04_commerce_idempotence`              | 20 webhooks = 1 droit ; remboursement ; restauration       |
+| `05_role_escalation`                   | Un admin ne s'attribue pas super_admin                     |
+| `06_catalogue_import`                  | 151 raccourcis, tous copiables, Analyse masque             |
+| `08_admin_operations`                  | Versionnage, refus de publication incomplete, cascade      |
+| `09_chariow_ingestion`                 | Vente/licence dans les deux ordres, rejeu, privileges      |
+| `10_analytics`                         | Agregats justes, fenetre bornee, refus hors admin          |
+| `11_base_privileges`                   | Couche GRANT : ce qui est accorde, ce qui reste refuse     |
+| `12_fiche_publique`                    | Donnees de fiche lisibles, contenu complet toujours refuse |
 
 Ces tests ont ete valides par mutation : casser volontairement la RLS de
 `prompt_versions`, la cascade de visibilite ou le controle d'entitlement fait
 echouer le test correspondant, et lui seul.
+
+## Ce que la refonte n'a pas change
+
+L'habillage de septembre 2026 ("Clarte cinetique 2.0") a reecrit les cartes,
+la fiche, la console de decouverte et les pages publiques. Aucune de ces
+surfaces n'a gagne d'acces au contenu complet d'une commande :
+
+- les requetes de listing selectionnent des colonnes nommees, `payload` n'y
+  figure pas et `prompt_versions` reste refusee a `anon` comme a
+  `authenticated` (verrouille par `12_fiche_publique`) ;
+- la fiche est rendue a partir des donnees deja embarquees avec la carte :
+  l'ouvrir ne declenche aucune requete supplementaire, donc aucune nouvelle
+  surface d'exposition ;
+- le contenu complet ne sort toujours que par `resolve_prompt`, appelee au
+  clic sur le bouton de copie, apres ses six controles ;
+- l'interface ne nomme plus le prompt nulle part : le bouton dit "Copier la
+  commande" et le retour dit "Commande copiee". Ce n'est pas une mesure de
+  securite, c'est un choix produit — mais cela supprime une invitation a
+  chercher ou le texte complet serait affiche.
+
+Le flou des cartes verrouillees reste ce qu'il etait : un signal commercial,
+jamais une protection. Rien de premium n'atteint le navigateur.
+
+## Informations legales
+
+Les mentions legales, la politique de confidentialite et les conditions sont
+rendues a partir de `app_config` (cles `legal_*`), pas ecrites dans le depot.
+Deux raisons : ces champs contiennent des donnees nominatives de l'editeur, et
+une correction ne doit pas demander une mise en ligne.
+
+Un champ vide s'affiche publiquement comme "a completer" et non comme une
+valeur inventee. Une mention legale fausse expose davantage qu'une mention
+visiblement incomplete.

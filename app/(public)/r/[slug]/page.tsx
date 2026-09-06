@@ -1,20 +1,24 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getPromptDetail, getPublicConfig } from '@/lib/catalog/queries';
 import { getAccessState } from '@/lib/access/entitlement';
-import { Badge } from '@/components/ui/badge';
+import { AccessBadge } from '@/components/cards/access-badge';
+import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
+import { CompatibilityList } from '@/components/detail/compatibility-list';
+import { InputExampleList } from '@/components/detail/input-example-list';
+import { OutputFormatList } from '@/components/detail/output-format-list';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
 
 /**
- * Page publique partageable d'un raccourci.
+ * Page publique partageable d'une commande.
  *
- * Elle montre la valeur : commande, promesse, cas d'usage, visuels, IA
- * compatibles. Le prompt complet en est totalement absent : ni dans le HTML,
- * ni dans les donnees de page, ni dans les metadonnees SEO
- * (Doc Technique V1, 10.1). Le verrou n'apparait qu'apres la demonstration.
+ * Elle montre la valeur : la commande, ce qu'elle produit, la comparaison
+ * avant/apres, les entrees acceptees, les IA compatibles. Le contenu complet
+ * en est totalement absent : ni dans le HTML, ni dans les donnees de page, ni
+ * dans les metadonnees SEO (Doc Technique V1, 10.1). Le verrou n'apparait
+ * qu'apres la demonstration.
  */
 export async function generateMetadata({
   params,
@@ -26,15 +30,15 @@ export async function generateMetadata({
   // Les metadonnees ne doivent jamais faire echouer la page : en cas
   // d'incident, on retombe sur un titre neutre et le rendu prend le relais.
   const prompt = await getPromptDetail(slug).catch(() => null);
-  if (!prompt) return { title: 'Raccourci' };
+  if (!prompt) return { title: 'Commande' };
 
   return {
     title: `${prompt.command} - ${prompt.name}`,
-    description: prompt.shortDescription,
+    description: prompt.resultSummary,
     openGraph: {
       title: `${prompt.command} - ${prompt.name}`,
-      description: prompt.shortDescription,
-      images: prompt.thumbnailUrl ? [prompt.thumbnailUrl] : undefined,
+      description: prompt.resultSummary,
+      images: prompt.beforeAfter ? [prompt.beforeAfter.afterUrl] : undefined,
     },
   };
 }
@@ -44,8 +48,8 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
   const { publicCatalogEnabled } = await getPublicConfig();
   if (!publicCatalogEnabled) notFound();
 
-  // Un incident de base ne doit pas se presenter comme un raccourci
-  // inexistant : on separe explicitement les deux cas.
+  // Un incident de base ne doit pas se presenter comme une commande
+  // inexistante : on separe explicitement les deux cas.
   let prompt;
   try {
     prompt = await getPromptDetail(slug);
@@ -63,84 +67,92 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
   if (!prompt) notFound();
 
   const { hasLifetimeAccess } = await getAccessState();
-  const compatible = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
+  const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
 
   return (
-    <article className="mx-auto max-w-md pt-4">
-      {prompt.thumbnailUrl ? (
-        <div className="relative mb-5 aspect-[4/3] w-full overflow-hidden rounded-[color:var(--radius-card)] bg-[color:var(--color-canvas)]">
-          <Image
-            src={prompt.thumbnailUrl}
-            alt={prompt.thumbnailAlt ?? ''}
-            fill
-            sizes="(max-width: 640px) 100vw, 480px"
-            priority
-            className="object-cover"
-          />
+    <article className="pt-2">
+      {prompt.showImageCard ? (
+        <div className="mb-5">
+          {prompt.beforeAfter ? (
+            <BeforeAfterMedia media={prompt.beforeAfter} command={prompt.command} priority />
+          ) : (
+            <MediaPlaceholder command={prompt.command} />
+          )}
         </div>
       ) : null}
 
-      <div className="flex items-center gap-2">
-        <h1 className="font-mono text-2xl font-semibold text-[color:var(--color-night)]">
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="commande truncate text-[26px] font-semibold text-[color:var(--color-brand)]">
           {prompt.command}
         </h1>
-        {prompt.isFree ? <Badge>Gratuit</Badge> : null}
+        <AccessBadge free={prompt.isFree} locked={false} isNew={prompt.isNew} />
       </div>
-      <p className="mt-1 text-base font-medium text-[color:var(--color-ink)]">{prompt.name}</p>
-      <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--color-muted)]">
-        {prompt.shortDescription}
+
+      <p className="mt-2 text-[17px] leading-relaxed text-[color:var(--color-night)]">
+        {prompt.resultSummary}
       </p>
 
-      {compatible.length > 0 ? (
-        <p className="mt-4 text-[13px] text-[color:var(--color-muted)]">
-          Compatible : {compatible.map((entry) => entry.name).join(', ')}
-        </p>
+      {prompt.useCases.length > 0 ? (
+        <ul className="mt-3 space-y-1.5">
+          {prompt.useCases.slice(0, 3).map((cas) => (
+            <li
+              key={cas}
+              className="flex gap-2 text-[14px] leading-relaxed text-[color:var(--color-muted)]"
+            >
+              <span
+                aria-hidden="true"
+                className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--color-brand)]"
+              />
+              <span>{cas}</span>
+            </li>
+          ))}
+        </ul>
       ) : null}
 
-      {prompt.useCases.length > 0 ? (
-        <section className="mt-6">
-          <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-muted)]">
-            Quand l utiliser
-          </h2>
-          <ul className="mt-2 space-y-1.5">
-            {prompt.useCases.slice(0, 3).map((useCase) => (
-              <li key={useCase} className="flex gap-2 text-[15px] leading-relaxed">
-                <span aria-hidden="true" className="text-[color:var(--color-brand)]">
-                  -
-                </span>
-                <span>{useCase}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+      {prompt.inputExamples.length > 0 ? (
+        <Section titre="Exemples d entrees">
+          <InputExampleList inputs={prompt.inputExamples} />
+        </Section>
+      ) : null}
+
+      {prompt.outputFormats.length > 0 ? (
+        <Section titre="Resultat">
+          <OutputFormatList formats={prompt.outputFormats} />
+        </Section>
+      ) : null}
+
+      {compatibles.length > 0 ? (
+        <Section titre="Compatible avec">
+          <CompatibilityList providers={compatibles} />
+        </Section>
       ) : null}
 
       <section className="mt-8 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
         {hasLifetimeAccess ? (
           <>
-            <p className="text-[15px] font-medium text-[color:var(--color-night)]">
+            <p className="text-[15px] font-semibold text-[color:var(--color-night)]">
               Votre acces est actif.
             </p>
             <Link
               href={`/app?q=${encodeURIComponent(prompt.command)}`}
-              className="mt-3 flex h-12 items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] font-medium text-white"
+              className="mt-3 flex h-13 items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-[15px] font-semibold text-white"
             >
               Ouvrir dans la bibliotheque
             </Link>
           </>
         ) : (
           <>
-            <p className="text-[15px] font-medium text-[color:var(--color-night)]">
-              Le prompt complet est reserve aux membres.
+            <p className="text-[15px] font-semibold text-[color:var(--color-night)]">
+              Cette commande est reservee aux membres.
             </p>
             <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-              Acces a vie, paiement unique, tous les raccourcis inclus.
+              Acces a vie, paiement unique, toutes les commandes incluses.
             </p>
             <Link
-              href="/activation"
-              className="mt-3 flex h-12 items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] font-medium text-white"
+              href="/offre"
+              className="mt-3 flex h-13 items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-[15px] font-semibold text-white"
             >
-              Debloquer RaccourcIA
+              Voir l offre
             </Link>
           </>
         )}
@@ -152,5 +164,16 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
         </p>
       ) : null}
     </article>
+  );
+}
+
+function Section({ titre, children }: { titre: string; children: React.ReactNode }) {
+  return (
+    <section className="mt-6">
+      <h2 className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">
+        {titre}
+      </h2>
+      {children}
+    </section>
   );
 }

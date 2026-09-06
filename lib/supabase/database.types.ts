@@ -358,6 +358,7 @@ export type Database = {
           external_ref: string | null;
           fallback_if_incomplete: string | null;
           id: string;
+          input_examples: Database['public']['Enums']['input_example_kind'][];
           input_type: Database['public']['Enums']['input_type'];
           intention: string | null;
           is_featured: boolean;
@@ -369,12 +370,14 @@ export type Database = {
           name: string;
           optional_variables: string[];
           output_format: string | null;
+          output_formats: Database['public']['Enums']['output_format_kind'][];
           output_type: Database['public']['Enums']['output_type'];
           preserve_rules: string | null;
           priority: string;
           published_at: string | null;
           quality_criteria: string | null;
           required_variables: string[];
+          result_summary: string | null;
           risk_level: Database['public']['Enums']['risk_level'];
           search_text: string | null;
           short_description: string;
@@ -423,6 +426,9 @@ export type Database = {
           fallback_if_incomplete: string | null;
           input_type: Database['public']['Enums']['input_type'];
           output_type: Database['public']['Enums']['output_type'];
+          input_examples: Database['public']['Enums']['input_example_kind'][];
+          output_formats: Database['public']['Enums']['output_format_kind'][];
+          result_summary: string | null;
           risk_level: Database['public']['Enums']['risk_level'];
           priority: string;
           status: Database['public']['Enums']['content_status'];
@@ -677,8 +683,28 @@ export type Database = {
       compatibility_level: 'excellent' | 'bon' | 'partiel' | 'non_supporte';
       content_status: 'draft' | 'published' | 'archived';
       entitlement_status: 'active' | 'suspended' | 'revoked';
+      input_example_kind:
+        | 'photo_produit'
+        | 'photo_lieu'
+        | 'photo_personne'
+        | 'capture_ecran'
+        | 'document_pdf'
+        | 'texte_brut'
+        | 'tableau'
+        | 'url'
+        | 'brief';
       input_type: 'image' | 'text' | 'document' | 'mixed';
       media_kind: 'thumbnail' | 'before' | 'after' | 'example' | 'cover';
+      output_format_kind:
+        | 'image'
+        | 'texte'
+        | 'pdf'
+        | 'document'
+        | 'presentation'
+        | 'tableur'
+        | 'code'
+        | 'audio'
+        | 'video';
       output_type: 'image' | 'text' | 'analysis';
       purchase_status: 'pending' | 'completed' | 'refunded' | 'cancelled';
       risk_level: 'faible' | 'moyen' | 'eleve';

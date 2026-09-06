@@ -182,3 +182,48 @@ reste le dernier filet.
 L'erreur se reconnait par un marqueur `code`, pas par `instanceof` : le
 bundler duplique les modules entre le graphe serveur et le graphe SSR, et la
 classe n'a alors pas la meme identite des deux cotes.
+
+## Comparaison Avant/Apres
+
+Une commande image se juge sur ce qu'elle produit, pas sur sa description.
+Chaque carte image montre donc deux visuels cote a cote : l'entree realiste,
+et le resultat obtenu. Ils viennent de `prompt_media`, avec les genres
+`before` et `after` que le schema portait deja.
+
+Les deux sont exiges ensemble. `toBeforeAfter()` renvoie `null` des qu'il en
+manque un, et la carte retombe sur une vignette typographique. Deux regles en
+decoulent, et elles sont deliberees :
+
+- on ne duplique jamais l'image d'entree en guise de resultat : la carte
+  annoncerait une transformation qui n'a pas eu lieu ;
+- `setPromptStatus` refuse de publier une commande a carte visuelle dont la
+  paire est incomplete. L'administration signale lequel des deux manque.
+
+Les commandes texte n'ont pas de comparaison photographique. Leur carte montre
+la commande, la promesse, un cas d'usage et le format de sortie : leur inventer
+un visuel mentirait sur ce qu'elles produisent.
+
+## Entrees et sorties declarees
+
+`input_examples` et `output_formats` sont deux listes fermees (`enum`), pas du
+texte libre : l'interface associe une icone et un libelle a chaque valeur, ce
+qu'une chaine saisie a la main rendrait impossible.
+
+Elles ne sont jamais vides. Un declencheur (`prompt_defauts_fiche`) les derive
+de `input_type` et `output_type` a l'insertion, quelle que soit la voie —
+import du catalogue, administration, migration. Il ne fait que combler un
+vide : une liste choisie par un administrateur est respectee telle quelle.
+
+Seuls les formats reellement produits sont affiches. Montrer "Image, Texte,
+PDF" sur toutes les fiches donnerait un choix qui n'existe pas et rendrait la
+section inutile a lire.
+
+## Prix et lien d'achat
+
+Le prix affiche, le prix de reference barre et la devise vivent dans
+`app_config`. Un changement de tarif ne doit pas demander une mise en ligne, et
+le prix affiche doit pouvoir suivre la fiche produit Chariow sans decalage.
+
+Le prix de reference n'est barre que s'il est reellement superieur au prix
+demande : une remise inventee serait mensongere, et `getPublicConfig()` le
+ramene a `null` sinon.

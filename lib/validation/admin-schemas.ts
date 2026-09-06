@@ -1,6 +1,13 @@
 import { z } from 'zod';
 
-import { CONTENT_STATUS, MEDIA_KINDS, MODES, PROVIDER_KEYS } from '@/lib/constants';
+import {
+  CONTENT_STATUS,
+  INPUT_EXAMPLE_KINDS,
+  MEDIA_KINDS,
+  MODES,
+  OUTPUT_FORMAT_KINDS,
+  PROVIDER_KEYS,
+} from '@/lib/constants';
 
 /**
  * Schemas du back-office. Aucune ecriture n'atteint la base sans passer par
@@ -47,6 +54,12 @@ export const promptIdentityInput = z.object({
   expectedInput: optionalText,
   limitations: optionalText,
   adminNotes: optionalText,
+  // Promesse de resultat : ce que l'utilisateur obtient, en une phrase.
+  resultSummary: optionalText,
+  // Listes fermees : l'interface associe une icone a chaque valeur, une
+  // saisie libre casserait cette correspondance.
+  inputExamples: z.array(z.enum(INPUT_EXAMPLE_KINDS)).max(4).default([]),
+  outputFormats: z.array(z.enum(OUTPUT_FORMAT_KINDS)).max(4).default([]),
   showImageCard: z.coerce.boolean().default(false),
   isFree: z.coerce.boolean().default(false),
   isFeatured: z.coerce.boolean().default(false),

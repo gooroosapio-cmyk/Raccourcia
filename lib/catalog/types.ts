@@ -1,4 +1,19 @@
+import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
+
+/**
+ * Comparaison Avant/Apres d'un raccourci image.
+ *
+ * Les deux visuels sont toujours transmis ensemble ou pas du tout : une
+ * comparaison a moitie renseignee ne se comprend pas, et dupliquer l'image
+ * d'entree en guise de resultat mentirait sur ce que le raccourci produit.
+ */
+export type BeforeAfter = {
+  beforeUrl: string;
+  beforeAlt: string;
+  afterUrl: string;
+  afterAlt: string;
+};
 
 /** Ce qu'une carte affiche. Jamais le prompt complet. */
 export type PromptCard = {
@@ -8,6 +23,8 @@ export type PromptCard = {
   slug: string;
   mode: Enums<'app_mode'>;
   shortDescription: string;
+  /** Ce que l'utilisateur obtient, en une phrase. */
+  resultSummary: string;
   useCases: string[];
   tags: string[];
   showImageCard: boolean;
@@ -15,8 +32,12 @@ export type PromptCard = {
   isNew: boolean;
   isFeatured: boolean;
   riskLevel: Enums<'risk_level'>;
+  /** Comparaison complete, ou `null` tant que les deux visuels manquent. */
+  beforeAfter: BeforeAfter | null;
   thumbnailUrl: string | null;
   thumbnailAlt: string | null;
+  inputExamples: InputExampleKind[];
+  outputFormats: OutputFormatKind[];
   providers: { key: string; name: string; compatibility: Enums<'compatibility_level'> }[];
   isFavorite: boolean;
   // Contenu de la fiche : entierement public, donc embarque avec la carte.

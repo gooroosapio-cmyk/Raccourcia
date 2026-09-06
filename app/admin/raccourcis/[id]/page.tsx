@@ -57,7 +57,11 @@ export default async function AdminPromptPage({ params }: { params: Promise<{ id
       </Section>
 
       <Section title="Visuels" hint="Miniature pour la carte, avant et apres pour montrer l effet.">
-        <PromptMediaManager promptId={prompt.id} media={prompt.media} />
+        <PromptMediaManager
+          promptId={prompt.id}
+          media={prompt.media}
+          requiresPair={prompt.showImageCard}
+        />
       </Section>
     </div>
   );

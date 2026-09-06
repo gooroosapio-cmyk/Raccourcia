@@ -9,7 +9,7 @@ export function SubmitButton({ children }: { children: React.ReactNode }) {
     <button
       type="submit"
       disabled={pending}
-      className="flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-base font-medium text-white transition-colors duration-[var(--duration-fast)] hover:bg-[color:var(--color-brand-strong)] disabled:opacity-60"
+      className="flex h-13 w-full items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-[16px] font-semibold text-white transition-[background-color,transform] duration-[var(--duration-fast)] hover:bg-[color:var(--color-brand-strong)] active:scale-[0.99] disabled:opacity-60"
     >
       {pending ? 'Un instant...' : children}
     </button>
@@ -22,7 +22,7 @@ export function FormError({ message }: { message?: string }) {
   return (
     <p
       role="alert"
-      className="rounded-[color:var(--radius-control)] bg-[#FEF2F2] px-3 py-2 text-[13px] leading-relaxed text-[color:var(--color-danger)]"
+      className="rounded-[color:var(--radius-control)] bg-[color:var(--color-danger-soft)] px-3 py-2 text-[13px] leading-relaxed text-[color:var(--color-danger)]"
     >
       {message}
     </p>
@@ -35,7 +35,7 @@ export function FormNotice({ message }: { message?: string }) {
   return (
     <p
       role="status"
-      className="rounded-[color:var(--radius-control)] bg-[#F0FDF4] px-3 py-2 text-[13px] leading-relaxed text-[color:var(--color-success)]"
+      className="rounded-[color:var(--radius-control)] bg-[color:var(--color-success-soft)] px-3 py-2 text-[13px] leading-relaxed text-[color:var(--color-success)]"
     >
       {message}
     </p>
@@ -69,7 +69,7 @@ export function Field({
         required={required}
         autoComplete={autoComplete}
         placeholder={placeholder}
-        className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px] outline-none focus:border-[color:var(--color-brand)]"
+        className="mt-1 h-13 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3.5 text-[16px] outline-none transition-[border-color,box-shadow] duration-[var(--duration-fast)] focus:border-[color:var(--color-brand)] focus:shadow-[0_0_0_3px_var(--color-brand-soft)]"
       />
       {hint ? (
         <span className="mt-1 block text-[12px] text-[color:var(--color-muted)]">{hint}</span>

@@ -1,35 +1,64 @@
 @import 'tailwindcss';
 
 /*
- * RaccourcIA - Design system, Direction 03 (Spec UX/UI V1, section 15).
- * Palette derivee du logo : blanc dominant, bleu electrique pour l'action,
- * bleu nuit pour la hierarchie. Le bleu clair est un fond, jamais un texte.
+ * RaccourcIA - Design system "Clarte cinetique 2.0".
+ *
+ * Palette derivee du logo, inchangee depuis la V1 : le bleu electrique porte
+ * l'action, le bleu nuit la hierarchie, le bleu clair est un fond et jamais
+ * un texte. Deux teintes semantiques s'y ajoutent, et une seule regle les
+ * gouverne : le vert dit "offert", l'ambre dit "reserve aux membres".
+ *
+ * L'ambre du badge est distinct de l'ambre d'alerte. Une couleur partagee
+ * entre "vous ne pouvez pas copier" et "attention, risque" rendrait les deux
+ * illisibles.
  */
 @theme {
   --color-brand: #1463ff;
   --color-brand-strong: #0f4fd8;
+  --color-brand-soft: #dfeaff;
   --color-night: #0b163f;
   --color-sky: #eaf2ff;
   --color-canvas: #f7f9fc;
   --color-surface: #ffffff;
   --color-ink: #111827;
-  --color-muted: #667085;
+  --color-muted: #5b667e;
   --color-line: #e4e9f2;
-  --color-success: #16a34a;
-  --color-warning: #e88a00;
-  --color-danger: #dc2626;
+  --color-line-strong: #cfd8e8;
 
-  /* Rayons : 10-12px petits composants, 16px cartes, 20-24px sheets. */
-  --radius-control: 10px;
+  --color-success: #0f9d63;
+  --color-success-soft: #e7f8f0;
+  --color-member: #b45309;
+  --color-member-soft: #fdf1dc;
+  --color-warning: #b25a00;
+  --color-danger: #c92a2a;
+  --color-danger-soft: #fdecec;
+
+  /* Rayons : 12px petits composants, 16px cartes, 22px sheets. */
+  --radius-control: 12px;
   --radius-card: 16px;
   --radius-sheet: 22px;
 
-  /* Transitions courtes : 150-250ms (section 17). */
-  --duration-fast: 150ms;
+  /*
+   * Trois durees, trois usages. Au-dela, l'interface parait molle ; en deca,
+   * le mouvement n'est pas percu et n'aide donc a rien.
+   */
+  --duration-fast: 140ms;
   --duration-base: 200ms;
+  --duration-sheet: 260ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.3, 1);
+
+  /*
+   * Profondeur tres legere : une carte se detache par sa bordure, pas par son
+   * ombre. L'ombre ne sert qu'aux couches qui flottent reellement.
+   */
+  --shadow-card: 0 1px 2px rgb(11 22 63 / 0.04);
+  --shadow-raised: 0 4px 16px rgb(11 22 63 / 0.08);
+  --shadow-sheet: 0 -8px 40px rgb(11 22 63 / 0.16);
 
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 }
 
 :root {
@@ -41,13 +70,14 @@ body {
   background-color: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  /* Corps mobile cible 15-16px (section 15). */
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  /* Safe areas iOS/Android pour la barre basse et les bottom sheets. */
+  /* Aucun debordement lateral : la regle vaut pour toute la page. */
+  overflow-x: hidden;
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -55,6 +85,97 @@ body {
 .touch-target {
   min-block-size: 44px;
   min-inline-size: 44px;
+}
+
+/*
+ * Une commande est un objet technique : elle garde la monospace partout,
+ * carte comme fiche, pour rester reconnaissable au premier coup d'oeil.
+ */
+.commande {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  letter-spacing: -0.01em;
+}
+
+/*
+ * Defilement horizontal des chips : la barre systeme est masquee, le fondu
+ * lateral suffit a dire qu'il reste du contenu.
+ */
+.rail {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* Apparition des cartes : un seul mouvement, jamais rejoue au scroll. */
+@keyframes apparition {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes montee-sheet {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes fondu {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes toast-entree {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pouls {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.anim-apparition {
+  animation: apparition var(--duration-base) var(--ease-out) both;
+}
+.anim-sheet {
+  animation: montee-sheet var(--duration-sheet) var(--ease-out) both;
+}
+.anim-fondu {
+  animation: fondu var(--duration-base) var(--ease-out) both;
+}
+.anim-toast {
+  animation: toast-entree var(--duration-base) var(--ease-out) both;
+}
+.anim-squelette {
+  animation: pouls 1.4s ease-in-out infinite;
 }
 
 /* Aucune animation decorative ne doit ralentir la copie. */
@@ -72,4 +193,5 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
+  border-radius: 4px;
 }

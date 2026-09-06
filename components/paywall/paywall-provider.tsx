@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { OfferSheet } from '@/components/paywall/offer-sheet';
+import type { Offre } from '@/components/paywall/upgrade-panel';
 
 /** Delai avant ouverture spontanee, pour un visiteur sans acces. */
 const DELAI_OUVERTURE_MS = 45_000;
@@ -25,21 +26,17 @@ export function usePaywall() {
  * transformerait la fenetre en harcelement, et ferait fuir un visiteur qui
  * n'a pas encore eu le temps de juger le catalogue.
  *
- * Fermer ramene toujours au catalogue, ou se trouvent les raccourcis
- * offerts : le visiteur n'est jamais laisse devant une page qu'il ne peut
+ * Fermer ramene toujours au catalogue, ou se trouvent les commandes
+ * offertes : le visiteur n'est jamais laisse devant une page qu'il ne peut
  * pas utiliser.
  */
 export function PaywallProvider({
   hasAccess,
-  purchaseUrl,
-  freeCount,
-  totalCount,
+  offre,
   children,
 }: {
   hasAccess: boolean;
-  purchaseUrl: string;
-  freeCount: number;
-  totalCount: number;
+  offre: Offre;
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -67,7 +64,7 @@ export function PaywallProvider({
 
   const close = useCallback(() => {
     setOuverte(false);
-    // Retour aux raccourcis copiables : le catalogue les remonte en tete
+    // Retour aux commandes copiables : le catalogue les remonte en tete
     // pour un visiteur sans acces.
     if (pathname !== '/app') {
       router.push('/app');
@@ -80,14 +77,7 @@ export function PaywallProvider({
   return (
     <PaywallContext.Provider value={{ open }}>
       {children}
-      {ouverte ? (
-        <OfferSheet
-          purchaseUrl={purchaseUrl}
-          freeCount={freeCount}
-          totalCount={totalCount}
-          onClose={close}
-        />
-      ) : null}
+      {ouverte ? <OfferSheet offre={offre} onClose={close} /> : null}
     </PaywallContext.Provider>
   );
 }
