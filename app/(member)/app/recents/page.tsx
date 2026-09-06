@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getRecents } from '@/lib/catalog/queries';
 import { PromptGrid } from '@/components/cards/prompt-grid';
@@ -24,6 +25,11 @@ export default async function RecentsPage() {
     }
     throw error;
   }
+
+  // Espace reserve : un visiteur sans acces a vie y trouverait une page vide,
+  // ses favoris et son historique n'ayant de sens qu'une fois qu'il peut
+  // copier. On le ramene au catalogue en ouvrant la fenetre d'offre.
+  if (!hasLifetimeAccess) redirect('/app?offre=1');
 
   return (
     <div className="space-y-4 pt-1">

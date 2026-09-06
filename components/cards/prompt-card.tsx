@@ -1,10 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { CopyButton } from '@/components/cards/copy-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
+import { usePaywall } from '@/components/paywall/paywall-provider';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
@@ -33,7 +33,7 @@ export function PromptCard({
   free?: boolean;
   onOpen: (prompt: PromptCardData) => void;
 }) {
-  const router = useRouter();
+  const { open: ouvrirOffre } = usePaywall();
   const compatible = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const active = compatible.find((entry) => entry.key === provider) ?? compatible[0];
   const firstUseCase = prompt.useCases[0];
@@ -123,7 +123,7 @@ export function PromptCard({
             surface="carte"
             locked={locked}
             compact
-            onLockedClick={() => router.push('/activation')}
+            onLockedClick={ouvrirOffre}
           />
         </div>
         <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} />

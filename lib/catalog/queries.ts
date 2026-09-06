@@ -40,7 +40,29 @@ export const getPublicConfig = cache(async () => {
       CONFIG_KEYS.PUBLIC_CATALOG_ENABLED,
       CONFIG_FALLBACKS[CONFIG_KEYS.PUBLIC_CATALOG_ENABLED],
     ),
+    purchaseUrl: read<string>(CONFIG_KEYS.PURCHASE_URL, CONFIG_FALLBACKS[CONFIG_KEYS.PURCHASE_URL]),
   };
+});
+
+/**
+ * Volumes du catalogue, pour la fenetre d'offre.
+ *
+ * Les chiffres sont lus et non ecrits en dur : ils doivent suivre le
+ * catalogue, sans quoi l'argumentaire mentirait des la premiere publication.
+ */
+export const getCatalogCounts = cache(async () => {
+  const supabase = await createClient();
+
+  const [total, offerts] = await Promise.all([
+    supabase.from('prompts').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+    supabase
+      .from('prompts')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'published')
+      .eq('is_free', true),
+  ]);
+
+  return { total: total.count ?? 0, free: offerts.count ?? 0 };
 });
 
 /**
