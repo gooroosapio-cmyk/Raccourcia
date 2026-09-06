@@ -8,6 +8,7 @@ import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { InputExampleList } from '@/components/detail/input-example-list';
 import { OutputFormatList } from '@/components/detail/output-format-list';
+import { SheetDragHandle, useSheetDrag } from '@/components/ui/sheet-drag';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { useToast } from '@/components/ui/toast';
 import type { PromptCard } from '@/lib/catalog/types';
@@ -40,9 +41,16 @@ export function PromptDetailSheet({
   const { open: ouvrirOffre } = usePaywall();
   const { show } = useToast();
   const fermerRef = useRef<HTMLButtonElement>(null);
+  const panneauRef = useRef<HTMLDivElement>(null);
+  const contenuRef = useRef<HTMLDivElement>(null);
   const [agrandi, setAgrandi] = useState(false);
+  const glissement = useSheetDrag({ onClose, contenuRef });
 
   useEffect(() => {
+    // L'element qui a ouvert la fiche, pour lui rendre le focus a la
+    // fermeture : sans cela le clavier repart du haut de la page et l'on perd
+    // sa place dans une grille de trois cents cartes.
+    const declencheur = document.activeElement as HTMLElement | null;
     fermerRef.current?.focus();
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
@@ -53,11 +61,42 @@ export function PromptDetailSheet({
         return false;
       });
     };
+    // Le focus reste dans la fiche : sans cela, la tabulation continue dans
+    // la grille derriere, invisible et inutilisable.
+    const onTab = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || !panneauRef.current) return;
+      const cibles = panneauRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (cibles.length === 0) return;
+      const premier = cibles[0]!;
+      const dernier = cibles[cibles.length - 1]!;
+      if (event.shiftKey && document.activeElement === premier) {
+        event.preventDefault();
+        dernier.focus();
+      } else if (!event.shiftKey && document.activeElement === dernier) {
+        event.preventDefault();
+        premier.focus();
+      }
+    };
+
+    // Le bouton Retour ferme la fiche au lieu de quitter la bibliotheque :
+    // c'est ce que fait une couche sur mobile, et ce que le geste systeme
+    // laisse attendre.
+    window.history.pushState({ fiche: true }, '');
+    const onPop = () => onClose();
+    window.addEventListener('popstate', onPop);
+
     document.addEventListener('keydown', onKey);
+    document.addEventListener('keydown', onTab);
     document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', onKey);
+      document.removeEventListener('keydown', onTab);
+      window.removeEventListener('popstate', onPop);
       document.body.style.overflow = '';
+      // Le focus retourne d'ou il venait : sur la carte, pas en haut de page.
+      declencheur?.focus?.();
     };
   }, [onClose]);
 
@@ -85,45 +124,34 @@ export function PromptDetailSheet({
         type="button"
         aria-label="Fermer la fiche"
         onClick={onClose}
+        style={{ opacity: glissement.opaciteFond }}
         className="anim-fondu absolute inset-0 bg-[color:var(--color-night)]/45"
       />
 
       <div
+        ref={panneauRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="fiche-commande"
-        className="anim-sheet relative flex max-h-[92dvh] w-full max-w-screen-sm flex-col overflow-y-auto rounded-t-[color:var(--radius-sheet)] bg-[color:var(--color-surface)] shadow-[var(--shadow-sheet)]"
+        style={glissement.style}
+        className="anim-sheet relative flex max-h-[92dvh] w-full max-w-screen-sm flex-col overflow-hidden rounded-t-[color:var(--radius-sheet)] bg-[color:var(--color-surface)] shadow-[var(--shadow-sheet)] transition-transform duration-[var(--duration-sheet)] ease-[var(--ease-out)]"
       >
-        <header className="sticky top-0 z-10 flex items-center justify-between gap-1 border-b border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-2 py-2">
-          <button
-            ref={fermerRef}
-            type="button"
-            onClick={onClose}
-            aria-label="Revenir a la liste"
-            className="touch-target inline-flex items-center justify-center rounded-full text-[color:var(--color-night)]"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M15 5 8 12l7 7"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+        {/* La zone de prise couvre la poignee et la barre d'actions : c'est la
+            qu'un pouce se pose naturellement pour repousser la fiche. */}
+        <div {...glissement.poignee} className="shrink-0 touch-none">
+          <SheetDragHandle />
 
-          <div className="flex items-center">
-            <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} />
+          <header className="flex items-center justify-between gap-1 border-b border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-2 py-1.5">
             <button
+              ref={fermerRef}
               type="button"
-              onClick={partager}
-              aria-label="Partager cette commande"
-              className="touch-target inline-flex items-center justify-center rounded-full text-[color:var(--color-muted)]"
+              onClick={onClose}
+              aria-label="Revenir a la liste"
+              className="touch-target inline-flex items-center justify-center rounded-full text-[color:var(--color-night)]"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
-                  d="M12 15V4m0 0L8 8m4-4 4 4M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"
+                  d="M15 5 8 12l7 7"
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
@@ -131,10 +159,30 @@ export function PromptDetailSheet({
                 />
               </svg>
             </button>
-          </div>
-        </header>
 
-        <div className="px-5 pb-4 pt-4">
+            <div className="flex items-center">
+              <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} />
+              <button
+                type="button"
+                onClick={partager}
+                aria-label="Partager cette commande"
+                className="touch-target inline-flex items-center justify-center rounded-full text-[color:var(--color-muted)]"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M12 15V4m0 0L8 8m4-4 4 4M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </header>
+        </div>
+
+        <div ref={contenuRef} className="flex-1 overflow-y-auto overscroll-contain px-5 pb-4 pt-4">
           {prompt.showImageCard ? (
             <div className="relative">
               <button
@@ -175,25 +223,27 @@ export function PromptDetailSheet({
             <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
           </div>
 
-          <p className="mt-1.5 text-[16px] leading-relaxed text-[color:var(--color-night)]">
-            {prompt.resultSummary}
+          {/* Ce que fait la commande, en premiere information apres son nom.
+              `result_summary` decrit le format produit et se repete a
+              l'identique sur toute une famille : il est dit plus bas, dans
+              « Resultat », ou c'est sa place. */}
+          <p className="mt-1.5 text-[length:var(--texte-corps)] leading-[1.5] text-[color:var(--color-night)]">
+            {prompt.shortDescription || prompt.resultSummary}
           </p>
 
           {prompt.useCases.length > 0 ? (
-            <ul className="mt-3 space-y-1.5">
-              {prompt.useCases.slice(0, 3).map((cas) => (
-                <li
-                  key={cas}
-                  className="flex gap-2 text-[14px] leading-relaxed text-[color:var(--color-muted)]"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--color-brand)]"
-                  />
-                  <span>{cas}</span>
-                </li>
-              ))}
-            </ul>
+            <Section titre="Cas d’utilisation">
+              <ul className="flex flex-wrap gap-1.5">
+                {prompt.useCases.slice(0, 4).map((cas) => (
+                  <li
+                    key={cas}
+                    className="rounded-full bg-[color:var(--color-sky)] px-3 py-1.5 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-night)]"
+                  >
+                    {cas}
+                  </li>
+                ))}
+              </ul>
+            </Section>
           ) : null}
 
           {prompt.inputExamples.length > 0 ? (
@@ -243,7 +293,7 @@ export function PromptDetailSheet({
           ) : null}
         </div>
 
-        <div className="sticky bottom-0 border-t border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+        <div className="shrink-0 border-t border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
           <CopyCommandButton
             promptId={prompt.id}
             provider={actif?.key ?? 'chatgpt'}

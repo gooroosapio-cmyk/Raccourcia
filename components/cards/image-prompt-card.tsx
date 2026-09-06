@@ -1,22 +1,29 @@
 'use client';
 
-import { MediaPlaceholder, ResultMedia } from '@/components/media/before-after-media';
+import { AILogo } from '@/components/brand/ai-logos';
 import { AccessBadge } from '@/components/cards/access-badge';
-import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
+import { ResultThumbnail } from '@/components/cards/result-thumbnail';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
- * Carte d'une commande image.
+ * Carte d'une commande image, pensee pour une demi-largeur d'ecran.
  *
- * Une colonne sur mobile : deux cartes cote a cote tronquaient la commande et
- * la promesse, or ce sont les deux seules choses qui font choisir.
+ * Deux colonnes montrent quatre a six commandes par ecran la ou une seule en
+ * montrait une : sur un catalogue de trois cents entrees, c'est la difference
+ * entre parcourir et faire defiler.
  *
- * La carte montre le resultat seul, pas la comparaison : deux vignettes
- * cote a cote y seraient trop petites pour se lire. L'Avant/Apres s'ouvre sur
- * la fiche, ou il y a la place de le regarder.
+ * La vignette montre le resultat seul. Le badge d'acces et le favori sont
+ * poses dessus plutot qu'en dessous : dans une carte etroite, chaque ligne de
+ * texte gagnee revient a une commande de plus a l'ecran.
+ *
+ * L'ouverture de la fiche tient dans un seul bouton, image et texte compris :
+ * deux zones cliquables pour une meme action doubleraient les arrets du
+ * clavier et feraient lire la commande deux fois a un lecteur d'ecran. Le
+ * favori et la copie sont des freres, jamais des enfants — un bouton ne
+ * s'imbrique pas dans un bouton.
  *
  * Le visuel verrouille est floute. C'est un signal commercial, pas une
  * protection : le contenu premium n'atteint jamais le client, il ne sort que
@@ -42,64 +49,65 @@ export function ImagePromptCard({
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
 
   return (
-    <article className="anim-apparition overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
+    <article className="anim-apparition relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => onOpen(prompt)}
-        aria-label={`Ouvrir la fiche de ${prompt.command}`}
-        className="block w-full text-left"
+        className="flex flex-1 flex-col text-left"
       >
-        <div className="relative">
+        <span className="relative block w-full">
           {/* L'agrandissement evite les bords transparents que laisse le flou. */}
-          <div className={locked ? 'scale-[1.06] blur-[8px]' : undefined}>
-            {prompt.thumbnailUrl ? (
-              <ResultMedia
-                url={prompt.thumbnailUrl}
-                alt={prompt.thumbnailAlt}
-                command={prompt.command}
-                priority={priority}
-                sizes="(max-width: 640px) 100vw, 600px"
-                rounded={false}
-              />
-            ) : (
-              <MediaPlaceholder command={prompt.command} />
-            )}
-          </div>
+          <span className={`block ${locked ? 'scale-[1.06] blur-[7px]' : ''}`}>
+            <ResultThumbnail
+              url={prompt.thumbnailUrl}
+              alt={prompt.thumbnailAlt}
+              command={prompt.command}
+              priority={priority}
+            />
+          </span>
           {locked ? (
             <span aria-hidden="true" className="absolute inset-0 bg-[color:var(--color-night)]/5" />
           ) : null}
-        </div>
+        </span>
 
-        <div className="flex flex-col gap-1.5 px-4 pb-3 pt-3">
-          <div className="flex items-center justify-between gap-2">
-            <span className="commande truncate text-[19px] font-semibold text-[color:var(--color-brand)]">
-              {prompt.command}
-            </span>
-            <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
-          </div>
+        <span className="flex flex-1 flex-col gap-1 px-2.5 pb-2 pt-2">
+          <span className="commande truncate text-[length:var(--texte-commande-carte)] font-bold text-[color:var(--color-brand)]">
+            {prompt.command}
+          </span>
 
           {/* Ce que fait ce raccourci, pas le format qu'il produit :
               `result_summary` se repete a l'identique sur toute une famille. */}
-          <p className="line-clamp-2 text-[15px] leading-snug text-[color:var(--color-night)]">
+          <span className="line-clamp-2 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)]">
             {prompt.shortDescription || prompt.resultSummary}
-          </p>
+          </span>
 
-          {compatibles.length > 0 ? <CompatibilityList providers={compatibles} compact /> : null}
-        </div>
+          {compatibles.length > 0 ? (
+            <span className="mt-auto flex items-center gap-1 pt-1">
+              {compatibles.slice(0, 3).map((entry) => (
+                <AILogo key={entry.key} providerKey={entry.key} name={entry.name} taille={15} />
+              ))}
+            </span>
+          ) : null}
+        </span>
       </button>
 
-      <div className="flex items-center gap-2 border-t border-[color:var(--color-line)] px-3 py-2.5">
-        <div className="min-w-0 flex-1">
-          <CopyCommandButton
-            promptId={prompt.id}
-            provider={actif?.key ?? 'chatgpt'}
-            surface="carte"
-            locked={locked}
-            compact
-            onLockedClick={ouvrirOffre}
-          />
-        </div>
-        <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} />
+      <span className="pointer-events-none absolute left-1.5 top-1.5">
+        <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
+      </span>
+
+      <div className="absolute right-0.5 top-0.5">
+        <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} sur />
+      </div>
+
+      <div className="border-t border-[color:var(--color-line)] p-2">
+        <CopyCommandButton
+          promptId={prompt.id}
+          provider={actif?.key ?? 'chatgpt'}
+          surface="carte"
+          locked={locked}
+          compact
+          onLockedClick={ouvrirOffre}
+        />
       </div>
     </article>
   );

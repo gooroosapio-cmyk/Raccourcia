@@ -11,9 +11,13 @@ import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 /**
  * Liste des commandes et couche de detail.
  *
- * Une colonne sur mobile, deux sur tablette, trois au maximum sur ordinateur :
- * la version large prolonge la version mobile, elle n'en invente pas une
- * autre.
+ * Deux colonnes sur mobile, trois sur tablette, quatre au maximum sur
+ * ordinateur : la version large prolonge la version mobile, elle n'en invente
+ * pas une autre.
+ *
+ * Deux colonnes des le telephone, parce qu'une seule ne montrait qu'une
+ * commande par ecran sur un catalogue de trois cents. La gouttiere se resserre
+ * sur les ecrans les plus etroits plutot que de sacrifier une colonne.
  *
  * L'etat de la fiche vit ici : l'ouvrir puis la fermer ne retouche jamais la
  * liste, donc le defilement et les filtres restent exactement en place.
@@ -41,7 +45,7 @@ export function PromptGrid({
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)] sm:grid-cols-3 lg:grid-cols-4">
         {prompts.map((prompt, index) => {
           const commun = {
             prompt,
@@ -55,9 +59,9 @@ export function PromptGrid({
             <ImagePromptCard
               key={prompt.id}
               {...commun}
-              // Seul le premier visuel est prioritaire : au-dela, le
-              // chargement anticipe retarde ce qui est reellement a l'ecran.
-              priority={index === 0}
+              // Seules les deux premieres vignettes sont prioritaires : ce
+              // sont les seules certaines d'etre a l'ecran au chargement.
+              priority={index < 2}
             />
           ) : (
             <TextPromptCard key={prompt.id} {...commun} />

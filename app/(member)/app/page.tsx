@@ -100,7 +100,7 @@ export default async function DiscoverPage({
   suivante.set('page', String(lots + 1));
 
   return (
-    <div className="space-y-4 pt-1">
+    <div className="space-y-3 pt-1">
       {renvoye ? <PaywallAutoOpen /> : null}
 
       <DiscoveryConsole
