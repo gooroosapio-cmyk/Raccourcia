@@ -1,0 +1,77 @@
+[
+  {
+    "rule_id": "R01",
+    "thème": "Navigation",
+    "règle_à_implémenter": "L’interface publique expose deux domaines: IMAGE et TEXTE, puis une seule liste de familles."
+  },
+  {
+    "rule_id": "R02",
+    "thème": "Commande",
+    "règle_à_implémenter": "command est globalement unique, en minuscules, et respecte ^/[a-z][a-z0-9_]{2,31}$."
+  },
+  {
+    "rule_id": "R03",
+    "thème": "Copie",
+    "règle_à_implémenter": "Le bouton affiche le raccourci mais copie payload_copy en entier; journaliser prompt_id, version et fournisseur."
+  },
+  {
+    "rule_id": "R04",
+    "thème": "Contexte",
+    "règle_à_implémenter": "Le modèle lit message, conversation et pièces jointes avant de poser une question."
+  },
+  {
+    "rule_id": "R05",
+    "thème": "QCM",
+    "règle_à_implémenter": "Poser 1 à 3 questions maximum, en un seul message, uniquement pour les variables réellement bloquantes."
+  },
+  {
+    "rule_id": "R06",
+    "thème": "Images",
+    "règle_à_implémenter": "Un prompt IMAGE a output_type=image et demande explicitement une génération d’image finale."
+  },
+  {
+    "rule_id": "R07",
+    "thème": "Capacité absente",
+    "règle_à_implémenter": "Ne jamais prétendre avoir généré un média; afficher une indisponibilité courte si le fournisseur ne le permet pas."
+  },
+  {
+    "rule_id": "R08",
+    "thème": "Médias",
+    "règle_à_implémenter": "Chaque prompt possède un object_path dédié et un fallback famille; les deux sont remplaçables depuis l’administration."
+  },
+  {
+    "rule_id": "R09",
+    "thème": "Accès",
+    "règle_à_implémenter": "Seed initial: 16 prompts free sur 320; l’administration peut basculer chaque prompt entre free et premium."
+  },
+  {
+    "rule_id": "R10",
+    "thème": "Publication",
+    "règle_à_implémenter": "Publier seulement si commande unique, payload complet, famille active, média/fallback disponible et tests passés."
+  },
+  {
+    "rule_id": "R11",
+    "thème": "Finance",
+    "règle_à_implémenter": "Aucun chiffre inventé; devise, période, juridiction et sources explicites; validation qualifiée pour décisions sensibles."
+  },
+  {
+    "rule_id": "R12",
+    "thème": "Versioning",
+    "règle_à_implémenter": "Conserver l’ID stable; créer une ligne prompt_versions à chaque changement de comportement."
+  },
+  {
+    "rule_id": "R13",
+    "thème": "Sécurité",
+    "règle_à_implémenter": "RLS côté base; service_role uniquement serveur; aucune clé secrète dans le client ou le catalogue."
+  },
+  {
+    "rule_id": "R14",
+    "thème": "Vie privée",
+    "règle_à_implémenter": "Ne jamais enregistrer les pièces jointes ou le contenu copié dans copy_events sans consentement explicite."
+  },
+  {
+    "rule_id": "R15",
+    "thème": "Suppression",
+    "règle_à_implémenter": "Archiver un prompt au lieu de réutiliser son ID ou sa commande; prévoir redirection si commande renommée."
+  }
+]

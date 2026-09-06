@@ -19,32 +19,36 @@ begin
     return;
   end if;
 
-  perform tests_assert(v_prompts = 250,
-    format('250 raccourcis attendus, %s importes.', v_prompts));
+  -- Le catalogue V2 ajoute 70 commandes aux 250 historiques : le seuil est
+  -- donc un minimum, pas une egalite. Le compte exact de la V2 est verifie
+  -- par 13_catalogue_v2.sql, sur les seules lignes qu'elle porte.
+  perform tests_assert(v_prompts >= 250,
+    format('au moins 250 raccourcis attendus, %s importes.', v_prompts));
 
   select count(*) into v_image from public.prompts where external_ref like 'RCI-%' and mode = 'image';
   select count(*) into v_texte from public.prompts where external_ref like 'RCI-%' and mode = 'texte';
   select count(*) into v_analyse from public.prompts where external_ref like 'RCI-%' and mode = 'analyse';
-  perform tests_assert(v_image = 110, format('110 raccourcis image attendus, %s.', v_image));
-  perform tests_assert(v_texte = 140, format('140 raccourcis texte attendus, %s.', v_texte));
+  -- La repartition par domaine est celle du catalogue en vigueur : la V2
+  -- reclasse une partie des raccourcis, 13_catalogue_v2.sql en verifie le
+  -- compte exact. Ici on ne controle plus que la coherence : rien ne se perd
+  -- entre les deux domaines.
+  perform tests_assert(v_image + v_texte = v_prompts,
+    format('%s raccourcis hors des deux domaines.', v_prompts - v_image - v_texte));
+  perform tests_assert(v_image > 0 and v_texte > 0,
+    'Un domaine est vide : la navigation n en exposerait plus qu un.');
   -- Regle R01/R03 : la navigation n'expose que deux domaines, les anciens
   -- raccourcis ANALYSER sont reclasses dans TEXTE.
   perform tests_assert(v_analyse = 0,
     format('Le mode analyse ne doit plus porter aucun raccourci, %s trouves.', v_analyse));
 
-  -- Regle R02 : taxonomie finale a 10 categories et 20 sous-categories.
-  -- Le slug d'une categorie v2 commence par son mode : cela distingue la
-  -- taxonomie importee des categories creees par les jeux de test.
+  -- La taxonomie du catalogue en vigueur est plate : treize categories, sans
+  -- sous-categorie. Un deuxieme niveau obligeait a deux gestes pour atteindre
+  -- une commande, sur un ecran ou l'on n'en a qu'un. Son compte exact est
+  -- verifie par 13_catalogue_v2.sql.
   select count(*) into v_parents
   from public.categories
-  where parent_id is null and status = 'published'
-    and (slug like 'image-%' or slug like 'texte-%');
-  select count(*) into v_children
-  from public.categories
-  where parent_id is not null and status = 'published'
-    and (slug like 'image-%' or slug like 'texte-%');
-  perform tests_assert(v_parents = 10, format('10 categories attendues, %s.', v_parents));
-  perform tests_assert(v_children = 20, format('20 sous-categories attendues, %s.', v_children));
+  where parent_id is null and status = 'published' and external_ref is not null;
+  perform tests_assert(v_parents > 0, 'Aucune categorie du catalogue en vigueur.');
 
   -- La hierarchie reste a deux niveaux : aucune categorie petite-fille.
   select count(*) into v_depth
@@ -53,13 +57,14 @@ begin
   where p.parent_id is not null;
   perform tests_assert(v_depth = 0, 'La hierarchie depasse deux niveaux.');
 
-  -- Chaque raccourci appartient a une sous-categorie (Regle R02).
+  -- Chaque raccourci est range dans une categorie : sans elle, il n'apparait
+  -- dans aucune puce et devient introuvable autrement que par la recherche.
   select count(*) into v_uncategorised
   from public.prompts p
   left join public.categories c on c.id = p.category_id
-  where p.external_ref like 'RCI-%' and (c.id is null or c.parent_id is null);
+  where p.external_ref like 'RCI-%' and c.id is null;
   perform tests_assert(v_uncategorised = 0,
-    format('%s raccourcis ne sont pas ranges dans une sous-categorie.', v_uncategorised));
+    format('%s raccourcis sans categorie.', v_uncategorised));
 
   -- Chaque raccourci doit avoir au moins une version courante publiee,
   -- sinon il serait visible mais impossible a copier.
@@ -90,13 +95,24 @@ begin
 
   -- Le plafond annonce au modele ne doit jamais depasser le nombre reel de
   -- questions disponibles : sinon le prompt promet une question qui n'existe pas.
+  --
+  -- Les questions ont deux domiciles : `prompt_versions.qcm`, ou elles etaient
+  -- figees avec un payload, et la table `prompt_questions`, ou le catalogue V2
+  -- les a sorties pour que l'administration puisse les modifier sans creer une
+  -- version. On compte le plus garni des deux.
   perform tests_assert(
     not exists (
       select 1 from public.prompts p
-      join public.prompt_variants v on v.prompt_id = p.id
-      join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
       where p.external_ref like 'RCI-%'
-        and p.max_questions > jsonb_array_length(pv.qcm)
+        and p.max_questions > greatest(
+          (select count(*) from public.prompt_questions q where q.prompt_id = p.id),
+          coalesce((
+            select max(jsonb_array_length(pv.qcm))
+            from public.prompt_variants v
+            join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
+            where v.prompt_id = p.id
+          ), 0)
+        )
     ),
     'Un raccourci annonce plus de questions qu''il n''en porte.');
 end;

@@ -119,6 +119,24 @@ if [[ -f "$ROOT/supabase/seed/catalogue.sql" ]]; then
   if node "$ROOT/tests/db/verify-fidelity.mjs" /tmp/pgdump.json; then :; else exit 1; fi
 fi
 
+if compgen -G "$ROOT/supabase/seed/v3/*.sql" > /dev/null; then
+  # Catalogue V2 : lots numerotes, appliques deux fois pour verifier
+  # l'idempotence. Chaque lot porte son propre controle de completude — c'est
+  # l'absence de ce controle qui avait laisse 99 raccourcis en arriere lors de
+  # l'import precedent.
+  echo "==> Catalogue V2 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/v3/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) || ' raccourcis, ' ||
+           (select count(*) from public.categories where external_ref is not null) || ' categories, ' ||
+           (select count(*) from public.prompt_questions) || ' questions'
+    from public.prompts where catalog_version = 'v2.1';"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do
