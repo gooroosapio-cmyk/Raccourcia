@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getAccessState } from '@/lib/access/entitlement';
-import { getProfile, listSessions } from '@/lib/auth/session';
+import { getProfile, isAdmin, listSessions } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/server';
 import { CONFIG_FALLBACKS, CONFIG_KEYS } from '@/lib/constants';
 import { DeviceList } from '@/app/(member)/compte/device-list';
@@ -10,10 +10,11 @@ import { LegalFooter } from '@/components/navigation/legal-footer';
 export const metadata = { title: 'Compte' };
 
 export default async function AccountPage() {
-  const [profile, access, sessions] = await Promise.all([
+  const [profile, access, sessions, administrateur] = await Promise.all([
     getProfile(),
     getAccessState(),
     listSessions(),
+    isAdmin(),
   ]);
 
   // La limite d'appareils est une valeur de configuration, pas une constante
@@ -85,6 +86,41 @@ export default async function AccountPage() {
           </p>
         ) : null}
       </section>
+
+      {/*
+        Seule entree vers le back-office depuis l'application. Elle n'apparait
+        que pour un administrateur : la barre basse reste identique pour tout
+        le monde, et personne ne decouvre l'existence de /admin en la lisant.
+
+        Ce lien n'est pas la securite : `requireAdmin` puis les fonctions
+        SECURITY DEFINER refusent un appelant sans role, quel que soit le
+        chemin emprunte.
+      */}
+      {administrateur ? (
+        <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
+          <h2 className="text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">
+            Administration
+          </h2>
+          <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+            Catalogue, categories, membres, statistiques et parametres.
+          </p>
+          <Link
+            href="/admin"
+            className="mt-3 inline-flex h-12 items-center justify-center gap-2 rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] px-4 text-[15px] font-semibold text-[color:var(--color-night)]"
+          >
+            Ouvrir le tableau de bord
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M5 12h13m0 0-5-5m5 5-5 5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
+        </section>
+      ) : null}
 
       <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
         <h2 className="text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">
