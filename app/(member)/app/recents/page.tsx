@@ -9,11 +9,11 @@ import { isCatalogUnavailable } from '@/lib/catalog/errors';
 export const metadata = { title: 'Récents' };
 
 export default async function RecentsPage() {
-  let hasLifetimeAccess: boolean;
+  let hasFullAccess: boolean;
   let recents: Awaited<ReturnType<typeof getRecents>>;
 
   try {
-    [{ hasLifetimeAccess }, recents] = await Promise.all([getAccessState(), getRecents()]);
+    [{ hasFullAccess }, recents] = await Promise.all([getAccessState(), getRecents()]);
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -29,14 +29,14 @@ export default async function RecentsPage() {
   // Espace reserve : un visiteur sans acces a vie y trouverait une page vide,
   // ses favoris et son historique n'ayant de sens qu'une fois qu'il peut
   // copier. On le ramene au catalogue en ouvrant la fenetre d'offre.
-  if (!hasLifetimeAccess) redirect('/app?offre=1');
+  if (!hasFullAccess) redirect('/app?offre=1');
 
   return (
     <div className="space-y-4 pt-1">
       <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Récents</h1>
       <PromptGrid
         prompts={recents}
-        locked={!hasLifetimeAccess}
+        locked={!hasFullAccess}
         emptyState={
           <EmptyState
             title="Rien de récent."

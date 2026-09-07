@@ -21,13 +21,13 @@ export default async function SignInPage({
 
       <div className="mt-6 space-y-2 text-[14px]">
         <p className="text-[color:var(--color-muted)]">
-          Vous venez d acheter ?{' '}
+          Vous venez d’acheter ?{' '}
           <Link href="/activation" className="font-medium text-[color:var(--color-brand)]">
             Activer mon accès
           </Link>
         </p>
         <p className="text-[color:var(--color-muted)]">
-          Mot de passe oublie ?{' '}
+          Mot de passe oublié ?{' '}
           <Link href="/recuperation" className="font-medium text-[color:var(--color-brand)]">
             Récupérer avec ma licence
           </Link>

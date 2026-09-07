@@ -66,7 +66,7 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
 
   if (!prompt) notFound();
 
-  const { hasLifetimeAccess } = await getAccessState();
+  const { hasFullAccess } = await getAccessState();
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
 
   return (
@@ -128,7 +128,7 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
       ) : null}
 
       <section className="mt-8 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
-        {hasLifetimeAccess ? (
+        {hasFullAccess ? (
           <>
             <p className="text-[15px] font-semibold text-[color:var(--color-night)]">
               Votre accès est actif.

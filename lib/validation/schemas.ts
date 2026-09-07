@@ -53,12 +53,23 @@ export const signInInput = z.object({
 /**
  * Activation ou recuperation : licence ET email de vente exiges ensemble,
  * puis definition du mot de passe (Doc Technique V1, 8.2).
+ *
+ * La confirmation est verifiee ici, cote serveur, et pas seulement dans le
+ * formulaire : un mot de passe saisi de travers enfermerait dehors quelqu'un
+ * qui vient de payer, et la seule sortie serait la recuperation — celle-la
+ * meme qui redemande ce mot de passe.
  */
-export const claimAccessInput = z.object({
-  email: z.string().email().max(255),
-  license: z.string().trim().min(6).max(120),
-  password: z.string().min(8).max(200),
-});
+export const claimAccessInput = z
+  .object({
+    email: z.string().email().max(255),
+    license: z.string().trim().min(6).max(120),
+    password: z.string().min(8).max(200),
+    passwordConfirm: z.string().min(8).max(200),
+  })
+  .refine((valeurs) => valeurs.password === valeurs.passwordConfirm, {
+    path: ['passwordConfirm'],
+    message: 'Les deux mots de passe doivent être identiques.',
+  });
 
 export const revokeSessionInput = z.object({
   sessionId: z.string().uuid(),

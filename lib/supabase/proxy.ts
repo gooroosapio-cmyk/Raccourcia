@@ -15,6 +15,16 @@ import { publicEnv } from '@/lib/env';
  */
 const ESPACES_RESERVES = ['/app/favoris', '/app/recents'];
 
+/**
+ * Seul espace ferme aux visiteurs.
+ *
+ * La bibliotheque et la page Compte s'ouvrent sans compte : c'est la vitrine,
+ * et un visiteur doit pouvoir voir ce qu'il achete avant d'ouvrir un compte.
+ * Ce qui se paie n'est pas la vue des cartes mais le contenu des commandes, et
+ * celui-ci ne sort que par `resolve_prompt`, apres ses six controles.
+ */
+const ESPACE_ADMIN = '/admin';
+
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -39,20 +49,36 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
+  /**
+   * Renvoi qui conserve les cookies rafraichis.
+   *
+   * `getUser()` ci-dessous peut renouveler la session : Supabase fait alors
+   * tourner le jeton de rafraichissement et ecrit le nouveau couple sur
+   * `response`. Repondre par une redirection neuve laissait ces cookies au
+   * sol : le navigateur gardait l'ancien jeton, deja consomme, et la session
+   * mourait au chargement suivant — le membre devait retaper son mot de passe
+   * alors qu'il ne s'etait jamais deconnecte.
+   */
+  const renvoyer = (url: URL) => {
+    const redirection = NextResponse.redirect(url);
+    for (const cookie of response.cookies.getAll()) {
+      redirection.cookies.set(cookie);
+    }
+    return redirection;
+  };
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isProtected =
-    pathname.startsWith('/app') || pathname.startsWith('/admin') || pathname.startsWith('/compte');
 
-  if (!user && isProtected) {
+  if (!user && pathname.startsWith(ESPACE_ADMIN)) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = '/connexion';
     // Ne jamais perdre l'intention de depart (Spec UX/UI, section 17).
     loginUrl.searchParams.set('suite', pathname);
-    return NextResponse.redirect(loginUrl);
+    return renvoyer(loginUrl);
   }
 
   // Espaces reserves : favoris et historique n'ont de sens qu'une fois qu'on
@@ -68,15 +94,29 @@ export async function updateSession(request: NextRequest) {
   //
   // Les pages gardent leur propre renvoi : si le filtre de ce proxy change,
   // elles restent correctes.
-  if (user && ESPACES_RESERVES.some((route) => pathname === route)) {
-    const { data } = await supabase.rpc('has_active_entitlement');
+  if (ESPACES_RESERVES.some((route) => pathname === route)) {
+    // Un visiteur n'a ni favoris ni historique : inutile d'interroger la base
+    // pour savoir ce que l'absence de compte dit deja.
+    //
+    // Le role d'administration ouvre aussi ces pages. Un compte de l'equipe
+    // n'a pas d'entitlement — il n'a rien achete — et se faisait donc renvoyer
+    // au catalogue, fenetre d'offre ouverte, sur ses propres favoris.
+    let autorise = false;
+    if (user) {
+      const { data } = await supabase.rpc('has_active_entitlement');
+      autorise = data === true;
+      if (!autorise) {
+        const { data: administrateur } = await supabase.rpc('is_admin');
+        autorise = administrateur === true;
+      }
+    }
 
-    if (data !== true) {
+    if (!autorise) {
       const catalogue = request.nextUrl.clone();
       catalogue.pathname = '/app';
       catalogue.search = '';
       catalogue.searchParams.set('offre', '1');
-      return NextResponse.redirect(catalogue);
+      return renvoyer(catalogue);
     }
   }
 

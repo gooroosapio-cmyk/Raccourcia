@@ -14,22 +14,28 @@ import Image from 'next/image';
 export function ResultThumbnail({
   url,
   alt,
-  command,
+  libelle,
   priority = false,
 }: {
   url: string | null;
   alt: string | null;
-  command: string;
+  /**
+   * Ce que la vignette montre, pour l'annonce vocale. La carte y met la
+   * commande quand elle l'affiche, et sa description quand elle la masque :
+   * un texte de remplacement qui nommerait la commande la rendrait lisible a
+   * qui ne doit pas encore la lire.
+   */
+  libelle: string;
   /** Vrai pour les premieres vignettes seulement. */
   priority?: boolean;
 }) {
-  if (!url) return <ThumbnailPlaceholder command={command} />;
+  if (!url) return <ThumbnailPlaceholder libelle={libelle} />;
 
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden bg-[color:var(--color-canvas)]">
       <Image
         src={url}
-        alt={alt ?? `Résultat obtenu avec ${command}`}
+        alt={alt ?? `Résultat obtenu avec ${libelle}`}
         fill
         // Deux colonnes sur mobile, trois sur tablette, quatre au-dela : on
         // ne telecharge jamais une image de pleine largeur pour une demi-carte.
@@ -48,7 +54,7 @@ export function ResultThumbnail({
  * On n'y met jamais l'image Avant : elle annoncerait une transformation que
  * la carte ne montre pas. Le cadre dit simplement que le visuel viendra.
  */
-export function ThumbnailPlaceholder({ command }: { command: string }) {
+export function ThumbnailPlaceholder({ libelle }: { libelle: string }) {
   return (
     <div className="relative flex aspect-[4/3] w-full flex-col items-center justify-center gap-1.5 overflow-hidden bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-2">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -75,7 +81,7 @@ export function ThumbnailPlaceholder({ command }: { command: string }) {
       <span className="text-[var(--texte-meta)] font-medium text-[color:var(--color-brand)]/75">
         Visuel à venir
       </span>
-      <span className="sr-only">{command}</span>
+      <span className="sr-only">{libelle}</span>
     </div>
   );
 }

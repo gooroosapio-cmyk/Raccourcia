@@ -12,27 +12,41 @@ import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
  *
  * Les deux familles cohabitent dans une seule grille : une carte plus courte
  * pour le texte creerait des trous en quinconce a chaque changement de mode.
- * La zone haute est donc typographique — un extrait du resultat attendu, pose
- * sur une trame legere — et jamais une photographie d'illustration, qui
- * promettrait une image que la commande ne produit pas.
+ *
+ * La zone haute — celle que la carte image donne au visuel — porte ici les
+ * cas d'usage, en toutes lettres. Elle montrait jusqu'ici quatre traits bleus
+ * imitant des lignes de texte : un decor qui occupait la meilleure place de
+ * la carte sans rien apprendre, la ou trois usages concrets disent a qui
+ * regarde si la commande est pour lui. Et jamais une photographie
+ * d'illustration, qui promettrait une image que la commande ne produit pas.
  */
 export function TextPromptCard({
   prompt,
   provider,
   locked,
   free,
+  masque = false,
+  visiteur = false,
   onOpen,
 }: {
   prompt: PromptCardData;
   provider: string;
   locked: boolean;
   free: boolean;
+  /**
+   * Vrai pour un visiteur devant une commande verrouillee : le nom de la
+   * commande disparait, seule sa description reste.
+   */
+  masque?: boolean;
+  /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
+  visiteur?: boolean;
   onOpen: (prompt: PromptCardData) => void;
 }) {
   const { open: ouvrirOffre } = usePaywall();
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
-  const exemple = prompt.useCases[0];
+  const description = prompt.shortDescription || prompt.resultSummary;
+  const usages = prompt.useCases.slice(0, 3);
 
   return (
     <article className="anim-apparition relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
@@ -41,30 +55,47 @@ export function TextPromptCard({
         onClick={() => onOpen(prompt)}
         className="flex flex-1 flex-col text-left"
       >
-        <span className="relative flex aspect-[4/3] w-full flex-col justify-center gap-1.5 overflow-hidden bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-2.5">
-          <span aria-hidden="true" className="flex flex-col gap-1">
-            <span className="block h-[3px] w-10 rounded-full bg-[color:var(--color-brand)]/35" />
-            <span className="block h-[3px] w-full rounded-full bg-[color:var(--color-brand)]/18" />
-            <span className="block h-[3px] w-4/5 rounded-full bg-[color:var(--color-brand)]/18" />
-            <span className="block h-[3px] w-11/12 rounded-full bg-[color:var(--color-brand)]/18" />
-          </span>
-
-          {exemple ? (
-            <span className="line-clamp-2 text-[length:var(--texte-meta)] italic leading-[1.35] text-[color:var(--color-muted)]">
-              {exemple}
+        <span className="relative flex aspect-[4/3] w-full flex-col justify-center gap-1 overflow-hidden bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-2.5 py-2">
+          {usages.length > 0 ? (
+            <>
+              <span className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/70">
+                Cas d’usage
+              </span>
+              {usages.map((usage) => (
+                <span
+                  key={usage}
+                  className="flex items-start gap-1 text-[length:var(--texte-meta)] leading-[1.3] text-[color:var(--color-night)]/80"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.45em] block h-1 w-1 shrink-0 rounded-full bg-[color:var(--color-brand)]/50"
+                  />
+                  <span className="line-clamp-1">{usage}</span>
+                </span>
+              ))}
+            </>
+          ) : (
+            <span className="line-clamp-3 text-[length:var(--texte-meta)] italic leading-[1.35] text-[color:var(--color-muted)]">
+              {description}
             </span>
-          ) : null}
+          )}
         </span>
 
         <span className="flex flex-1 flex-col gap-1 px-2.5 pb-2 pt-2">
-          <span className="commande truncate text-[length:var(--texte-commande-carte)] font-bold text-[color:var(--color-brand)]">
-            {prompt.command}
-          </span>
+          {masque ? null : (
+            <span className="commande truncate text-[length:var(--texte-commande-carte)] font-bold text-[color:var(--color-brand)]">
+              {prompt.command}
+            </span>
+          )}
 
           {/* Ce que fait ce raccourci, pas le format qu'il produit :
               `result_summary` se repete a l'identique sur toute une famille. */}
-          <span className="line-clamp-2 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)]">
-            {prompt.shortDescription || prompt.resultSummary}
+          <span
+            className={`text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)] ${
+              masque ? 'line-clamp-3' : 'line-clamp-2'
+            }`}
+          >
+            {description}
           </span>
 
           {compatibles.length > 0 ? (
@@ -82,7 +113,12 @@ export function TextPromptCard({
       </span>
 
       <div className="absolute right-0.5 top-0.5">
-        <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} sur />
+        <FavoriteButton
+          promptId={prompt.id}
+          initial={prompt.isFavorite}
+          disabled={locked || visiteur}
+          sur
+        />
       </div>
 
       <div className="border-t border-[color:var(--color-line)] p-2">

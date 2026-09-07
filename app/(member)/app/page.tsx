@@ -50,12 +50,12 @@ export default async function DiscoverPage({
   const lots = Math.min(query.page, CATALOG_MAX_LOTS);
   const requete = { ...query, page: 1, pageSize: CATALOG_PAGE_SIZE * lots };
 
-  let hasLifetimeAccess: boolean;
+  let acces: Awaited<ReturnType<typeof getAccessState>>;
   let categories: Awaited<ReturnType<typeof getCategories>>;
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
 
   try {
-    [{ hasLifetimeAccess }, categories, page] = await Promise.all([
+    [acces, categories, page] = await Promise.all([
       getAccessState(),
       getCategories(mode),
       getCatalogPage(requete),
@@ -86,7 +86,7 @@ export default async function DiscoverPage({
   // parametre, c'est donc lui qui decide d'ouvrir la fenetre. Le composant
   // client n'a plus a lire l'URL, et la coquille evite une frontiere
   // Suspense qui affaiblirait la garde des pages reservees.
-  const renvoye = lire('offre') === '1' && !hasLifetimeAccess;
+  const renvoye = lire('offre') === '1' && !acces.hasFullAccess;
 
   // Le lot suivant reprend les filtres en cours : « Voir plus » ne doit jamais
   // reouvrir un catalogue different de celui qu'on regarde.
@@ -115,7 +115,8 @@ export default async function DiscoverPage({
 
       <PromptGrid
         prompts={page.items}
-        locked={!hasLifetimeAccess}
+        locked={!acces.hasFullAccess}
+        visiteur={!acces.isMember}
         emptyState={
           filtre ? (
             <EmptyState

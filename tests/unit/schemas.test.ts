@@ -37,9 +37,31 @@ describe('catalogQuery', () => {
 });
 
 describe('claimAccessInput', () => {
+  const valide = {
+    email: 'a@b.fr',
+    license: 'ABC-123456',
+    password: 'motdepasse1',
+    passwordConfirm: 'motdepasse1',
+  };
+
   it('exige la licence et l email ensemble', () => {
     expect(() => claimAccessInput.parse({ email: 'a@b.fr' })).toThrow();
     expect(() => claimAccessInput.parse({ license: 'ABC-123456' })).toThrow();
+  });
+
+  it('accepte une saisie complete et concordante', () => {
+    expect(claimAccessInput.parse(valide).email).toBe('a@b.fr');
+  });
+
+  // La confirmation est verifiee au serveur et pas seulement au formulaire :
+  // un mot de passe mal tape enfermerait dehors quelqu'un qui vient de payer.
+  it('refuse deux mots de passe differents', () => {
+    expect(() => claimAccessInput.parse({ ...valide, passwordConfirm: 'motdepasse2' })).toThrow();
+  });
+
+  it('refuse une confirmation absente', () => {
+    const { passwordConfirm: _ignore, ...sansConfirmation } = valide;
+    expect(() => claimAccessInput.parse(sansConfirmation)).toThrow();
   });
 });
 

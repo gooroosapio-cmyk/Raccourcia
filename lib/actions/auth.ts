@@ -25,11 +25,32 @@ async function requestFingerprint(): Promise<{ ipHash: string; userAgent: string
   return { ipHash: await hashIp(ip), userAgent: headerList.get('user-agent') };
 }
 
-async function logSecurityEvent(eventType: string, ipHash: string, meta?: Json) {
+async function logSecurityEvent(
+  eventType: string,
+  ipHash: string,
+  meta?: Json,
+  userId?: string | null,
+) {
   const supabase = createAdminClient();
-  await supabase
-    .from('security_events')
-    .insert({ event_type: eventType, ip_hash: ipHash, meta: meta ?? null });
+  await supabase.from('security_events').insert({
+    event_type: eventType,
+    ip_hash: ipHash,
+    meta: meta ?? null,
+    user_id: userId ?? null,
+  });
+}
+
+/**
+ * Erreur d'un formulaire licence + mot de passe.
+ *
+ * La confirmation qui ne correspond pas est nommee pour elle-meme : dire
+ * "verifiez vos informations" quand seules les deux saisies different fait
+ * relire l'email et la licence, qui eux etaient bons.
+ */
+function messageSaisieLicence(issues: { path: PropertyKey[] }[]): string {
+  const confirmation = issues.some((issue) => issue.path[0] === 'passwordConfirm');
+  if (confirmation) return 'Les deux mots de passe ne sont pas identiques.';
+  return 'Vérifiez les informations saisies. Le mot de passe fait 8 caractères minimum.';
 }
 
 export async function signIn(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -49,7 +70,7 @@ export async function signIn(_prev: ActionState, formData: FormData): Promise<Ac
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: parsed.data.email,
     password: parsed.data.password,
   });
@@ -59,6 +80,11 @@ export async function signIn(_prev: ActionState, formData: FormData): Promise<Ac
     // Ne jamais indiquer laquelle des deux informations est fausse.
     return { error: 'Email ou mot de passe incorrect.' };
   }
+
+  // Les connexions reussies se journalisent aussi. Sans elles, le journal ne
+  // contient que des echecs : impossible de distinguer un compte attaque d'un
+  // compte qui se reconnecte sans arret parce que sa session ne tient pas.
+  await logSecurityEvent('connexion_reussie', ipHash, null, data.user?.id ?? null);
 
   await registerCurrentSession(deviceLabelFromUserAgent(userAgent));
 
@@ -78,11 +104,10 @@ export async function claimAccess(_prev: ActionState, formData: FormData): Promi
     email: formData.get('email'),
     license: formData.get('license'),
     password: formData.get('password'),
+    passwordConfirm: formData.get('passwordConfirm'),
   });
   if (!parsed.success) {
-    return {
-      error: 'Vérifiez les informations saisies. Le mot de passe fait 8 caractères minimum.',
-    };
+    return { error: messageSaisieLicence(parsed.error.issues) };
   }
 
   const { ipHash, userAgent } = await requestFingerprint();
@@ -194,9 +219,10 @@ export async function recoverAccess(_prev: ActionState, formData: FormData): Pro
     email: formData.get('email'),
     license: formData.get('license'),
     password: formData.get('password'),
+    passwordConfirm: formData.get('passwordConfirm'),
   });
   if (!parsed.success) {
-    return { error: 'Vérifiez les informations saisies.' };
+    return { error: messageSaisieLicence(parsed.error.issues) };
   }
 
   const { ipHash, userAgent } = await requestFingerprint();
@@ -236,9 +262,21 @@ export async function recoverAccess(_prev: ActionState, formData: FormData): Pro
   redirect('/app');
 }
 
+/**
+ * Deconnexion de l'appareil courant, et de lui seul.
+ *
+ * Supabase deconnecte par defaut toutes les sessions du compte : partir du
+ * telephone fermait aussi l'ordinateur du bureau, qui redemandait alors un
+ * mot de passe que personne n'avait songe a retenir. `local` ne ferme que la
+ * session d'ici — c'est ce que le bouton promet.
+ *
+ * La ligne d'appareil est refermee avant, tant que le jeton porte encore son
+ * `session_id` : apres la deconnexion, plus rien ne permet de la retrouver.
+ */
 export async function signOut(): Promise<never> {
   const supabase = await createClient();
-  await supabase.auth.signOut();
+  await supabase.rpc('revoke_current_app_session');
+  await supabase.auth.signOut({ scope: 'local' });
   redirect('/');
 }
 
