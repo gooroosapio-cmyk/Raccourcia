@@ -286,6 +286,47 @@ async function getFavoriteIds(): Promise<Set<string>> {
 export type CatalogPage = { items: PromptCard[]; hasMore: boolean };
 
 /**
+ * Retire le nom d'une commande verrouillee avant l'envoi au navigateur.
+ *
+ * Ne pas l'afficher ne suffit pas : la carte est un composant client, donc
+ * tout ce qu'elle recoit voyage dans la charge de la page et se lit dans le
+ * code source. Un visiteur y retrouvait `/luxmockup` sans meme cliquer.
+ *
+ * Le nom part donc du serveur, pas de la feuille de style. Le `slug` suit :
+ * il porte le meme mot, et menerait a la page publique de la commande.
+ *
+ * Un membre garde tout : il a paye, et la question ne se pose pas pour lui.
+ * Les commandes offertes aussi — ce sont elles qui demontrent le produit.
+ */
+function masquerCommande(card: PromptCard): PromptCard {
+  const commande = card.command.trim();
+  if (!commande) return card;
+
+  // Les textes du catalogue citent la commande dans leurs propres phrases
+  // (« /luxmockup sur une photo produit pour obtenir... »). Retirer le champ
+  // sans nettoyer les phrases laissait le nom lisible a deux lignes de la.
+  const motif = new RegExp(`${commande.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+  const nettoyer = (texte: string) => texte.replace(motif, 'la commande');
+  const nettoyerOuNull = (texte: string | null) => (texte === null ? null : nettoyer(texte));
+
+  return {
+    ...card,
+    command: '',
+    slug: '',
+    // Les etiquettes ne sont affichees nulle part et portent parfois le mot
+    // de la commande : elles n'ont aucune raison de voyager jusqu'ici.
+    tags: [],
+    shortDescription: nettoyer(card.shortDescription),
+    resultSummary: nettoyer(card.resultSummary),
+    useCases: card.useCases.map(nettoyer),
+    thumbnailAlt: nettoyerOuNull(card.thumbnailAlt),
+    intention: nettoyerOuNull(card.intention),
+    expectedInput: nettoyerOuNull(card.expectedInput),
+    limitations: nettoyerOuNull(card.limitations),
+  };
+}
+
+/**
  * Bibliotheque paginee. On ne renvoie jamais tout le catalogue d'un coup
  * (Blueprint Backend V1, 11.3).
  */
@@ -294,7 +335,8 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   const favorites = await getFavoriteIds();
   // Memoise par requete : l'appel ci-dessous ne coute rien de plus a la page,
   // qui interroge deja l'etat d'acces en parallele.
-  const { hasLifetimeAccess } = await getAccessState();
+  const { isMember, hasFullAccess } = await getAccessState();
+  const visiteur = !isMember;
 
   const pageSize = query.pageSize ?? CATALOG_PAGE_SIZE;
   const from = (query.page - 1) * pageSize;
@@ -345,7 +387,7 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   // Sans acces, les raccourcis gratuits passent devant, quel que soit le tri
   // choisi : ce sont les seuls que le visiteur peut reellement copier, il doit
   // donc les trouver sans les chercher. Le tri demande s'applique ensuite.
-  if (!hasLifetimeAccess) {
+  if (!hasFullAccess) {
     request = request.order('is_free', { ascending: false });
   }
 
@@ -363,10 +405,13 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
   const rows = (data ?? []) as unknown as CardRow[];
 
-  return {
-    items: rows.slice(0, pageSize).map((row) => toCard(row, favorites)),
-    hasMore: rows.length > pageSize,
-  };
+  const items = rows.slice(0, pageSize).map((row) => {
+    const card = toCard(row, favorites);
+    const verrouille = !hasFullAccess && !card.isFree;
+    return visiteur && verrouille ? masquerCommande(card) : card;
+  });
+
+  return { items, hasMore: rows.length > pageSize };
 }
 
 /** Fiche detaillee. Le prompt complet reste absent : il passe par resolve. */

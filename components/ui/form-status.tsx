@@ -51,6 +51,8 @@ export function Field({
   placeholder,
   hint,
   required = true,
+  value,
+  onChange,
 }: {
   label: string;
   name: string;
@@ -59,7 +61,17 @@ export function Field({
   placeholder?: string;
   hint?: string;
   required?: boolean;
+  /**
+   * Le champ ne devient controle que si le formulaire suit sa valeur — pour
+   * afficher une suite d'ecran, par exemple. Sans ces deux proprietes il
+   * reste un champ HTML ordinaire, et le navigateur garde la main sur la
+   * saisie comme sur le remplissage automatique.
+   */
+  value?: string;
+  onChange?: (valeur: string) => void;
 }) {
+  const controle = value !== undefined && onChange !== undefined;
+
   return (
     <label className="block">
       <span className="text-[13px] font-medium text-[color:var(--color-night)]">{label}</span>
@@ -69,6 +81,7 @@ export function Field({
         required={required}
         autoComplete={autoComplete}
         placeholder={placeholder}
+        {...(controle ? { value, onChange: (e) => onChange(e.target.value) } : {})}
         className="mt-1 h-13 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3.5 text-[16px] outline-none transition-[border-color,box-shadow] duration-[var(--duration-fast)] focus:border-[color:var(--color-brand)] focus:shadow-[0_0_0_3px_var(--color-brand-soft)]"
       />
       {hint ? (

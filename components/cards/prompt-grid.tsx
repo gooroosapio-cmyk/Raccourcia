@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { ImagePromptCard } from '@/components/cards/image-prompt-card';
 import { TextPromptCard } from '@/components/cards/text-prompt-card';
 import { PromptDetailSheet } from '@/components/detail/prompt-detail';
+import { openPaywall } from '@/components/paywall/paywall-provider';
 import { trackPromptView } from '@/lib/actions/catalog';
 import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
@@ -25,21 +26,41 @@ import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 export function PromptGrid({
   prompts,
   locked,
+  visiteur = false,
   emptyState,
   initialProvider = 'chatgpt',
 }: {
   prompts: PromptCardData[];
   locked: boolean;
+  /**
+   * Vrai quand personne n'est connecte.
+   *
+   * Un visiteur voit la bibliotheque mais n'ouvre pas la fiche d'une commande
+   * verrouillee : la fiche nomme la commande, et c'est ce nom qui se recopie
+   * dans ChatGPT. Toucher une carte verrouillee ouvre donc l'offre — la
+   * reponse a ce qu'il cherchait a faire. Les commandes offertes, elles,
+   * s'ouvrent normalement : ce sont les seules a demontrer quelque chose.
+   */
+  visiteur?: boolean;
   emptyState: React.ReactNode;
   initialProvider?: string;
 }) {
   const [selection, setSelection] = useState<PromptCardData | null>(null);
   const [provider, changeProvider] = usePreferredProvider(initialProvider);
 
-  const ouvrir = useCallback((prompt: PromptCardData) => {
-    setSelection(prompt);
-    void trackPromptView(prompt.id);
-  }, []);
+  const ouvrir = useCallback(
+    (prompt: PromptCardData) => {
+      if (visiteur && locked && !prompt.isFree) {
+        openPaywall();
+        return;
+      }
+      setSelection(prompt);
+      // Rien a journaliser pour un visiteur : l'historique appartient a un
+      // compte, et l'appel serait refuse.
+      if (!visiteur) void trackPromptView(prompt.id);
+    },
+    [locked, visiteur],
+  );
 
   if (prompts.length === 0) return <>{emptyState}</>;
 
@@ -47,11 +68,14 @@ export function PromptGrid({
     <>
       <div className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)] sm:grid-cols-3 lg:grid-cols-4">
         {prompts.map((prompt, index) => {
+          const verrouille = locked && !prompt.isFree;
           const commun = {
             prompt,
             provider,
-            locked: locked && !prompt.isFree,
+            locked: verrouille,
             free: locked && prompt.isFree,
+            masque: visiteur && verrouille,
+            visiteur,
             onOpen: ouvrir,
           };
 
@@ -76,6 +100,7 @@ export function PromptGrid({
           onProviderChange={changeProvider}
           locked={locked && !selection.isFree}
           free={locked && selection.isFree}
+          visiteur={visiteur}
           onClose={() => setSelection(null)}
         />
       ) : null}

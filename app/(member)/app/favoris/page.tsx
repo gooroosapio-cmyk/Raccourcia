@@ -9,11 +9,11 @@ import { isCatalogUnavailable } from '@/lib/catalog/errors';
 export const metadata = { title: 'Favoris' };
 
 export default async function FavoritesPage() {
-  let hasLifetimeAccess: boolean;
+  let hasFullAccess: boolean;
   let favorites: Awaited<ReturnType<typeof getFavorites>>;
 
   try {
-    [{ hasLifetimeAccess }, favorites] = await Promise.all([getAccessState(), getFavorites()]);
+    [{ hasFullAccess }, favorites] = await Promise.all([getAccessState(), getFavorites()]);
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -29,14 +29,14 @@ export default async function FavoritesPage() {
   // Espace reserve : un visiteur sans acces a vie y trouverait une page vide,
   // ses favoris et son historique n'ayant de sens qu'une fois qu'il peut
   // copier. On le ramene au catalogue en ouvrant la fenetre d'offre.
-  if (!hasLifetimeAccess) redirect('/app?offre=1');
+  if (!hasFullAccess) redirect('/app?offre=1');
 
   return (
     <div className="space-y-4 pt-1">
       <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Favoris</h1>
       <PromptGrid
         prompts={favorites}
-        locked={!hasLifetimeAccess}
+        locked={!hasFullAccess}
         emptyState={
           <EmptyState
             title="Aucun favori pour l’instant."

@@ -34,6 +34,8 @@ export function ImagePromptCard({
   provider,
   locked,
   free,
+  masque = false,
+  visiteur = false,
   priority,
   onOpen,
 }: {
@@ -41,12 +43,22 @@ export function ImagePromptCard({
   provider: string;
   locked: boolean;
   free: boolean;
+  /**
+   * Vrai pour un visiteur devant une commande verrouillee : le nom de la
+   * commande disparait, seule sa description reste. Le nom est ce qui se
+   * recopie dans ChatGPT — l'afficher a qui n'a pas encore d'acces revient a
+   * donner l'etiquette du produit et a garder la boite.
+   */
+  masque?: boolean;
+  /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
+  visiteur?: boolean;
   priority: boolean;
   onOpen: (prompt: PromptCardData) => void;
 }) {
   const { open: ouvrirOffre } = usePaywall();
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
+  const description = prompt.shortDescription || prompt.resultSummary;
 
   return (
     <article className="anim-apparition relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
@@ -60,8 +72,8 @@ export function ImagePromptCard({
           <span className={`block ${locked ? 'scale-[1.06] blur-[7px]' : ''}`}>
             <ResultThumbnail
               url={prompt.thumbnailUrl}
-              alt={prompt.thumbnailAlt}
-              command={prompt.command}
+              alt={masque ? description : prompt.thumbnailAlt}
+              libelle={masque ? description : prompt.command}
               priority={priority}
             />
           </span>
@@ -71,14 +83,22 @@ export function ImagePromptCard({
         </span>
 
         <span className="flex flex-1 flex-col gap-1 px-2.5 pb-2 pt-2">
-          <span className="commande truncate text-[length:var(--texte-commande-carte)] font-bold text-[color:var(--color-brand)]">
-            {prompt.command}
-          </span>
+          {masque ? null : (
+            <span className="commande truncate text-[length:var(--texte-commande-carte)] font-bold text-[color:var(--color-brand)]">
+              {prompt.command}
+            </span>
+          )}
 
           {/* Ce que fait ce raccourci, pas le format qu'il produit :
-              `result_summary` se repete a l'identique sur toute une famille. */}
-          <span className="line-clamp-2 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)]">
-            {prompt.shortDescription || prompt.resultSummary}
+              `result_summary` se repete a l'identique sur toute une famille.
+              Quand la commande est masquee, la description recupere sa ligne :
+              elle devient la seule chose a lire, elle a droit a la place. */}
+          <span
+            className={`text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)] ${
+              masque ? 'line-clamp-3' : 'line-clamp-2'
+            }`}
+          >
+            {description}
           </span>
 
           {compatibles.length > 0 ? (
@@ -96,7 +116,12 @@ export function ImagePromptCard({
       </span>
 
       <div className="absolute right-0.5 top-0.5">
-        <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} sur />
+        <FavoriteButton
+          promptId={prompt.id}
+          initial={prompt.isFavorite}
+          disabled={locked || visiteur}
+          sur
+        />
       </div>
 
       <div className="border-t border-[color:var(--color-line)] p-2">

@@ -128,7 +128,7 @@ export function DiscoveryConsole({
 function SearchField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <label className="relative min-w-0 flex-1">
-      <span className="sr-only">Rechercher une commande</span>
+      <span className="sr-only">Recherche une commande</span>
       <span
         aria-hidden="true"
         className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[color:var(--color-muted)]"
@@ -142,8 +142,13 @@ function SearchField({ value, onChange }: { value: string; onChange: (v: string)
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder="Rechercher une commande..."
-        className="h-[50px] w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] pl-11 pr-10 text-[15px] outline-none transition-[border-color,box-shadow] duration-[var(--duration-fast)] placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-brand)] focus:shadow-[0_0_0_3px_var(--color-brand-soft)]"
+        placeholder="Recherche une commande"
+        // La reserve de droite n'existe que lorsque la croix d'effacement est
+        // la, c'est-a-dire quand le champ est rempli : la garder a vide
+        // tronquait « Recherche une commande » sur un ecran de 360 px.
+        className={`h-[50px] w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] pl-11 text-[15px] outline-none transition-[border-color,box-shadow] duration-[var(--duration-fast)] placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-brand)] focus:shadow-[0_0_0_3px_var(--color-brand-soft)] ${
+          value ? 'pr-10' : 'pr-3'
+        }`}
       />
       {value ? (
         <button

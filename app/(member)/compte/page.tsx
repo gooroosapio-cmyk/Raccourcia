@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getAccessState } from '@/lib/access/entitlement';
-import { getProfile, isAdmin } from '@/lib/auth/session';
-import { SignOutButton } from '@/app/(member)/compte/sign-out-button';
+import { getProfile } from '@/lib/auth/session';
+import { ExitButton, SignOutButton } from '@/app/(member)/compte/sign-out-button';
 import { LegalFooter } from '@/components/navigation/legal-footer';
 
 export const metadata = { title: 'Compte' };
@@ -22,11 +22,8 @@ export const metadata = { title: 'Compte' };
  * sa presentation qui disparait, pas la regle.
  */
 export default async function AccountPage() {
-  const [profile, access, administrateur] = await Promise.all([
-    getProfile(),
-    getAccessState(),
-    isAdmin(),
-  ]);
+  const [profile, access] = await Promise.all([getProfile(), getAccessState()]);
+  const administrateur = access.isAdmin;
 
   return (
     <div className="space-y-4 pt-1">
@@ -34,7 +31,36 @@ export default async function AccountPage() {
         Compte
       </h1>
 
-      {access.hasLifetimeAccess ? (
+      {!access.isMember ? (
+        /*
+         * Visiteur : la page dit ou il en est — nulle part — et les deux
+         * seules portes d'entree. Rien d'autre ne le concerne : ni mot de
+         * passe a changer, ni acces a verifier.
+         */
+        <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
+          <p className="text-[length:var(--texte-corps)] font-semibold text-[color:var(--color-night)]">
+            Vous n’êtes pas connecté
+          </p>
+          <p className="mt-1 text-[length:var(--texte-carte)] leading-[1.45] text-[color:var(--color-muted)]">
+            Vous parcourez la bibliothèque en visiteur. Connectez-vous pour copier vos commandes, ou
+            activez l’accès que vous venez d’acheter.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link
+              href="/connexion"
+              className="inline-flex h-12 items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] px-4 text-[length:var(--texte-corps)] font-semibold text-white"
+            >
+              Se connecter
+            </Link>
+            <Link
+              href="/activation"
+              className="inline-flex h-12 items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] px-4 text-[length:var(--texte-corps)] font-medium text-[color:var(--color-night)]"
+            >
+              Activer mon accès
+            </Link>
+          </div>
+        </section>
+      ) : access.hasLifetimeAccess ? (
         <section className="flex items-center gap-3 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3.5 py-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-success-soft)] text-[color:var(--color-success)]">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -89,9 +115,13 @@ export default async function AccountPage() {
       )}
 
       <nav className="overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)]">
-        <LigneReglage href="/recuperation" icone={<CadenasIcone />}>
-          Modifier mon mot de passe
-        </LigneReglage>
+        {/* Changer un mot de passe suppose d'en avoir un : la ligne ne se
+            propose qu'a un compte. */}
+        {access.isMember ? (
+          <LigneReglage href="/recuperation" icone={<CadenasIcone />}>
+            Modifier mon mot de passe
+          </LigneReglage>
+        ) : null}
         <LigneReglage href="/legal/mentions" icone={<DocumentIcone />}>
           Mentions légales
         </LigneReglage>
@@ -120,9 +150,15 @@ export default async function AccountPage() {
         </nav>
       ) : null}
 
-      <SignOutButton />
+      {access.isMember ? <SignOutButton /> : <ExitButton />}
 
       <LegalFooter className="pt-2" />
+
+      {/* Signature de l'editeur, apres les mentions : elle ferme la page sans
+          entrer en concurrence avec les liens legaux, qui eux se cherchent. */}
+      <p className="pb-1 pt-1 text-center text-[length:var(--texte-meta)] text-[color:var(--color-muted)]">
+        Raccourcia, propulsé par Gooroo.
+      </p>
     </div>
   );
 }

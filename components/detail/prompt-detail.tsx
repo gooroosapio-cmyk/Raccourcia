@@ -30,6 +30,7 @@ export function PromptDetailSheet({
   onProviderChange,
   locked,
   free,
+  visiteur = false,
   onClose,
 }: {
   prompt: PromptCard;
@@ -37,6 +38,13 @@ export function PromptDetailSheet({
   onProviderChange: (provider: string) => void;
   locked: boolean;
   free: boolean;
+  /**
+   * Vrai quand personne n'est connecte. Un visiteur n'atteint cette fiche que
+   * sur une commande offerte : il peut la lire et la copier, mais ni la
+   * mettre en favori — il n'a pas de bibliotheque — ni partager un lien qui
+   * ne mene nulle part pour lui.
+   */
+  visiteur?: boolean;
   onClose: () => void;
 }) {
   const { open: ouvrirOffre } = usePaywall();
@@ -149,7 +157,11 @@ export function PromptDetailSheet({
             <SheetCloseButton ref={fermerRef} onClose={onClose} libelle="Fermer la fiche" />
 
             <div className="flex items-center">
-              <FavoriteButton promptId={prompt.id} initial={prompt.isFavorite} disabled={locked} />
+              <FavoriteButton
+                promptId={prompt.id}
+                initial={prompt.isFavorite}
+                disabled={locked || visiteur}
+              />
               <button
                 type="button"
                 onClick={partager}
@@ -199,6 +211,36 @@ export function PromptDetailSheet({
                 </div>
               </button>
             </div>
+          ) : prompt.useCases.length > 0 ? (
+            /*
+             * Commande texte : la place reservee au visuel porte les cas
+             * d'usage, ecrits.
+             *
+             * Une commande texte n'a pas d'avant/apres a montrer, et le decor
+             * qui occupait ce cadre — des traits imitant des lignes de texte —
+             * n'apprenait rien a personne. Trois usages concrets, eux,
+             * repondent a la seule question qu'on se pose en ouvrant une
+             * fiche : est-ce que c'est pour moi ?
+             */
+            <div className="rounded-[color:var(--radius-card)] bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-4 py-3.5">
+              <h3 className="text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/75">
+                Cas d’utilisation
+              </h3>
+              <ul className="mt-2 space-y-1.5">
+                {prompt.useCases.slice(0, 4).map((cas) => (
+                  <li
+                    key={cas}
+                    className="flex items-start gap-2 text-[length:var(--texte-corps)] leading-[1.45] text-[color:var(--color-night)]"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mt-[0.55em] block h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--color-brand)]/60"
+                    />
+                    <span>{cas}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) : null}
 
           <div className="mt-4 flex items-center justify-between gap-2">
@@ -219,7 +261,10 @@ export function PromptDetailSheet({
             {prompt.shortDescription || prompt.resultSummary}
           </p>
 
-          {prompt.useCases.length > 0 ? (
+          {/* Les commandes texte les montrent deja en haut de fiche, a la
+              place du visuel : les repeter ici ferait lire deux fois la meme
+              liste a trois lignes d'intervalle. */}
+          {prompt.showImageCard && prompt.useCases.length > 0 ? (
             <Section titre="Cas d’utilisation">
               <ul className="flex flex-wrap gap-1.5">
                 {prompt.useCases.slice(0, 4).map((cas) => (
