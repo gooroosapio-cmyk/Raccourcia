@@ -414,6 +414,140 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   return { items, hasMore: rows.length > pageSize };
 }
 
+/**
+ * Raccourcis mis en avant sur la page de vente.
+ *
+ * Choisis par commande et non par identifiant : republier une entree change
+ * son identifiant, jamais sa commande. Une commande absente du catalogue est
+ * simplement omise — la page de vente ne montre que ce qui existe vraiment.
+ *
+ * Le masquage de la bibliotheque s'applique ici aussi : un raccourci reserve
+ * ne livre pas son nom a qui n'a pas d'acces. Une page de vente n'est pas une
+ * exception a cette regle, c'est meme la ou elle compte le plus.
+ */
+/** Categorie telle que la page de vente la presente : un nom, un volume. */
+export type CategorieVitrine = { mode: Mode; nom: string; raccourcis: number };
+
+/**
+ * Categories publiees, avec le nombre de raccourcis de chacune.
+ *
+ * Lues et non recopiees. Une page de vente qui annonce ses rayons de memoire
+ * finit toujours par en promettre un que la bibliotheque n'a plus : ici, ce
+ * qui est affiche est exactement ce que le visiteur trouvera en entrant.
+ *
+ * Le comptage se fait sur les identifiants seuls — trois cents lignes de deux
+ * colonnes — plutot qu'en interrogeant la base une fois par categorie.
+ */
+export async function getCategoriesVitrine(): Promise<CategorieVitrine[]> {
+  const supabase = await createClient();
+
+  const [{ data: categories, error }, { data: prompts }] = await Promise.all([
+    supabase
+      .from('categories')
+      .select('id, name, mode, parent_id, sort_order')
+      .eq('is_visible', true)
+      .is('parent_id', null)
+      .order('sort_order'),
+    supabase.from('prompts').select('category_id').eq('status', 'published'),
+  ]);
+
+  if (error) throw new CatalogUnavailableError(error);
+
+  const parCategorie = new Map<string, number>();
+  for (const prompt of prompts ?? []) {
+    if (!prompt.category_id) continue;
+    parCategorie.set(prompt.category_id, (parCategorie.get(prompt.category_id) ?? 0) + 1);
+  }
+
+  return (
+    (categories ?? [])
+      .filter((categorie): categorie is typeof categorie & { mode: Mode } =>
+        MODES.includes(categorie.mode as Mode),
+      )
+      .map((categorie) => ({
+        mode: categorie.mode,
+        nom: categorie.name,
+        raccourcis: parCategorie.get(categorie.id) ?? 0,
+      }))
+      // Une categorie vide n'a rien a vendre : elle promettrait un rayon que le
+      // visiteur trouverait desert.
+      .filter((categorie) => categorie.raccourcis > 0)
+  );
+}
+
+export async function getShowcasePrompts(commands: string[]): Promise<PromptCard[]> {
+  const supabase = await createClient();
+  const [{ isMember, hasFullAccess }, favorites] = await Promise.all([
+    getAccessState(),
+    getFavoriteIds(),
+  ]);
+
+  const { data, error } = await supabase
+    .from('prompts')
+    .select(CARD_COLUMNS)
+    .in('command', commands)
+    .eq('status', 'published');
+
+  if (error) throw new CatalogUnavailableError(error);
+
+  const rows = (data ?? []) as unknown as CardRow[];
+  const parCommande = new Map(rows.map((row) => [row.command.toLowerCase(), row]));
+
+  // L'ordre demande est conserve : il est editorial, pas alphabetique. Le
+  // masquage vient apres le classement, sinon il n'y aurait plus de nom sur
+  // lequel s'appuyer pour ranger.
+  return commands
+    .map((commande) => parCommande.get(commande.toLowerCase()))
+    .filter((row): row is CardRow => row !== undefined)
+    .map((row) => {
+      const carte = toCard(row, favorites);
+      const verrouille = !hasFullAccess && !carte.isFree;
+      return !isMember && verrouille ? masquerCommande(carte) : carte;
+    });
+}
+
+/** Question contextuelle d'un raccourci, telle qu'elle est stockee. */
+export type QuestionExemple = { question: string; choices: string[] };
+
+/**
+ * Une question contextuelle reelle, pour illustrer la page de vente.
+ *
+ * Elle est lue et non ecrite en dur : montrer une question inventee ferait
+ * promettre un comportement que le catalogue ne porte pas.
+ */
+export async function getQuestionExemple(command: string): Promise<QuestionExemple | null> {
+  const supabase = await createClient();
+
+  // Deux lectures plutot qu'une jointure : la jointure imbriquee ne se type
+  // pas proprement et ferait perdre plus de temps qu'elle n'en fait gagner
+  // sur deux lignes.
+  const { data: prompt } = await supabase
+    .from('prompts')
+    .select('id')
+    .eq('command', command)
+    .eq('status', 'published')
+    .maybeSingle();
+
+  if (!prompt) return null;
+
+  const { data } = await supabase
+    .from('prompt_questions')
+    .select('question, choices')
+    .eq('prompt_id', prompt.id)
+    .eq('is_active', true)
+    .order('sort_order')
+    .limit(1)
+    .maybeSingle();
+
+  if (!data) return null;
+
+  const choices = Array.isArray(data.choices)
+    ? data.choices.filter((choix): choix is string => typeof choix === 'string')
+    : [];
+
+  return { question: data.question, choices };
+}
+
 /** Fiche detaillee. Le prompt complet reste absent : il passe par resolve. */
 export async function getPromptDetail(slug: string): Promise<PromptDetail | null> {
   const supabase = await createClient();
