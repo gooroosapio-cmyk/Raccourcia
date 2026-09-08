@@ -1,6 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
 import type { Avis } from '@/lib/landing/avis';
 
 /**
@@ -55,11 +57,28 @@ export function AvisCarrousel({ avis }: { avis: Avis[] }) {
               <blockquote className="mt-3.5 flex-1 text-[length:var(--texte-corps)] leading-[1.6] text-[color:var(--color-night)]">
                 « {entree.texte} »
               </blockquote>
-              <figcaption className="mt-4 text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
-                <span className="font-semibold text-[color:var(--color-night)]">
-                  {entree.auteur}
-                </span>{' '}
-                · {entree.lieu}
+              {/* La photo de profil de la personne, quand elle l'a transmise.
+                  Elle n'est pas toujours un visage — un lion, une photo de
+                  couple : c'est ce qu'elle montre d'elle sur WhatsApp, et un
+                  avis signe d'une vraie photo se lit autrement qu'un avis
+                  signe d'un rond de couleur. */}
+              <figcaption className="mt-4 flex items-center gap-2.5 text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
+                {entree.photo ? (
+                  <Image
+                    src={entree.photo}
+                    alt=""
+                    width={192}
+                    height={192}
+                    loading="lazy"
+                    className="h-9 w-9 shrink-0 rounded-full object-cover"
+                  />
+                ) : null}
+                <span>
+                  <span className="font-semibold text-[color:var(--color-night)]">
+                    {entree.auteur}
+                  </span>{' '}
+                  · {entree.lieu}
+                </span>
               </figcaption>
             </figure>
           </li>

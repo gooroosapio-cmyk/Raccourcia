@@ -260,29 +260,32 @@ body {
 }
 
 /*
- * Etoiles filantes du fond de l'accueil (page de vente).
+ * Pluie de fond de l'accueil (page de vente).
  *
- * Six traits bleus tres pales qui traversent la diagonale, chacun a son
- * rythme. Le decor reste sous le texte et n'attire jamais l'oeil : c'est un
- * fond, pas une animation a regarder. Aucun element n'est cliquable, et le
+ * Des traits bleus tres pales qui tombent a la verticale, chacun a son
+ * rythme. Verticale et non oblique : une pluie penchee donne au bloc entier
+ * un faux devers, et l'oeil corrige ce devers au lieu de lire le titre.
+ *
+ * Le decor reste sous le texte et n'attire jamais l'oeil : c'est un fond,
+ * pas une animation a regarder. Aucun element n'est cliquable, et le
  * conteneur laisse passer le doigt.
  *
  * Neutralise en mouvement reduit, comme tout le reste du projet.
  */
-@keyframes etoile-filante {
+@keyframes pluie {
   0% {
     opacity: 0;
-    transform: translate3d(0, 0, 0) rotate(28deg) scaleX(0.35);
+    transform: translate3d(0, -8%, 0) scaleY(0.4);
   }
-  12% {
-    opacity: 0.75;
+  10% {
+    opacity: var(--opacite-trait, 0.4);
   }
-  70% {
-    opacity: 0.55;
+  85% {
+    opacity: var(--opacite-trait, 0.4);
   }
   100% {
     opacity: 0;
-    transform: translate3d(min(78vw, 900px), 340px, 0) rotate(28deg) scaleX(1);
+    transform: translate3d(0, min(115vh, 900px), 0) scaleY(1);
   }
 }
 
@@ -293,15 +296,18 @@ body {
   pointer-events: none;
 }
 
+/* Un trait vertical, fondu aux deux bouts : une goutte qui tombe droit.
+   La largeur reste a un pixel — au-dela, la pluie devient un rideau et
+   passe devant le titre au lieu de rester derriere lui. */
 .ciel span {
   position: absolute;
   display: block;
-  block-size: 2px;
-  inline-size: clamp(70px, 16vw, 160px);
+  inline-size: 1px;
+  block-size: clamp(36px, 7vh, 72px);
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, var(--color-brand), transparent);
+  background: linear-gradient(180deg, transparent, var(--color-brand), transparent);
   opacity: 0;
-  animation: etoile-filante 7s linear infinite;
+  animation: pluie 5s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

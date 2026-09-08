@@ -13,12 +13,17 @@ import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
  * Les deux familles cohabitent dans une seule grille : une carte plus courte
  * pour le texte creerait des trous en quinconce a chaque changement de mode.
  *
- * La zone haute — celle que la carte image donne au visuel — porte ici les
- * cas d'usage, en toutes lettres. Elle montrait jusqu'ici quatre traits bleus
- * imitant des lignes de texte : un decor qui occupait la meilleure place de
- * la carte sans rien apprendre, la ou trois usages concrets disent a qui
- * regarde si la commande est pour lui. Et jamais une photographie
- * d'illustration, qui promettrait une image que la commande ne produit pas.
+ * La zone haute — celle que la carte image donne au visuel — porte ici
+ * l'intention : ce que la commande cherche a obtenir, en une ligne. Le corps
+ * garde la description, qui dit comment elle s'y prend. Les deux se lisent
+ * ensemble et ne se repetent pas : « Rendre visible la structure interne »
+ * au-dessus, « Transforme un objet en vue transparente... » en dessous.
+ *
+ * Cette zone montrait d'abord quatre traits bleus imitant des lignes de
+ * texte, puis des cas d'usage. Le decor n'apprenait rien; les cas d'usage
+ * repetaient souvent la description avec d'autres mots. L'intention, elle,
+ * dit autre chose. Et jamais une photographie d'illustration, qui
+ * promettrait une image que la commande ne produit pas.
  */
 export function TextPromptCard({
   prompt,
@@ -46,6 +51,9 @@ export function TextPromptCard({
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
   const description = prompt.shortDescription || prompt.resultSummary;
+  const intention = prompt.intention?.trim() ?? '';
+  // Repli quand l'intention manque : les cas d'usage tiennent la zone plutot
+  // que de la laisser vide.
   const usages = prompt.useCases.slice(0, 3);
 
   return (
@@ -56,7 +64,16 @@ export function TextPromptCard({
         className="flex flex-1 flex-col text-left"
       >
         <span className="relative flex aspect-[4/3] w-full flex-col justify-center gap-1 overflow-hidden bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-2.5 py-2">
-          {usages.length > 0 ? (
+          {intention ? (
+            <>
+              <span className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/70">
+                Intention
+              </span>
+              <span className="line-clamp-4 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)]/85">
+                {intention}
+              </span>
+            </>
+          ) : usages.length > 0 ? (
             <>
               <span className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/70">
                 Cas d’usage
@@ -88,8 +105,9 @@ export function TextPromptCard({
             </span>
           )}
 
-          {/* Ce que fait ce raccourci, pas le format qu'il produit :
-              `result_summary` se repete a l'identique sur toute une famille. */}
+          {/* Comment le raccourci s'y prend, sous ce qu'il cherche a obtenir.
+              Jamais `result_summary` en premier : il se repete a l'identique
+              sur toute une famille. */}
           <span
             className={`text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)] ${
               masque ? 'line-clamp-3' : 'line-clamp-2'
