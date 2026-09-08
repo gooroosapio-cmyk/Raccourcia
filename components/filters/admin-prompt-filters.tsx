@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 
+import type { AdminCategory } from '@/lib/admin/queries';
 import { CONTENT_STATUS, MODES, MODE_LABELS } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
@@ -17,10 +18,14 @@ export function AdminPromptFilters({
   search,
   mode,
   status,
+  categoryId,
+  categories,
 }: {
   search?: string;
   mode?: Enums<'app_mode'>;
   status?: Enums<'content_status'>;
+  categoryId?: string;
+  categories: AdminCategory[];
 }) {
   const router = useRouter();
   const params = useSearchParams();
@@ -53,6 +58,19 @@ export function AdminPromptFilters({
     push(next);
   };
 
+  const choisirCategorie = (value: string) => {
+    const next = new URLSearchParams(params.toString());
+    if (value) next.set('categorie', value);
+    else next.delete('categorie');
+    push(next);
+  };
+
+  // Le filtre de mode restreint la liste des familles : proposer une famille
+  // texte alors que seuls les raccourcis image sont affiches ne renverrait
+  // jamais rien.
+  const racines = categories.filter((categorie) => categorie.parentId === null);
+  const famillesVisibles = mode ? racines.filter((c) => c.mode === mode) : racines;
+
   return (
     <div className="space-y-3">
       <label className="block">
@@ -64,6 +82,23 @@ export function AdminPromptFilters({
           placeholder="Rechercher une commande ou un titre..."
           className="h-11 w-full rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 text-[15px] outline-none placeholder:text-[color:var(--color-muted)]"
         />
+      </label>
+
+      <label className="block">
+        <span className="sr-only">Filtrer par catégorie</span>
+        <select
+          value={categoryId ?? ''}
+          onChange={(event) => choisirCategorie(event.target.value)}
+          className="h-11 w-full rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 text-[15px] text-[color:var(--color-night)] outline-none"
+        >
+          <option value="">Toutes les catégories</option>
+          {famillesVisibles.map((categorie) => (
+            <option key={categorie.id} value={categorie.id}>
+              {MODE_LABELS[categorie.mode]} — {categorie.name}
+              {categorie.isVisible ? '' : ' (masquée)'}
+            </option>
+          ))}
+        </select>
       </label>
 
       <div className="-mx-5 overflow-x-auto px-5">

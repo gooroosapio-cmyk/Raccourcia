@@ -21,6 +21,10 @@ export type AdminPromptRow = {
   status: Enums<'content_status'>;
   isFree: boolean;
   categoryName: string | null;
+  /** Visuel « avant » envoye depuis l'administration. */
+  hasBefore: boolean;
+  /** Visuel « apres » : celui que la carte montre dans la grille. */
+  hasAfter: boolean;
   updatedAt: string;
 };
 
@@ -50,7 +54,9 @@ function toRow(row: {
   is_free: boolean;
   updated_at: string;
   categories: { name: string } | null;
+  prompt_media: { kind: Enums<'media_kind'> }[] | null;
 }): AdminPromptRow {
+  const visuels = row.prompt_media ?? [];
   return {
     id: row.id,
     command: row.command,
@@ -59,11 +65,14 @@ function toRow(row: {
     status: row.status,
     isFree: row.is_free,
     categoryName: row.categories?.name ?? null,
+    hasBefore: visuels.some((media) => media.kind === 'before'),
+    hasAfter: visuels.some((media) => media.kind === 'after'),
     updatedAt: row.updated_at,
   };
 }
 
-const ROW_COLUMNS = 'id, command, name, mode, status, is_free, updated_at, categories(name)';
+const ROW_COLUMNS =
+  'id, command, name, mode, status, is_free, updated_at, categories(name), prompt_media(kind)';
 
 export async function getAdminDashboard(): Promise<AdminDashboard> {
   const supabase = await createClient();
@@ -121,6 +130,9 @@ export type AdminPromptFilters = {
   search?: string;
   mode?: Enums<'app_mode'>;
   status?: Enums<'content_status'>;
+  categoryId?: string;
+  /** Vrai pour ne garder que les raccourcis dont les deux visuels manquent. */
+  missingMedia?: boolean;
   page: number;
 };
 
@@ -136,6 +148,7 @@ export async function listAdminPrompts(
 
   if (filters.mode) request = request.eq('mode', filters.mode);
   if (filters.status) request = request.eq('status', filters.status);
+  if (filters.categoryId) request = request.eq('category_id', filters.categoryId);
   if (filters.search) request = request.ilike('search_text', `%${filters.search.toLowerCase()}%`);
 
   const { data } = await request

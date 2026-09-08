@@ -49,13 +49,28 @@ export const AVIS: Avis[] = [
 ];
 
 /**
- * Pays d'ou viennent les avis publies.
+ * Pays d'ou viennent les retours recus.
  *
- * Deduits des avis eux-memes, jamais allonges : annoncer une carte plus large
- * que les temoignages qu'on peut montrer serait une preuve empruntee.
+ * Cette liste n'est pas deduite des quatre avis affiches : l'equipe en recoit
+ * davantage et n'en publie qu'une partie, faute d'accord explicite pour citer
+ * les autres. Elle est donc tenue a la main, et ne s'allonge que d'un pays
+ * d'ou un message est reellement arrive.
+ *
+ * L'ordre suit celui des premiers retours recus.
  */
-export function paysDesAvis(): string[] {
-  return [...new Set(avisPublies().map((avis) => avis.lieu))];
+export const PAYS_UTILISATEURS: string[] = [
+  'Côte d’Ivoire',
+  'Sénégal',
+  'Cameroun',
+  'Guinée',
+  'RDC',
+  'Bénin',
+  'Togo',
+  'Burkina Faso',
+];
+
+export function paysUtilisateurs(): string[] {
+  return PAYS_UTILISATEURS;
 }
 
 /** Avis reellement publiables : ceux dont on a les mots. */

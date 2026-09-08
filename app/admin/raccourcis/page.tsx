@@ -1,7 +1,8 @@
 import Link from 'next/link';
 
-import { listAdminPrompts } from '@/lib/admin/queries';
+import { listAdminCategories, listAdminPrompts } from '@/lib/admin/queries';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
+import { MediaBadge } from '@/components/ui/media-badge';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { CONTENT_STATUS, MODES, MODE_LABELS, type Mode } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
@@ -27,10 +28,14 @@ export default async function AdminPromptsPage({
     status: CONTENT_STATUS.includes(status as Enums<'content_status'>)
       ? (status as Enums<'content_status'>)
       : undefined,
+    categoryId: asString(params.categorie),
     page: Number(asString(params.page) ?? 1) || 1,
   };
 
-  const { items, hasMore } = await listAdminPrompts(filters);
+  const [{ items, hasMore }, categories] = await Promise.all([
+    listAdminPrompts(filters),
+    listAdminCategories(),
+  ]);
 
   return (
     <div className="space-y-4">
@@ -44,7 +49,13 @@ export default async function AdminPromptsPage({
         </Link>
       </div>
 
-      <AdminPromptFilters search={filters.search} mode={filters.mode} status={filters.status} />
+      <AdminPromptFilters
+        search={filters.search}
+        mode={filters.mode}
+        status={filters.status}
+        categoryId={filters.categoryId}
+        categories={categories}
+      />
 
       {items.length === 0 ? (
         <p className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-5 text-center text-[15px] text-[color:var(--color-muted)]">
@@ -70,7 +81,14 @@ export default async function AdminPromptsPage({
                     {prompt.categoryName ? ` - ${prompt.categoryName}` : ' - sans catégorie'}
                   </p>
                 </div>
-                <StatusBadge status={prompt.status} />
+                <span className="flex shrink-0 flex-col items-end gap-1">
+                  <StatusBadge status={prompt.status} />
+                  <MediaBadge
+                    avant={prompt.hasBefore}
+                    apres={prompt.hasAfter}
+                    compare={prompt.mode === 'image'}
+                  />
+                </span>
               </Link>
             </li>
           ))}
@@ -83,6 +101,7 @@ export default async function AdminPromptsPage({
             ...(filters.search ? { q: filters.search } : {}),
             ...(filters.mode ? { mode: filters.mode } : {}),
             ...(filters.status ? { statut: filters.status } : {}),
+            ...(filters.categoryId ? { categorie: filters.categoryId } : {}),
             page: String(filters.page + 1),
           })}`}
           className="flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-sm font-medium text-[color:var(--color-night)]"
