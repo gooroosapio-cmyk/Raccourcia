@@ -1,4 +1,4 @@
-import { avisPublies, paysDesAvis } from '@/lib/landing/avis';
+import { avisPublies, paysUtilisateurs } from '@/lib/landing/avis';
 
 /**
  * Rangee de pastilles sous les avis.
@@ -8,14 +8,16 @@ import { avisPublies, paysDesAvis } from '@/lib/landing/avis';
  * quelqu'un qui n'est pas elle, et transformerait quatre temoignages vrais en
  * decor douteux.
  *
- * Les pays sont ceux des avis, et rien de plus. Allonger la liste ferait
- * passer une carte pour une preuve.
+ * Les pays ne sont pas ceux des quatre avis affiches mais ceux d'ou des
+ * retours sont reellement arrives : l'equipe en recoit plus qu'elle n'en
+ * publie. La liste est tenue a la main dans `lib/landing/avis.ts`, pour
+ * qu'aucun pays ne s'y ajoute sans qu'un message en vienne.
  */
 export function BullesUtilisateurs() {
   const avis = avisPublies();
   if (avis.length === 0) return null;
 
-  const pays = paysDesAvis();
+  const pays = paysUtilisateurs();
   const teintes = [
     'bg-[color:var(--color-brand)]',
     'bg-[color:var(--color-night)]',
@@ -27,7 +29,7 @@ export function BullesUtilisateurs() {
     <div className="flex flex-col items-center gap-3">
       <ul
         className="flex items-center"
-        aria-label={`${avis.length} personnes ont partagé leur retour`}
+        aria-label={`${avis.length} des personnes qui ont partagé leur retour`}
       >
         {avis.map((entree, index) => (
           <li key={entree.auteur} className={index === 0 ? '' : '-ml-2.5'}>
@@ -43,9 +45,16 @@ export function BullesUtilisateurs() {
         ))}
       </ul>
 
-      <p className="text-center text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
-        {pays.join(' · ')}
-      </p>
+      <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
+        {pays.map((nom) => (
+          <li
+            key={nom}
+            className="rounded-full bg-[color:var(--color-surface)] px-2.5 py-1 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]"
+          >
+            {nom}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
