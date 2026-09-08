@@ -45,7 +45,10 @@ import { avisPublies } from '@/lib/landing/avis';
  * annoncer un catalogue qui n'existe plus.
  */
 export const metadata: Metadata = {
-  title: 'RaccourcIA — Le bon prompt, en un geste',
+  // Titre absolu : le gabarit du site ajoute « | RaccourcIA » a la fin, et le
+  // titre le porte deja au debut. La vignette de partage affichait
+  // « RaccourcIA — Le bon prompt, en un geste | RaccourcIA ».
+  title: { absolute: 'RaccourcIA — Le bon prompt, en un geste' },
   description:
     'RaccourcIA rassemble des commandes claires pour vous aider à créer, écrire, analyser et avancer plus vite avec vos IA préférées.',
   robots: { index: false, follow: false },
