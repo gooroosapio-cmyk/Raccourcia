@@ -4,7 +4,10 @@ import type { Metadata } from 'next';
 
 import { ChatGPTLogo, ClaudeLogo, GeminiLogo } from '@/components/brand/ai-logos';
 import { AvisCarrousel } from '@/components/landing/avis-carrousel';
-import { BlocAchat, MoyensPaiement } from '@/components/landing/bloc-achat';
+import { BlocAchat } from '@/components/landing/bloc-achat';
+import { BoutonWhatsApp } from '@/components/landing/bouton-whatsapp';
+import { BullesUtilisateurs } from '@/components/landing/bulles-utilisateurs';
+import { Ciel } from '@/components/landing/ciel';
 import { Button, FlecheIcone } from '@/components/landing/button';
 import { Comparateur } from '@/components/landing/comparateur';
 import { ContextLogicCard, QuestionExempleMock } from '@/components/landing/context-logic-card';
@@ -41,7 +44,7 @@ import { avisPublies } from '@/lib/landing/avis';
  * annoncer un catalogue qui n'existe plus.
  */
 export const metadata: Metadata = {
-  title: 'RaccourcIA — La bonne commande, en un geste',
+  title: 'RaccourcIA — Le bon prompt, en un geste',
   description:
     'RaccourcIA rassemble des commandes claires pour vous aider à créer, écrire, analyser et avancer plus vite avec vos IA préférées.',
   robots: { index: false, follow: false },
@@ -74,7 +77,12 @@ export default async function LandingPage() {
     if (!isCatalogUnavailable(error)) throw error;
   }
 
-  const prix = `${new Intl.NumberFormat('fr-FR').format(config.price.current)} ${config.price.currency}`;
+  const format = (montant: number) =>
+    `${new Intl.NumberFormat('fr-FR').format(montant)} ${config.price.currency}`;
+  const prix = format(config.price.current);
+  // Barre uniquement s'il est reellement superieur : `getPublicConfig`
+  // renvoie `null` sinon, et rien n'est alors barre.
+  const prixReference = config.price.regular ? format(config.price.regular) : null;
   // La porte d'achat interne garde l'adresse de la boutique en un seul endroit
   // et n'expose pas le prestataire de paiement dans la page.
   const boutique = '/acheter';
@@ -89,7 +97,7 @@ export default async function LandingPage() {
       <LandingHeader purchaseUrl={boutique} prix={prix} />
 
       <main id="haut" className="bg-[color:var(--color-surface)]">
-        <Hero purchaseUrl={boutique} prix={prix} />
+        <Hero purchaseUrl={boutique} prix={prix} prixReference={prixReference} />
         <Chiffres total={totalRaccourcis} categories={categories.length} prix={prix} />
         <Probleme />
         <Difference />
@@ -97,13 +105,19 @@ export default async function LandingPage() {
         <Bibliotheque vitrine={vitrine} categories={categories} total={totalRaccourcis} />
         <Contexte question={question} />
         <Preuve avis={avis} />
-        <Offre purchaseUrl={boutique} prix={prix} total={totalRaccourcis} />
+        <Offre
+          purchaseUrl={boutique}
+          prix={prix}
+          prixReference={prixReference}
+          total={totalRaccourcis}
+        />
         <AvantDeDecider total={totalRaccourcis} />
-        <CtaFinal purchaseUrl={boutique} prix={prix} />
+        <CtaFinal purchaseUrl={boutique} prix={prix} prixReference={prixReference} />
       </main>
 
       <PiedDePage />
       <StickyMobileCTA purchaseUrl={boutique} prix={prix} />
+      <BoutonWhatsApp numero="2250714520326" />
     </>
   );
 }
@@ -139,17 +153,23 @@ function Section({
 /* Accueil                                                             */
 /* ------------------------------------------------------------------ */
 
-function Hero({ purchaseUrl, prix }: { purchaseUrl: string; prix: string }) {
+function Hero({
+  purchaseUrl,
+  prix,
+  prixReference,
+}: {
+  purchaseUrl: string;
+  prix: string;
+  prixReference: string | null;
+}) {
   return (
-    <section className="border-b border-[color:var(--color-line)] bg-gradient-to-b from-[color:var(--color-sky)]/55 to-[color:var(--color-surface)]">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="inline-flex rounded-full border border-[color:var(--color-brand)]/25 bg-[color:var(--color-surface)] px-4 py-2 text-[length:var(--texte-carte)] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-brand)]">
-            La bibliothèque de commandes IA
-          </p>
+    <section className="relative overflow-hidden border-b border-[color:var(--color-line)] bg-gradient-to-b from-[color:var(--color-sky)]/55 to-[color:var(--color-surface)]">
+      <Ciel />
 
-          <h1 className="mt-5 text-[36px] font-bold leading-[1.08] tracking-tight text-[color:var(--color-night)] sm:text-[54px]">
-            La bonne commande,
+      <div className="relative mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <h1 className="text-[36px] font-bold leading-[1.08] tracking-tight text-[color:var(--color-night)] sm:text-[54px]">
+            Le bon prompt,
             <br />
             <span className="text-[color:var(--color-brand)]">en un geste.</span>
           </h1>
@@ -160,7 +180,12 @@ function Hero({ purchaseUrl, prix }: { purchaseUrl: string; prix: string }) {
           </p>
 
           <div className="mt-8">
-            <BlocAchat purchaseUrl={purchaseUrl} prix={prix} libelle="Accès à vie" />
+            <BlocAchat
+              purchaseUrl={purchaseUrl}
+              prix={prix}
+              prixReference={prixReference}
+              libelle="Accès à vie"
+            />
           </div>
         </div>
 
@@ -195,7 +220,9 @@ function Chiffres({
   prix: string;
 }) {
   const chiffres = [
-    { valeur: total > 0 ? `${total}` : '—', libelle: 'commandes prêtes à utiliser' },
+    // « + » parce que le catalogue s'agrandit : un compte exact vieillit
+    // des la publication suivante.
+    { valeur: total > 0 ? `+${total}` : '—', libelle: 'commandes prêtes à utiliser' },
     { valeur: categories > 0 ? `${categories}` : '—', libelle: 'catégories classées par besoin' },
     { valeur: '3', libelle: 'IA compatibles : ChatGPT, Claude, Gemini' },
     { valeur: prix, libelle: 'une seule fois, accès à vie' },
@@ -229,18 +256,20 @@ function Chiffres({
 function Probleme() {
   const constats = [
     {
-      titre: 'Des fichiers qui se perdent',
-      corps: 'Les PDF de commandes finissent au fond des téléchargements, et on ne les rouvre pas.',
+      titre: 'Des PDF de prompts qui se perdent',
+      corps: 'Ils finissent au fond des téléchargements, et on ne les rouvre jamais.',
+    },
+    {
+      titre: 'Des prompts qui ne donnent pas le résultat voulu',
+      corps: 'On reformule, on rallonge, on recommence — et le rendu reste à côté.',
     },
     {
       titre: 'Des notes introuvables',
-      corps:
-        'La commande qui marchait bien est quelque part, dans une note, dans une conversation.',
+      corps: 'Le prompt qui marchait bien est quelque part, dans une note ou une conversation.',
     },
     {
-      titre: 'Des recherches à recommencer',
-      corps:
-        'À chaque fois, il faut retrouver quoi demander, comment le formuler, dans quel ordre.',
+      titre: 'Des recherches à refaire',
+      corps: 'À chaque fois, il faut retrouver quoi demander, comment le dire, dans quel ordre.',
     },
   ];
 
@@ -254,7 +283,7 @@ function Probleme() {
         intro="Ce n’est pas l’idée qui manque, c’est la formulation. Et elle se reconstruit à chaque fois, depuis zéro."
       />
 
-      <div className="mt-10 grid gap-4 sm:grid-cols-3">
+      <div className="mt-10 grid gap-4 sm:grid-cols-2">
         {constats.map((constat) => (
           <div
             key={constat.titre}
@@ -445,7 +474,7 @@ function Bibliotheque({
         accent="sans repartir de zéro."
         intro={
           total > 0
-            ? `${total} commandes classées par besoin, en Image comme en Texte.`
+            ? `Plus de ${total} commandes classées par besoin, en Image comme en Texte.`
             : 'Des commandes classées par besoin, en Image comme en Texte.'
         }
       />
@@ -501,16 +530,20 @@ function FamilleCategories({
         {intro}
       </p>
 
-      <ul className="mt-4 flex flex-col divide-y divide-[color:var(--color-line)]">
+      {/* Ce a quoi sert chaque rayon, jamais ce qu'il contient : ni le nombre
+          de commandes, ni leur nom. Le visiteur doit savoir ou il irait, pas
+          repartir avec la marchandise. */}
+      <ul className="mt-5 flex flex-col divide-y divide-[color:var(--color-line)]">
         {categories.map((categorie) => (
-          <li
-            key={categorie.nom}
-            className="flex items-center justify-between gap-3 py-2.5 text-[length:var(--texte-corps)]"
-          >
-            <span className="text-[color:var(--color-night)]">{categorie.nom}</span>
-            <span className="shrink-0 rounded-full bg-[color:var(--color-sky)] px-2.5 py-1 text-[length:var(--texte-meta)] font-semibold text-[color:var(--color-brand-strong)]">
-              {categorie.raccourcis}
-            </span>
+          <li key={categorie.nom} className="py-3 first:pt-0 last:pb-0">
+            <p className="text-[length:var(--texte-corps)] font-semibold text-[color:var(--color-night)]">
+              {categorie.nom}
+            </p>
+            {categorie.description ? (
+              <p className="mt-1 text-[length:var(--texte-carte)] leading-[1.5] text-[color:var(--color-muted)]">
+                {categorie.description}
+              </p>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -569,13 +602,22 @@ function Preuve({ avis }: { avis: ReturnType<typeof avisPublies> }) {
     <Section fond="teinte">
       <SectionNumerotee
         numero="06"
-        intitule="Un exemple"
-        titre="Voyez ce qu’une commande claire "
-        accent="peut déclencher."
-        intro="Une commande bien formulée donne à l’IA le bon cadre pour mieux répondre à votre intention."
+        intitule="La preuve"
+        titre="Ce qu’en disent "
+        accent="ceux qui l’utilisent."
+        intro="Des messages reçus sur WhatsApp, repris tels quels."
       />
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:items-center">
+      {avis.length > 0 ? (
+        <div className="mt-10">
+          <AvisCarrousel avis={avis} />
+          <div className="mt-8">
+            <BullesUtilisateurs />
+          </div>
+        </div>
+      ) : null}
+
+      <div className="mt-12 grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:items-center">
         <Image
           src="/landing/avant-apres-xray.webp"
           alt="Une voiture photographiée normalement, puis la même en vue transparente laissant voir ses composants internes."
@@ -587,22 +629,14 @@ function Preuve({ avis }: { avis: ReturnType<typeof avisPublies> }) {
         />
 
         <div>
-          <p className="text-[length:var(--texte-corps)] leading-[1.65] text-[color:var(--color-night)]">
-            Une même photo, une commande de la bibliothèque, et un résultat que l’on peut montrer.
+          <h3 className="text-[22px] font-bold leading-[1.2] tracking-tight text-[color:var(--color-night)] sm:text-[28px]">
+            Voyez ce qu’un bon prompt peut déclencher.
+          </h3>
+          <p className="mt-3 text-[length:var(--texte-corps)] leading-[1.65] text-[color:var(--color-night)]">
+            Une même photo, un raccourci de la bibliothèque, et un résultat que l’on peut montrer.
             Le rendu dépend de votre image de départ et de l’IA utilisée : c’est un exemple, pas une
             promesse de résultat identique.
           </p>
-
-          {avis.length > 0 ? (
-            <div className="mt-8">
-              <h3 className="text-[length:var(--texte-carte)] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-muted)]">
-                Ils utilisent RaccourcIA
-              </h3>
-              <div className="mt-4">
-                <AvisCarrousel avis={avis} />
-              </div>
-            </div>
-          ) : null}
         </div>
       </div>
     </Section>
@@ -613,10 +647,20 @@ function Preuve({ avis }: { avis: ReturnType<typeof avisPublies> }) {
 /* 07 — L'offre                                                        */
 /* ------------------------------------------------------------------ */
 
-function Offre({ purchaseUrl, prix, total }: { purchaseUrl: string; prix: string; total: number }) {
+function Offre({
+  purchaseUrl,
+  prix,
+  prixReference,
+  total,
+}: {
+  purchaseUrl: string;
+  prix: string;
+  prixReference: string | null;
+  total: number;
+}) {
   const inclus = [
     total > 0
-      ? `Les ${total} commandes incluses dans l’offre, en Image et en Texte`
+      ? `Plus de ${total} commandes incluses dans l’offre, en Image et en Texte`
       : 'Les commandes incluses dans l’offre, en Image et en Texte',
     'Les commandes réservées aux membres, débloquées',
     'La consultation depuis vos appareils, avec le même compte',
@@ -635,7 +679,12 @@ function Offre({ purchaseUrl, prix, total }: { purchaseUrl: string; prix: string
 
       <div className="mt-10 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
         <div className="order-1">
-          <PricingCard prix={prix} purchaseUrl={purchaseUrl} inclus={inclus} />
+          <PricingCard
+            prix={prix}
+            prixReference={prixReference}
+            purchaseUrl={purchaseUrl}
+            inclus={inclus}
+          />
         </div>
 
         <Image
@@ -719,7 +768,7 @@ function AvantDeDecider({ total }: { total: number }) {
       question: 'Que comprend exactement l’accès ?',
       reponse:
         total > 0
-          ? `Les ${total} commandes publiées dans la bibliothèque au moment de votre achat, consultables depuis votre compte, sans limite de durée.`
+          ? `Plus de ${total} commandes publiées dans la bibliothèque au moment de votre achat, consultables depuis votre compte, sans limite de durée.`
           : 'Les commandes publiées dans la bibliothèque au moment de votre achat, consultables depuis votre compte, sans limite de durée.',
     },
   ];
@@ -744,7 +793,15 @@ function AvantDeDecider({ total }: { total: number }) {
 /* Appel final et pied de page                                         */
 /* ------------------------------------------------------------------ */
 
-function CtaFinal({ purchaseUrl, prix }: { purchaseUrl: string; prix: string }) {
+function CtaFinal({
+  purchaseUrl,
+  prix,
+  prixReference,
+}: {
+  purchaseUrl: string;
+  prix: string;
+  prixReference: string | null;
+}) {
   return (
     <Section>
       <div className="rounded-[24px] bg-[color:var(--color-night)] px-5 py-12 text-center sm:px-10 sm:py-16">
@@ -753,12 +810,16 @@ function CtaFinal({ purchaseUrl, prix }: { purchaseUrl: string; prix: string }) 
           <span className="text-[color:var(--color-brand)]">Plus de temps à créer.</span>
         </h2>
 
+        {/* Le bloc porte deja les moyens de paiement : les repeter juste en
+            dessous ferait deux fois la meme rangee. */}
         <div className="mt-8">
-          <BlocAchat purchaseUrl={purchaseUrl} prix={prix} libelle="Accès à vie" sombre />
-        </div>
-
-        <div className="mt-6 rounded-[16px] bg-white/5 px-4 py-4">
-          <MoyensPaiement />
+          <BlocAchat
+            purchaseUrl={purchaseUrl}
+            prix={prix}
+            prixReference={prixReference}
+            libelle="Accès à vie"
+            sombre
+          />
         </div>
       </div>
     </Section>

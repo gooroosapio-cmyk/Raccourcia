@@ -257,3 +257,55 @@ body {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/*
+ * Etoiles filantes du fond de l'accueil (page de vente).
+ *
+ * Six traits bleus tres pales qui traversent la diagonale, chacun a son
+ * rythme. Le decor reste sous le texte et n'attire jamais l'oeil : c'est un
+ * fond, pas une animation a regarder. Aucun element n'est cliquable, et le
+ * conteneur laisse passer le doigt.
+ *
+ * Neutralise en mouvement reduit, comme tout le reste du projet.
+ */
+@keyframes etoile-filante {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(28deg) scaleX(0.35);
+  }
+  12% {
+    opacity: 0.75;
+  }
+  70% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(min(78vw, 900px), 340px, 0) rotate(28deg) scaleX(1);
+  }
+}
+
+.ciel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ciel span {
+  position: absolute;
+  display: block;
+  block-size: 2px;
+  inline-size: clamp(70px, 16vw, 160px);
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--color-brand), transparent);
+  opacity: 0;
+  animation: etoile-filante 7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ciel span {
+    animation: none;
+    opacity: 0.12;
+  }
+}

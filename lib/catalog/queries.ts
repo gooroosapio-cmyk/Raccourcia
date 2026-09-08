@@ -426,7 +426,13 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
  * exception a cette regle, c'est meme la ou elle compte le plus.
  */
 /** Categorie telle que la page de vente la presente : un nom, un volume. */
-export type CategorieVitrine = { mode: Mode; nom: string; raccourcis: number };
+export type CategorieVitrine = {
+  mode: Mode;
+  nom: string;
+  /** A quoi sert la categorie, telle qu'elle est decrite au catalogue. */
+  description: string;
+  raccourcis: number;
+};
 
 /**
  * Categories publiees, avec le nombre de raccourcis de chacune.
@@ -444,7 +450,7 @@ export async function getCategoriesVitrine(): Promise<CategorieVitrine[]> {
   const [{ data: categories, error }, { data: prompts }] = await Promise.all([
     supabase
       .from('categories')
-      .select('id, name, mode, parent_id, sort_order')
+      .select('id, name, short_description, mode, parent_id, sort_order')
       .eq('is_visible', true)
       .is('parent_id', null)
       .order('sort_order'),
@@ -467,6 +473,7 @@ export async function getCategoriesVitrine(): Promise<CategorieVitrine[]> {
       .map((categorie) => ({
         mode: categorie.mode,
         nom: categorie.name,
+        description: categorie.short_description?.trim() ?? '',
         raccourcis: parCategorie.get(categorie.id) ?? 0,
       }))
       // Une categorie vide n'a rien a vendre : elle promettrait un rayon que le

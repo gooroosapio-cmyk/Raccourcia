@@ -1,38 +1,92 @@
+import Image from 'next/image';
 import { Button, FlecheIcone } from '@/components/landing/button';
 
 /**
- * Moyens de paiement annonces sous le bouton d'achat.
+ * Moyens de paiement, sous le bouton d'achat.
  *
- * Ce sont ceux que la boutique elle-meme annonce, et rien de plus. Ajouter un
- * operateur « parce qu'il est courant dans la region » ferait venir quelqu'un
- * pour un moyen qu'il ne trouverait pas au moment de payer — la deception
- * arriverait exactement au pire endroit du parcours.
+ * Chaque logo est rogne de ses marges puis pose dans un cercle de meme
+ * diametre : sans cela, deux logos de meme hauteur n'ont pas la meme taille
+ * apparente — l'un remplit son cadre, l'autre y flotte. Le cercle donne la
+ * regularite qu'une simple hauteur commune ne donne pas.
  *
- * Des noms, pas des logos : les marques appartiennent a leurs proprietaires,
- * et une pastille grise mal redessinee ne rassure personne.
+ * Ils restent tres petits et sur une seule ligne : ce sont des reperes de
+ * confiance, pas un argument. Ils se lisent d'un coup d'oeil ou pas du tout.
  */
-const MOYENS = ['Mobile Money', 'Wave', 'Visa'];
+const MOYENS = [
+  { nom: 'Orange Money', fichier: 'orange.webp' },
+  { nom: 'MTN Mobile Money', fichier: 'mtn.webp' },
+  { nom: 'Moov Money', fichier: 'moov.webp' },
+  { nom: 'Wave', fichier: 'wave.webp' },
+  { nom: 'Airtel Money', fichier: 'airtel.webp' },
+  { nom: 'Visa', fichier: 'visa.webp' },
+];
 
-export function MoyensPaiement({ centre = true }: { centre?: boolean }) {
+export function MoyensPaiement({ sombre = false }: { sombre?: boolean }) {
   return (
-    <div className={centre ? 'text-center' : ''}>
+    <div>
       <ul
-        className={`flex flex-wrap items-center gap-2 ${centre ? 'justify-center' : ''}`}
+        className="flex flex-wrap items-center justify-center gap-1.5"
         aria-label="Moyens de paiement acceptés"
       >
         {MOYENS.map((moyen) => (
-          <li
-            key={moyen}
-            className="rounded-full border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 py-1.5 text-[length:var(--texte-carte)] font-medium text-[color:var(--color-night)]"
-          >
-            {moyen}
+          <li key={moyen.nom}>
+            <span
+              className={`flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border bg-white ${
+                sombre ? 'border-white/15' : 'border-[color:var(--color-line)]'
+              }`}
+            >
+              <Image
+                src={`/landing/paiement/${moyen.fichier}`}
+                alt={moyen.nom}
+                width={120}
+                height={120}
+                loading="lazy"
+                className="h-5 w-5 object-contain"
+              />
+            </span>
           </li>
         ))}
-        <li className="text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
-          et les autres moyens proposés au paiement
-        </li>
       </ul>
+      <p
+        className={`mt-2 text-center text-[length:var(--texte-meta)] ${
+          sombre ? 'text-white/60' : 'text-[color:var(--color-muted)]'
+        }`}
+      >
+        et les autres moyens proposés au paiement
+      </p>
     </div>
+  );
+}
+
+/**
+ * Prix, montant de reference barre a cote.
+ *
+ * Le montant barre vient de la configuration et n'est affiche que s'il est
+ * reellement superieur : `getPublicConfig` renvoie `null` sinon. Barrer un
+ * prix egal serait une remise inventee.
+ */
+export function Prix({
+  courant,
+  reference,
+  sombre = false,
+}: {
+  courant: string;
+  reference: string | null;
+  sombre?: boolean;
+}) {
+  return (
+    <span className="inline-flex items-baseline gap-2">
+      {reference ? (
+        <span
+          className={`text-[length:var(--texte-carte)] line-through ${
+            sombre ? 'text-white/50' : 'text-[color:var(--color-muted)]'
+          }`}
+        >
+          {reference}
+        </span>
+      ) : null}
+      <span>{courant}</span>
+    </span>
   );
 }
 
@@ -46,12 +100,14 @@ export function MoyensPaiement({ centre = true }: { centre?: boolean }) {
 export function BlocAchat({
   purchaseUrl,
   prix,
+  prixReference,
   libelle,
   secondaire = true,
   sombre = false,
 }: {
   purchaseUrl: string;
   prix: string;
+  prixReference: string | null;
   /** Ce que le bouton promet. Le prix est ajoute ensuite, toujours visible. */
   libelle: string;
   /** Faux quand la page a deja propose la bibliotheque juste au-dessus. */
@@ -63,7 +119,7 @@ export function BlocAchat({
     <div className="mx-auto max-w-xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
         <Button href={purchaseUrl} externe pleineLargeur className="sm:w-auto">
-          {libelle} — {prix}
+          {libelle} — <Prix courant={prix} reference={prixReference} sombre />
           <FlecheIcone />
         </Button>
 
@@ -91,11 +147,9 @@ export function BlocAchat({
         Accès à vie · Paiement unique · Accès immédiat après validation
       </p>
 
-      {sombre ? null : (
-        <div className="mt-4">
-          <MoyensPaiement />
-        </div>
-      )}
+      <div className="mt-4">
+        <MoyensPaiement sombre={sombre} />
+      </div>
     </div>
   );
 }

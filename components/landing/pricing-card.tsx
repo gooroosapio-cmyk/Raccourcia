@@ -1,4 +1,5 @@
 import { Button, FlecheIcone } from '@/components/landing/button';
+import { MoyensPaiement, Prix } from '@/components/landing/bloc-achat';
 
 /**
  * Carte de l'offre.
@@ -13,11 +14,14 @@ import { Button, FlecheIcone } from '@/components/landing/button';
  */
 export function PricingCard({
   prix,
+  prixReference,
   purchaseUrl,
   inclus,
 }: {
   /** Montant deja formate, unite comprise. */
   prix: string;
+  /** Montant de reference, barre a cote. `null` s'il n'est pas superieur. */
+  prixReference: string | null;
   purchaseUrl: string;
   inclus: string[];
 }) {
@@ -28,7 +32,16 @@ export function PricingCard({
           <CouronneIcone />
           Accès à vie
         </span>
-        <p className="mt-4 text-[40px] font-bold leading-none tracking-tight text-[color:var(--color-night)]">
+        {prixReference ? (
+          <p className="mt-4 text-[17px] text-[color:var(--color-muted)] line-through">
+            {prixReference}
+          </p>
+        ) : null}
+        <p
+          className={`text-[40px] font-bold leading-none tracking-tight text-[color:var(--color-night)] ${
+            prixReference ? 'mt-1' : 'mt-4'
+          }`}
+        >
           {prix}
         </p>
         <p className="mt-2 text-[length:var(--texte-corps)] text-[color:var(--color-muted)]">
@@ -60,7 +73,7 @@ export function PricingCard({
 
         <div className="mt-6 flex flex-col gap-2.5">
           <Button href={purchaseUrl} externe pleineLargeur>
-            Passer en Premium — {prix}
+            Accès à vie — <Prix courant={prix} reference={prixReference} />
             <FlecheIcone />
           </Button>
           <Button href="/app" ton="contour" pleineLargeur>
@@ -68,7 +81,11 @@ export function PricingCard({
           </Button>
         </div>
 
-        <p className="mt-3 text-center text-[length:var(--texte-meta)] leading-relaxed text-[color:var(--color-muted)]">
+        <div className="mt-5">
+          <MoyensPaiement />
+        </div>
+
+        <p className="mt-4 text-center text-[length:var(--texte-meta)] leading-relaxed text-[color:var(--color-muted)]">
           Le prix, le contenu de l’accès et les modalités sont affichés avant validation.
         </p>
       </div>
