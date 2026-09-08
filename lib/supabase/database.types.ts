@@ -285,6 +285,41 @@ export type Database = {
         Update: Partial<{ storage_path: string; alt: string | null; sort_order: number }>;
         Relationships: [];
       };
+      prompt_questions: {
+        Row: {
+          choices: Json;
+          created_at: string;
+          default_value: string | null;
+          id: string;
+          is_active: boolean;
+          prompt_id: string;
+          question: string;
+          sort_order: number;
+          trigger_note: string | null;
+          updated_at: string;
+          variable: string;
+        };
+        Insert: {
+          prompt_id: string;
+          question: string;
+          sort_order: number;
+          variable: string;
+          choices?: Json;
+          default_value?: string | null;
+          is_active?: boolean;
+          trigger_note?: string | null;
+        };
+        Update: Partial<{
+          question: string;
+          sort_order: number;
+          variable: string;
+          choices: Json;
+          default_value: string | null;
+          is_active: boolean;
+          trigger_note: string | null;
+        }>;
+        Relationships: [];
+      };
       prompt_variants: {
         Row: {
           compatibility: Database['public']['Enums']['compatibility_level'];
