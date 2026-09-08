@@ -16,6 +16,13 @@ export type Avis = {
   lieu: string;
   /** Sur cinq. Ne pas arrondir vers le haut. */
   note: number;
+  /**
+   * Photo de profil, telle que la personne l'utilise sur WhatsApp. Absente
+   * quand elle ne l'a pas transmise : on affiche alors ses initiales plutot
+   * qu'un portrait pris ailleurs, qui donnerait un visage a quelqu'un qui
+   * n'est pas elle.
+   */
+  photo?: string;
 };
 
 export const AVIS: Avis[] = [
@@ -24,6 +31,7 @@ export const AVIS: Avis[] = [
     auteur: 'G. Blaise',
     lieu: 'Côte d’Ivoire',
     note: 5,
+    photo: '/landing/avis/blaise.webp',
   },
   {
     texte:
@@ -45,6 +53,7 @@ export const AVIS: Avis[] = [
     auteur: 'Hene Diop',
     lieu: 'Sénégal',
     note: 5,
+    photo: '/landing/avis/diop.webp',
   },
 ];
 

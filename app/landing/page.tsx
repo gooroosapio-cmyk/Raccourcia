@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 
 import { ChatGPTLogo, ClaudeLogo, GeminiLogo } from '@/components/brand/ai-logos';
 import { AvisCarrousel } from '@/components/landing/avis-carrousel';
+import { ChaineBenefices } from '@/components/landing/chaine-benefices';
 import { BlocAchat } from '@/components/landing/bloc-achat';
 import { BoutonWhatsApp } from '@/components/landing/bouton-whatsapp';
 import { BullesUtilisateurs } from '@/components/landing/bulles-utilisateurs';
@@ -97,7 +98,7 @@ export default async function LandingPage() {
       <LandingHeader purchaseUrl={boutique} prix={prix} />
 
       <main id="haut" className="bg-[color:var(--color-surface)]">
-        <Hero purchaseUrl={boutique} prix={prix} prixReference={prixReference} />
+        <Hero purchaseUrl={boutique} prix={prix} />
         <Chiffres total={totalRaccourcis} categories={categories.length} prix={prix} />
         <Probleme />
         <Difference />
@@ -112,7 +113,7 @@ export default async function LandingPage() {
           total={totalRaccourcis}
         />
         <AvantDeDecider total={totalRaccourcis} />
-        <CtaFinal purchaseUrl={boutique} prix={prix} prixReference={prixReference} />
+        <CtaFinal purchaseUrl={boutique} prix={prix} />
       </main>
 
       <PiedDePage />
@@ -153,15 +154,7 @@ function Section({
 /* Accueil                                                             */
 /* ------------------------------------------------------------------ */
 
-function Hero({
-  purchaseUrl,
-  prix,
-  prixReference,
-}: {
-  purchaseUrl: string;
-  prix: string;
-  prixReference: string | null;
-}) {
+function Hero({ purchaseUrl, prix }: { purchaseUrl: string; prix: string }) {
   return (
     <section className="relative overflow-hidden border-b border-[color:var(--color-line)] bg-gradient-to-b from-[color:var(--color-sky)]/55 to-[color:var(--color-surface)]">
       <Ciel />
@@ -180,12 +173,7 @@ function Hero({
           </p>
 
           <div className="mt-8">
-            <BlocAchat
-              purchaseUrl={purchaseUrl}
-              prix={prix}
-              prixReference={prixReference}
-              libelle="Accès à vie"
-            />
+            <BlocAchat purchaseUrl={purchaseUrl} prix={prix} libelle="Accès à vie" />
           </div>
         </div>
 
@@ -425,6 +413,13 @@ function Systeme() {
             ) : null}
           </div>
         ))}
+      </div>
+
+      {/* Ce que les trois etapes finissent par produire. Place apres elles et
+          non avant : la promesse se lit mieux quand on vient de voir le
+          geste qui la tient. */}
+      <div className="mt-9">
+        <ChaineBenefices />
       </div>
 
       <Image
@@ -793,15 +788,7 @@ function AvantDeDecider({ total }: { total: number }) {
 /* Appel final et pied de page                                         */
 /* ------------------------------------------------------------------ */
 
-function CtaFinal({
-  purchaseUrl,
-  prix,
-  prixReference,
-}: {
-  purchaseUrl: string;
-  prix: string;
-  prixReference: string | null;
-}) {
+function CtaFinal({ purchaseUrl, prix }: { purchaseUrl: string; prix: string }) {
   return (
     <Section>
       <div className="rounded-[24px] bg-[color:var(--color-night)] px-5 py-12 text-center sm:px-10 sm:py-16">
@@ -813,13 +800,7 @@ function CtaFinal({
         {/* Le bloc porte deja les moyens de paiement : les repeter juste en
             dessous ferait deux fois la meme rangee. */}
         <div className="mt-8">
-          <BlocAchat
-            purchaseUrl={purchaseUrl}
-            prix={prix}
-            prixReference={prixReference}
-            libelle="Accès à vie"
-            sombre
-          />
+          <BlocAchat purchaseUrl={purchaseUrl} prix={prix} libelle="Accès à vie" sombre />
         </div>
       </div>
     </Section>

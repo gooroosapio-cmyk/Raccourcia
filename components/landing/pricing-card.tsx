@@ -1,12 +1,14 @@
 import { Button, FlecheIcone } from '@/components/landing/button';
-import { MoyensPaiement, Prix } from '@/components/landing/bloc-achat';
+import { MoyensPaiement } from '@/components/landing/bloc-achat';
 
 /**
  * Carte de l'offre.
  *
- * Un seul prix, aucun montant barre, aucun compte a rebours. Ce qui rassure
- * ici n'est pas la remise mais la clarte : ce qu'on paie, une fois, et ce
- * qu'on obtient — enonce avant le bouton, pas apres.
+ * Le montant de reference est barre au-dessus du prix, jamais dans le bouton :
+ * la carte a la place de montrer les deux nombres l'un sous l'autre, le
+ * bouton n'a que sa ligne. Ce qui rassure ici n'est pas la remise mais la
+ * clarte : ce qu'on paie, une fois, et ce qu'on obtient — enonce avant le
+ * bouton, pas apres.
  *
  * Les elements inclus sont ceux de l'offre actuelle et rien d'autre. Une
  * ligne « mises a jour incluses » serait une promesse que personne n'a
@@ -73,7 +75,7 @@ export function PricingCard({
 
         <div className="mt-6 flex flex-col gap-2.5">
           <Button href={purchaseUrl} externe pleineLargeur>
-            Accès à vie — <Prix courant={prix} reference={prixReference} />
+            Accès à vie — {prix}
             <FlecheIcone />
           </Button>
           <Button href="/app" ton="contour" pleineLargeur>

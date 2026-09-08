@@ -1,12 +1,16 @@
+import Image from 'next/image';
+
 import { avisPublies, paysUtilisateurs } from '@/lib/landing/avis';
 
 /**
  * Rangee de pastilles sous les avis.
  *
- * Des initiales, pas des visages. Les personnes citees ont envoye un message,
- * pas une photo : afficher des portraits pris ailleurs donnerait un visage a
- * quelqu'un qui n'est pas elle, et transformerait quatre temoignages vrais en
- * decor douteux.
+ * La photo de profil quand la personne l'a transmise, ses initiales sinon.
+ * Jamais un portrait pris ailleurs : il donnerait un visage a quelqu'un qui
+ * n'est pas elle, et transformerait quatre temoignages vrais en decor
+ * douteux. Une photo de profil n'est pas forcement un visage — celle de
+ * G. Blaise est un lion, celle de Hene Diop une photo de couple : c'est ce
+ * qu'elles montrent d'elles, et c'est a ce titre qu'on les montre.
  *
  * Les pays ne sont pas ceux des quatre avis affiches mais ceux d'ou des
  * retours sont reellement arrives : l'equipe en recoit plus qu'elle n'en
@@ -33,14 +37,26 @@ export function BullesUtilisateurs() {
       >
         {avis.map((entree, index) => (
           <li key={entree.auteur} className={index === 0 ? '' : '-ml-2.5'}>
-            <span
-              className={`flex h-9 w-9 items-center justify-center rounded-full border-2 border-[color:var(--color-surface)] text-[length:var(--texte-carte)] font-bold text-white ${
-                teintes[index % teintes.length]
-              }`}
-              title={entree.auteur}
-            >
-              {initiales(entree.auteur)}
-            </span>
+            {entree.photo ? (
+              <Image
+                src={entree.photo}
+                alt=""
+                width={192}
+                height={192}
+                loading="lazy"
+                className="h-9 w-9 rounded-full border-2 border-[color:var(--color-surface)] object-cover"
+                title={entree.auteur}
+              />
+            ) : (
+              <span
+                className={`flex h-9 w-9 items-center justify-center rounded-full border-2 border-[color:var(--color-surface)] text-[length:var(--texte-carte)] font-bold text-white ${
+                  teintes[index % teintes.length]
+                }`}
+                title={entree.auteur}
+              >
+                {initiales(entree.auteur)}
+              </span>
+            )}
           </li>
         ))}
       </ul>

@@ -59,55 +59,26 @@ export function MoyensPaiement({ sombre = false }: { sombre?: boolean }) {
 }
 
 /**
- * Prix, montant de reference barre a cote.
- *
- * Le montant barre vient de la configuration et n'est affiche que s'il est
- * reellement superieur : `getPublicConfig` renvoie `null` sinon. Barrer un
- * prix egal serait une remise inventee.
- */
-export function Prix({
-  courant,
-  reference,
-  sombre = false,
-}: {
-  courant: string;
-  reference: string | null;
-  sombre?: boolean;
-}) {
-  return (
-    <span className="inline-flex items-baseline gap-2">
-      {reference ? (
-        <span
-          className={`text-[length:var(--texte-carte)] line-through ${
-            sombre ? 'text-white/50' : 'text-[color:var(--color-muted)]'
-          }`}
-        >
-          {reference}
-        </span>
-      ) : null}
-      <span>{courant}</span>
-    </span>
-  );
-}
-
-/**
  * Bloc d'achat complet : bouton, ligne de reassurance, moyens de paiement.
  *
  * Un seul composant pour les trois endroits ou il apparait — l'accueil,
  * l'offre, l'appel final. Trois copies auraient fini par diverger, et c'est
  * le prix qui aurait diverge en premier.
+ *
+ * Le bouton ne porte que le prix a payer. Le montant de reference barre y
+ * tenait trois nombres sur une seule ligne — le libelle, le barre, le
+ * courant — et l'oeil devait trier avant de comprendre ou appuyer. Il reste
+ * affiche dans la carte d'offre, ou il a la place d'etre lu.
  */
 export function BlocAchat({
   purchaseUrl,
   prix,
-  prixReference,
   libelle,
   secondaire = true,
   sombre = false,
 }: {
   purchaseUrl: string;
   prix: string;
-  prixReference: string | null;
   /** Ce que le bouton promet. Le prix est ajoute ensuite, toujours visible. */
   libelle: string;
   /** Faux quand la page a deja propose la bibliotheque juste au-dessus. */
@@ -119,7 +90,7 @@ export function BlocAchat({
     <div className="mx-auto max-w-xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
         <Button href={purchaseUrl} externe pleineLargeur className="sm:w-auto">
-          {libelle} — <Prix courant={prix} reference={prixReference} sombre />
+          {libelle} — {prix}
           <FlecheIcone />
         </Button>
 
