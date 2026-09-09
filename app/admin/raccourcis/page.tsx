@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { listAdminCategories, listAdminPrompts } from '@/lib/admin/queries';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
 import { MediaBadge } from '@/components/ui/media-badge';
+import { PromptRowActions } from '@/components/admin/prompt-row-actions';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { CONTENT_STATUS, MODES, MODE_LABELS, type Mode } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
@@ -64,10 +65,16 @@ export default async function AdminPromptsPage({
       ) : (
         <ul className="space-y-2">
           {items.map((prompt) => (
-            <li key={prompt.id}>
+            <li
+              key={prompt.id}
+              className="flex items-center gap-2 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-3"
+            >
+              {/* Le lien ne couvre que le texte : un bouton place a
+                  l'interieur d'un lien reste un lien, et l'etoile ouvrirait
+                  la fiche au lieu d'epingler. */}
               <Link
                 href={`/admin/raccourcis/${prompt.id}`}
-                className="flex items-center justify-between gap-3 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-3"
+                className="flex min-w-0 flex-1 items-center justify-between gap-3"
               >
                 <div className="min-w-0">
                   <p className="truncate font-mono text-[15px] font-semibold text-[color:var(--color-night)]">
@@ -90,6 +97,12 @@ export default async function AdminPromptsPage({
                   />
                 </span>
               </Link>
+
+              <PromptRowActions
+                promptId={prompt.id}
+                pinned={prompt.isPinned}
+                status={prompt.status}
+              />
             </li>
           ))}
         </ul>

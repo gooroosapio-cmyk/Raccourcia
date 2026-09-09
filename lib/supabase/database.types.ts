@@ -399,7 +399,9 @@ export type Database = {
           is_featured: boolean;
           is_free: boolean;
           is_new: boolean;
+          is_pinned: boolean;
           limitations: string | null;
+          media_ready: boolean;
           minimal_context: string | null;
           mode: Database['public']['Enums']['app_mode'];
           name: string;
@@ -470,6 +472,8 @@ export type Database = {
           is_free: boolean;
           is_featured: boolean;
           is_new: boolean;
+          is_pinned: boolean;
+          media_ready: boolean;
           show_image_card: boolean;
           thumbnail_spec: string | null;
           admin_notes: string | null;
@@ -675,6 +679,13 @@ export type Database = {
         Args: {
           p_category_id: string;
           p_status: Database['public']['Enums']['content_status'];
+        };
+        Returns: undefined;
+      };
+      admin_set_prompt_pinned: {
+        Args: {
+          p_prompt_id: string;
+          p_pinned: boolean;
         };
         Returns: undefined;
       };

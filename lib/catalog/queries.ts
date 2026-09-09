@@ -523,6 +523,16 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     request = request.order('is_free', { ascending: false });
   }
 
+  // Ce que l'administration a remonte passe devant, puis ce qui a un visuel.
+  // Les deux cles vivent en base et non dans la page : trier les vingt cartes
+  // chargees laissait une carte sans image du premier lot devant une carte
+  // illustree du second, et un ordre qui ne vaut que sur vingt elements n'est
+  // pas un ordre. Elles s'appliquent avant le tri demande, donc dans chaque
+  // categorie comme dans chaque recherche.
+  request = request
+    .order('is_pinned', { ascending: false })
+    .order('media_ready', { ascending: false });
+
   if (query.sort === 'nouveaux') {
     request = request.order('published_at', { ascending: false, nullsFirst: false });
   } else if (query.sort === 'alpha') {
@@ -553,19 +563,10 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     return visiteur && verrouille ? masquerCommande(card) : card;
   });
 
-  // Les commandes encore sans visuel ferment la marche. Elles restent au
-  // catalogue — les retirer ferait disparaitre cent onze raccourcis
-  // parfaitement utilisables — mais elles ne donnent pas la premiere
-  // impression, qui serait alors une rangee de cadres vides.
-  const parStatut = [
-    ...items.filter((carte) => carte.mediaStatus === 'pret'),
-    ...items.filter((carte) => carte.mediaStatus === 'attente'),
-  ];
-
   return {
-    items: parStatut,
+    items,
     hasMore: rows.length > pageSize,
-    total: comptage.count ?? parStatut.length,
+    total: comptage.count ?? items.length,
   };
 }
 

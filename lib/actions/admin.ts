@@ -16,6 +16,7 @@ import {
   mediaTicketInput,
   newPromptInput,
   promptIdentityInput,
+  promptPinnedInput,
   promptStatusInput,
   promptVersionInput,
   variantCompatibilityInput,
@@ -309,6 +310,49 @@ export async function setPromptStatus(
   } as const;
 
   return { success: labels[parsed.data.status] };
+}
+
+/**
+ * Epingle ou desepingle un raccourci.
+ *
+ * L'etoile est un outil d'administration : elle ne s'affiche nulle part cote
+ * membre, seul l'ordre du catalogue en porte la trace. Elle est distincte de
+ * `is_featured`, que le classeur V3 a pose sur 142 raccourcis — une mise en
+ * avant choisie s'y serait noyee.
+ *
+ * Le controle du role est fait deux fois : ici pour repondre proprement, et
+ * dans la fonction `admin_set_prompt_pinned`, qui refuse tout appel direct
+ * d'un compte sans role. Le second est celui qui protege.
+ */
+export async function setPromptPinned(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = promptPinnedInput.safeParse({
+    promptId: formData.get('promptId'),
+    pinned: formData.get('pinned') === 'true',
+  });
+  if (!parsed.success) return { error: 'Demande invalide.' };
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc('admin_set_prompt_pinned', {
+    p_prompt_id: parsed.data.promptId,
+    p_pinned: parsed.data.pinned,
+  });
+
+  if (error) return { error: readableError(error.message) };
+
+  revalidatePath('/admin/raccourcis');
+  revalidatePath(`/admin/raccourcis/${parsed.data.promptId}`);
+  revalidatePath('/app');
+
+  return {
+    success: parsed.data.pinned
+      ? 'Raccourci remonte en tete de sa categorie.'
+      : 'Raccourci remis dans l’ordre du catalogue.',
+  };
 }
 
 // --- Categories -------------------------------------------------------------

@@ -79,6 +79,12 @@ export const promptStatusInput = z.object({
   status: z.enum(CONTENT_STATUS),
 });
 
+/** Epinglage : remonte un raccourci en tete de sa categorie. */
+export const promptPinnedInput = z.object({
+  promptId: z.string().uuid(),
+  pinned: z.coerce.boolean(),
+});
+
 export const variantCompatibilityInput = z.object({
   promptId: z.string().uuid(),
   variantId: z.string().uuid(),
