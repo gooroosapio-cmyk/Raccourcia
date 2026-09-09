@@ -7,10 +7,15 @@ import { resolvePromptInput } from '@/lib/validation/schemas';
 /**
  * Seule voie d'acces au prompt complet.
  *
- * La verification n'est pas faite ici mais dans la fonction SQL
+ * Deux portes, jamais melangees. Un compte connecte passe par
  * `resolve_prompt`, qui controle dans l'ordre : session, appareil actif,
- * droit d'acces, prompt publie, variante publiee, version courante. La route
- * n'ajoute que le rate limiting et la traduction des erreurs.
+ * droit d'acces, prompt publie, variante publiee, version courante. Un
+ * visiteur passe par `resolve_free_prompt`, qui ne rend que les raccourcis
+ * marques `is_free` et refuse tout le reste.
+ *
+ * La verification est faite en base et non ici : la route n'ajoute que le
+ * quota et la traduction des erreurs. Un appel direct a l'API, sans passer
+ * par cette route, rencontre exactement les memes refus.
  *
  * Elle repond toujours `no-store` : ce contenu ne doit jamais etre mis en
  * cache, ni par le navigateur ni par un CDN (Doc Technique V1, 10.2).
@@ -35,14 +40,13 @@ export async function POST(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.json(
-      { error: 'Reconnectez-vous pour continuer.' },
-      { status: 401, headers: noStore },
-    );
-  }
+  const forwarded = request.headers.get('x-forwarded-for');
+  const empreinte = await hashIp(forwarded?.split(',')[0]?.trim() ?? null);
 
-  const { allowed } = await consumeRateLimit('resolution', user.id);
+  // Le quota suit le compte quand il y en a un, l'empreinte d'IP sinon : sans
+  // sujet propre aux visiteurs, tous auraient partage un meme compteur et le
+  // premier a copier aurait ferme la porte aux suivants.
+  const { allowed } = await consumeRateLimit('resolution', user ? user.id : `ip:${empreinte}`);
   if (!allowed) {
     return NextResponse.json(
       { error: 'Trop de copies en peu de temps. Patientez un instant.' },
@@ -50,11 +54,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { data, error } = await supabase.rpc('resolve_prompt', {
-    p_prompt_id: parsed.data.promptId,
-    p_provider_key: parsed.data.provider,
-    p_surface: parsed.data.surface,
-  });
+  const { data, error } = user
+    ? await supabase.rpc('resolve_prompt', {
+        p_prompt_id: parsed.data.promptId,
+        p_provider_key: parsed.data.provider,
+        p_surface: parsed.data.surface,
+      })
+    : await supabase.rpc('resolve_free_prompt', {
+        p_prompt_id: parsed.data.promptId,
+        p_provider_key: parsed.data.provider,
+        p_surface: parsed.data.surface,
+      });
 
   if (error) {
     // 28000 : session absente ou appareil deconnecte. 42501 : droit refuse,
@@ -64,16 +74,20 @@ export async function POST(request: NextRequest) {
     const message =
       status === 401
         ? 'Reconnectez-vous pour continuer.'
-        : 'Votre acces ne permet pas de copier ce raccourci.';
+        : user
+          ? 'Votre acces ne permet pas de copier ce raccourci.'
+          : // Un visiteur n'a rien a reconnecter : ce qui lui manque est
+            // l'acces, et le lui dire ainsi le laisse devant une porte sans
+            // poignee. La reponse est l'offre.
+            'Cette commande est réservée aux membres.';
 
-    const forwarded = request.headers.get('x-forwarded-for');
     await createAdminClient()
       .from('security_events')
       .insert({
         event_type: 'resolution_refusee',
-        user_id: user.id,
-        ip_hash: await hashIp(forwarded?.split(',')[0]?.trim() ?? null),
-        meta: { code: error.code ?? null },
+        user_id: user?.id ?? null,
+        ip_hash: empreinte,
+        meta: { code: error.code ?? null, visiteur: !user },
       });
 
     return NextResponse.json({ error: message }, { status, headers: noStore });

@@ -18,12 +18,6 @@ export type FiltresAvances = {
   acces?: 'gratuit' | 'membre';
   ia?: 'chatgpt' | 'claude' | 'gemini';
   sortie?: 'image' | 'texte' | 'pdf';
-  /**
-   * Ce que le resultat demande comme relecture. La donnee existe pour les
-   * 555 commandes (`risk_level`) ; le libelle, lui, parle a l'utilisateur
-   * plutot qu'au back-office.
-   */
-  niveau?: 'faible' | 'moyen' | 'eleve';
 };
 
 /**
@@ -33,7 +27,7 @@ export type FiltresAvances = {
  * objet vide, et parcourir ses entrees ne supprimait alors rien de l'URL —
  * les filtres survivaient a leur propre remise a zero.
  */
-export const CLES_FILTRES = ['acces', 'ia', 'sortie', 'niveau'] as const;
+export const CLES_FILTRES = ['acces', 'ia', 'sortie'] as const;
 
 const GROUPES = [
   {
@@ -60,15 +54,6 @@ const GROUPES = [
       { valeur: 'image', libelle: 'Image' },
       { valeur: 'texte', libelle: 'Texte' },
       { valeur: 'pdf', libelle: 'PDF' },
-    ],
-  },
-  {
-    cle: 'niveau' as const,
-    titre: 'Avant publication',
-    options: [
-      { valeur: 'faible', libelle: 'Utilisable direct' },
-      { valeur: 'moyen', libelle: 'À vérifier' },
-      { valeur: 'eleve', libelle: 'À faire relire' },
     ],
   },
 ];

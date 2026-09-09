@@ -4,6 +4,8 @@ import type { Metadata } from 'next';
 import { getPromptDetail, getPublicConfig } from '@/lib/catalog/queries';
 import { getAccessState } from '@/lib/access/entitlement';
 import { AccessBadge } from '@/components/cards/access-badge';
+import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
+import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
 import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { InputExampleList } from '@/components/detail/input-example-list';
@@ -128,7 +130,32 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
       ) : null}
 
       <section className="mt-8 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
-        {hasFullAccess ? (
+        {prompt.isFree ? (
+          /*
+           * Commande offerte : elle se copie ici, sans compte.
+           *
+           * C'est le seul endroit ou un lien partage sur WhatsApp demontre
+           * quelque chose. Renvoyer vers l'offre celui qui vient d'ouvrir le
+           * lien d'une commande gratuite lui fermait la porte au moment
+           * precis ou on lui montrait ce qu'il y a derriere.
+           */
+          <>
+            <CopyCommandButton
+              promptId={prompt.id}
+              provider={compatibles[0]?.key ?? 'chatgpt'}
+              surface="page-publique"
+              proposerOuverture
+            />
+            {!hasFullAccess ? (
+              <p className="mt-3 text-center text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+                Cette commande est offerte.{' '}
+                <Link href="/offre" className="font-medium text-[color:var(--color-brand)]">
+                  Voir tout le catalogue
+                </Link>
+              </p>
+            ) : null}
+          </>
+        ) : hasFullAccess ? (
           <>
             <p className="text-[15px] font-semibold text-[color:var(--color-night)]">
               Votre accès est actif.
@@ -163,6 +190,8 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
           Catégorie : {prompt.categoryName}
         </p>
       ) : null}
+
+      <AvertissementResultats className="mt-4 border-t border-[color:var(--color-line)] pt-3" />
     </article>
   );
 }

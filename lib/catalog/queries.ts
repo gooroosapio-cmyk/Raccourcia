@@ -12,7 +12,6 @@ import {
   MODES,
   STORAGE_BUCKETS,
   type LegalKey,
-  type MediaStatus,
   type Mode,
 } from '@/lib/constants';
 import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
@@ -252,22 +251,6 @@ function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
   };
 }
 
-/**
- * Ce que la carte peut montrer, deduit de ce qui existe.
- *
- * Une commande texte est toujours prete : sa carte est editoriale, elle
- * n'attend aucune image. Une commande image l'est des qu'elle a son couple
- * avant/apres — le seul etat qui permette de montrer une transformation.
- */
-function statutMedia(row: CardRow, vignette: string | null): MediaStatus {
-  if (!row.show_image_card) return 'pret';
-  // La question est « la carte a-t-elle quelque chose a montrer ? », pas
-  // « la paire est-elle complete ? » : un raccourci pourvu d'une seule
-  // vignette s'affiche parfaitement, et le ranger sous « Encore sans
-  // visuel » dirait le contraire de ce que l'ecran montre.
-  return vignette ? 'pret' : 'attente';
-}
-
 function toCard(row: CardRow, favorites: Set<string>): PromptCard {
   // L'Apres prime : c'est le resultat, donc ce qui fait choisir. La miniature
   // ne sert que de repli pour les raccourcis qui en ont une sans paire.
@@ -290,7 +273,6 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     // dit deja ce que le raccourci fait.
     resultSummary: row.result_summary?.trim() || row.short_description,
     beforeAfter: comparaison,
-    mediaStatus: statutMedia(row, thumbnail ? mediaUrl(thumbnail.storage_path) : null),
     inputExamples: row.input_examples ?? [],
     outputFormats: row.output_formats ?? [],
     useCases: row.use_cases ?? [],
@@ -504,7 +486,6 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
     if (query.provider) requete = requete.eq('prompt_variants.ai_providers.key', query.provider);
     if (query.access) requete = requete.eq('is_free', query.access === 'gratuit');
-    if (query.level) requete = requete.eq('risk_level', query.level);
     if (query.output) {
       // `contains` sur un tableau : une commande peut produire plusieurs
       // formats, on garde celles qui produisent au moins celui demande.
@@ -516,22 +497,23 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
   let request = construire(CARD_COLUMNS);
 
-  // Sans acces, les raccourcis gratuits passent devant, quel que soit le tri
-  // choisi : ce sont les seuls que le visiteur peut reellement copier, il doit
-  // donc les trouver sans les chercher. Le tri demande s'applique ensuite.
-  if (!hasFullAccess) {
-    request = request.order('is_free', { ascending: false });
-  }
-
-  // Ce que l'administration a remonte passe devant, puis ce qui a un visuel.
-  // Les deux cles vivent en base et non dans la page : trier les vingt cartes
+  // L'ordre du catalogue, avant le tri demande et donc dans chaque categorie
+  // comme dans chaque recherche : ce qui a un visuel, puis ce que
+  // l'administration a remonte, puis les nouveautes.
+  //
+  // Les trois cles vivent en base et non dans la page. Trier les vingt cartes
   // chargees laissait une carte sans image du premier lot devant une carte
   // illustree du second, et un ordre qui ne vaut que sur vingt elements n'est
-  // pas un ordre. Elles s'appliquent avant le tri demande, donc dans chaque
-  // categorie comme dans chaque recherche.
+  // pas un ordre.
+  //
+  // Les raccourcis offerts ne passent plus devant pour les visiteurs. Ils
+  // sont cinq : les remonter remplissait le premier ecran et repoussait tout
+  // le catalogue derriere une pagination que personne n'atteignait. Un
+  // visiteur doit voir ce qu'il achete, verrous compris.
   request = request
+    .order('media_ready', { ascending: false })
     .order('is_pinned', { ascending: false })
-    .order('media_ready', { ascending: false });
+    .order('is_new', { ascending: false });
 
   if (query.sort === 'nouveaux') {
     request = request.order('published_at', { ascending: false, nullsFirst: false });
@@ -540,6 +522,13 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   } else {
     request = request.order('is_featured', { ascending: false }).order('sort_order');
   }
+
+  // Derniere cle, toujours : `sort_order` compte jusqu'a quatre ex aequo dans
+  // le catalogue, et Postgres n'a alors aucune raison de rendre deux fois le
+  // meme ordre. La liste changeait donc d'un rendu a l'autre, et « Voir plus »
+  // pouvait montrer deux fois la meme carte ou en sauter une. La commande est
+  // unique : elle departage sans jamais elle-meme etre a egalite.
+  request = request.order('command', { ascending: true });
 
   // On demande un element de plus pour savoir s'il reste une page. Le total
   // vient d'un comptage separe, construit par la meme fonction : le chiffre
@@ -799,202 +788,4 @@ export async function getRecents(): Promise<PromptCard[]> {
   return ordered
     .map((entry) => cards.find((card) => card.id === entry.id))
     .filter((card) => card !== undefined);
-}
-
-/**
- * Ce que l'Accueil montre avant le catalogue.
- *
- * Trois sections, dans l'ordre ou elles servent : ce qu'on vient d'utiliser,
- * ce qu'on a mis de cote, puis ce qu'on n'a pas encore vu. Chacune peut etre
- * vide, et une section vide ne s'affiche pas — un bandeau « aucun favori »
- * occupe la place sans rien apporter.
- *
- * Tout est deduit de donnees reellement enregistrees. Aucune notion de
- * popularite n'est fabriquee : `copy_events` n'est lisible que par son
- * proprietaire, et le classer par volume ferait passer les essais de
- * l'equipe pour un usage. Le repli est editorial — les raccourcis mis en
- * avant, puis l'ordre du catalogue — ce qui ne pretend rien.
- */
-export type SectionsAccueil = {
-  recents: PromptCard[];
-  favoris: PromptCard[];
-  recommandations: PromptCard[];
-};
-
-/** Nombre de cartes par section : trois rangees de deux sur un telephone. */
-const TAILLE_SECTION = 6;
-
-export async function getSectionsAccueil(mode: Mode): Promise<SectionsAccueil> {
-  const supabase = await createClient();
-  const { isMember, hasFullAccess } = await getAccessState();
-
-  // Un visiteur n'a ni historique ni favoris, et les recommandations lui
-  // montreraient surtout des commandes qu'il ne peut pas copier.
-  if (!isMember || !hasFullAccess) {
-    return { recents: [], favoris: [], recommandations: [] };
-  }
-
-  const [{ data: recentRows }, { data: favorisRows }] = await Promise.all([
-    // L'ordre precede la limite : sans lui, les soixante lignes ramenees
-    // sont arbitraires et la commande copiee a l'instant peut manquer.
-    supabase
-      .from('recent_items')
-      .select('prompt_id, last_copied_at, last_viewed_at, copy_count')
-      .order('last_copied_at', { ascending: false, nullsFirst: false })
-      .order('last_viewed_at', { ascending: false, nullsFirst: false })
-      .limit(60),
-    supabase.from('favorites').select('prompt_id').order('created_at', { ascending: false }),
-  ]);
-
-  const favorisIds = (favorisRows ?? []).map((ligne) => ligne.prompt_id);
-  const favorites = new Set(favorisIds);
-
-  // Copie d'abord, consultation ensuite : avoir copie une commande dit qu'on
-  // s'en est servi, l'avoir ouverte dit seulement qu'on l'a regardee.
-  const recentsOrdonnes = (recentRows ?? [])
-    .map((ligne) => ({
-      id: ligne.prompt_id,
-      quand: ligne.last_copied_at ?? ligne.last_viewed_at ?? '',
-      copie: ligne.last_copied_at !== null,
-      copies: ligne.copy_count ?? 0,
-    }))
-    .sort((a, b) => {
-      if (a.copie !== b.copie) return a.copie ? -1 : 1;
-      return b.quand.localeCompare(a.quand);
-    });
-
-  const idsHistorique = recentsOrdonnes.map((entree) => entree.id);
-
-  // Une seule lecture pour l'historique et les favoris : ils se recouvrent
-  // souvent, et deux requetes auraient ramene deux fois les memes lignes.
-  const idsConnus = [...new Set([...idsHistorique, ...favorisIds])];
-  const connues = idsConnus.length
-    ? await lireCartes(supabase, idsConnus, mode, favorites)
-    : new Map<string, PromptCard>();
-
-  const recents = idsHistorique
-    .map((id) => connues.get(id))
-    .filter((carte): carte is PromptCard => carte !== undefined)
-    .slice(0, TAILLE_SECTION);
-
-  const dejaVues = new Set(recents.map((carte) => carte.id));
-
-  const favoris = favorisIds
-    .map((id) => connues.get(id))
-    .filter((carte): carte is PromptCard => carte !== undefined && !dejaVues.has(carte.id))
-    .slice(0, TAILLE_SECTION);
-
-  for (const carte of favoris) dejaVues.add(carte.id);
-
-  // Les familles ou l'on revient le plus, d'apres l'historique lui-meme, et
-  // dans le mode affiche seulement : `connues` est deja filtre par mode,
-  // alors que `idsConnus` melange les deux et ferait recommander des
-  // commandes texte a qui regarde les images.
-  const famillesFrequentes = await famillesDeLHistorique(supabase, [...connues.keys()]);
-
-  const recommandations = await recommander(
-    supabase,
-    mode,
-    favorites,
-    dejaVues,
-    famillesFrequentes,
-  );
-
-  return { recents, favoris, recommandations };
-}
-
-/** Cartes publiees d'un mode, indexees par identifiant. */
-async function lireCartes(
-  client: Client,
-  ids: string[],
-  mode: Mode,
-  favorites: Set<string>,
-): Promise<Map<string, PromptCard>> {
-  const { data } = await client
-    .from('prompts')
-    .select(CARD_COLUMNS)
-    .in('id', ids)
-    .eq('mode', mode)
-    .eq('status', 'published');
-
-  const cartes = ((data ?? []) as unknown as CardRow[]).map((ligne) => toCard(ligne, favorites));
-  return new Map(cartes.map((carte) => [carte.id, carte]));
-}
-
-/** Familles les plus representees dans ce que le membre a deja ouvert. */
-async function famillesDeLHistorique(client: Client, ids: string[]): Promise<string[]> {
-  if (ids.length === 0) return [];
-
-  const { data } = await client.from('prompts').select('category_id').in('id', ids);
-
-  const comptes = new Map<string, number>();
-  for (const ligne of data ?? []) {
-    if (!ligne.category_id) continue;
-    comptes.set(ligne.category_id, (comptes.get(ligne.category_id) ?? 0) + 1);
-  }
-
-  return [...comptes.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([id]) => id);
-}
-
-/**
- * Ce qu'on propose ensuite.
- *
- * D'abord les familles ou le membre revient, puis le repli editorial. Les
- * commandes deja montrees plus haut sont ecartees, tout comme celles qui
- * n'ont pas encore de visuel : une suggestion est une premiere impression,
- * elle ne peut pas etre un cadre vide.
- */
-async function recommander(
-  client: Client,
-  mode: Mode,
-  favorites: Set<string>,
-  exclues: Set<string>,
-  familles: string[],
-): Promise<PromptCard[]> {
-  const retenues: PromptCard[] = [];
-  const vues = new Set(exclues);
-
-  const ajouter = (cartes: PromptCard[]) => {
-    for (const carte of cartes) {
-      if (retenues.length >= TAILLE_SECTION) return;
-      if (vues.has(carte.id) || carte.mediaStatus !== 'pret') continue;
-      vues.add(carte.id);
-      retenues.push(carte);
-    }
-  };
-
-  const lire = async (appliquer: (r: ReturnType<typeof base>) => ReturnType<typeof base>) => {
-    const { data } = await appliquer(base()).limit(TAILLE_SECTION * 4);
-    return ((data ?? []) as unknown as CardRow[]).map((ligne) => toCard(ligne, favorites));
-  };
-
-  const base = () =>
-    client.from('prompts').select(CARD_COLUMNS).eq('mode', mode).eq('status', 'published');
-
-  // `media_ready` d'abord : sans lui, les vingt-quatre lignes lues pouvaient
-  // etre vingt-quatre commandes sans visuel, toutes ecartees ensuite, et la
-  // section revenait vide alors que le catalogue avait de quoi la remplir.
-  const visuelsDabord = (r: ReturnType<typeof base>) =>
-    r.order('media_ready', { ascending: false });
-
-  if (familles.length > 0) {
-    ajouter(
-      await lire((r) =>
-        visuelsDabord(r.in('category_id', familles)).order('is_featured', { ascending: false }),
-      ),
-    );
-  }
-
-  if (retenues.length < TAILLE_SECTION) {
-    ajouter(
-      await lire((r) =>
-        visuelsDabord(r).order('is_featured', { ascending: false }).order('sort_order'),
-      ),
-    );
-  }
-
-  return retenues;
 }
