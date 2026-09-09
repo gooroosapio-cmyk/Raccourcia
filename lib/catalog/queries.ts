@@ -974,14 +974,26 @@ async function recommander(
   const base = () =>
     client.from('prompts').select(CARD_COLUMNS).eq('mode', mode).eq('status', 'published');
 
+  // `media_ready` d'abord : sans lui, les vingt-quatre lignes lues pouvaient
+  // etre vingt-quatre commandes sans visuel, toutes ecartees ensuite, et la
+  // section revenait vide alors que le catalogue avait de quoi la remplir.
+  const visuelsDabord = (r: ReturnType<typeof base>) =>
+    r.order('media_ready', { ascending: false });
+
   if (familles.length > 0) {
     ajouter(
-      await lire((r) => r.in('category_id', familles).order('is_featured', { ascending: false })),
+      await lire((r) =>
+        visuelsDabord(r.in('category_id', familles)).order('is_featured', { ascending: false }),
+      ),
     );
   }
 
   if (retenues.length < TAILLE_SECTION) {
-    ajouter(await lire((r) => r.order('is_featured', { ascending: false }).order('sort_order')));
+    ajouter(
+      await lire((r) =>
+        visuelsDabord(r).order('is_featured', { ascending: false }).order('sort_order'),
+      ),
+    );
   }
 
   return retenues;
