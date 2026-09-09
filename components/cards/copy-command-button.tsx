@@ -6,6 +6,61 @@ import { PROVIDER_LABELS, PROVIDER_URLS, type ProviderKey } from '@/lib/constant
 
 type Etat = 'repos' | 'chargement' | 'copie';
 
+/** Refus venant du serveur : il porte deja un message pour l'utilisateur. */
+class ErreurCopie extends Error {}
+
+/** Demande le contenu complet. La route revalide les droits a chaque appel. */
+function demanderLaCommande(corps: {
+  promptId: string;
+  provider: string;
+  surface: string;
+}): Promise<string> {
+  return fetch('/api/resolve-prompt', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(corps),
+    cache: 'no-store',
+  }).then(async (response) => {
+    const data = (await response.json().catch(() => ({}))) as {
+      payload?: string;
+      error?: string;
+    };
+    if (!response.ok || !data.payload) {
+      throw new ErreurCopie(data.error ?? 'Copie impossible. Réessayez.');
+    }
+    return data.payload;
+  });
+}
+
+/**
+ * Ecrit dans le presse-papiers sans perdre l'autorisation du navigateur.
+ *
+ * Safari n'accorde ce droit que pendant la tache issue du clic. Attendre la
+ * reponse du serveur avant d'appeler `writeText` la consomme, et l'appel est
+ * refuse : sur iPhone, toute copie echouait, membre ou visiteur, alors que la
+ * route repondait 200. C'est la cause du « Copie impossible » signale.
+ *
+ * `ClipboardItem` accepte une promesse comme valeur, precisement pour ce cas :
+ * l'appel part dans le geste, le contenu arrive apres. Le repli par
+ * `writeText` sert aux navigateurs qui n'acceptent pas de promesse — ils ne
+ * demandent pas le geste avec la meme severite.
+ */
+function ecrireDansLePressePapier(texte: Promise<string>): Promise<void> {
+  const repli = () => texte.then((valeur) => navigator.clipboard.writeText(valeur));
+
+  if (typeof ClipboardItem === 'undefined' || !navigator.clipboard?.write) return repli();
+
+  try {
+    const item = new ClipboardItem({
+      'text/plain': texte.then((valeur) => new Blob([valeur], { type: 'text/plain' })),
+    });
+    return navigator.clipboard.write([item]).catch(repli);
+  } catch {
+    // Certains navigateurs refusent une promesse a la construction.
+    return repli();
+  }
+}
+
 /**
  * Bouton de copie d'une commande.
  *
@@ -45,40 +100,51 @@ export function CopyCommandButton({
   const [etat, setEtat] = useState<Etat>('repos');
   const [ouvertureProposee, setOuvertureProposee] = useState(false);
 
-  const copier = useCallback(async () => {
+  // Volontairement non `async` : tout ce qui precede l'ecriture dans le
+  // presse-papiers doit rester dans la meme tache que le clic. Voir
+  // `ecrireDansLePressePapier`.
+  const copier = useCallback(() => {
     if (locked) {
       onLockedClick?.();
       return;
     }
 
     setEtat('chargement');
-    try {
-      const response = await fetch('/api/resolve-prompt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ promptId, provider, surface }),
-        cache: 'no-store',
-      });
 
-      const data = (await response.json()) as { payload?: string; error?: string };
-      if (!response.ok || !data.payload) {
+    const texte = demanderLaCommande({ promptId, provider, surface });
+    // Sans ce filet, un refus du serveur remonterait aussi comme rejet non
+    // gere : la promesse est lue deux fois, une seule lecture la traite.
+    texte.catch(() => {});
+
+    // Les deux doivent aboutir. Le presse-papiers seul ne suffit pas : un
+    // navigateur qui accepte l'ecriture sans attendre la valeur promise ferait
+    // annoncer « Commande copiee » sur un refus du serveur.
+    Promise.all([ecrireDansLePressePapier(texte), texte]).then(
+      () => {
+        setEtat('copie');
+        show('Commande copiée');
+        setOuvertureProposee(proposerOuverture);
+        navigator.vibrate?.(10);
+        // La coche est une confirmation breve : le bouton doit redevenir
+        // utilisable tout de suite, on copie souvent deux fois de suite.
+        setTimeout(() => setEtat('repos'), 1400);
+      },
+      async () => {
         setEtat('repos');
-        show(data.error ?? 'Copie impossible. Réessayez.', 'erreur');
-        return;
-      }
-
-      await navigator.clipboard.writeText(data.payload);
-      setEtat('copie');
-      show('Commande copiée');
-      setOuvertureProposee(proposerOuverture);
-      navigator.vibrate?.(10);
-      // La coche est une confirmation breve : le bouton doit redevenir
-      // utilisable tout de suite, on copie souvent deux fois de suite.
-      setTimeout(() => setEtat('repos'), 1400);
-    } catch {
-      setEtat('repos');
-      show('Copie impossible. Réessayez.', 'erreur');
-    }
+        // Deux echecs tres differents arrivaient sous le meme message. On
+        // relit la demande pour savoir lequel : si elle a abouti, c'est le
+        // presse-papiers qui a refuse, et reessayer n'y changera rien.
+        try {
+          await texte;
+          show('Votre navigateur a refusé l’accès au presse-papiers.', 'erreur');
+        } catch (erreur) {
+          show(
+            erreur instanceof ErreurCopie ? erreur.message : 'Connexion interrompue. Réessayez.',
+            'erreur',
+          );
+        }
+      },
+    );
   }, [locked, onLockedClick, promptId, proposerOuverture, provider, show, surface]);
 
   const libelle = locked

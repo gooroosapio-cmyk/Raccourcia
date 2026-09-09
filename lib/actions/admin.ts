@@ -15,6 +15,7 @@ import {
   mediaRegisterInput,
   mediaTicketInput,
   newPromptInput,
+  promptFreeInput,
   promptIdentityInput,
   promptPinnedInput,
   promptStatusInput,
@@ -335,6 +336,49 @@ export async function setPromptPinned(
     success: parsed.data.pinned
       ? 'Raccourci remonte en tete de sa categorie.'
       : 'Raccourci remis dans l’ordre du catalogue.',
+  };
+}
+
+/**
+ * Offre un raccourci, ou le remet derriere l'acces.
+ *
+ * Le palier d'essai se decide en parcourant le catalogue, pas en editant
+ * une fiche : c'est en voyant les cartes cote a cote qu'on juge laquelle
+ * montre le mieux ce que le produit sait faire.
+ *
+ * Un raccourci offert est copiable par n'importe qui, sans compte. Le
+ * controle du role est fait deux fois : ici pour repondre proprement, et
+ * dans `admin_set_prompt_free`, qui refuse tout appel direct. Le second est
+ * celui qui protege.
+ */
+export async function setPromptFree(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = promptFreeInput.safeParse({
+    promptId: formData.get('promptId'),
+    free: formData.get('free') === 'true',
+  });
+  if (!parsed.success) return { error: 'Demande invalide.' };
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc('admin_set_prompt_free', {
+    p_prompt_id: parsed.data.promptId,
+    p_free: parsed.data.free,
+  });
+
+  if (error) return { error: readableError(error.message) };
+
+  revalidatePath('/admin/raccourcis');
+  revalidatePath(`/admin/raccourcis/${parsed.data.promptId}`);
+  revalidatePath('/app');
+
+  return {
+    success: parsed.data.free
+      ? 'Raccourci offert. Il se copie sans compte.'
+      : 'Raccourci remis derriere l’acces a vie.',
   };
 }
 

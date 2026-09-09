@@ -85,6 +85,11 @@ export const promptPinnedInput = z.object({
   pinned: z.coerce.boolean(),
 });
 
+export const promptFreeInput = z.object({
+  promptId: z.string().uuid(),
+  free: z.coerce.boolean(),
+});
+
 export const variantCompatibilityInput = z.object({
   promptId: z.string().uuid(),
   variantId: z.string().uuid(),
