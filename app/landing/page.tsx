@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { ChatGPTLogo, ClaudeLogo, GeminiLogo } from '@/components/brand/ai-logos';
 import { AvisCarrousel } from '@/components/landing/avis-carrousel';
 import { ChaineBenefices } from '@/components/landing/chaine-benefices';
+import { Film } from '@/components/landing/film';
 import { BlocAchat } from '@/components/landing/bloc-achat';
 import { BoutonWhatsApp } from '@/components/landing/bouton-whatsapp';
 import { BullesUtilisateurs } from '@/components/landing/bulles-utilisateurs';
@@ -174,6 +175,12 @@ function Hero({ purchaseUrl, prix }: { purchaseUrl: string; prix: string }) {
             RaccourcIA rassemble des commandes claires pour vous aider à créer, écrire, analyser et
             avancer plus vite avec vos IA préférées.
           </p>
+
+          {/* Le film avant le premier bouton : il fait la promesse, le bouton
+              la prend. L'inverse demanderait de decider avant d'avoir vu. */}
+          <div className="mt-8">
+            <Film />
+          </div>
 
           <div className="mt-8">
             <BlocAchat purchaseUrl={purchaseUrl} prix={prix} libelle="Accès à vie" />
