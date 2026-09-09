@@ -45,7 +45,7 @@ function readableError(message: string): string {
     return 'Le prompt complet ne peut pas être vide.';
   }
   if (message.includes('FORBIDDEN')) {
-    return "Cette action demande un role d'administration.";
+    return 'Cette action demande un rôle d’administration.';
   }
   if (message.includes('duplicate key') && message.includes('command')) {
     return 'Cette commande existe déjà dans le catalogue.';
@@ -269,29 +269,12 @@ export async function setPromptStatus(
 
   const supabase = await createClient();
 
-  // Une carte visuelle sans comparaison complete ne montre rien de ce que la
-  // commande produit. On refuse la publication plutot que de laisser passer
-  // une fiche muette, que personne ne reviendra completer.
-  if (parsed.data.status === 'published') {
-    const { data: prompt } = await supabase
-      .from('prompts')
-      .select('show_image_card, prompt_media(kind)')
-      .eq('id', parsed.data.promptId)
-      .maybeSingle();
-
-    const media = (prompt?.prompt_media ?? []) as { kind: string }[];
-    const manquants = ['before', 'after'].filter(
-      (kind) => !media.some((entry) => entry.kind === kind),
-    );
-
-    if (prompt?.show_image_card && manquants.length > 0) {
-      return {
-        error:
-          'Ajoutez les visuels Avant et Après avant de publier, ou désactivez la carte avec visuel.',
-      };
-    }
-  }
-
+  // Publier sans visuel etait autrefois refuse : la carte se serait affichee
+  // muette. Ce n'est plus le cas — le catalogue regroupe ces commandes sous
+  // « Encore sans visuel », ou l'absence d'apercu est dite, et les trie apres
+  // les autres. Garder le refus ferait du bouton « masquer » une porte a sens
+  // unique : 111 des 330 cartes visuelles publiees n'ont pas encore leur
+  // paire, et aucune ne pourrait etre remise en ligne apres avoir ete masquee.
   const { error } = await supabase.rpc('admin_set_prompt_status', {
     p_prompt_id: parsed.data.promptId,
     p_status: parsed.data.status,
