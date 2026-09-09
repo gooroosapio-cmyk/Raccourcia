@@ -13,18 +13,40 @@ const STATUS_LABELS: Record<Enums<'content_status'>, string> = {
   archived: 'Archives',
 };
 
+/** Le palier d'essai : ce qui se copie sans compte, et ce qui ne le fait pas. */
+const ACCES = [
+  { valeur: 'gratuit' as const, libelle: 'Gratuits' },
+  { valeur: 'premium' as const, libelle: 'Premium' },
+];
+
+/**
+ * Ce que la carte peut montrer.
+ *
+ * Meme colonne que celle qui decide de l'ordre du catalogue : « Sans visuel »
+ * liste donc exactement ce qui ferme la liste cote membre, c'est-a-dire ce
+ * qu'il reste a produire.
+ */
+const VISUELS = [
+  { valeur: 'avec' as const, libelle: 'Avec visuel' },
+  { valeur: 'sans' as const, libelle: 'Sans visuel' },
+];
+
 /** Filtres de la liste admin. Ils passent par l'URL, comme cote membre. */
 export function AdminPromptFilters({
   search,
   mode,
   status,
   categoryId,
+  access,
+  media,
   categories,
 }: {
   search?: string;
   mode?: Enums<'app_mode'>;
   status?: Enums<'content_status'>;
   categoryId?: string;
+  access?: 'gratuit' | 'premium';
+  media?: 'avec' | 'sans';
   categories: AdminCategory[];
 }) {
   const router = useRouter();
@@ -126,6 +148,24 @@ export function AdminPromptFilters({
               label={STATUS_LABELS[value]}
               active={status === value}
               onClick={() => toggle('statut', value, status)}
+            />
+          ))}
+          <span aria-hidden="true" className="w-px bg-[color:var(--color-line)]" />
+          {ACCES.map(({ valeur, libelle }) => (
+            <Chip
+              key={valeur}
+              label={libelle}
+              active={access === valeur}
+              onClick={() => toggle('acces', valeur, access)}
+            />
+          ))}
+          <span aria-hidden="true" className="w-px bg-[color:var(--color-line)]" />
+          {VISUELS.map(({ valeur, libelle }) => (
+            <Chip
+              key={valeur}
+              label={libelle}
+              active={media === valeur}
+              onClick={() => toggle('visuel', valeur, media)}
             />
           ))}
         </div>

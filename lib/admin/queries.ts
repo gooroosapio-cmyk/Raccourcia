@@ -135,8 +135,15 @@ export type AdminPromptFilters = {
   mode?: Enums<'app_mode'>;
   status?: Enums<'content_status'>;
   categoryId?: string;
-  /** Vrai pour ne garder que les raccourcis dont les deux visuels manquent. */
-  missingMedia?: boolean;
+  /** « gratuit » : copiable sans compte. « premium » : reserve aux membres. */
+  access?: 'gratuit' | 'premium';
+  /**
+   * « avec » : la carte a de quoi se montrer. « sans » : elle attend encore
+   * son visuel, et ferme donc la liste cote membre. C'est la meme colonne qui
+   * decide de l'ordre du catalogue : filtrer dessus repond exactement a la
+   * question « que reste-t-il a produire ? ».
+   */
+  media?: 'avec' | 'sans';
   page: number;
 };
 
@@ -153,6 +160,8 @@ export async function listAdminPrompts(
   if (filters.mode) request = request.eq('mode', filters.mode);
   if (filters.status) request = request.eq('status', filters.status);
   if (filters.categoryId) request = request.eq('category_id', filters.categoryId);
+  if (filters.access) request = request.eq('is_free', filters.access === 'gratuit');
+  if (filters.media) request = request.eq('media_ready', filters.media === 'avec');
   if (filters.search) request = request.ilike('search_text', `%${filters.search.toLowerCase()}%`);
 
   const { data } = await request

@@ -682,6 +682,10 @@ export type Database = {
         };
         Returns: undefined;
       };
+      admin_set_prompt_free: {
+        Args: { p_prompt_id: string; p_free: boolean };
+        Returns: undefined;
+      };
       admin_set_prompt_pinned: {
         Args: {
           p_prompt_id: string;

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { listAdminCategories, listAdminPrompts } from '@/lib/admin/queries';
+import type { AdminPromptFilters as FiltresListe } from '@/lib/admin/queries';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
 import { MediaBadge } from '@/components/ui/media-badge';
 import { PromptRowActions } from '@/components/admin/prompt-row-actions';
@@ -22,14 +23,22 @@ export default async function AdminPromptsPage({
 
   const mode = asString(params.mode);
   const status = asString(params.statut);
+  const acces = asString(params.acces);
+  const visuel = asString(params.visuel);
 
-  const filters = {
+  // Le type contextuel garde les litteraux : sans lui, « gratuit » redevient
+  // `string` dans l'objet et ne correspond plus a la liste fermee.
+  const filters: FiltresListe = {
     search: asString(params.q),
     mode: MODES.includes(mode as Mode) ? (mode as Mode) : undefined,
     status: CONTENT_STATUS.includes(status as Enums<'content_status'>)
       ? (status as Enums<'content_status'>)
       : undefined,
     categoryId: asString(params.categorie),
+    // Listes fermees : une valeur inconnue arrivant par l'URL est ignoree,
+    // jamais transmise a la requete.
+    access: acces === 'gratuit' || acces === 'premium' ? acces : undefined,
+    media: visuel === 'avec' || visuel === 'sans' ? visuel : undefined,
     page: Number(asString(params.page) ?? 1) || 1,
   };
 
@@ -55,6 +64,8 @@ export default async function AdminPromptsPage({
         mode={filters.mode}
         status={filters.status}
         categoryId={filters.categoryId}
+        access={filters.access}
+        media={filters.media}
         categories={categories}
       />
 
@@ -100,6 +111,7 @@ export default async function AdminPromptsPage({
 
               <PromptRowActions
                 promptId={prompt.id}
+                free={prompt.isFree}
                 pinned={prompt.isPinned}
                 status={prompt.status}
               />
@@ -115,6 +127,8 @@ export default async function AdminPromptsPage({
             ...(filters.mode ? { mode: filters.mode } : {}),
             ...(filters.status ? { statut: filters.status } : {}),
             ...(filters.categoryId ? { categorie: filters.categoryId } : {}),
+            ...(filters.access ? { acces: filters.access } : {}),
+            ...(filters.media ? { visuel: filters.media } : {}),
             page: String(filters.page + 1),
           })}`}
           className="flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-sm font-medium text-[color:var(--color-night)]"

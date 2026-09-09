@@ -2,11 +2,12 @@
 
 import { useActionState } from 'react';
 
-import { setPromptPinned, setPromptStatus } from '@/lib/actions/admin';
+import { setPromptFree, setPromptPinned, setPromptStatus } from '@/lib/actions/admin';
 import type { AdminActionState } from '@/lib/actions/admin';
 
 /**
- * Les deux gestes qu'on fait sans ouvrir la fiche : remonter, masquer.
+ * Les trois gestes qu'on fait sans ouvrir la fiche : offrir, remonter,
+ * masquer.
  *
  * Ils vivent dans la liste parce que c'est la qu'on les decide — en
  * parcourant le catalogue, pas en editant un raccourci. Ouvrir la fiche pour
@@ -18,18 +19,67 @@ import type { AdminActionState } from '@/lib/actions/admin';
  */
 export function PromptRowActions({
   promptId,
+  free,
   pinned,
   status,
 }: {
   promptId: string;
+  free: boolean;
   pinned: boolean;
   status: 'draft' | 'published' | 'archived';
 }) {
   return (
     <span className="flex shrink-0 items-center gap-1">
+      <Offert promptId={promptId} free={free} />
       <Etoile promptId={promptId} pinned={pinned} />
       <Masquer promptId={promptId} status={status} />
     </span>
+  );
+}
+
+/**
+ * L'etiquette du palier d'essai.
+ *
+ * Un raccourci offert se copie sans compte : c'est la seule chose que le
+ * produit montre avant d'etre achete. Le geste se fait ici parce que le
+ * choix se fait en comparant les cartes, pas en lisant une fiche.
+ */
+function Offert({ promptId, free }: { promptId: string; free: boolean }) {
+  const [etat, action, enCours] = useActionState<AdminActionState, FormData>(setPromptFree, {});
+
+  return (
+    <form action={action}>
+      <input type="hidden" name="promptId" value={promptId} />
+      <input type="hidden" name="free" value={String(!free)} />
+      <button
+        type="submit"
+        disabled={enCours}
+        aria-pressed={free}
+        title={etat.error ?? (free ? 'Remettre derriere l’accès' : 'Offrir ce raccourci')}
+        aria-label={free ? 'Retirer ce raccourci des commandes offertes' : 'Offrir ce raccourci'}
+        className={`touch-target flex items-center justify-center rounded-[color:var(--radius-control)] transition-colors duration-[var(--duration-fast)] ${
+          free
+            ? 'text-[color:var(--color-success)]'
+            : 'text-[color:var(--color-line-strong)] active:text-[color:var(--color-muted)]'
+        } ${enCours ? 'opacity-50' : ''}`}
+      >
+        <svg
+          width="19"
+          height="19"
+          viewBox="0 0 24 24"
+          fill={free ? 'currentColor' : 'none'}
+          aria-hidden="true"
+        >
+          <path
+            d="M3.5 11.4V4.8a1.3 1.3 0 0 1 1.3-1.3h6.6c.35 0 .68.14.92.38l8 8a1.3 1.3 0 0 1 0 1.84l-6.6 6.6a1.3 1.3 0 0 1-1.84 0l-8-8a1.3 1.3 0 0 1-.38-.92Z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinejoin="round"
+          />
+          <circle cx="8" cy="8" r="1.5" fill={free ? 'var(--color-surface)' : 'currentColor'} />
+        </svg>
+      </button>
+    </form>
   );
 }
 

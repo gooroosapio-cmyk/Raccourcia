@@ -100,6 +100,71 @@ end;
 $$;
 reset role;
 
+-- --- Offrir un raccourci depuis la liste ---------------------------------
+select tests_login('00000000-0000-0000-0000-0000000000a1',
+                   '00000000-0000-0000-0000-0000000000f1');
+do $$
+begin
+  begin
+    perform public.admin_set_prompt_free('00000000-0000-0000-0000-0000000000d1', true);
+    perform tests_assert(false, 'Un membre a offert un raccourci.');
+  exception when insufficient_privilege then null;
+  end;
+
+  perform tests_assert(
+    not (select is_free from public.prompts
+         where id = '00000000-0000-0000-0000-0000000000d1'),
+    'Le raccourci reserve doit le rester.');
+end;
+$$;
+reset role;
+
+select tests_login('00000000-0000-0000-0000-0000000000a3');
+do $$
+declare v_id uuid := '00000000-0000-0000-0000-0000000000d1';
+begin
+  perform public.admin_set_prompt_free(v_id, true);
+  perform tests_assert(
+    (select is_free from public.prompts where id = v_id),
+    'L''administrateur doit pouvoir offrir un raccourci.');
+
+  perform public.admin_set_prompt_free(v_id, false);
+  perform tests_assert(
+    not (select is_free from public.prompts where id = v_id),
+    'L''administrateur doit pouvoir le remettre derriere l''acces.');
+
+  perform tests_assert(
+    (select count(*) from public.admin_audit_logs
+      where entity_id = v_id and action = 'raccourci.offert') = 2,
+    'Chaque bascule du palier d''essai doit laisser une trace.');
+
+  begin
+    perform public.admin_set_prompt_free('00000000-0000-0000-0000-0000000000dd', true);
+    perform tests_assert(false, 'Un raccourci inexistant a ete offert.');
+  exception when no_data_found then null;
+  end;
+end;
+$$;
+reset role;
+
+-- Offrir ouvre vraiment la porte : c'est la meme colonne que lit
+-- `resolve_free_prompt`, la bascule n'a donc pas d'effet a moitie.
+select tests_login('00000000-0000-0000-0000-0000000000a3');
+select public.admin_set_prompt_free('00000000-0000-0000-0000-0000000000d1', true);
+reset role;
+
+select tests_logout();
+do $$
+declare v_ligne record;
+begin
+  select * into v_ligne
+  from public.resolve_free_prompt('00000000-0000-0000-0000-0000000000d1', 'chatgpt');
+  perform tests_assert(v_ligne.command = '/testxray',
+    'Un raccourci offert a l''instant doit se copier sans compte.');
+end;
+$$;
+reset role;
+
 -- --- Masquer retire immediatement du catalogue ---------------------------
 select tests_login('00000000-0000-0000-0000-0000000000a3');
 select public.admin_set_prompt_status('00000000-0000-0000-0000-0000000000d2', 'draft');
