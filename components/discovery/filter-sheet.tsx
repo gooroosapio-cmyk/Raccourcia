@@ -26,6 +26,15 @@ export type FiltresAvances = {
   niveau?: 'faible' | 'moyen' | 'eleve';
 };
 
+/**
+ * Les cles que ce panneau pilote.
+ *
+ * Enumerees et non deduites de l'objet passe : « Reinitialiser » produit un
+ * objet vide, et parcourir ses entrees ne supprimait alors rien de l'URL —
+ * les filtres survivaient a leur propre remise a zero.
+ */
+export const CLES_FILTRES = ['acces', 'ia', 'sortie', 'niveau'] as const;
+
 const GROUPES = [
   {
     cle: 'acces' as const,

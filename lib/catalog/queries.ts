@@ -174,6 +174,15 @@ export const getCategories = cache(async (mode: Enums<'app_mode'>): Promise<Cate
     }));
 });
 
+/**
+ * Colonnes du comptage.
+ *
+ * Rien que l'identifiant, plus les jointures sur lesquelles les filtres
+ * portent. Une imbrication ne multiplie pas les lignes du niveau superieur :
+ * `count=exact` compte bien les raccourcis, pas les variantes.
+ */
+const COUNT_COLUMNS = 'id, prompt_variants!inner(ai_providers!inner(key))';
+
 /** Colonnes publiques d'un raccourci. `payload` n'y figure jamais. */
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
@@ -250,9 +259,13 @@ function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
  * n'attend aucune image. Une commande image l'est des qu'elle a son couple
  * avant/apres — le seul etat qui permette de montrer une transformation.
  */
-function statutMedia(row: CardRow, comparaison: BeforeAfter | null): MediaStatus {
+function statutMedia(row: CardRow, vignette: string | null): MediaStatus {
   if (!row.show_image_card) return 'pret';
-  return comparaison ? 'pret' : 'attente';
+  // La question est « la carte a-t-elle quelque chose a montrer ? », pas
+  // « la paire est-elle complete ? » : un raccourci pourvu d'une seule
+  // vignette s'affiche parfaitement, et le ranger sous « Encore sans
+  // visuel » dirait le contraire de ce que l'ecran montre.
+  return vignette ? 'pret' : 'attente';
 }
 
 function toCard(row: CardRow, favorites: Set<string>): PromptCard {
@@ -277,7 +290,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     // dit deja ce que le raccourci fait.
     resultSummary: row.result_summary?.trim() || row.short_description,
     beforeAfter: comparaison,
-    mediaStatus: statutMedia(row, comparaison),
+    mediaStatus: statutMedia(row, thumbnail ? mediaUrl(thumbnail.storage_path) : null),
     inputExamples: row.input_examples ?? [],
     outputFormats: row.output_formats ?? [],
     useCases: row.use_cases ?? [],
@@ -432,7 +445,15 @@ async function categoriesParRecherche(
     .eq('is_visible', true)
     .ilike('search_norm', `%${terme}%`);
 
-  return (data ?? []).map((ligne) => ligne.id);
+  const trouvees = (data ?? []).map((ligne) => ligne.id);
+  if (trouvees.length === 0) return [];
+
+  // Une famille trouvee amene ses sous-categories, comme le fait le filtre
+  // par categorie : sans cela, chercher « portrait » raterait les raccourcis
+  // ranges un niveau plus bas.
+  const { data: enfants } = await client.from('categories').select('id').in('parent_id', trouvees);
+
+  return [...trouvees, ...(enfants ?? []).map((enfant) => enfant.id)];
 }
 
 /**
@@ -515,7 +536,11 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   // annonce ne peut pas s'ecarter de la liste montree.
   const [lecture, comptage] = await Promise.all([
     request.range(from, from + pageSize),
-    construire('id', true),
+    // La jointure doit figurer aussi dans le comptage : le filtre porte sur
+    // `prompt_variants.ai_providers.key`, et sans l'imbrication PostgREST
+    // rejette la requete. L'erreur passait inapercue et le total retombait
+    // sur le nombre de cartes chargees — « 20 » quel que soit le catalogue.
+    construire(COUNT_COLUMNS, true),
   ]);
 
   if (lecture.error) throw new CatalogUnavailableError(lecture.error);
@@ -809,9 +834,13 @@ export async function getSectionsAccueil(mode: Mode): Promise<SectionsAccueil> {
   }
 
   const [{ data: recentRows }, { data: favorisRows }] = await Promise.all([
+    // L'ordre precede la limite : sans lui, les soixante lignes ramenees
+    // sont arbitraires et la commande copiee a l'instant peut manquer.
     supabase
       .from('recent_items')
       .select('prompt_id, last_copied_at, last_viewed_at, copy_count')
+      .order('last_copied_at', { ascending: false, nullsFirst: false })
+      .order('last_viewed_at', { ascending: false, nullsFirst: false })
       .limit(60),
     supabase.from('favorites').select('prompt_id').order('created_at', { ascending: false }),
   ]);
@@ -856,8 +885,11 @@ export async function getSectionsAccueil(mode: Mode): Promise<SectionsAccueil> {
 
   for (const carte of favoris) dejaVues.add(carte.id);
 
-  // Les familles ou l'on revient le plus, d'apres l'historique lui-meme.
-  const famillesFrequentes = await famillesDeLHistorique(supabase, idsConnus);
+  // Les familles ou l'on revient le plus, d'apres l'historique lui-meme, et
+  // dans le mode affiche seulement : `connues` est deja filtre par mode,
+  // alors que `idsConnus` melange les deux et ferait recommander des
+  // commandes texte a qui regarde les images.
+  const famillesFrequentes = await famillesDeLHistorique(supabase, [...connues.keys()]);
 
   const recommandations = await recommander(
     supabase,

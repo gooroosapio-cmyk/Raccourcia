@@ -9,6 +9,10 @@ import { useRouter } from 'next/navigation';
  * bouton qui remet tout a zero. Un ecran vide sans sortie fait quitter
  * l'application, et sur un telephone la sortie doit etre un bouton, pas une
  * manipulation de l'URL.
+ *
+ * Les exemples proposes tiennent en un mot : la recherche compare une seule
+ * chaine au champ concatene du raccourci, donc deux mots ne se trouvent que
+ * s'ils s'y suivent. Conseiller « fond blanc » serait conseiller un echec.
  */
 export function AucunResultat({ terme, mode }: { terme?: string; mode: string }) {
   const router = useRouter();
@@ -22,9 +26,9 @@ export function AucunResultat({ terme, mode }: { terme?: string; mode: string })
       <p className="mx-auto mt-2 max-w-[38ch] text-[length:var(--texte-corps)] leading-relaxed text-[color:var(--color-muted)]">
         {terme ? (
           <>
-            Rien ne correspond à «&nbsp;{terme}&nbsp;». Essayez ce que vous voulez obtenir plutôt
-            que le nom de la commande&nbsp;: «&nbsp;portrait&nbsp;», «&nbsp;facture&nbsp;»,
-            «&nbsp;fond blanc&nbsp;».
+            Rien ne correspond à «&nbsp;{terme}&nbsp;». Essayez un seul mot, celui de ce que vous
+            voulez obtenir plutôt que le nom de la commande&nbsp;: «&nbsp;portrait&nbsp;»,
+            «&nbsp;facture&nbsp;», «&nbsp;packaging&nbsp;».
           </>
         ) : (
           <>Aucune commande ne correspond à ces filtres. Essayez d’en retirer un.</>

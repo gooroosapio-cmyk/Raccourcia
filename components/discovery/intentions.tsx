@@ -16,15 +16,15 @@
  *
  * Des qu'un choix est fait, les chips reprennent la main : elles tiennent sur
  * une ligne et laissent la place aux resultats.
+ *
+ * Le nom seul, sans ligne de description : sept familles a deux lignes
+ * repoussaient la premiere carte a mille pixels en mode Texte. La porter en
+ * infobulle ne reglait rien — une infobulle ne s'ouvre qu'au survol, et ce
+ * projet n'a pas de survol.
  */
 export type Intention = {
   slug: string;
   nom: string;
-  /**
-   * A quoi sert la famille, telle que le catalogue la decrit. Portee en
-   * infobulle : elle aide qui hesite, sans couter une ligne a tout le monde.
-   */
-  description: string;
 };
 
 export function Intentions({
@@ -52,11 +52,6 @@ export function Intentions({
               type="button"
               onClick={() => onSelect(intention.slug)}
               className="touch-target flex h-full w-full flex-col justify-center gap-0.5 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 py-2 text-left transition-colors duration-[var(--duration-fast)] active:bg-[color:var(--color-sky)]"
-              // La description sert d'infobulle plutot que de seconde ligne :
-              // sept familles a deux lignes repoussaient la premiere carte a
-              // mille pixels, et une zone qu'il faut faire defiler avant de
-              // voir une seule commande n'est plus une aide.
-              title={intention.description || undefined}
             >
               <span className="line-clamp-2 text-[length:var(--texte-carte)] font-semibold leading-tight text-[color:var(--color-night)]">
                 {intention.nom}

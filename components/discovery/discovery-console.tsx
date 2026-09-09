@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FilterSheet, type FiltresAvances } from '@/components/discovery/filter-sheet';
+import {
+  CLES_FILTRES,
+  FilterSheet,
+  type FiltresAvances,
+} from '@/components/discovery/filter-sheet';
 import { Intentions } from '@/components/discovery/intentions';
 import { MODE_LABELS, type Mode } from '@/lib/constants';
 import type { CategoryNode } from '@/lib/catalog/types';
@@ -41,15 +45,29 @@ export function DiscoveryConsole({
   const [terme, setTerme] = useState(search ?? '');
   const [dernierRecu, setDernierRecu] = useState(search ?? '');
   const [panneauOuvert, setPanneauOuvert] = useState(false);
+  // Ce que le champ a demande en dernier. Sert a reconnaitre notre propre
+  // echo quand la navigation revient. En etat et non en ref : le compilateur
+  // React interdit de lire une ref pendant le rendu, et c'est bien pendant
+  // le rendu que la comparaison doit avoir lieu.
+  const [dernierEnvoye, setDernierEnvoye] = useState(search ?? '');
 
   // La recherche peut venir d'ailleurs : retour navigateur, lien partage,
   // bouton de reinitialisation. Le champ suit, sinon il continue d'afficher
   // un mot que la liste ne filtre plus. Ajuste pendant le rendu et non dans
   // un effet : un effet declencherait un second rendu, et l'ancien mot
   // clignoterait entre les deux.
+  //
+  // Mais seulement si la valeur ne vient pas de nous : la navigation met
+  // quelques dizaines de millisecondes a revenir, et pendant ce temps on
+  // continue de taper. Adopter notre propre echo effacerait les caracteres
+  // frappes entre-temps — et comme le champ correspondrait alors a l'URL,
+  // plus rien ne serait renvoye. La lettre etait perdue pour de bon.
   if ((search ?? '') !== dernierRecu) {
     setDernierRecu(search ?? '');
-    setTerme(search ?? '');
+    if ((search ?? '') !== dernierEnvoye) {
+      setDernierEnvoye(search ?? '');
+      setTerme(search ?? '');
+    }
   }
 
   const push = useCallback(
@@ -67,6 +85,7 @@ export function DiscoveryConsole({
   useEffect(() => {
     if ((search ?? '') === terme) return;
     const minuteur = setTimeout(() => {
+      setDernierEnvoye(terme);
       const next = new URLSearchParams(params.toString());
       if (terme) next.set('q', terme);
       else next.delete('q');
@@ -92,11 +111,17 @@ export function DiscoveryConsole({
   // Les fleches parcourent les onglets, comme le veut le motif ARIA : sur
   // deux segments, c'est le seul moyen de passer de l'un a l'autre au clavier
   // sans quitter le groupe.
+  const ongletsRef = useRef<(HTMLButtonElement | null)[]>([]);
+
   const naviguerAuClavier = (evenement: React.KeyboardEvent) => {
     const pas = evenement.key === 'ArrowRight' ? 1 : evenement.key === 'ArrowLeft' ? -1 : 0;
     if (pas === 0) return;
     evenement.preventDefault();
     const index = (modes.indexOf(mode) + pas + modes.length) % modes.length;
+    // Le focus suit la selection : l'onglet quitte sinon l'ordre de
+    // tabulation sous le doigt de qui vient de l'atteindre, et plus aucune
+    // fleche ne repond.
+    ongletsRef.current[index]?.focus();
     choisirMode(modes[index]!);
   };
 
@@ -110,8 +135,12 @@ export function DiscoveryConsole({
 
   const appliquerFiltres = (valeurs: FiltresAvances) => {
     const next = new URLSearchParams(params.toString());
-    for (const [cle, valeur] of Object.entries(valeurs)) {
-      if (valeur) next.set(cle, String(valeur));
+    // Parcourir les cles connues et non celles de l'objet : « Reinitialiser »
+    // renvoie un objet vide, et il faut alors effacer ce qui est dans l'URL,
+    // pas ce qui reste dans l'objet.
+    for (const cle of CLES_FILTRES) {
+      const valeur = valeurs[cle];
+      if (valeur) next.set(cle, valeur);
       else next.delete(cle);
     }
     next.delete('page');
@@ -131,7 +160,6 @@ export function DiscoveryConsole({
   const intentions = categories.map((famille) => ({
     slug: famille.slug,
     nom: famille.name,
-    description: famille.description,
   }));
   const vierge = !categorySlug && !search && actifs === 0;
 
@@ -147,6 +175,7 @@ export function DiscoveryConsole({
         mode={mode}
         onSelect={choisirMode}
         onKeyDown={naviguerAuClavier}
+        ongletsRef={ongletsRef}
       />
 
       {/* L'un ou l'autre, jamais les deux : ils proposent les memes familles. */}
@@ -171,14 +200,7 @@ export function DiscoveryConsole({
         <ActiveFilterSummary
           filtres={filtres}
           onRemove={(cle) => appliquerFiltres({ ...filtres, [cle]: undefined })}
-          onClear={() =>
-            appliquerFiltres({
-              acces: undefined,
-              ia: undefined,
-              sortie: undefined,
-              niveau: undefined,
-            })
-          }
+          onClear={() => appliquerFiltres({})}
         />
       ) : null}
 
@@ -277,11 +299,13 @@ function ModeSegmentedControl({
   mode,
   onSelect,
   onKeyDown,
+  ongletsRef,
 }: {
   modes: readonly Mode[];
   mode: Mode;
   onSelect: (mode: Mode) => void;
   onKeyDown: (evenement: React.KeyboardEvent) => void;
+  ongletsRef: React.RefObject<(HTMLButtonElement | null)[]>;
 }) {
   const index = Math.max(0, modes.indexOf(mode));
 
@@ -304,11 +328,14 @@ function ModeSegmentedControl({
           left: '0.25rem',
         }}
       />
-      {modes.map((value) => {
+      {modes.map((value, index) => {
         const actif = value === mode;
         return (
           <button
             key={value}
+            ref={(element) => {
+              ongletsRef.current[index] = element;
+            }}
             role="tab"
             type="button"
             aria-selected={actif}

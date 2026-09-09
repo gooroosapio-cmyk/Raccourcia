@@ -62,6 +62,22 @@ export default async function DiscoverPage({
   const lots = Math.min(query.page, CATALOG_MAX_LOTS);
   const requete = { ...query, page: 1, pageSize: CATALOG_PAGE_SIZE * lots };
 
+  const filtre = Boolean(
+    query.search ||
+    query.categorySlug ||
+    query.access ||
+    query.provider ||
+    query.output ||
+    query.level,
+  );
+
+  // Les rangees thematiques n'ont de sens que sur l'Accueil nu : des qu'une
+  // recherche ou un filtre est pose, l'utilisateur cherche une chose precise
+  // et tout ce qui la precede l'eloigne du resultat. Le calcul precede les
+  // requetes : les lire pour ne pas les afficher couterait six allers-retours
+  // a chaque touche frappee.
+  const montrerSections = !filtre && lots === 1;
+
   let acces: Awaited<ReturnType<typeof getAccessState>>;
   let categories: Awaited<ReturnType<typeof getCategories>>;
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
@@ -72,7 +88,9 @@ export default async function DiscoverPage({
       getAccessState(),
       getCategories(mode),
       getCatalogPage(requete),
-      getSectionsAccueil(mode),
+      montrerSections
+        ? getSectionsAccueil(mode)
+        : Promise.resolve({ recents: [], favoris: [], recommandations: [] }),
     ]);
   } catch (error) {
     // Un catalogue injoignable n'est pas un catalogue vide.
@@ -92,20 +110,6 @@ export default async function DiscoverPage({
     sortie: query.output as FiltresAvances['sortie'],
     niveau: query.level,
   };
-
-  const filtre = Boolean(
-    query.search ||
-    query.categorySlug ||
-    query.access ||
-    query.provider ||
-    query.output ||
-    query.level,
-  );
-
-  // Les rangees thematiques n'ont de sens que sur l'Accueil nu : des qu'une
-  // recherche ou un filtre est pose, l'utilisateur cherche une chose precise
-  // et tout ce qui la precede l'eloigne du resultat.
-  const montrerSections = !filtre && lots === 1;
 
   // Les commandes sans visuel ne donnent pas la premiere impression : elles
   // sont regroupees plus bas, sous leur propre titre. Pas « bientot
@@ -159,6 +163,7 @@ export default async function DiscoverPage({
               prompts={sections.recents}
               locked={!acces.hasFullAccess}
               emptyState={null}
+              prioritaire={false}
             />
           </SectionAccueil>
 
@@ -167,6 +172,7 @@ export default async function DiscoverPage({
               prompts={sections.favoris}
               locked={!acces.hasFullAccess}
               emptyState={null}
+              prioritaire={false}
             />
           </SectionAccueil>
 
@@ -180,6 +186,7 @@ export default async function DiscoverPage({
               prompts={sections.recommandations}
               locked={!acces.hasFullAccess}
               emptyState={null}
+              prioritaire={false}
             />
           </SectionAccueil>
 
@@ -227,6 +234,7 @@ export default async function DiscoverPage({
             locked={!acces.hasFullAccess}
             visiteur={!acces.isMember}
             emptyState={null}
+            prioritaire={false}
           />
         </section>
       ) : null}
