@@ -211,35 +211,24 @@ export function PromptDetailSheet({
                 </div>
               </button>
             </div>
-          ) : prompt.useCases.length > 0 ? (
+          ) : prompt.intention ? (
             /*
-             * Commande texte : la place reservee au visuel porte les cas
-             * d'usage, ecrits.
+             * Commande texte : la place reservee au visuel porte l'intention.
              *
-             * Une commande texte n'a pas d'avant/apres a montrer, et le decor
-             * qui occupait ce cadre — des traits imitant des lignes de texte —
-             * n'apprenait rien a personne. Trois usages concrets, eux,
-             * repondent a la seule question qu'on se pose en ouvrant une
-             * fiche : est-ce que c'est pour moi ?
+             * Une commande texte n'a pas d'avant/apres a montrer. Le decor qui
+             * occupait ce cadre — des traits imitant des lignes de texte —
+             * n'apprenait rien; les cas d'usage, eux, sont repris plus bas
+             * sous « Quand l'utiliser », et les lire deux fois a dix lignes
+             * d'intervalle ne les rend pas plus clairs. L'intention dit autre
+             * chose : ce que la commande cherche a obtenir.
              */
             <div className="rounded-[color:var(--radius-card)] bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-4 py-3.5">
               <h3 className="text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/75">
-                Cas d’utilisation
+                Intention
               </h3>
-              <ul className="mt-2 space-y-1.5">
-                {prompt.useCases.slice(0, 4).map((cas) => (
-                  <li
-                    key={cas}
-                    className="flex items-start gap-2 text-[length:var(--texte-corps)] leading-[1.45] text-[color:var(--color-night)]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="mt-[0.55em] block h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--color-brand)]/60"
-                    />
-                    <span>{cas}</span>
-                  </li>
-                ))}
-              </ul>
+              <p className="mt-1.5 text-[length:var(--texte-corps)] leading-[1.45] text-[color:var(--color-night)]">
+                {prompt.intention}
+              </p>
             </div>
           ) : null}
 
@@ -261,27 +250,11 @@ export function PromptDetailSheet({
             {prompt.shortDescription || prompt.resultSummary}
           </p>
 
-          {/* Les commandes texte les montrent deja en haut de fiche, a la
-              place du visuel : les repeter ici ferait lire deux fois la meme
-              liste a trois lignes d'intervalle. */}
-          {prompt.showImageCard && prompt.useCases.length > 0 ? (
-            <Section titre="Cas d’utilisation">
-              <ul className="flex flex-wrap gap-1.5">
-                {prompt.useCases.slice(0, 4).map((cas) => (
-                  <li
-                    key={cas}
-                    className="rounded-full bg-[color:var(--color-sky)] px-3 py-1.5 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-night)]"
-                  >
-                    {cas}
-                  </li>
-                ))}
-              </ul>
-            </Section>
-          ) : null}
-
-          {prompt.inputExamples.length > 0 ? (
-            <Section titre="Exemples d’entrées">
-              <InputExampleList inputs={prompt.inputExamples} />
+          {prompt.inputExamples.length > 0 || prompt.expectedInput ? (
+            <Section titre="À fournir">
+              {prompt.inputExamples.length > 0 ? (
+                <InputExampleList inputs={prompt.inputExamples} />
+              ) : null}
               {prompt.expectedInput ? (
                 <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
                   {prompt.expectedInput}
@@ -290,9 +263,38 @@ export function PromptDetailSheet({
             </Section>
           ) : null}
 
-          {prompt.outputFormats.length > 0 ? (
-            <Section titre="Résultat">
-              <OutputFormatList formats={prompt.outputFormats} />
+          {prompt.outputFormats.length > 0 || prompt.resultSummary ? (
+            <Section titre="Vous obtenez">
+              {prompt.outputFormats.length > 0 ? (
+                <OutputFormatList formats={prompt.outputFormats} />
+              ) : null}
+              {prompt.resultSummary && prompt.resultSummary !== prompt.shortDescription ? (
+                <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+                  {prompt.resultSummary}
+                </p>
+              ) : null}
+            </Section>
+          ) : null}
+
+          {/* « Quand l'utiliser » vient apres ce qu'on donne et ce qu'on
+              obtient : c'est ce qui fait choisir entre deux commandes
+              proches, pas ce qui fait comprendre celle-ci. */}
+          {prompt.useCases.length > 0 ? (
+            <Section titre="Quand l’utiliser">
+              <ul className="flex flex-col gap-1.5">
+                {prompt.useCases.slice(0, 4).map((cas) => (
+                  <li
+                    key={cas}
+                    className="flex items-start gap-2 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-night)]"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mt-[0.5em] block h-1 w-1 shrink-0 rounded-full bg-[color:var(--color-brand)]"
+                    />
+                    <span>{cas}</span>
+                  </li>
+                ))}
+              </ul>
             </Section>
           ) : null}
 
@@ -333,6 +335,7 @@ export function PromptDetailSheet({
             surface="detail"
             locked={locked}
             onLockedClick={ouvrirOffre}
+            proposerOuverture
           />
         </div>
       </div>

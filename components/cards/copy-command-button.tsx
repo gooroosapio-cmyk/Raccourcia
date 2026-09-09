@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { useToast } from '@/components/ui/toast';
+import { PROVIDER_LABELS, PROVIDER_URLS, type ProviderKey } from '@/lib/constants';
 
 type Etat = 'repos' | 'chargement' | 'copie';
 
@@ -23,6 +24,7 @@ export function CopyCommandButton({
   locked = false,
   compact = false,
   onLockedClick,
+  proposerOuverture = false,
 }: {
   promptId: string;
   provider: string;
@@ -31,9 +33,17 @@ export function CopyCommandButton({
   /** Variante des cartes : le libelle se reduit a "Copier". */
   compact?: boolean;
   onLockedClick?: () => void;
+  /**
+   * Propose d'ouvrir l'IA choisie une fois la commande copiee.
+   *
+   * Reserve a la fiche : sur une carte, la place manque et l'utilisateur
+   * copie souvent plusieurs commandes de suite avant d'aller les coller.
+   */
+  proposerOuverture?: boolean;
 }) {
   const { show } = useToast();
   const [etat, setEtat] = useState<Etat>('repos');
+  const [ouvertureProposee, setOuvertureProposee] = useState(false);
 
   const copier = useCallback(async () => {
     if (locked) {
@@ -60,6 +70,7 @@ export function CopyCommandButton({
       await navigator.clipboard.writeText(data.payload);
       setEtat('copie');
       show('Commande copiée');
+      setOuvertureProposee(proposerOuverture);
       navigator.vibrate?.(10);
       // La coche est une confirmation breve : le bouton doit redevenir
       // utilisable tout de suite, on copie souvent deux fois de suite.
@@ -68,7 +79,7 @@ export function CopyCommandButton({
       setEtat('repos');
       show('Copie impossible. Réessayez.', 'erreur');
     }
-  }, [locked, onLockedClick, promptId, provider, show, surface]);
+  }, [locked, onLockedClick, promptId, proposerOuverture, provider, show, surface]);
 
   const libelle = locked
     ? compact
@@ -86,21 +97,53 @@ export function CopyCommandButton({
       ? 'bg-[color:var(--color-success)] text-white'
       : 'bg-[color:var(--color-brand)] text-white hover:bg-[color:var(--color-brand-strong)]';
 
+  const cle = provider as ProviderKey;
+  const adresse = PROVIDER_URLS[cle];
+
   return (
-    <button
-      type="button"
-      onClick={copier}
-      // Jamais desactive pendant le chargement : la largeur resterait la meme
-      // mais le bouton paraitrait casse. On garde l'etat visible a la place.
-      aria-busy={etat === 'chargement'}
-      aria-label={locked ? 'Débloquer RaccourcIA pour copier cette commande' : 'Copier la commande'}
-      className={`touch-target inline-flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] font-semibold transition-[background-color,transform] duration-[var(--duration-fast)] active:scale-[0.98] ${
-        compact ? 'h-11 px-3 text-[13px]' : 'h-13 px-4 text-[15px]'
-      } ${ton}`}
-    >
-      {locked ? <LockIcon /> : etat === 'copie' ? <CheckIcon /> : <CopyIcon />}
-      <span className="truncate">{libelle}</span>
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={copier}
+        // Jamais desactive pendant le chargement : la largeur resterait la meme
+        // mais le bouton paraitrait casse. On garde l'etat visible a la place.
+        aria-busy={etat === 'chargement'}
+        aria-label={
+          locked ? 'Débloquer RaccourcIA pour copier cette commande' : 'Copier la commande'
+        }
+        className={`touch-target inline-flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] font-semibold transition-[background-color,transform] duration-[var(--duration-fast)] active:scale-[0.98] ${
+          compact ? 'h-11 px-3 text-[13px]' : 'h-13 px-4 text-[15px]'
+        } ${ton}`}
+      >
+        {locked ? <LockIcon /> : etat === 'copie' ? <CheckIcon /> : <CopyIcon />}
+        <span className="truncate">{libelle}</span>
+      </button>
+
+      {/* Action secondaire, discrete et seulement une fois la copie faite :
+          proposer d'ouvrir l'IA avant qu'il y ait quelque chose a coller
+          n'aurait servi qu'a faire quitter la page. Le lien ne porte aucune
+          donnee — la commande est dans le presse-papiers, pas dans l'URL. */}
+      {ouvertureProposee && adresse ? (
+        <a
+          href={adresse}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setOuvertureProposee(false)}
+          className="touch-target mt-2 flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] text-[length:var(--texte-carte)] font-medium text-[color:var(--color-brand)]"
+        >
+          Ouvrir {PROVIDER_LABELS[cle]}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M14 5h5v5M19 5l-8 8M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </a>
+      ) : null}
+    </>
   );
 }
 

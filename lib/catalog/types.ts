@@ -1,4 +1,4 @@
-import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
+import type { InputExampleKind, MediaStatus, OutputFormatKind } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 /**
@@ -36,6 +36,12 @@ export type PromptCard = {
   beforeAfter: BeforeAfter | null;
   thumbnailUrl: string | null;
   thumbnailAlt: string | null;
+  /**
+   * Ce que la carte peut montrer aujourd'hui. Deduit des visuels presents,
+   * jamais stocke : une commande image sans couple avant/apres est `attente`
+   * et ne sert ni d'exemple, ni de premiere impression.
+   */
+  mediaStatus: MediaStatus;
   inputExamples: InputExampleKind[];
   outputFormats: OutputFormatKind[];
   providers: { key: string; name: string; compatibility: Enums<'compatibility_level'> }[];
@@ -59,6 +65,8 @@ export type CategoryNode = {
   id: string;
   slug: string;
   name: string;
+  /** A quoi sert la famille, telle que le catalogue la decrit. */
+  description: string;
   mode: Enums<'app_mode'>;
   children: { id: string; slug: string; name: string }[];
 };

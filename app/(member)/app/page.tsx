@@ -1,8 +1,15 @@
 import Link from 'next/link';
 
 import { getAccessState } from '@/lib/access/entitlement';
-import { getAvailableModes, getCatalogPage, getCategories } from '@/lib/catalog/queries';
+import {
+  getAvailableModes,
+  getCatalogPage,
+  getCategories,
+  getSectionsAccueil,
+} from '@/lib/catalog/queries';
 import { DiscoveryConsole } from '@/components/discovery/discovery-console';
+import { AucunResultat } from '@/components/discovery/aucun-resultat';
+import { SectionAccueil } from '@/components/discovery/section-accueil';
 import { PromptGrid } from '@/components/cards/prompt-grid';
 import { PaywallAutoOpen } from '@/components/paywall/paywall-provider';
 import { EmptyState } from '@/components/ui/states';
@@ -28,8 +35,12 @@ export default async function DiscoverPage({
 
   const lire = (cle: string) => (typeof params[cle] === 'string' ? params[cle] : undefined);
 
-  const requested = lire('mode');
-  const mode: Mode = modes.includes(requested as Mode) ? (requested as Mode) : modes[0]!;
+  // « text » est accepte comme « texte » : les liens partages hors de
+  // l'application emploient souvent la forme anglaise, et retomber en
+  // silence sur Image donnerait a l'auteur du lien une page qu'il n'a pas
+  // voulu partager.
+  const demande = lire('mode') === 'text' ? 'texte' : lire('mode');
+  const mode: Mode = modes.includes(demande as Mode) ? (demande as Mode) : modes[0]!;
 
   // Zod filtre les valeurs inconnues : un parametre d'URL bricole ne peut ni
   // atteindre la requete, ni faire echouer la page.
@@ -40,6 +51,7 @@ export default async function DiscoverPage({
     access: ['gratuit', 'membre'].includes(lire('acces') ?? '') ? lire('acces') : undefined,
     provider: ['chatgpt', 'claude', 'gemini'].includes(lire('ia') ?? '') ? lire('ia') : undefined,
     output: ['image', 'texte', 'pdf'].includes(lire('sortie') ?? '') ? lire('sortie') : undefined,
+    level: ['faible', 'moyen', 'eleve'].includes(lire('niveau') ?? '') ? lire('niveau') : undefined,
     page: lire('page') ?? 1,
   });
 
@@ -53,12 +65,14 @@ export default async function DiscoverPage({
   let acces: Awaited<ReturnType<typeof getAccessState>>;
   let categories: Awaited<ReturnType<typeof getCategories>>;
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
+  let sections: Awaited<ReturnType<typeof getSectionsAccueil>>;
 
   try {
-    [acces, categories, page] = await Promise.all([
+    [acces, categories, page, sections] = await Promise.all([
       getAccessState(),
       getCategories(mode),
       getCatalogPage(requete),
+      getSectionsAccueil(mode),
     ]);
   } catch (error) {
     // Un catalogue injoignable n'est pas un catalogue vide.
@@ -76,11 +90,30 @@ export default async function DiscoverPage({
     acces: query.access,
     ia: query.provider,
     sortie: query.output as FiltresAvances['sortie'],
+    niveau: query.level,
   };
 
   const filtre = Boolean(
-    query.search || query.categorySlug || query.access || query.provider || query.output,
+    query.search ||
+    query.categorySlug ||
+    query.access ||
+    query.provider ||
+    query.output ||
+    query.level,
   );
+
+  // Les rangees thematiques n'ont de sens que sur l'Accueil nu : des qu'une
+  // recherche ou un filtre est pose, l'utilisateur cherche une chose precise
+  // et tout ce qui la precede l'eloigne du resultat.
+  const montrerSections = !filtre && lots === 1;
+
+  // Les commandes sans visuel ne donnent pas la premiere impression : elles
+  // sont regroupees plus bas, sous leur propre titre. Pas « bientot
+  // disponible » — elles le sont deja, et le dire indisponible ferait
+  // renoncer a une commande parfaitement utilisable. C'est l'apercu qui
+  // manque, pas la commande.
+  const illustrees = page.items.filter((carte) => carte.mediaStatus === 'pret');
+  const sansVisuel = page.items.filter((carte) => carte.mediaStatus === 'attente');
 
   // Renvoi depuis un espace reserve : c'est le serveur qui a pose le
   // parametre, c'est donc lui qui decide d'ouvrir la fenetre. Le composant
@@ -97,6 +130,7 @@ export default async function DiscoverPage({
   if (query.access) suivante.set('acces', query.access);
   if (query.provider) suivante.set('ia', query.provider);
   if (query.output) suivante.set('sortie', query.output);
+  if (query.level) suivante.set('niveau', query.level);
   suivante.set('page', String(lots + 1));
 
   return (
@@ -110,29 +144,92 @@ export default async function DiscoverPage({
         categorySlug={query.categorySlug}
         search={query.search}
         filtres={filtres}
-        resultCount={page.items.length}
+        resultCount={page.total}
       />
 
+      {montrerSections ? (
+        <>
+          <SectionAccueil
+            id="titre-recents"
+            titre="Reprendre vos récents"
+            aide="Ce que vous avez copié ou ouvert en dernier."
+            prompts={sections.recents}
+          >
+            <PromptGrid
+              prompts={sections.recents}
+              locked={!acces.hasFullAccess}
+              emptyState={null}
+            />
+          </SectionAccueil>
+
+          <SectionAccueil id="titre-favoris" titre="Vos favoris" prompts={sections.favoris}>
+            <PromptGrid
+              prompts={sections.favoris}
+              locked={!acces.hasFullAccess}
+              emptyState={null}
+            />
+          </SectionAccueil>
+
+          <SectionAccueil
+            id="titre-recommandations"
+            titre="Commandes recommandées"
+            aide="Dans les familles où vous revenez, et que vous n’avez pas encore ouvertes."
+            prompts={sections.recommandations}
+          >
+            <PromptGrid
+              prompts={sections.recommandations}
+              locked={!acces.hasFullAccess}
+              emptyState={null}
+            />
+          </SectionAccueil>
+
+          {sections.recents.length > 0 ||
+          sections.favoris.length > 0 ||
+          sections.recommandations.length > 0 ? (
+            <h2 className="pt-3 text-[length:var(--texte-section)] font-semibold text-[color:var(--color-night)]">
+              Tout le catalogue
+            </h2>
+          ) : null}
+        </>
+      ) : null}
+
       <PromptGrid
-        prompts={page.items}
+        prompts={illustrees}
         locked={!acces.hasFullAccess}
         visiteur={!acces.isMember}
         emptyState={
-          filtre ? (
-            <EmptyState
-              title="Aucune commande ne correspond"
-              body="Essayez un autre mot, ou revenez a toutes les categories."
-              actionLabel="Voir tout"
-              actionHref={`/app?mode=${mode}`}
-            />
+          sansVisuel.length > 0 ? null : filtre ? (
+            <AucunResultat terme={query.search} mode={mode} />
           ) : (
             <EmptyState
               title="Rien à afficher ici"
-              body="Ce mode ne contient pas encore de commande publiee."
+              body="Ce mode ne contient pas encore de commande publiée."
             />
           )
         }
       />
+
+      {sansVisuel.length > 0 ? (
+        <section aria-labelledby="titre-sans-visuel" className="space-y-2 pt-3">
+          <div>
+            <h2
+              id="titre-sans-visuel"
+              className="text-[length:var(--texte-section)] font-semibold text-[color:var(--color-night)]"
+            >
+              Encore sans visuel
+            </h2>
+            <p className="text-[length:var(--texte-meta)] text-[color:var(--color-muted)]">
+              Ces commandes fonctionnent déjà. Seul leur aperçu reste à produire.
+            </p>
+          </div>
+          <PromptGrid
+            prompts={sansVisuel}
+            locked={!acces.hasFullAccess}
+            visiteur={!acces.isMember}
+            emptyState={null}
+          />
+        </section>
+      ) : null}
 
       {page.hasMore ? (
         lots < CATALOG_MAX_LOTS ? (
