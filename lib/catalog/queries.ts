@@ -15,6 +15,7 @@ import {
   type Mode,
 } from '@/lib/constants';
 import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
+import { clesDeTri } from '@/lib/catalog/tri';
 import type { BeforeAfter, CategoryNode, PromptCard, PromptDetail } from '@/lib/catalog/types';
 import type { Enums } from '@/lib/supabase/database.types';
 import type { CatalogQuery } from '@/lib/validation/schemas';
@@ -497,38 +498,15 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
   let request = construire(CARD_COLUMNS);
 
-  // L'ordre du catalogue, avant le tri demande et donc dans chaque categorie
-  // comme dans chaque recherche : ce qui a un visuel, puis ce que
-  // l'administration a remonte, puis les nouveautes.
-  //
-  // Les trois cles vivent en base et non dans la page. Trier les vingt cartes
-  // chargees laissait une carte sans image du premier lot devant une carte
-  // illustree du second, et un ordre qui ne vaut que sur vingt elements n'est
-  // pas un ordre.
-  //
-  // Les raccourcis offerts ne passent plus devant pour les visiteurs. Ils
-  // sont cinq : les remonter remplissait le premier ecran et repoussait tout
-  // le catalogue derriere une pagination que personne n'atteignait. Un
-  // visiteur doit voir ce qu'il achete, verrous compris.
-  request = request
-    .order('media_ready', { ascending: false })
-    .order('is_pinned', { ascending: false })
-    .order('is_new', { ascending: false });
-
-  if (query.sort === 'nouveaux') {
-    request = request.order('published_at', { ascending: false, nullsFirst: false });
-  } else if (query.sort === 'alpha') {
-    request = request.order('name', { ascending: true });
-  } else {
-    request = request.order('is_featured', { ascending: false }).order('sort_order');
+  // L'ordre vit dans `lib/catalog/tri.ts`, ou il se lit sans base et ou un
+  // test le verrouille : c'est la regle la plus facile a casser sans s'en
+  // apercevoir, une liste restant une liste meme mal triee.
+  for (const cle of clesDeTri(query.sort, isMember)) {
+    request = request.order(cle.colonne, {
+      ascending: cle.ascendant,
+      nullsFirst: cle.nullsFirst,
+    });
   }
-
-  // Derniere cle, toujours : `sort_order` compte jusqu'a quatre ex aequo dans
-  // le catalogue, et Postgres n'a alors aucune raison de rendre deux fois le
-  // meme ordre. La liste changeait donc d'un rendu a l'autre, et « Voir plus »
-  // pouvait montrer deux fois la meme carte ou en sauter une. La commande est
-  // unique : elle departage sans jamais elle-meme etre a egalite.
-  request = request.order('command', { ascending: true });
 
   // On demande un element de plus pour savoir s'il reste une page. Le total
   // vient d'un comptage separe, construit par la meme fonction : le chiffre
