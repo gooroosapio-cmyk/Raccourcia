@@ -2,7 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FilterSheet, type FiltresAvances } from '@/components/discovery/filter-sheet';
+import {
+  CLES_FILTRES,
+  FilterSheet,
+  type FiltresAvances,
+} from '@/components/discovery/filter-sheet';
+import { Intentions } from '@/components/discovery/intentions';
 import { MODE_LABELS, type Mode } from '@/lib/constants';
 import type { CategoryNode } from '@/lib/catalog/types';
 
@@ -31,13 +36,39 @@ export function DiscoveryConsole({
   categorySlug?: string;
   search?: string;
   filtres: FiltresAvances;
+  /** Nombre reel de resultats de la selection, pas le nombre de cartes chargees. */
   resultCount: number;
 }) {
   const router = useRouter();
   const params = useSearchParams();
   const [, startTransition] = useTransition();
   const [terme, setTerme] = useState(search ?? '');
+  const [dernierRecu, setDernierRecu] = useState(search ?? '');
   const [panneauOuvert, setPanneauOuvert] = useState(false);
+  // Ce que le champ a demande en dernier. Sert a reconnaitre notre propre
+  // echo quand la navigation revient. En etat et non en ref : le compilateur
+  // React interdit de lire une ref pendant le rendu, et c'est bien pendant
+  // le rendu que la comparaison doit avoir lieu.
+  const [dernierEnvoye, setDernierEnvoye] = useState(search ?? '');
+
+  // La recherche peut venir d'ailleurs : retour navigateur, lien partage,
+  // bouton de reinitialisation. Le champ suit, sinon il continue d'afficher
+  // un mot que la liste ne filtre plus. Ajuste pendant le rendu et non dans
+  // un effet : un effet declencherait un second rendu, et l'ancien mot
+  // clignoterait entre les deux.
+  //
+  // Mais seulement si la valeur ne vient pas de nous : la navigation met
+  // quelques dizaines de millisecondes a revenir, et pendant ce temps on
+  // continue de taper. Adopter notre propre echo effacerait les caracteres
+  // frappes entre-temps — et comme le champ correspondrait alors a l'URL,
+  // plus rien ne serait renvoye. La lettre etait perdue pour de bon.
+  if ((search ?? '') !== dernierRecu) {
+    setDernierRecu(search ?? '');
+    if ((search ?? '') !== dernierEnvoye) {
+      setDernierEnvoye(search ?? '');
+      setTerme(search ?? '');
+    }
+  }
 
   const push = useCallback(
     (next: URLSearchParams) => {
@@ -49,40 +80,70 @@ export function DiscoveryConsole({
   );
 
   // Recherche differee : les resultats suivent la frappe sans interroger la
-  // base a chaque touche.
+  // base a chaque touche. Le delai est court — au-dela, la liste semble
+  // repondre a la touche precedente.
   useEffect(() => {
     if ((search ?? '') === terme) return;
     const minuteur = setTimeout(() => {
+      setDernierEnvoye(terme);
       const next = new URLSearchParams(params.toString());
       if (terme) next.set('q', terme);
       else next.delete('q');
-      next.delete('categorie');
+      // Le lot revient au premier : chercher en etant descendu a la page
+      // quatre n'a aucun sens, les resultats ne sont plus les memes.
+      next.delete('page');
       push(next);
-    }, 250);
+    }, 180);
     return () => clearTimeout(minuteur);
   }, [params, push, search, terme]);
 
   const choisirMode = (value: Mode) => {
+    if (value === mode) return;
     const next = new URLSearchParams(params.toString());
     next.set('mode', value);
-    // Les categories appartiennent a un mode : changer de mode les remet a zero.
+    // Les categories appartiennent a un mode : changer de mode les remet a
+    // zero, comme le lot en cours.
     next.delete('categorie');
+    next.delete('page');
     push(next);
+  };
+
+  // Les fleches parcourent les onglets, comme le veut le motif ARIA : sur
+  // deux segments, c'est le seul moyen de passer de l'un a l'autre au clavier
+  // sans quitter le groupe.
+  const ongletsRef = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const naviguerAuClavier = (evenement: React.KeyboardEvent) => {
+    const pas = evenement.key === 'ArrowRight' ? 1 : evenement.key === 'ArrowLeft' ? -1 : 0;
+    if (pas === 0) return;
+    evenement.preventDefault();
+    const index = (modes.indexOf(mode) + pas + modes.length) % modes.length;
+    // Le focus suit la selection : l'onglet quitte sinon l'ordre de
+    // tabulation sous le doigt de qui vient de l'atteindre, et plus aucune
+    // fleche ne repond.
+    ongletsRef.current[index]?.focus();
+    choisirMode(modes[index]!);
   };
 
   const choisirCategorie = (slug?: string) => {
     const next = new URLSearchParams(params.toString());
     if (slug) next.set('categorie', slug);
     else next.delete('categorie');
+    next.delete('page');
     push(next);
   };
 
   const appliquerFiltres = (valeurs: FiltresAvances) => {
     const next = new URLSearchParams(params.toString());
-    for (const [cle, valeur] of Object.entries(valeurs)) {
-      if (valeur) next.set(cle, String(valeur));
+    // Parcourir les cles connues et non celles de l'objet : « Reinitialiser »
+    // renvoie un objet vide, et il faut alors effacer ce qui est dans l'URL,
+    // pas ce qui reste dans l'objet.
+    for (const cle of CLES_FILTRES) {
+      const valeur = valeurs[cle];
+      if (valeur) next.set(cle, valeur);
       else next.delete(cle);
     }
+    next.delete('page');
     push(next);
     setPanneauOuvert(false);
   };
@@ -94,6 +155,14 @@ export function DiscoveryConsole({
     ...parent.children.map((child) => ({ slug: child.slug, name: child.name })),
   ]);
 
+  // Les raccourcis d'intention ne s'affichent que sur l'Accueil nu : des
+  // qu'un choix est fait, la rangee de chips dit la meme chose en une ligne.
+  const intentions = categories.map((famille) => ({
+    slug: famille.slug,
+    nom: famille.name,
+  }));
+  const vierge = !categorySlug && !search && actifs === 0;
+
   return (
     <div className="space-y-2.5">
       <div className="flex items-center gap-2">
@@ -101,15 +170,37 @@ export function DiscoveryConsole({
         <FilterButton count={actifs} onClick={() => setPanneauOuvert(true)} />
       </div>
 
-      <ModeSegmentedControl modes={modes} mode={mode} onSelect={choisirMode} />
+      <ModeSegmentedControl
+        modes={modes}
+        mode={mode}
+        onSelect={choisirMode}
+        onKeyDown={naviguerAuClavier}
+        ongletsRef={ongletsRef}
+      />
 
-      <CategoryChips chips={chips} active={categorySlug} onSelect={choisirCategorie} />
+      {/* L'un ou l'autre, jamais les deux : ils proposent les memes familles. */}
+      {vierge ? (
+        <Intentions intentions={intentions} onSelect={choisirCategorie} />
+      ) : (
+        <CategoryChips chips={chips} active={categorySlug} onSelect={choisirCategorie} />
+      )}
+
+      {/* Le compte disparait quand il n'y a rien : l'ecran vide le dit deja,
+          et le lire deux fois de suite n'apprend rien de plus. */}
+      {!vierge && resultCount > 0 ? (
+        <p
+          aria-live="polite"
+          className="text-[length:var(--texte-carte)] text-[color:var(--color-muted)]"
+        >
+          {resultCount} commande{resultCount > 1 ? 's' : ''}
+        </p>
+      ) : null}
 
       {actifs > 0 ? (
         <ActiveFilterSummary
           filtres={filtres}
           onRemove={(cle) => appliquerFiltres({ ...filtres, [cle]: undefined })}
-          onClear={() => appliquerFiltres({ acces: undefined, ia: undefined, sortie: undefined })}
+          onClear={() => appliquerFiltres({})}
         />
       ) : null}
 
@@ -207,10 +298,14 @@ function ModeSegmentedControl({
   modes,
   mode,
   onSelect,
+  onKeyDown,
+  ongletsRef,
 }: {
   modes: readonly Mode[];
   mode: Mode;
   onSelect: (mode: Mode) => void;
+  onKeyDown: (evenement: React.KeyboardEvent) => void;
+  ongletsRef: React.RefObject<(HTMLButtonElement | null)[]>;
 }) {
   const index = Math.max(0, modes.indexOf(mode));
 
@@ -218,6 +313,7 @@ function ModeSegmentedControl({
     <div
       role="tablist"
       aria-label="Type de commande"
+      onKeyDown={onKeyDown}
       className="relative grid rounded-[color:var(--radius-control)] bg-[color:var(--color-sky)] p-1"
       style={{ gridTemplateColumns: `repeat(${modes.length}, minmax(0, 1fr))` }}
     >
@@ -232,14 +328,21 @@ function ModeSegmentedControl({
           left: '0.25rem',
         }}
       />
-      {modes.map((value) => {
+      {modes.map((value, index) => {
         const actif = value === mode;
         return (
           <button
             key={value}
+            ref={(element) => {
+              ongletsRef.current[index] = element;
+            }}
             role="tab"
             type="button"
             aria-selected={actif}
+            // Un seul onglet reste atteignable a la tabulation : les fleches
+            // parcourent le groupe, c'est le motif attendu d'une liste
+            // d'onglets.
+            tabIndex={actif ? 0 : -1}
             onClick={() => onSelect(value)}
             className={`relative z-10 h-[44px] rounded-[9px] text-[length:var(--texte-corps)] font-semibold transition-colors duration-[var(--duration-fast)] ${
               actif ? 'text-white' : 'text-[color:var(--color-night)]'
@@ -342,6 +445,9 @@ function ActiveFilterSummary({
     image: 'Sortie image',
     texte: 'Sortie texte',
     pdf: 'Sortie PDF',
+    faible: 'Utilisable direct',
+    moyen: 'À vérifier',
+    eleve: 'À faire relire',
   };
 
   const entrees = (Object.entries(filtres) as [keyof FiltresAvances, string | undefined][]).filter(

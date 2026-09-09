@@ -12,6 +12,7 @@ import {
   MODES,
   STORAGE_BUCKETS,
   type LegalKey,
+  type MediaStatus,
   type Mode,
 } from '@/lib/constants';
 import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
@@ -149,7 +150,7 @@ export const getCategories = cache(async (mode: Enums<'app_mode'>): Promise<Cate
   // selon qui regarde.
   const { data, error } = await supabase
     .from('categories')
-    .select('id, slug, name, mode, parent_id, sort_order')
+    .select('id, slug, name, short_description, mode, parent_id, sort_order')
     .eq('mode', mode)
     .eq('is_visible', true)
     .order('sort_order', { ascending: true });
@@ -163,12 +164,24 @@ export const getCategories = cache(async (mode: Enums<'app_mode'>): Promise<Cate
       id: parent.id,
       slug: parent.slug,
       name: parent.name,
+      // Ce a quoi sert la famille. Sert de sous-titre aux raccourcis
+      // d'intention, qui sans elle ne seraient qu'une seconde rangee de chips.
+      description: parent.short_description?.trim() ?? '',
       mode: parent.mode,
       children: rows
         .filter((child) => child.parent_id === parent.id)
         .map((child) => ({ id: child.id, slug: child.slug, name: child.name })),
     }));
 });
+
+/**
+ * Colonnes du comptage.
+ *
+ * Rien que l'identifiant, plus les jointures sur lesquelles les filtres
+ * portent. Une imbrication ne multiplie pas les lignes du niveau superieur :
+ * `count=exact` compte bien les raccourcis, pas les variantes.
+ */
+const COUNT_COLUMNS = 'id, prompt_variants!inner(ai_providers!inner(key))';
 
 /** Colonnes publiques d'un raccourci. `payload` n'y figure jamais. */
 const CARD_COLUMNS = `
@@ -239,6 +252,22 @@ function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
   };
 }
 
+/**
+ * Ce que la carte peut montrer, deduit de ce qui existe.
+ *
+ * Une commande texte est toujours prete : sa carte est editoriale, elle
+ * n'attend aucune image. Une commande image l'est des qu'elle a son couple
+ * avant/apres — le seul etat qui permette de montrer une transformation.
+ */
+function statutMedia(row: CardRow, vignette: string | null): MediaStatus {
+  if (!row.show_image_card) return 'pret';
+  // La question est « la carte a-t-elle quelque chose a montrer ? », pas
+  // « la paire est-elle complete ? » : un raccourci pourvu d'une seule
+  // vignette s'affiche parfaitement, et le ranger sous « Encore sans
+  // visuel » dirait le contraire de ce que l'ecran montre.
+  return vignette ? 'pret' : 'attente';
+}
+
 function toCard(row: CardRow, favorites: Set<string>): PromptCard {
   // L'Apres prime : c'est le resultat, donc ce qui fait choisir. La miniature
   // ne sert que de repli pour les raccourcis qui en ont une sans paire.
@@ -248,6 +277,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
       .sort((a, b) => a.sort_order - b.sort_order)[0] ?? null;
 
   const thumbnail = parType('after') ?? parType('thumbnail');
+  const comparaison = toBeforeAfter(row.prompt_media);
 
   return {
     id: row.id,
@@ -259,7 +289,8 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     // La promesse de resultat prime ; a defaut, la description courte, qui
     // dit deja ce que le raccourci fait.
     resultSummary: row.result_summary?.trim() || row.short_description,
-    beforeAfter: toBeforeAfter(row.prompt_media),
+    beforeAfter: comparaison,
+    mediaStatus: statutMedia(row, thumbnail ? mediaUrl(thumbnail.storage_path) : null),
     inputExamples: row.input_examples ?? [],
     outputFormats: row.output_formats ?? [],
     useCases: row.use_cases ?? [],
@@ -298,7 +329,34 @@ async function getFavoriteIds(): Promise<Set<string>> {
   return new Set((data ?? []).map((row) => row.prompt_id));
 }
 
-export type CatalogPage = { items: PromptCard[]; hasMore: boolean };
+export type CatalogPage = {
+  items: PromptCard[];
+  hasMore: boolean;
+  /**
+   * Nombre de raccourcis que la selection contient reellement, et non le
+   * nombre de cartes chargees. Le panneau de filtres annonce ce chiffre
+   * avant de valider : compter les cartes deja a l'ecran aurait dit « 20 »
+   * quoi qu'il arrive.
+   */
+  total: number;
+};
+
+/**
+ * Forme de comparaison d'un texte saisi.
+ *
+ * Doit donner le meme resultat que `public.texte_normalise` en base, sans
+ * quoi la recherche ne trouverait pas ce que la colonne generee contient.
+ * Minuscules, accents retires, tout ce qui n'est ni lettre ni chiffre
+ * ramene a l'espace : « d'usage », « d usage » et « D'USAGE » se rejoignent.
+ */
+export function normaliserRecherche(terme: string): string {
+  return terme
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
 
 /**
  * Retire le nom d'une commande verrouillee avant l'envoi au navigateur.
@@ -341,6 +399,63 @@ function masquerCommande(card: PromptCard): PromptCard {
   };
 }
 
+type Client = Awaited<ReturnType<typeof createClient>>;
+
+/**
+ * Identifiants couverts par un slug de categorie, sous-categories comprises.
+ *
+ * `null` quand aucune categorie n'est demandee. Un tableau vide quand le slug
+ * ne correspond a rien : l'appelant sait alors qu'il n'y a rien a chercher,
+ * au lieu d'afficher tout le catalogue.
+ */
+async function resoudreCategorie(client: Client, slug?: string): Promise<string[] | null> {
+  if (!slug) return null;
+
+  const { data: categorie } = await client
+    .from('categories')
+    .select('id')
+    .eq('slug', slug)
+    .maybeSingle();
+
+  if (!categorie) return [];
+
+  const { data: enfants } = await client
+    .from('categories')
+    .select('id')
+    .eq('parent_id', categorie.id);
+
+  return [categorie.id, ...(enfants ?? []).map((enfant) => enfant.id)];
+}
+
+/**
+ * Familles dont le nom ou la description repond au terme cherche.
+ *
+ * Sans elles, taper « portrait » ne ramenait que les commandes portant le mot
+ * dans leur titre, et pas les soixante-deux de la famille Portrait.
+ */
+async function categoriesParRecherche(
+  client: Client,
+  mode: Enums<'app_mode'>,
+  terme: string,
+): Promise<string[]> {
+  const { data } = await client
+    .from('categories')
+    .select('id')
+    .eq('mode', mode)
+    .eq('is_visible', true)
+    .ilike('search_norm', `%${terme}%`);
+
+  const trouvees = (data ?? []).map((ligne) => ligne.id);
+  if (trouvees.length === 0) return [];
+
+  // Une famille trouvee amene ses sous-categories, comme le fait le filtre
+  // par categorie : sans cela, chercher « portrait » raterait les raccourcis
+  // ranges un niveau plus bas.
+  const { data: enfants } = await client.from('categories').select('id').in('parent_id', trouvees);
+
+  return [...trouvees, ...(enfants ?? []).map((enfant) => enfant.id)];
+}
+
 /**
  * Bibliotheque paginee. On ne renvoie jamais tout le catalogue d'un coup
  * (Blueprint Backend V1, 11.3).
@@ -356,48 +471,50 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   const pageSize = query.pageSize ?? CATALOG_PAGE_SIZE;
   const from = (query.page - 1) * pageSize;
 
-  let request = supabase
-    .from('prompts')
-    .select(CARD_COLUMNS)
-    .eq('mode', query.mode)
-    .eq('status', 'published');
-
-  if (query.categorySlug) {
-    const { data: category } = await supabase
-      .from('categories')
-      .select('id, parent_id')
-      .eq('slug', query.categorySlug)
-      .maybeSingle();
-
-    if (!category) return { items: [], hasMore: false };
-
-    // Choisir une categorie parente inclut ses sous-categories.
-    const { data: children } = await supabase
-      .from('categories')
-      .select('id')
-      .eq('parent_id', category.id);
-
-    const ids = [category.id, ...(children ?? []).map((child) => child.id)];
-    request = request.in('category_id', ids);
+  const categorieIds = await resoudreCategorie(supabase, query.categorySlug);
+  if (categorieIds && categorieIds.length === 0) {
+    return { items: [], hasMore: false, total: 0 };
   }
 
-  if (query.search) {
-    request = request.ilike('search_text', `%${query.search.toLowerCase()}%`);
-  }
+  // Une recherche porte aussi sur le nom des familles : taper « portrait »
+  // doit ramener la famille entiere, pas seulement les commandes dont le
+  // titre contient le mot.
+  const terme = query.search ? normaliserRecherche(query.search) : '';
+  const famillesTrouvees = terme ? await categoriesParRecherche(supabase, query.mode, terme) : [];
 
-  if (query.provider) {
-    request = request.eq('prompt_variants.ai_providers.key', query.provider);
-  }
+  // Une seule construction pour la lecture et pour le comptage : deux chaines
+  // de filtres separees auraient fini par annoncer un total qui ne correspond
+  // plus a la liste montree. Les colonnes sont le seul parametre, ce qui
+  // permet au comptage de ne rien ramener du tout.
+  const construire = (colonnes: string, tete = false) => {
+    let requete = supabase
+      .from('prompts')
+      .select(colonnes as '*', tete ? { count: 'exact', head: true } : undefined)
+      .eq('mode', query.mode)
+      .eq('status', 'published');
 
-  if (query.access) {
-    request = request.eq('is_free', query.access === 'gratuit');
-  }
+    if (categorieIds) requete = requete.in('category_id', categorieIds);
 
-  if (query.output) {
-    // `contains` sur un tableau : une commande peut produire plusieurs
-    // formats, on garde celles qui produisent au moins celui demande.
-    request = request.contains('output_formats', [query.output]);
-  }
+    if (terme) {
+      const motif = `%${terme}%`;
+      requete = famillesTrouvees.length
+        ? requete.or(`search_norm.ilike.${motif},category_id.in.(${famillesTrouvees.join(',')})`)
+        : requete.ilike('search_norm', motif);
+    }
+
+    if (query.provider) requete = requete.eq('prompt_variants.ai_providers.key', query.provider);
+    if (query.access) requete = requete.eq('is_free', query.access === 'gratuit');
+    if (query.level) requete = requete.eq('risk_level', query.level);
+    if (query.output) {
+      // `contains` sur un tableau : une commande peut produire plusieurs
+      // formats, on garde celles qui produisent au moins celui demande.
+      requete = requete.contains('output_formats', [query.output]);
+    }
+
+    return requete;
+  };
+
+  let request = construire(CARD_COLUMNS);
 
   // Sans acces, les raccourcis gratuits passent devant, quel que soit le tri
   // choisi : ce sont les seuls que le visiteur peut reellement copier, il doit
@@ -405,6 +522,16 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   if (!hasFullAccess) {
     request = request.order('is_free', { ascending: false });
   }
+
+  // Ce que l'administration a remonte passe devant, puis ce qui a un visuel.
+  // Les deux cles vivent en base et non dans la page : trier les vingt cartes
+  // chargees laissait une carte sans image du premier lot devant une carte
+  // illustree du second, et un ordre qui ne vaut que sur vingt elements n'est
+  // pas un ordre. Elles s'appliquent avant le tri demande, donc dans chaque
+  // categorie comme dans chaque recherche.
+  request = request
+    .order('is_pinned', { ascending: false })
+    .order('media_ready', { ascending: false });
 
   if (query.sort === 'nouveaux') {
     request = request.order('published_at', { ascending: false, nullsFirst: false });
@@ -414,11 +541,21 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     request = request.order('is_featured', { ascending: false }).order('sort_order');
   }
 
-  // On demande un element de plus pour savoir s'il reste une page.
-  const { data, error } = await request.range(from, from + pageSize);
-  if (error) throw new CatalogUnavailableError(error);
+  // On demande un element de plus pour savoir s'il reste une page. Le total
+  // vient d'un comptage separe, construit par la meme fonction : le chiffre
+  // annonce ne peut pas s'ecarter de la liste montree.
+  const [lecture, comptage] = await Promise.all([
+    request.range(from, from + pageSize),
+    // La jointure doit figurer aussi dans le comptage : le filtre porte sur
+    // `prompt_variants.ai_providers.key`, et sans l'imbrication PostgREST
+    // rejette la requete. L'erreur passait inapercue et le total retombait
+    // sur le nombre de cartes chargees — « 20 » quel que soit le catalogue.
+    construire(COUNT_COLUMNS, true),
+  ]);
 
-  const rows = (data ?? []) as unknown as CardRow[];
+  if (lecture.error) throw new CatalogUnavailableError(lecture.error);
+
+  const rows = (lecture.data ?? []) as unknown as CardRow[];
 
   const items = rows.slice(0, pageSize).map((row) => {
     const card = toCard(row, favorites);
@@ -426,7 +563,11 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     return visiteur && verrouille ? masquerCommande(card) : card;
   });
 
-  return { items, hasMore: rows.length > pageSize };
+  return {
+    items,
+    hasMore: rows.length > pageSize,
+    total: comptage.count ?? items.length,
+  };
 }
 
 /**
@@ -658,4 +799,202 @@ export async function getRecents(): Promise<PromptCard[]> {
   return ordered
     .map((entry) => cards.find((card) => card.id === entry.id))
     .filter((card) => card !== undefined);
+}
+
+/**
+ * Ce que l'Accueil montre avant le catalogue.
+ *
+ * Trois sections, dans l'ordre ou elles servent : ce qu'on vient d'utiliser,
+ * ce qu'on a mis de cote, puis ce qu'on n'a pas encore vu. Chacune peut etre
+ * vide, et une section vide ne s'affiche pas — un bandeau « aucun favori »
+ * occupe la place sans rien apporter.
+ *
+ * Tout est deduit de donnees reellement enregistrees. Aucune notion de
+ * popularite n'est fabriquee : `copy_events` n'est lisible que par son
+ * proprietaire, et le classer par volume ferait passer les essais de
+ * l'equipe pour un usage. Le repli est editorial — les raccourcis mis en
+ * avant, puis l'ordre du catalogue — ce qui ne pretend rien.
+ */
+export type SectionsAccueil = {
+  recents: PromptCard[];
+  favoris: PromptCard[];
+  recommandations: PromptCard[];
+};
+
+/** Nombre de cartes par section : trois rangees de deux sur un telephone. */
+const TAILLE_SECTION = 6;
+
+export async function getSectionsAccueil(mode: Mode): Promise<SectionsAccueil> {
+  const supabase = await createClient();
+  const { isMember, hasFullAccess } = await getAccessState();
+
+  // Un visiteur n'a ni historique ni favoris, et les recommandations lui
+  // montreraient surtout des commandes qu'il ne peut pas copier.
+  if (!isMember || !hasFullAccess) {
+    return { recents: [], favoris: [], recommandations: [] };
+  }
+
+  const [{ data: recentRows }, { data: favorisRows }] = await Promise.all([
+    // L'ordre precede la limite : sans lui, les soixante lignes ramenees
+    // sont arbitraires et la commande copiee a l'instant peut manquer.
+    supabase
+      .from('recent_items')
+      .select('prompt_id, last_copied_at, last_viewed_at, copy_count')
+      .order('last_copied_at', { ascending: false, nullsFirst: false })
+      .order('last_viewed_at', { ascending: false, nullsFirst: false })
+      .limit(60),
+    supabase.from('favorites').select('prompt_id').order('created_at', { ascending: false }),
+  ]);
+
+  const favorisIds = (favorisRows ?? []).map((ligne) => ligne.prompt_id);
+  const favorites = new Set(favorisIds);
+
+  // Copie d'abord, consultation ensuite : avoir copie une commande dit qu'on
+  // s'en est servi, l'avoir ouverte dit seulement qu'on l'a regardee.
+  const recentsOrdonnes = (recentRows ?? [])
+    .map((ligne) => ({
+      id: ligne.prompt_id,
+      quand: ligne.last_copied_at ?? ligne.last_viewed_at ?? '',
+      copie: ligne.last_copied_at !== null,
+      copies: ligne.copy_count ?? 0,
+    }))
+    .sort((a, b) => {
+      if (a.copie !== b.copie) return a.copie ? -1 : 1;
+      return b.quand.localeCompare(a.quand);
+    });
+
+  const idsHistorique = recentsOrdonnes.map((entree) => entree.id);
+
+  // Une seule lecture pour l'historique et les favoris : ils se recouvrent
+  // souvent, et deux requetes auraient ramene deux fois les memes lignes.
+  const idsConnus = [...new Set([...idsHistorique, ...favorisIds])];
+  const connues = idsConnus.length
+    ? await lireCartes(supabase, idsConnus, mode, favorites)
+    : new Map<string, PromptCard>();
+
+  const recents = idsHistorique
+    .map((id) => connues.get(id))
+    .filter((carte): carte is PromptCard => carte !== undefined)
+    .slice(0, TAILLE_SECTION);
+
+  const dejaVues = new Set(recents.map((carte) => carte.id));
+
+  const favoris = favorisIds
+    .map((id) => connues.get(id))
+    .filter((carte): carte is PromptCard => carte !== undefined && !dejaVues.has(carte.id))
+    .slice(0, TAILLE_SECTION);
+
+  for (const carte of favoris) dejaVues.add(carte.id);
+
+  // Les familles ou l'on revient le plus, d'apres l'historique lui-meme, et
+  // dans le mode affiche seulement : `connues` est deja filtre par mode,
+  // alors que `idsConnus` melange les deux et ferait recommander des
+  // commandes texte a qui regarde les images.
+  const famillesFrequentes = await famillesDeLHistorique(supabase, [...connues.keys()]);
+
+  const recommandations = await recommander(
+    supabase,
+    mode,
+    favorites,
+    dejaVues,
+    famillesFrequentes,
+  );
+
+  return { recents, favoris, recommandations };
+}
+
+/** Cartes publiees d'un mode, indexees par identifiant. */
+async function lireCartes(
+  client: Client,
+  ids: string[],
+  mode: Mode,
+  favorites: Set<string>,
+): Promise<Map<string, PromptCard>> {
+  const { data } = await client
+    .from('prompts')
+    .select(CARD_COLUMNS)
+    .in('id', ids)
+    .eq('mode', mode)
+    .eq('status', 'published');
+
+  const cartes = ((data ?? []) as unknown as CardRow[]).map((ligne) => toCard(ligne, favorites));
+  return new Map(cartes.map((carte) => [carte.id, carte]));
+}
+
+/** Familles les plus representees dans ce que le membre a deja ouvert. */
+async function famillesDeLHistorique(client: Client, ids: string[]): Promise<string[]> {
+  if (ids.length === 0) return [];
+
+  const { data } = await client.from('prompts').select('category_id').in('id', ids);
+
+  const comptes = new Map<string, number>();
+  for (const ligne of data ?? []) {
+    if (!ligne.category_id) continue;
+    comptes.set(ligne.category_id, (comptes.get(ligne.category_id) ?? 0) + 1);
+  }
+
+  return [...comptes.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([id]) => id);
+}
+
+/**
+ * Ce qu'on propose ensuite.
+ *
+ * D'abord les familles ou le membre revient, puis le repli editorial. Les
+ * commandes deja montrees plus haut sont ecartees, tout comme celles qui
+ * n'ont pas encore de visuel : une suggestion est une premiere impression,
+ * elle ne peut pas etre un cadre vide.
+ */
+async function recommander(
+  client: Client,
+  mode: Mode,
+  favorites: Set<string>,
+  exclues: Set<string>,
+  familles: string[],
+): Promise<PromptCard[]> {
+  const retenues: PromptCard[] = [];
+  const vues = new Set(exclues);
+
+  const ajouter = (cartes: PromptCard[]) => {
+    for (const carte of cartes) {
+      if (retenues.length >= TAILLE_SECTION) return;
+      if (vues.has(carte.id) || carte.mediaStatus !== 'pret') continue;
+      vues.add(carte.id);
+      retenues.push(carte);
+    }
+  };
+
+  const lire = async (appliquer: (r: ReturnType<typeof base>) => ReturnType<typeof base>) => {
+    const { data } = await appliquer(base()).limit(TAILLE_SECTION * 4);
+    return ((data ?? []) as unknown as CardRow[]).map((ligne) => toCard(ligne, favorites));
+  };
+
+  const base = () =>
+    client.from('prompts').select(CARD_COLUMNS).eq('mode', mode).eq('status', 'published');
+
+  // `media_ready` d'abord : sans lui, les vingt-quatre lignes lues pouvaient
+  // etre vingt-quatre commandes sans visuel, toutes ecartees ensuite, et la
+  // section revenait vide alors que le catalogue avait de quoi la remplir.
+  const visuelsDabord = (r: ReturnType<typeof base>) =>
+    r.order('media_ready', { ascending: false });
+
+  if (familles.length > 0) {
+    ajouter(
+      await lire((r) =>
+        visuelsDabord(r.in('category_id', familles)).order('is_featured', { ascending: false }),
+      ),
+    );
+  }
+
+  if (retenues.length < TAILLE_SECTION) {
+    ajouter(
+      await lire((r) =>
+        visuelsDabord(r).order('is_featured', { ascending: false }).order('sort_order'),
+      ),
+    );
+  }
+
+  return retenues;
 }

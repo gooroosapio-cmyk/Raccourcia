@@ -40,6 +40,25 @@ export type PurchaseStatus = (typeof PURCHASE_STATUS)[number];
 export const PROVIDER_KEYS = ['chatgpt', 'claude', 'gemini'] as const;
 export type ProviderKey = (typeof PROVIDER_KEYS)[number];
 
+/**
+ * Ou coller la commande qu'on vient de copier.
+ *
+ * Une adresse d'accueil, jamais une adresse portant la commande : le contenu
+ * complet ne doit jamais transiter par une URL, ou il finirait dans
+ * l'historique du navigateur et dans les journaux du destinataire.
+ */
+export const PROVIDER_URLS: Record<ProviderKey, string> = {
+  chatgpt: 'https://chatgpt.com/',
+  claude: 'https://claude.ai/new',
+  gemini: 'https://gemini.google.com/app',
+};
+
+export const PROVIDER_LABELS: Record<ProviderKey, string> = {
+  chatgpt: 'ChatGPT',
+  claude: 'Claude',
+  gemini: 'Gemini',
+};
+
 /** D'ou part une copie. Alimente `copy_events.surface`. */
 export const SURFACES = ['carte', 'detail', 'page-publique'] as const;
 export type Surface = (typeof SURFACES)[number];
@@ -52,6 +71,25 @@ export const SURFACE_LABELS: Record<Surface, string> = {
 
 export const MEDIA_KINDS = ['thumbnail', 'before', 'after', 'example', 'cover'] as const;
 export type MediaKind = (typeof MEDIA_KINDS)[number];
+
+/**
+ * Etat des visuels d'un raccourci.
+ *
+ * Deduit des medias reellement presents, jamais stocke : une colonne dirait
+ * un jour le contraire de la table, et c'est la table qui aurait raison.
+ *
+ * - `pret`    : ce qu'il faut pour montrer le raccourci existe. Une commande
+ *               texte est toujours prete — sa carte est editoriale, elle
+ *               n'attend aucune image.
+ * - `attente` : commande image sans couple avant/apres. Elle reste au
+ *               catalogue mais passe apres, et ne sert jamais d'exemple.
+ *
+ * L'etat `cache` du cahier des charges n'existe pas ici : `status = archived`
+ * et `categories.is_visible` le font deja, et deux mecanismes pour un meme
+ * effet finissent par se contredire.
+ */
+export const MEDIA_STATUS = ['pret', 'attente'] as const;
+export type MediaStatus = (typeof MEDIA_STATUS)[number];
 
 /**
  * Entrees qu'un raccourci accepte. Liste fermee : chaque valeur porte une
@@ -119,6 +157,18 @@ export const OUTPUT_FORMAT_HINTS: Partial<Record<OutputFormatKind, string>> = {
 
 export const RISK_LEVELS = ['faible', 'moyen', 'eleve'] as const;
 export type RiskLevel = (typeof RISK_LEVELS)[number];
+
+/**
+ * Ce que le niveau de risque dit a l'utilisateur.
+ *
+ * Le mot « risque » appartient au back-office. Cote membre, la question est
+ * : est-ce que je peux publier le resultat tel quel, ou dois-je le relire ?
+ */
+export const RISK_LEVEL_LABELS: Record<RiskLevel, string> = {
+  faible: 'Direct',
+  moyen: 'À vérifier',
+  eleve: 'À faire relire',
+};
 
 /** Cles de configuration runtime, modifiables depuis /admin sans redeploiement. */
 export const CONFIG_KEYS = {

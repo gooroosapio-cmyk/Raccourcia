@@ -20,6 +20,8 @@ export type AdminPromptRow = {
   mode: Enums<'app_mode'>;
   status: Enums<'content_status'>;
   isFree: boolean;
+  /** Remonte en tete de sa categorie. Outil d'administration, jamais affiche. */
+  isPinned: boolean;
   categoryName: string | null;
   /** Visuel « avant » envoye depuis l'administration. */
   hasBefore: boolean;
@@ -52,6 +54,7 @@ function toRow(row: {
   mode: Enums<'app_mode'>;
   status: Enums<'content_status'>;
   is_free: boolean;
+  is_pinned: boolean;
   updated_at: string;
   categories: { name: string } | null;
   prompt_media: { kind: Enums<'media_kind'> }[] | null;
@@ -64,6 +67,7 @@ function toRow(row: {
     mode: row.mode,
     status: row.status,
     isFree: row.is_free,
+    isPinned: row.is_pinned,
     categoryName: row.categories?.name ?? null,
     hasBefore: visuels.some((media) => media.kind === 'before'),
     hasAfter: visuels.some((media) => media.kind === 'after'),
@@ -72,7 +76,7 @@ function toRow(row: {
 }
 
 const ROW_COLUMNS =
-  'id, command, name, mode, status, is_free, updated_at, categories(name), prompt_media(kind)';
+  'id, command, name, mode, status, is_free, is_pinned, updated_at, categories(name), prompt_media(kind)';
 
 export async function getAdminDashboard(): Promise<AdminDashboard> {
   const supabase = await createClient();

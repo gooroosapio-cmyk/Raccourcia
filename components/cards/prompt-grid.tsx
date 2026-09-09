@@ -29,6 +29,7 @@ export function PromptGrid({
   visiteur = false,
   emptyState,
   initialProvider = 'chatgpt',
+  prioritaire = true,
 }: {
   prompts: PromptCardData[];
   locked: boolean;
@@ -44,6 +45,15 @@ export function PromptGrid({
   visiteur?: boolean;
   emptyState: React.ReactNode;
   initialProvider?: string;
+  /**
+   * Faux pour les grilles secondaires de l'Accueil.
+   *
+   * Le chargement prioritaire ne vaut que pour ce qui est certain d'etre a
+   * l'ecran au premier rendu. L'Accueil affiche jusqu'a cinq grilles : les
+   * laisser toutes reclamer la priorite en demanderait dix a la fois, et le
+   * navigateur n'accelererait plus rien.
+   */
+  prioritaire?: boolean;
 }) {
   const [selection, setSelection] = useState<PromptCardData | null>(null);
   const [provider, changeProvider] = usePreferredProvider(initialProvider);
@@ -83,9 +93,10 @@ export function PromptGrid({
             <ImagePromptCard
               key={prompt.id}
               {...commun}
-              // Seules les deux premieres vignettes sont prioritaires : ce
-              // sont les seules certaines d'etre a l'ecran au chargement.
-              priority={index < 2}
+              // Seules les deux premieres vignettes de la grille principale
+              // sont prioritaires : ce sont les seules certaines d'etre a
+              // l'ecran au chargement.
+              priority={prioritaire && index < 2}
             />
           ) : (
             <TextPromptCard key={prompt.id} {...commun} />

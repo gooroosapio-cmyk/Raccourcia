@@ -6,15 +6,34 @@ import { SheetCloseButton } from '@/components/ui/sheet-close';
 /**
  * Filtres avances, tels qu'ils voyagent dans l'URL.
  *
- * Trois axes seulement : ce que je peux copier, avec quelle IA, pour obtenir
- * quoi. Les categories ont deja leur rangee de chips ; les reproduire ici
- * doublerait le meme choix a deux endroits.
+ * Quatre axes : ce que je peux copier, avec quelle IA, pour obtenir quoi, et
+ * ce que le resultat demande avant publication. Les categories ont deja leur
+ * rangee de chips ; les reproduire ici doublerait le meme choix a deux
+ * endroits.
+ *
+ * Pas d'axe « usage » : aucune colonne ne le porte, et un filtre qui ne
+ * filtre rien est pire qu'un filtre absent.
  */
 export type FiltresAvances = {
   acces?: 'gratuit' | 'membre';
   ia?: 'chatgpt' | 'claude' | 'gemini';
   sortie?: 'image' | 'texte' | 'pdf';
+  /**
+   * Ce que le resultat demande comme relecture. La donnee existe pour les
+   * 555 commandes (`risk_level`) ; le libelle, lui, parle a l'utilisateur
+   * plutot qu'au back-office.
+   */
+  niveau?: 'faible' | 'moyen' | 'eleve';
 };
+
+/**
+ * Les cles que ce panneau pilote.
+ *
+ * Enumerees et non deduites de l'objet passe : « Reinitialiser » produit un
+ * objet vide, et parcourir ses entrees ne supprimait alors rien de l'URL —
+ * les filtres survivaient a leur propre remise a zero.
+ */
+export const CLES_FILTRES = ['acces', 'ia', 'sortie', 'niveau'] as const;
 
 const GROUPES = [
   {
@@ -41,6 +60,15 @@ const GROUPES = [
       { valeur: 'image', libelle: 'Image' },
       { valeur: 'texte', libelle: 'Texte' },
       { valeur: 'pdf', libelle: 'PDF' },
+    ],
+  },
+  {
+    cle: 'niveau' as const,
+    titre: 'Avant publication',
+    options: [
+      { valeur: 'faible', libelle: 'Utilisable direct' },
+      { valeur: 'moyen', libelle: 'À vérifier' },
+      { valeur: 'eleve', libelle: 'À faire relire' },
     ],
   },
 ];
