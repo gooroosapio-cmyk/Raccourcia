@@ -716,6 +716,10 @@ export type Database = {
       purge_rate_limit_counters: { Args: Record<string, never>; Returns: undefined };
       register_app_session: { Args: { p_device_label?: string }; Returns: number };
       revoke_current_app_session: { Args: Record<string, never>; Returns: undefined };
+      resolve_free_prompt: {
+        Args: { p_prompt_id: string; p_provider_key: string; p_surface?: string };
+        Returns: { command: string; payload: string }[];
+      };
       resolve_prompt: {
         Args: { p_prompt_id: string; p_provider_key: string; p_surface?: string };
         Returns: { command: string; payload: string; version_id: string; version_label: string }[];

@@ -73,25 +73,6 @@ export const MEDIA_KINDS = ['thumbnail', 'before', 'after', 'example', 'cover'] 
 export type MediaKind = (typeof MEDIA_KINDS)[number];
 
 /**
- * Etat des visuels d'un raccourci.
- *
- * Deduit des medias reellement presents, jamais stocke : une colonne dirait
- * un jour le contraire de la table, et c'est la table qui aurait raison.
- *
- * - `pret`    : ce qu'il faut pour montrer le raccourci existe. Une commande
- *               texte est toujours prete — sa carte est editoriale, elle
- *               n'attend aucune image.
- * - `attente` : commande image sans couple avant/apres. Elle reste au
- *               catalogue mais passe apres, et ne sert jamais d'exemple.
- *
- * L'etat `cache` du cahier des charges n'existe pas ici : `status = archived`
- * et `categories.is_visible` le font deja, et deux mecanismes pour un meme
- * effet finissent par se contredire.
- */
-export const MEDIA_STATUS = ['pret', 'attente'] as const;
-export type MediaStatus = (typeof MEDIA_STATUS)[number];
-
-/**
  * Entrees qu'un raccourci accepte. Liste fermee : chaque valeur porte une
  * icone et un libelle, qu'une chaine libre rendrait impossibles a associer.
  */
@@ -153,21 +134,6 @@ export const OUTPUT_FORMAT_HINTS: Partial<Record<OutputFormatKind, string>> = {
   pdf: 'rapport structure',
   tableur: 'tableau exploitable',
   code: 'extrait prêt à coller',
-};
-
-export const RISK_LEVELS = ['faible', 'moyen', 'eleve'] as const;
-export type RiskLevel = (typeof RISK_LEVELS)[number];
-
-/**
- * Ce que le niveau de risque dit a l'utilisateur.
- *
- * Le mot « risque » appartient au back-office. Cote membre, la question est
- * : est-ce que je peux publier le resultat tel quel, ou dois-je le relire ?
- */
-export const RISK_LEVEL_LABELS: Record<RiskLevel, string> = {
-  faible: 'Direct',
-  moyen: 'À vérifier',
-  eleve: 'À faire relire',
 };
 
 /** Cles de configuration runtime, modifiables depuis /admin sans redeploiement. */

@@ -68,8 +68,16 @@ export function AdminPromptFilters({
   // Le filtre de mode restreint la liste des familles : proposer une famille
   // texte alors que seuls les raccourcis image sont affiches ne renverrait
   // jamais rien.
+  //
+  // Les familles masquees sortent de la liste pour la meme raison : leurs
+  // raccourcis n'atteignent aucun membre, filtrer dessus ne repond a aucune
+  // question qu'on se pose en parcourant le catalogue. La seule exception
+  // est celle deja choisie — la retirer viderait le champ sans rien dire.
   const racines = categories.filter((categorie) => categorie.parentId === null);
-  const famillesVisibles = mode ? racines.filter((c) => c.mode === mode) : racines;
+  const famillesDuMode = mode ? racines.filter((c) => c.mode === mode) : racines;
+  const famillesVisibles = famillesDuMode.filter(
+    (categorie) => categorie.isVisible || categorie.id === categoryId,
+  );
 
   return (
     <div className="space-y-3">

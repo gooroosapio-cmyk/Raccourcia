@@ -3,7 +3,6 @@ import {
   MODES,
   OUTPUT_FORMAT_KINDS,
   PROVIDER_KEYS,
-  RISK_LEVELS,
   SURFACES,
   CATALOG_PAGE_SIZE,
 } from '@/lib/constants';
@@ -31,7 +30,6 @@ export const catalogQuery = z.object({
   // inconnue arrivant par l'URL est ignoree, jamais transmise a la requete.
   access: z.enum(['gratuit', 'membre']).optional(),
   output: z.enum(OUTPUT_FORMAT_KINDS).optional(),
-  level: z.enum(RISK_LEVELS).optional(),
   page: z.coerce.number().int().min(1).max(100).default(1),
   // La bibliotheque s'affiche par lots cumules : la page en demande
   // `CATALOG_PAGE_SIZE * lot` d'un coup. La borne couvre le plus grand mode

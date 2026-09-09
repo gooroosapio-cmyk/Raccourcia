@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AccessBadge } from '@/components/cards/access-badge';
+import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
 import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
@@ -326,6 +327,8 @@ export function PromptDetailSheet({
               questions courtes.
             </p>
           ) : null}
+
+          <AvertissementResultats className="mt-5 border-t border-[color:var(--color-line)] pt-3" />
         </div>
 
         <div className="shrink-0 border-t border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
