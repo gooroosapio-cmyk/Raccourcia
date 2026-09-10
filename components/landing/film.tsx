@@ -1,7 +1,7 @@
 /**
  * Le film publicitaire, dans la page de vente.
  *
- * `preload="none"` n'est pas un detail : le fichier pese dix-sept megaoctets,
+ * `preload="none"` reste la regle : le fichier pese cinq megaoctets et demi,
  * et la page vise d'abord des telephones sur des forfaits ou ce poids se
  * compte. Rien du film n'est telecharge avant qu'on appuie sur lecture; ce
  * que l'on voit d'ici la est l'affiche, qui pese quatre-vingt-neuf kilooctets.
@@ -31,7 +31,7 @@ export function Film() {
         Votre navigateur ne sait pas lire cette vidéo.
       </video>
       <figcaption className="mt-3 text-center text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
-        RaccourcIA en 45 secondes.
+        RaccourcIA en 54 secondes.
       </figcaption>
     </figure>
   );
