@@ -605,37 +605,6 @@ export async function getCategoriesVitrine(): Promise<CategorieVitrine[]> {
   );
 }
 
-export async function getShowcasePrompts(commands: string[]): Promise<PromptCard[]> {
-  const supabase = await createClient();
-  const [{ isMember, hasFullAccess }, favorites] = await Promise.all([
-    getAccessState(),
-    getFavoriteIds(),
-  ]);
-
-  const { data, error } = await supabase
-    .from('prompts')
-    .select(CARD_COLUMNS)
-    .in('command', commands)
-    .eq('status', 'published');
-
-  if (error) throw new CatalogUnavailableError(error);
-
-  const rows = (data ?? []) as unknown as CardRow[];
-  const parCommande = new Map(rows.map((row) => [row.command.toLowerCase(), row]));
-
-  // L'ordre demande est conserve : il est editorial, pas alphabetique. Le
-  // masquage vient apres le classement, sinon il n'y aurait plus de nom sur
-  // lequel s'appuyer pour ranger.
-  return commands
-    .map((commande) => parCommande.get(commande.toLowerCase()))
-    .filter((row): row is CardRow => row !== undefined)
-    .map((row) => {
-      const carte = toCard(row, favorites);
-      const verrouille = !hasFullAccess && !carte.isFree;
-      return !isMember && verrouille ? masquerCommande(carte) : carte;
-    });
-}
-
 /** Question contextuelle d'un raccourci, telle qu'elle est stockee. */
 export type QuestionExemple = { question: string; choices: string[] };
 
