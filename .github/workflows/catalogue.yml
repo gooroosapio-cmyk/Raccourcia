@@ -21,6 +21,11 @@ on:
         description: 'Taper "raccourcia" pour confirmer l import en production'
         required: true
         type: string
+      bascule:
+        description: 'Basculer la taxonomie V5 apres les lots : taper "basculer". Laisser vide sinon.'
+        required: false
+        default: ''
+        type: string
       dossier:
         description: 'Lots a appliquer'
         required: true
@@ -107,6 +112,21 @@ jobs:
             psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
               < supabase/seed/bascule-navigation-v2.sql
           fi
+
+      # La bascule de taxonomie est la seule etape que les membres voient :
+      # quatorze familles s'ouvrent et les anciennes se ferment. Importer le
+      # catalogue et changer la navigation sont deux decisions distinctes,
+      # elles demandent donc deux mots differents. Sans le second, l'import
+      # depose le contenu V5 dans la taxonomie actuelle et n'y touche pas.
+      - name: Basculer la taxonomie V5
+        if: inputs.bascule == 'basculer' && inputs.dossier == 'supabase/seed/v5'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Bascule de taxonomie V5'
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
+            < supabase/seed/bascule-taxonomie-v5.sql
 
       - name: Controle final
         env:

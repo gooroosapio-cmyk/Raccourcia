@@ -9,17 +9,17 @@ d'accessibilite ci-dessous viennent de l'audit, pas de ce lot.
 | Lot | Contenu                                               | Applique en production  |
 | --- | ----------------------------------------------------- | ----------------------- |
 | 2   | Socle V5 : niveaux, presets, alias, 14 familles       | **Oui**                 |
-| 3   | Import du catalogue V5 (433 commandes, 1299 payloads) | Non                     |
-| 4   | Recherche par ancien nom, redirection des liens       | Non                     |
+| 3   | Import du catalogue V5 (433 commandes, 1299 payloads) | **Oui**                 |
+| 4   | Recherche par ancien nom, redirection des liens       | **Oui**                 |
 | 5   | Niveau d'execution sur la fiche et la carte           | Non (code deploye seul) |
 | 6   | Choix de l'IA au moment de copier, fiche 2 colonnes   | Non (code deploye seul) |
 | 7   | Modes d'une commande                                  | Non (code deploye seul) |
 
 Les lots 5, 6 et 7 sont du code : deploye sans les donnees du lot 3, il ne
 casse rien et n'affiche simplement rien de neuf (`level` nul, aucun alias).
-Les lots 3 et 4 sont indissociables : le lot 4 rattrape les noms que le lot 3
-fait disparaitre. **Les appliquer separement laisserait 146 raccourcis
-introuvables entre les deux.**
+Les lots 3 et 4 ont ete appliques ensemble, dans cet ordre : la migration du
+lot 4 d'abord, puis les 66 lots de l'import. Ils sont indissociables — le lot
+4 rattrape les noms que le lot 3 fait disparaitre.
 
 ## 2. Le point d'exploitation le plus important
 

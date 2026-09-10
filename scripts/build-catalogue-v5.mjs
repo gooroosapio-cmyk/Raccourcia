@@ -530,6 +530,312 @@ drop table lot_v5_alias;
 `;
 
 // ---------------------------------------------------------------------
+// La bascule de taxonomie
+//
+// Elle vit hors du dossier genere : celui-ci est efface et reecrit a chaque
+// passage, et une bascule est une decision d'exploitation qu'on applique une
+// fois, quand on l'a decidee. Elle est tout de meme produite ici pour que le
+// rangement des 433 commandes ne puisse pas deriver du classeur.
+//
+// Tout tient dans une transaction : une bascule a moitie faite est un
+// catalogue casse.
+// ---------------------------------------------------------------------
+
+const rangement = lire('rangement');
+
+const bascule = `-- =====================================================================
+-- Bascule de taxonomie V5
+--
+-- A appliquer apres les lots de \`supabase/seed/v5/\`, jamais avant. C'est
+-- la seule etape que les membres verront : les quatorze familles V5
+-- s'ouvrent, les 429 commandes canoniques publiees les rejoignent, les
+-- raccourcis qu'elles ont absorbes quittent le catalogue, et l'ancienne
+-- taxonomie est archivee.
+--
+-- Rien n'est supprime. Un raccourci absorbe garde sa ligne, ses visuels,
+-- son historique et son identifiant : une adresse deja partagee continue de
+-- repondre, \`resoudre_alias\` la conduisant vers la commande qui fait
+-- desormais le travail.
+--
+-- RETOUR ARRIERE — la sauvegarde posee en tete rend l'etat exact :
+--   update public.prompts p
+--     set category_id = s.category_id,
+--         status = s.status::public.content_status,
+--         is_free = s.is_free
+--     from public.prompts_avant_bascule_v5 s where s.id = p.id;
+--   update public.categories set status = 'published'::public.content_status
+--    where external_ref is not null and external_ref not like '%-V5-%';
+--   update public.categories set status = 'draft'::public.content_status
+--    where external_ref like '%-V5-%';
+-- =====================================================================
+
+begin;
+
+-- ---------------------------------------------------------------------
+-- Sauvegarde de ce que la bascule deplace
+-- ---------------------------------------------------------------------
+
+create table if not exists public.prompts_avant_bascule_v5 as
+select id, external_ref, command::text as command, category_id,
+       status::text as status, is_free, now() as sauvegarde_le
+from public.prompts;
+
+revoke all on table public.prompts_avant_bascule_v5 from anon, authenticated;
+
+comment on table public.prompts_avant_bascule_v5 is
+  'Rangement, statut et palier des raccourcis avant la bascule V5. Sert au retour arriere.';
+
+-- ---------------------------------------------------------------------
+-- Refus de basculer sur un catalogue partiel
+--
+-- La production a deja affiche des puces vides une fois, heritees d'un
+-- import laisse a moitie. Si le compte n'y est pas, rien ne bouge.
+-- ---------------------------------------------------------------------
+
+do $ctrl$
+declare
+  v_canoniques integer;
+  v_payloads integer;
+  v_alias integer;
+  v_familles integer;
+  v_orphelins integer;
+  v_noms text;
+  v_vides integer;
+begin
+  select count(*) into v_canoniques from public.prompts where level is not null;
+  if v_canoniques <> ${lignesCommandes.length} then
+    raise exception 'Bascule refusee : % commandes V5 au lieu de ${lignesCommandes.length}. L''import n''est pas passe.', v_canoniques;
+  end if;
+
+  select count(*) into v_payloads
+  from public.prompt_versions pv
+  join public.prompt_variants v on v.id = pv.variant_id
+  join public.prompts p on p.id = v.prompt_id and p.level is not null
+  where pv.is_current and pv.version_label = '${VERSION}';
+  if v_payloads <> ${payloads.length} then
+    raise exception 'Bascule refusee : % payloads V5 courants au lieu de ${payloads.length}.', v_payloads;
+  end if;
+
+  -- Pas un compte absolu : une base de recette ne contient pas toujours
+  -- tout l'historique, et les alias dont le raccourci d'origine manque n'y
+  -- sont pas crees. Ce qui doit etre vrai partout, c'est qu'ils existent —
+  -- le controle des orphelins ci-dessous se charge du reste, et il est
+  -- autrement plus protecteur qu'un nombre.
+  select count(*) into v_alias from public.prompt_aliases;
+  if v_alias = 0 then
+    raise exception 'Bascule refusee : aucun alias enregistre. Le lot 810 n''est pas passe.';
+  end if;
+
+  select count(*) into v_familles from public.categories where external_ref like '%-V5-%';
+  if v_familles <> ${familles.length} then
+    raise exception 'Bascule refusee : % familles V5 au lieu de ${familles.length}.', v_familles;
+  end if;
+
+  -- Le controle qui compte le plus. Une commande publiee dans une famille
+  -- que cette bascule va archiver, et qui ne serait ni canonique ni
+  -- absorbee, n'a nulle part ou aller : elle disparaitrait de l'ecran sans
+  -- que rien ne la remplace et sans qu'aucune adresse ne la rattrape.
+  --
+  -- Borne aux familles que la bascule ferme : une commande rangee ailleurs
+  -- garde sa famille et n'est concernee par rien de tout ceci.
+  --
+  -- Le message nomme les coupables. Un refus qui donne un nombre laisse
+  -- l'operateur chercher; un refus qui donne des noms se traite.
+  select count(*), string_agg(p.command::text, ', ' order by p.command::text)
+    into v_orphelins, v_noms
+  from public.prompts p
+  join public.categories c on c.id = p.category_id and c.is_visible
+  where p.status = 'published'
+    and c.external_ref is not null
+    and c.external_ref not like '%-V5-%'
+    and p.level is null
+    and not exists (select 1 from public.prompt_aliases a where a.alias_prompt_id = p.id);
+  if v_orphelins > 0 then
+    raise exception 'Bascule refusee : % raccourcis publies ne sont ni canoniques ni absorbes (%). Les archiver ou leur donner une destination avant de basculer.',
+      v_orphelins, v_noms;
+  end if;
+
+  -- Une famille ouverte sans commande est un cul-de-sac.
+  select count(*) into v_vides
+  from public.categories f
+  where f.external_ref like '%-V5-%'
+    and not exists (
+      select 1
+      from jsonb_to_recordset(${litteralJson(rangement)}::jsonb) as d(ref text, family_id text)
+      join public.prompts p on p.external_ref = d.ref
+      where d.family_id = f.external_ref and p.status = 'published'
+    );
+  if v_vides > 0 then
+    raise exception 'Bascule refusee : % familles V5 n''accueilleraient aucune commande.', v_vides;
+  end if;
+end $ctrl$;
+
+-- ---------------------------------------------------------------------
+-- Le palier offert suit la commande qui fait le travail
+--
+-- Trois raccourcis offerts sont absorbes. Sans ce transfert, un visiteur
+-- qui pouvait copier /eventposter perdrait cette possibilite alors que le
+-- meme travail se fait toujours, sous le nom de la commande canonique.
+-- Le palier est un arbitrage commercial : il se corrige d'un clic depuis
+-- l'administration si cette generosite n'est pas voulue.
+-- ---------------------------------------------------------------------
+
+update public.prompts canon
+set is_free = true
+from public.prompt_aliases a
+join public.prompts ancien on ancien.id = a.alias_prompt_id
+where canon.id = a.canonical_prompt_id
+  and ancien.is_free
+  and ancien.status = 'published'
+  and not canon.is_free;
+
+-- ---------------------------------------------------------------------
+-- Les quatorze familles s'ouvrent
+--
+-- \`is_visible\` est derivee du statut par declencheur : publier suffit.
+-- Elles s'ouvrent avant que les commandes n'arrivent, et tout tient dans la
+-- meme transaction : personne ne voit ni rayon vide ni commande orpheline.
+-- ---------------------------------------------------------------------
+
+update public.categories
+set status = 'published'::public.content_status
+where external_ref like '%-V5-%';
+
+-- ---------------------------------------------------------------------
+-- Chaque commande canonique rejoint sa famille
+-- ---------------------------------------------------------------------
+
+update public.prompts p
+set category_id = f.id
+from jsonb_to_recordset(${litteralJson(rangement)}::jsonb) as d(ref text, family_id text)
+join public.categories f on f.external_ref = d.family_id
+where p.external_ref = d.ref and p.category_id is distinct from f.id;
+
+-- ---------------------------------------------------------------------
+-- Les raccourcis absorbes quittent le catalogue
+--
+-- Archives, jamais supprimes : la ligne garde ses visuels, ses favoris et
+-- son historique de copie, et \`resoudre_alias\` conduit son ancienne
+-- adresse vers la commande canonique. C'est ce que le classeur demande —
+-- creer l'alias avant toute desactivation de carte.
+--
+-- A une condition : que la commande canonique soit publiee. Le cas n'est
+-- pas theorique — /dialogue est absorbe par /story, que l'administration a
+-- archive. Retirer /dialogue rendrait son adresse muette et ferait
+-- disparaitre un outil sans rien mettre a la place. Il reste donc en ligne,
+-- et sa famille avec lui. Publiez la commande canonique, rejouez la
+-- bascule, et il partira de lui-meme.
+-- ---------------------------------------------------------------------
+
+update public.prompts
+set status = 'archived'::public.content_status
+where status = 'published'
+  and id in (
+    select a.alias_prompt_id
+    from public.prompt_aliases a
+    join public.prompts canon on canon.id = a.canonical_prompt_id
+    where canon.status = 'published'
+  );
+
+-- ---------------------------------------------------------------------
+-- L'ancienne taxonomie est archivee
+--
+-- Seulement si elle est vide : archiver une famille encore peuplee rendrait
+-- ses commandes introuvables. Mieux vaut la laisser et le voir.
+-- ---------------------------------------------------------------------
+
+update public.categories c
+set status = 'archived'::public.content_status
+where c.external_ref is not null
+  and c.external_ref not like '%-V5-%'
+  and not exists (
+    select 1 from public.prompts p
+    where p.category_id = c.id and p.status = 'published'
+  );
+
+-- ---------------------------------------------------------------------
+-- Controles de sortie
+-- ---------------------------------------------------------------------
+
+do $ctrl$
+declare
+  v_hors_ecran integer;
+  v_vides integer;
+  v_offertes integer;
+  v_offertes_avant integer;
+  v_adresses integer;
+  v_gardes integer;
+  v_noms_gardes text;
+  v_publiees integer;
+begin
+  select count(*) into v_hors_ecran
+  from public.prompts p
+  where p.status = 'published'
+    and (p.category_id is null
+         or not exists (select 1 from public.categories c
+                        where c.id = p.category_id and c.is_visible));
+  if v_hors_ecran > 0 then
+    raise exception '% commandes publiees hors des familles visibles.', v_hors_ecran;
+  end if;
+
+  select count(*) into v_vides
+  from public.categories c
+  where c.is_visible
+    and not exists (select 1 from public.prompts p
+                    where p.category_id = c.id and p.status = 'published');
+  if v_vides > 0 then
+    raise exception '% familles visibles sans aucune commande.', v_vides;
+  end if;
+
+  -- Le palier d'essai est la porte d'entree du produit : il ne doit pas
+  -- avoir retreci en chemin.
+  select count(*) into v_offertes
+  from public.prompts p
+  join public.categories c on c.id = p.category_id and c.is_visible
+  where p.status = 'published' and p.is_free;
+  select count(*) into v_offertes_avant
+  from public.prompts_avant_bascule_v5 s
+  where s.status = 'published' and s.is_free;
+  if v_offertes < 1 then
+    raise exception 'Plus aucune commande offerte n''est visible.';
+  end if;
+
+  -- Chaque adresse effectivement retiree du catalogue doit conduire
+  -- quelque part. Celles qui restent en ligne n'ont besoin de personne.
+  select count(*) into v_adresses
+  from public.prompt_aliases a
+  join public.prompts ancien on ancien.id = a.alias_prompt_id
+  where ancien.status = 'archived'
+    and not exists (select 1 from public.resoudre_alias(ancien.slug));
+  if v_adresses > 0 then
+    raise exception '% anciennes adresses retirees ne menent nulle part.', v_adresses;
+  end if;
+
+  -- Ceux qu'on a gardes se signalent : c'est une situation a regler, pas un
+  -- etat d'equilibre.
+  select count(*), string_agg(ancien.command::text || ' (attend ' || canon.command::text || ')', ', ')
+    into v_gardes, v_noms_gardes
+  from public.prompt_aliases a
+  join public.prompts ancien on ancien.id = a.alias_prompt_id and ancien.status = 'published'
+  join public.prompts canon on canon.id = a.canonical_prompt_id;
+  if v_gardes > 0 then
+    raise notice '% raccourcis absorbes restent en ligne, leur commande canonique n''etant pas publiee : %.',
+      v_gardes, v_noms_gardes;
+  end if;
+
+  select count(*) into v_publiees
+  from public.prompts p
+  join public.categories c on c.id = p.category_id and c.is_visible
+  where p.status = 'published';
+
+  raise notice 'Bascule effectuee : % commandes visibles dans quatorze familles, % offertes (% avant).',
+    v_publiees, v_offertes, v_offertes_avant;
+end $ctrl$;
+
+commit;
+`;
+
+// ---------------------------------------------------------------------
 // Ecriture
 // ---------------------------------------------------------------------
 
@@ -572,4 +878,7 @@ for (let i = 0; i * TAILLE_PAYLOADS < payloads.length; i += 1) {
 ecrire('800_questions.sql', lotQuestions);
 ecrire('810_alias.sql', lotAlias);
 
+writeFileSync(join(ROOT, 'supabase', 'seed', 'bascule-taxonomie-v5.sql'), bascule, 'utf8');
+
 console.log(`${fichiers.length} lots ecrits dans supabase/seed/v5/`);
+console.log('bascule ecrite dans supabase/seed/bascule-taxonomie-v5.sql');

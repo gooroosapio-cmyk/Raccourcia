@@ -10,9 +10,16 @@ begin
   select count(*) into v_v5 from public.categories where external_ref like '%-V5-%';
   perform tests_assert(v_v5 = 14, format('%s familles V5 au lieu de 14.', v_v5));
 
+  -- Ce que ce controle voulait dire quand les familles etaient encore
+  -- vides : aucune ne doit s'ouvrir avant d'avoir de quoi remplir un rayon.
+  -- Ecrit ainsi, il vaut avant comme apres la bascule.
   perform tests_assert(
-    not exists (select 1 from public.categories
-                where external_ref like '%-V5-%' and (is_visible or status = 'published')),
+    not exists (
+      select 1 from public.categories f
+      where f.external_ref like '%-V5-%' and f.is_visible
+        and not exists (select 1 from public.prompts p
+                        where p.category_id = f.id and p.status = 'published')
+    ),
     'Une famille V5 est visible alors qu''elle est vide.');
 
   perform tests_assert(
@@ -20,10 +27,12 @@ begin
                 where external_ref like '%-V5-%' and coalesce(fallback_image_path, '') = ''),
     'Une famille V5 n''a pas de visuel de repli (regle R08).');
 
-  -- Les treize familles servies aujourd'hui ne bougent pas.
+  -- Les treize familles de la V2 restent en base quoi qu'il arrive : la
+  -- bascule les archive, elle ne les supprime pas. Une famille effacee
+  -- emporterait le rangement d'origine de 320 raccourcis.
   select count(*) into v_v2 from public.categories
-  where external_ref is not null and external_ref not like '%-V5-%' and is_visible;
-  perform tests_assert(v_v2 = 13, format('%s familles V2 visibles au lieu de 13.', v_v2));
+  where external_ref is not null and external_ref not like '%-V5-%';
+  perform tests_assert(v_v2 = 13, format('%s familles V2 en base au lieu de 13.', v_v2));
 
   -- Six image et huit texte, dans l'ordre du classeur.
   perform tests_assert(

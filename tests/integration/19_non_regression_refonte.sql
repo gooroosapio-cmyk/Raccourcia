@@ -19,8 +19,25 @@ begin
   from public.prompts p
   join public.categories c on c.id = p.category_id
   where p.status = 'published' and c.is_visible;
-  perform tests_assert(v_publies > 300,
-    format('Le catalogue visible est tombe a %s commandes.', v_publies));
+  perform tests_assert(v_publies > 0, 'Le catalogue visible est vide.');
+
+  -- La vraie propriete de non-regression : personne ne perd l'acces a quoi
+  -- que ce soit. Une commande qui etait en ligne avant la bascule y est
+  -- toujours, ou bien son adresse conduit a celle qui fait desormais le
+  -- travail. Un nombre fige n'aurait rien dit — le catalogue a le droit de
+  -- retrecir, il n'a pas le droit de perdre quelqu'un en route.
+  if exists (select 1 from information_schema.tables
+             where table_schema = 'public' and table_name = 'prompts_avant_bascule_v5') then
+    select count(*) into v_n
+    from public.prompts_avant_bascule_v5 s
+    join public.prompts p on p.id = s.id
+    where s.status = 'published'
+      and not exists (select 1 from public.categories c
+                      where c.id = p.category_id and c.is_visible and p.status = 'published')
+      and not exists (select 1 from public.resoudre_alias(p.slug));
+    perform tests_assert(v_n = 0,
+      format('%s commandes ont disparu sans que rien ne prenne le relais.', v_n));
+  end if;
 
   -- Une commande publiee sans famille visible n'apparait dans aucune puce et
   -- disparait de la lecture publique : elle existe sans exister.
