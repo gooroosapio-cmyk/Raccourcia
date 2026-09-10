@@ -209,7 +209,14 @@ begin
   select count(*) into v_fuite
   from information_schema.column_privileges
   where table_schema = 'public' and table_name = 'prompt_versions'
-    and column_name = 'payload' and grantee in ('anon', 'authenticated');
+    and column_name = 'payload'
+    -- Sur `privilege_type` et non sur la seule presence d'une ligne : la
+    -- production accorde `REFERENCES` sur toutes les colonnes, ce qui ne
+    -- permet pas de lire une seule valeur. Compter large aurait fait crier
+    -- ce controle sur une base saine, et un controle qui crie a tort
+    -- finit par ne plus etre lu.
+    and privilege_type = 'SELECT'
+    and grantee in ('anon', 'authenticated');
   perform tests_assert(v_fuite = 0, 'Le payload V5 est lisible par un role client.');
 end $$;
 
