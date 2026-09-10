@@ -6,6 +6,7 @@ import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { ResultThumbnail } from '@/components/cards/result-thumbnail';
 import { usePaywall } from '@/components/paywall/paywall-provider';
+import { decrireNiveau } from '@/lib/catalog/niveau';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
@@ -59,6 +60,7 @@ export function ImagePromptCard({
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
   const description = prompt.shortDescription || prompt.resultSummary;
+  const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
 
   return (
     <article className="anim-apparition relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
@@ -74,6 +76,7 @@ export function ImagePromptCard({
               url={prompt.thumbnailUrl}
               alt={masque ? description : prompt.thumbnailAlt}
               libelle={masque ? description : prompt.command}
+              mission={niveau?.mission ?? false}
               priority={priority}
             />
           </span>

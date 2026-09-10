@@ -188,6 +188,7 @@ const COUNT_COLUMNS = 'id, prompt_variants!inner(ai_providers!inner(key))';
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
   show_image_card, is_free, is_new, is_featured, risk_level, sort_order,
+  level, max_questions,
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
   prompt_variants!inner(compatibility, status, ai_providers!inner(key, name, is_active)),
@@ -211,6 +212,8 @@ type CardRow = {
   is_new: boolean;
   is_featured: boolean;
   risk_level: Enums<'risk_level'>;
+  level: Enums<'execution_level'> | null;
+  max_questions: number | null;
   intention: string | null;
   expected_input: string | null;
   limitations: string | null;
@@ -284,6 +287,8 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     isNew: row.is_new,
     isFeatured: row.is_featured,
     riskLevel: row.risk_level,
+    level: row.level,
+    maxQuestions: row.max_questions,
     thumbnailUrl: thumbnail ? mediaUrl(thumbnail.storage_path) : null,
     thumbnailAlt: thumbnail?.alt ?? null,
     providers: (row.prompt_variants ?? [])

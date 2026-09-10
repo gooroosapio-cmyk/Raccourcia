@@ -9,9 +9,11 @@ import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
 import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { InputExampleList } from '@/components/detail/input-example-list';
+import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { OutputFormatList } from '@/components/detail/output-format-list';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
+import { decrireNiveau } from '@/lib/catalog/niveau';
 
 /**
  * Page publique partageable d'une commande.
@@ -88,6 +90,7 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
 
   const { hasFullAccess } = await getAccessState();
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
+  const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
 
   return (
     <article className="pt-2">
@@ -127,6 +130,15 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
             </li>
           ))}
         </ul>
+      ) : null}
+
+      {/* La meme annonce que dans la fiche de l'application : quelqu'un qui
+          arrive par un lien partage doit savoir, lui aussi, si la commande
+          rend un resultat tout de suite ou conduit un travail. */}
+      {niveau ? (
+        <div className="mt-5">
+          <NiveauExecution niveau={niveau} />
+        </div>
       ) : null}
 
       {prompt.inputExamples.length > 0 ? (

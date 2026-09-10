@@ -8,10 +8,12 @@ import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { InputExampleList } from '@/components/detail/input-example-list';
+import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { OutputFormatList } from '@/components/detail/output-format-list';
 import { SheetCloseButton } from '@/components/ui/sheet-close';
 import { SheetDragHandle, useSheetDrag } from '@/components/ui/sheet-drag';
 import { usePaywall } from '@/components/paywall/paywall-provider';
+import { decrireNiveau } from '@/lib/catalog/niveau';
 import { useToast } from '@/components/ui/toast';
 import type { PromptCard } from '@/lib/catalog/types';
 
@@ -111,6 +113,7 @@ export function PromptDetailSheet({
   }, [onClose]);
 
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
+  const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
   const partiel = actif?.compatibility === 'partiel';
 
@@ -250,6 +253,17 @@ export function PromptDetailSheet({
           <p className="mt-1.5 text-[length:var(--texte-corps)] leading-[1.5] text-[color:var(--color-night)]">
             {prompt.shortDescription || prompt.resultSummary}
           </p>
+
+          {/* Entre « ce que ca fait » et « ce qu'il faut fournir » : est-ce
+              que la commande rend un resultat tout de suite, ou est-ce
+              qu'elle va d'abord poser des questions ? C'est ce qui separe
+              vraiment deux commandes voisines, et personne ne le savait
+              avant de copier. */}
+          {niveau ? (
+            <div className="mt-4">
+              <NiveauExecution niveau={niveau} />
+            </div>
+          ) : null}
 
           {prompt.inputExamples.length > 0 || prompt.expectedInput ? (
             <Section titre="À fournir">

@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { VisualSlot } from '@/components/cards/visual-slot';
 
 /**
  * Vignette d'une carte : le resultat, et rien d'autre.
@@ -8,13 +9,15 @@ import Image from 'next/image';
  * large : deux images de cette taille cote a cote ne montrent rien, et
  * l'image de depart y volerait la place de celle qui donne envie.
  *
- * Le cadre est le meme pour toutes les cartes, image ou non : sans hauteur
- * reservee, l'arrivee des visuels ferait sauter la grille sous le pouce.
+ * Le cadre lui-meme vient de `VisualSlot`, partage avec le repli et avec la
+ * zone d'intention des cartes texte : c'est ce qui garantit que la grille ne
+ * saute pas sous le pouce quand un visuel arrive.
  */
 export function ResultThumbnail({
   url,
   alt,
   libelle,
+  mission = false,
   priority = false,
 }: {
   url: string | null;
@@ -26,13 +29,15 @@ export function ResultThumbnail({
    * qui ne doit pas encore la lire.
    */
   libelle: string;
+  /** Vrai pour une commande qui conduit un travail en plusieurs etapes. */
+  mission?: boolean;
   /** Vrai pour les premieres vignettes seulement. */
   priority?: boolean;
 }) {
-  if (!url) return <ThumbnailPlaceholder libelle={libelle} />;
+  if (!url) return <ThumbnailPlaceholder libelle={libelle} mission={mission} />;
 
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden bg-[color:var(--color-canvas)]">
+    <VisualSlot mission={mission}>
       <Image
         src={url}
         alt={alt ?? `Résultat obtenu avec ${libelle}`}
@@ -44,7 +49,7 @@ export function ResultThumbnail({
         loading={priority ? undefined : 'lazy'}
         className="object-cover"
       />
-    </div>
+    </VisualSlot>
   );
 }
 
@@ -54,34 +59,42 @@ export function ResultThumbnail({
  * On n'y met jamais l'image Avant : elle annoncerait une transformation que
  * la carte ne montre pas. Le cadre dit simplement que le visuel viendra.
  */
-export function ThumbnailPlaceholder({ libelle }: { libelle: string }) {
+export function ThumbnailPlaceholder({
+  libelle,
+  mission = false,
+}: {
+  libelle: string;
+  mission?: boolean;
+}) {
   return (
-    <div className="relative flex aspect-[4/3] w-full flex-col items-center justify-center gap-1.5 overflow-hidden bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-2">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect
-          x="3"
-          y="5"
-          width="18"
-          height="14"
-          rx="2.5"
-          stroke="var(--color-brand)"
-          strokeWidth="1.6"
-          opacity="0.55"
-        />
-        <circle cx="8.5" cy="10" r="1.6" fill="var(--color-brand)" opacity="0.55" />
-        <path
-          d="m4.5 17 4.6-4.3 3.4 3.1 3-2.6 4 3.8"
-          stroke="var(--color-brand)"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity="0.55"
-        />
-      </svg>
-      <span className="text-[var(--texte-meta)] font-medium text-[color:var(--color-brand)]/75">
-        Visuel à venir
+    <VisualSlot ton="texte" mission={mission}>
+      <span className="flex h-full w-full flex-col items-center justify-center gap-1.5 px-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect
+            x="3"
+            y="5"
+            width="18"
+            height="14"
+            rx="2.5"
+            stroke="var(--color-brand)"
+            strokeWidth="1.6"
+            opacity="0.55"
+          />
+          <circle cx="8.5" cy="10" r="1.6" fill="var(--color-brand)" opacity="0.55" />
+          <path
+            d="m4.5 17 4.6-4.3 3.4 3.1 3-2.6 4 3.8"
+            stroke="var(--color-brand)"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.55"
+          />
+        </svg>
+        <span className="text-[var(--texte-meta)] font-medium text-[color:var(--color-brand)]/75">
+          Visuel à venir
+        </span>
+        <span className="sr-only">{libelle}</span>
       </span>
-      <span className="sr-only">{libelle}</span>
-    </div>
+    </VisualSlot>
   );
 }

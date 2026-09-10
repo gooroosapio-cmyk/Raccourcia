@@ -4,7 +4,9 @@ import { AILogo } from '@/components/brand/ai-logos';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
+import { VisualSlot } from '@/components/cards/visual-slot';
 import { usePaywall } from '@/components/paywall/paywall-provider';
+import { decrireNiveau } from '@/lib/catalog/niveau';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
@@ -55,6 +57,7 @@ export function TextPromptCard({
   // Repli quand l'intention manque : les cas d'usage tiennent la zone plutot
   // que de la laisser vide.
   const usages = prompt.useCases.slice(0, 3);
+  const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
 
   return (
     <article className="anim-apparition relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
@@ -63,40 +66,56 @@ export function TextPromptCard({
         onClick={() => onOpen(prompt)}
         className="flex flex-1 flex-col text-left"
       >
-        <span className="relative flex aspect-[4/3] w-full flex-col justify-center gap-1 overflow-hidden bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-2.5 py-2">
-          {intention ? (
-            <>
-              <span className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/70">
-                Intention
-              </span>
-              <span className="line-clamp-4 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)]/85">
-                {intention}
-              </span>
-            </>
-          ) : usages.length > 0 ? (
-            <>
-              <span className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/70">
-                Cas d’usage
-              </span>
-              {usages.map((usage) => (
-                <span
-                  key={usage}
-                  className="flex items-start gap-1 text-[length:var(--texte-meta)] leading-[1.3] text-[color:var(--color-night)]/80"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="mt-[0.45em] block h-1 w-1 shrink-0 rounded-full bg-[color:var(--color-brand)]/50"
-                  />
-                  <span className="line-clamp-1">{usage}</span>
+        <VisualSlot ton="texte" mission={niveau?.mission ?? false}>
+          {/* Le repere de mission se pose en bas a gauche du cadre : quand il
+              est la, le texte lui laisse la place plutot que de passer
+              dessous. */}
+          <span
+            className={`flex h-full w-full flex-col justify-center gap-1 px-2.5 pt-2 ${
+              niveau?.mission ? 'pb-7' : 'pb-2'
+            }`}
+          >
+            {intention ? (
+              <>
+                <span className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/70">
+                  Intention
                 </span>
-              ))}
-            </>
-          ) : (
-            <span className="line-clamp-3 text-[length:var(--texte-meta)] italic leading-[1.35] text-[color:var(--color-muted)]">
-              {description}
-            </span>
-          )}
-        </span>
+                {/* Une ligne de moins quand le repere de mission est la : la
+                    reserve de place en bas ne suffit pas, l'ecretage compte
+                    les lignes sans savoir ce qui les recouvre. */}
+                <span
+                  className={`text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)]/85 ${
+                    niveau?.mission ? 'line-clamp-3' : 'line-clamp-4'
+                  }`}
+                >
+                  {intention}
+                </span>
+              </>
+            ) : usages.length > 0 ? (
+              <>
+                <span className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/70">
+                  Cas d’usage
+                </span>
+                {usages.map((usage) => (
+                  <span
+                    key={usage}
+                    className="flex items-start gap-1 text-[length:var(--texte-meta)] leading-[1.3] text-[color:var(--color-night)]/80"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mt-[0.45em] block h-1 w-1 shrink-0 rounded-full bg-[color:var(--color-brand)]/50"
+                    />
+                    <span className="line-clamp-1">{usage}</span>
+                  </span>
+                ))}
+              </>
+            ) : (
+              <span className="line-clamp-3 text-[length:var(--texte-meta)] italic leading-[1.35] text-[color:var(--color-muted)]">
+                {description}
+              </span>
+            )}
+          </span>
+        </VisualSlot>
 
         <span className="flex flex-1 flex-col gap-1 px-2.5 pb-2 pt-2">
           {masque ? null : (
