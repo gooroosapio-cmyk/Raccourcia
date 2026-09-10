@@ -24,9 +24,10 @@ on:
       dossier:
         description: 'Lots a appliquer'
         required: true
-        default: supabase/seed/images-responsives
+        default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - supabase/seed/v5-lot-01
           - supabase/seed/images-responsives
           - supabase/seed/catalogue-v3
           - supabase/seed/v3
