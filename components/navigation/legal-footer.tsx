@@ -15,9 +15,16 @@ export function LegalFooter({ className = '' }: { className?: string }) {
 
   return (
     <footer className={`text-[12px] text-[color:var(--color-muted)] ${className}`}>
+      {/* La marge negative rend la place que la marge interieure prend :
+          la zone touchee grandit, le pied de page ne bouge pas d'un pixel.
+          Dix-huit pixels de haut, c'etait moins que la pulpe d'un pouce. */}
       <nav aria-label="Informations légales" className="flex flex-wrap gap-x-4 gap-y-1">
         {liens.map((lien) => (
-          <Link key={lien.href} href={lien.href} className="underline underline-offset-2">
+          <Link
+            key={lien.href}
+            href={lien.href}
+            className="-my-1.5 py-1.5 underline underline-offset-2"
+          >
             {lien.label}
           </Link>
         ))}

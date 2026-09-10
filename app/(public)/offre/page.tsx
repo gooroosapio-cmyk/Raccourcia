@@ -41,6 +41,7 @@ export default async function OfferPage() {
         </div>
       ) : (
         <UpgradePanel
+          titrePrincipal
           offre={{
             purchaseUrl: config.purchaseUrl,
             price: config.price,
