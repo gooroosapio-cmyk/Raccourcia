@@ -27,6 +27,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - supabase/seed/v5
           - supabase/seed/v5-lot-01
           - supabase/seed/images-responsives
           - supabase/seed/catalogue-v3
@@ -134,10 +135,15 @@ jobs:
                 raise exception '% raccourcis publies sans version copiable.', v_orphelins;
               end if;
 
+              -- Bornee aux familles de la V2 : celles de la V5 portent
+              -- elles aussi une reference externe et arrivent par migration,
+              -- invisibles. Sans cette borne, le controle final echouait
+              -- apres un import deja applique — le pire moment pour lever.
               select count(*) into v_categories
-              from public.categories where external_ref is not null;
+              from public.categories
+              where external_ref is not null and external_ref not like '%-V5-%';
               if v_categories <> 13 then
-                raise exception 'Attendu 13 familles, trouve %.', v_categories;
+                raise exception 'Attendu 13 familles V2, trouve %.', v_categories;
               end if;
             end \$\$;"
 
