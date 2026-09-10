@@ -1,0 +1,65 @@
+[
+  {
+    "ref": "RCI-IMG-339",
+    "command": "/challengepost",
+    "recommandation": "preset_existant",
+    "cible": "/adcreative",
+    "raison": "Mission proche d’une commande V5 existante; garder le raccourci public mais mutualiser le moteur."
+  },
+  {
+    "ref": "RCI-IMG-340",
+    "command": "/eventlineup",
+    "recommandation": "preset_existant",
+    "cible": "/poster",
+    "raison": "Mission proche d’une commande V5 existante; garder le raccourci public mais mutualiser le moteur."
+  },
+  {
+    "ref": "RCI-IMG-357",
+    "command": "/afrobeatsstar",
+    "recommandation": "preset_existant",
+    "cible": "/musicianportrait",
+    "raison": "Mission proche d’une commande V5 existante; garder le raccourci public mais mutualiser le moteur."
+  },
+  {
+    "ref": "RCI-IMG-358",
+    "command": "/nollywoodscene",
+    "recommandation": "preset_existant",
+    "cible": "/portraitcinema",
+    "raison": "Mission proche d’une commande V5 existante; garder le raccourci public mais mutualiser le moteur."
+  },
+  {
+    "ref": "RCI-IMG-365",
+    "command": "/festivalheadliner",
+    "recommandation": "preset_existant",
+    "cible": "/musicianportrait",
+    "raison": "Mission proche d’une commande V5 existante; garder le raccourci public mais mutualiser le moteur."
+  },
+  {
+    "ref": "RCI-IMG-366",
+    "command": "/dreamworkspace",
+    "recommandation": "preset_existant",
+    "cible": "/roomredesign",
+    "raison": "Mission proche d’une commande V5 existante; garder le raccourci public mais mutualiser le moteur."
+  },
+  {
+    "ref": "RCI-IMG-368",
+    "command": "/futurehomevision",
+    "recommandation": "preset_existant",
+    "cible": "/architecturalrender",
+    "raison": "Mission proche d’une commande V5 existante; garder le raccourci public mais mutualiser le moteur."
+  },
+  {
+    "ref": "RCI-IMG-369",
+    "command": "/roompersonality",
+    "recommandation": "preset_existant",
+    "cible": "/roomredesign",
+    "raison": "Mission proche d’une commande V5 existante; garder le raccourci public mais mutualiser le moteur."
+  },
+  {
+    "ref": "RCI-IMG-378",
+    "command": "/outfitbreakdown",
+    "recommandation": "preset_existant",
+    "cible": "/calloutdiagram",
+    "raison": "Mission proche d’une commande V5 existante; garder le raccourci public mais mutualiser le moteur."
+  }
+]

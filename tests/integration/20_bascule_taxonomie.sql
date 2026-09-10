@@ -119,13 +119,16 @@ begin
             where table_schema = 'public' and table_name = 'prompts_avant_bascule_v5'),
     'La bascule n''a laisse aucune sauvegarde : le retour arriere est impossible.');
 
+  -- La sauvegarde couvre ce que la bascule pouvait deplacer : les commandes
+  -- publiees. Celles arrivees apres elle — l'extension V5.1, par exemple —
+  -- n'y figurent pas et n'ont rien a y faire : elles n'ont pas d'etat
+  -- anterieur a restaurer.
   select count(*) into v_n
   from public.prompts p
-  where not exists (select 1 from public.prompts_avant_bascule_v5 s where s.id = p.id);
-  -- Les commandes creees apres la sauvegarde n'y figurent pas : c'est
-  -- normal, elles n'ont pas d'etat anterieur a restaurer.
-  perform tests_assert(v_n <= 2,
-    format('%s commandes sans etat anterieur : la sauvegarde est incomplete.', v_n));
+  where p.status = 'published'
+    and not exists (select 1 from public.prompts_avant_bascule_v5 s where s.id = p.id);
+  perform tests_assert(v_n = 0,
+    format('%s commandes publiees sans etat anterieur : la sauvegarde est incomplete.', v_n));
 end $$;
 
 rollback;

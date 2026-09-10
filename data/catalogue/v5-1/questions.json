@@ -1,0 +1,410 @@
+[
+  {
+    "ref": "RCI-IMG-331",
+    "sort_order": 1,
+    "question": "Souhaitez-vous préserver entièrement la forme de la chaussure ou autoriser une nouvelle silhouette ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-331",
+    "sort_order": 2,
+    "question": "Quel univers visuel doit guider la personnalisation ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-332",
+    "sort_order": 1,
+    "question": "Quels articles doivent composer la collection ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-332",
+    "sort_order": 2,
+    "question": "L’identité doit-elle rester discrète, centrale ou répétée en motif ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-333",
+    "sort_order": 1,
+    "question": "Préférez-vous un rendu minimal, illustré ou cinématographique ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-334",
+    "sort_order": 1,
+    "question": "Quelle personnalité la mascotte doit-elle exprimer ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-334",
+    "sort_order": 2,
+    "question": "Sur quels supports sera-t-elle utilisée en priorité ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-335",
+    "sort_order": 1,
+    "question": "Quelle personnalité ou émotion doit incarner le produit ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-336",
+    "sort_order": 1,
+    "question": "Quel sujet et quelle émotion doivent être compris en une seconde ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-336",
+    "sort_order": 2,
+    "question": "Faut-il intégrer un portrait ou rester typographique ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-337",
+    "sort_order": 1,
+    "question": "Quel univers doit représenter la chaîne ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-337",
+    "sort_order": 2,
+    "question": "Quels éléments du kit sont prioritaires ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-338",
+    "sort_order": 1,
+    "question": "Quelle activité et quelle impression doivent être comprises immédiatement ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-338",
+    "sort_order": 2,
+    "question": "Quelles plateformes faut-il servir en priorité ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-339",
+    "sort_order": 1,
+    "question": "Quelle action très simple les participants doivent-ils reproduire ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-339",
+    "sort_order": 2,
+    "question": "Quels texte et hashtag exacts doivent apparaître ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-340",
+    "sort_order": 1,
+    "question": "Quels noms doivent être les plus visibles ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-340",
+    "sort_order": 2,
+    "question": "Le texte, la date et le lieu sont-ils définitivement validés ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-341",
+    "sort_order": 1,
+    "question": "Quelle direction artistique doit porter la sortie ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-341",
+    "sort_order": 2,
+    "question": "Quels formats faut-il produire en priorité ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-342",
+    "sort_order": 1,
+    "question": "Que doit comprendre une personne qui découvre le profil ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-342",
+    "sort_order": 2,
+    "question": "Quels trois contenus faut-il mettre en avant au lancement ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-343",
+    "sort_order": 1,
+    "question": "Préférez-vous une photo de studio, une scène de rue ou une ambiance de soirée des années 80 ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-344",
+    "sort_order": 1,
+    "question": "Quel pays ou univers scolaire doit inspirer la photo ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-345",
+    "sort_order": 1,
+    "question": "Souhaitez-vous un rendu soirée, magazine pop ou appareil photo compact ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-346",
+    "sort_order": 1,
+    "question": "Préférez-vous une ambiance selfie, festival ou streetwear de 2016 ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-347",
+    "sort_order": 1,
+    "question": "Préférez-vous une photo familiale réaliste ou une version illustrée ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-348",
+    "sort_order": 1,
+    "question": "Disposez-vous d’une vraie photo d’enfance à utiliser comme référence ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-348",
+    "sort_order": 2,
+    "question": "Quel geste doit relier les deux versions : se regarder, se tenir la main ou s’enlacer ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-349",
+    "sort_order": 1,
+    "question": "Quelle présentation souhaitez-vous explorer ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-350",
+    "sort_order": 1,
+    "question": "Confirmez-vous que les deux personnes ont accepté cette transformation ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-351",
+    "sort_order": 1,
+    "question": "Confirmez-vous que les deux personnes acceptent cet usage de leurs portraits ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-351",
+    "sort_order": 2,
+    "question": "Quel âge approximatif et quel style de rendu souhaitez-vous ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-352",
+    "sort_order": 1,
+    "question": "Le jumeau doit-il sembler presque identique ou afficher un style opposé ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-353",
+    "sort_order": 1,
+    "question": "Quelle vie alternative souhaitez-vous voir ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-354",
+    "sort_order": 1,
+    "question": "Quel secteur ou univers professionnel doit être reconnaissable ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-355",
+    "sort_order": 1,
+    "question": "Quelle tenue ou ambiance de tapis rouge souhaitez-vous ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-356",
+    "sort_order": 1,
+    "question": "Souhaitez-vous un univers historique documenté, contemporain ou entièrement imaginaire ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-356",
+    "sort_order": 2,
+    "question": "Quels symboles ou vêtements sont autorisés ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-357",
+    "sort_order": 1,
+    "question": "Quelle énergie scénique recherchez-vous : élégante, festive ou futuriste ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-358",
+    "sort_order": 1,
+    "question": "Quel genre et quel rôle souhaitez-vous incarner ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-359",
+    "sort_order": 1,
+    "question": "Quels métiers souhaitez-vous comparer ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-360",
+    "sort_order": 1,
+    "question": "Quels éléments faut-il échanger : tenues, coiffures, accessoires ou univers complets ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-361",
+    "sort_order": 1,
+    "question": "Quel genre de série doit inspirer le groupe ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-361",
+    "sort_order": 2,
+    "question": "Faut-il attribuer des rôles précis ou les déduire uniquement des poses visibles ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-362",
+    "sort_order": 1,
+    "question": "Quelles actions les différentes versions doivent-elles accomplir ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-363",
+    "sort_order": 1,
+    "question": "À quel horizon et dans quel contexte souhaitez-vous voir votre futur ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-364",
+    "sort_order": 1,
+    "question": "Quels contextes de profil faut-il couvrir ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-365",
+    "sort_order": 1,
+    "question": "Quel genre musical et quelle énergie de scène souhaitez-vous ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-366",
+    "sort_order": 1,
+    "question": "Quelle activité doit guider l’aménagement ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-366",
+    "sort_order": 2,
+    "question": "Quels éléments existants faut-il impérativement conserver ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-367",
+    "sort_order": 1,
+    "question": "Quelle destination et quelle ambiance souhaitez-vous ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-368",
+    "sort_order": 1,
+    "question": "S’agit-il d’une inspiration libre ou d’un projet contraint par un terrain et un budget ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-368",
+    "sort_order": 2,
+    "question": "Quelles pièces et contraintes sont indispensables ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-369",
+    "sort_order": 1,
+    "question": "Quels trois goûts ou activités doivent être visibles dans la pièce ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-370",
+    "sort_order": 1,
+    "question": "Quels univers souhaitez-vous comparer ou dois-je choisir quatre contrastes cohérents ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-371",
+    "sort_order": 1,
+    "question": "Quelles époques souhaitez-vous comparer ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-372",
+    "sort_order": 1,
+    "question": "Quels nom, capacités ou statistiques exacts doivent apparaître ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-373",
+    "sort_order": 1,
+    "question": "Quelle mini-histoire ou progression doit relier les quatre poses ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-374",
+    "sort_order": 1,
+    "question": "Quelle matière et quel type de lieu doivent accueillir la statue ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-375",
+    "sort_order": 1,
+    "question": "Souhaitez-vous une fresque réaliste, graphique ou communautaire ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-376",
+    "sort_order": 1,
+    "question": "Préférez-vous un hologramme réaliste, scénique ou cybernétique ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-377",
+    "sort_order": 1,
+    "question": "Quel type de créature et quelle humeur souhaitez-vous ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-378",
+    "sort_order": 1,
+    "question": "Faut-il seulement décrire ce qui est visible ou intégrer des références et prix vérifiés ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-379",
+    "sort_order": 1,
+    "question": "Quel matériel et combien de sources lumineuses sont disponibles ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-379",
+    "sort_order": 2,
+    "question": "Quelles sont les dimensions ou limites de l’espace ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-380",
+    "sort_order": 1,
+    "question": "Quelle durée, quel format et quel objectif doit servir la vidéo ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  },
+  {
+    "ref": "RCI-IMG-380",
+    "sort_order": 2,
+    "question": "Quels lieux, personnes et matériels sont réellement disponibles ?",
+    "condition": "Après analyse, seulement si cette information influence le livrable et reste inconnue"
+  }
+]

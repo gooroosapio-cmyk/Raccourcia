@@ -176,6 +176,29 @@ if compgen -G "$ROOT/supabase/seed/v5/*.sql" > /dev/null; then
     from public.prompts where level is not null;"
 fi
 
+if compgen -G "$ROOT/supabase/seed/v5-1/*.sql" > /dev/null; then
+  # Extension IMAGE V5.1 : cinquante commandes neuves dans les familles
+  # existantes. Appliquee deux fois : un lot d'insertion qui creerait un
+  # doublon au second passage serait un lot casse.
+  #
+  # Elles arrivent en brouillon : rien n'apparait a l'ecran tant que
+  # l'administration ne les publie pas.
+  echo "==> Extension V5.1 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/v5-1/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) || ' commandes V5.1, ' ||
+           (select count(*) from public.prompt_versions pv
+              join public.prompt_variants v on v.id = pv.variant_id
+              join public.prompts p on p.id = v.prompt_id and p.catalog_version = 'v5.1'
+            where pv.is_current) || ' payloads, ' ||
+           count(*) filter (where status = 'published') || ' publiees'
+    from public.prompts where catalog_version = 'v5.1';"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do
