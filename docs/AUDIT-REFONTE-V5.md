@@ -21,20 +21,43 @@ Les lots 3 et 4 ont ete appliques ensemble, dans cet ordre : la migration du
 lot 4 d'abord, puis les 66 lots de l'import. Ils sont indissociables — le lot
 4 rattrape les noms que le lot 3 fait disparaitre.
 
-## 2. Le point d'exploitation le plus important
+## 2. La bascule de taxonomie
 
-L'import du lot 3 **ne deplace aucune commande dans les familles V5**. Il
-depose le texte, les payloads, les questions et les alias, et s'arrete la.
-L'etat qui en resulte est coherent et livrable : le contenu V5 servi dans la
-taxonomie V2, treize familles visibles comme aujourd'hui.
+Elle est appliquee. Le catalogue sert desormais quatorze familles — six en
+Image, huit en Texte — et 429 commandes publiees, dont 27 offertes.
 
-La bascule de taxonomie — publier les quatorze familles V5, y ranger les 433
-commandes, archiver les treize anciennes — **n'est pas ecrite**. Elle est
-volontairement separee : y ranger une commande publiee avant de publier sa
-famille la ferait disparaitre du catalogue a la seconde ou le lot passe. La
-cible de rangement attend dans `data/catalogue/v5/rangement.json`, et
-`tests/integration/17_catalogue_v5.sql` refuse deja tout etat ou une commande
-publiee se retrouverait dans une famille invisible.
+Les 126 raccourcis absorbes ont quitte le catalogue sans disparaitre : leur
+ligne, leurs visuels, leurs favoris et leur historique de copie restent, et
+leur adresse redirige en permanence vers la commande qui fait desormais le
+travail. Verifie sur quatre d'entre elles : `/r/eventposter` mene a
+`/r/poster`, `/r/adsocial` a `/r/adcreative`, `/r/whatsappmessage` a
+`/r/emailpro`, `/r/kitchenredesign` a `/r/roomredesign`.
+
+Trois raccourcis offerts etant absorbes, leur palier est passe a leur
+commande canonique : le compte des commandes offertes est identique avant et
+apres, 27.
+
+Il a fallu trois tentatives, et les deux premieres n'ont rien ecrit.
+
+1. La bascule s'est deroulee entierement puis **son propre controle de sortie
+   l'a annulee** : une adresse retiree ne menait nulle part. C'etait
+   `/dialogue`, archive de longue date en meme temps que sa commande
+   canonique `/story` — son adresse ne repondait deja plus, et le controle
+   reprochait a la bascule un etat qu'elle n'avait pas cree. Il porte
+   desormais sur les seules adresses qu'elle retire elle-meme.
+2. La seconde n'a jamais atteint la bascule : l'etape qui rejoue les 66 lots
+   du catalogue a depasse vingt-cinq minutes la ou elle en avait mis
+   quatre-vingts secondes la premiere fois. Interrompue, sans effet — la
+   bascule est transactionnelle, les lots sont idempotents.
+3. La troisieme est passee en deux secondes, par le chemin « bascule-seule »
+   ajoute entre-temps. Rejouer cinq megaoctets de SQL pour executer une
+   dizaine d'instructions n'avait pas de sens, et rejouer la bascule plus
+   tard — apres avoir publie `/story`, par exemple — ne doit pas demander de
+   reimporter le catalogue.
+
+Retour arriere : `prompts_avant_bascule_v5` garde le rangement, le statut et
+le palier de chaque raccourci d'avant. Quatre instructions, documentees en
+tete de `supabase/seed/bascule-taxonomie-v5.sql`, rendent l'etat precedent.
 
 ## 3. Securite
 
@@ -150,8 +173,13 @@ la prochaine regeneration aurait remis la version fragile en place.
 
 ## 8. Ce qui reste a faire
 
-1. Ouvrir la fenetre d'application des lots 3 et 4 en production, ensemble.
-2. Ecrire la bascule de taxonomie V5, avec ses controles de sortie.
-3. Reprendre le lot 8 : contraste, parcours clavier, mesure de performance
+1. Mener la recette moteur : le classeur la demande avant de considerer le
+   catalogue comme publie, et les scores qu'il porte sont editoriaux.
+2. Publier `/story` si la commande doit revivre : `/dialogue` la designe
+   comme destination, et son adresse restera muette tant qu'elle est
+   archivee.
+3. Supprimer les trois tables de sauvegarde une fois la recette faite :
+   `prompts_avant_v5`, `prompt_questions_avant_v5`, `prompts_avant_bascule_v5`.
+4. Reprendre le lot 8 : contraste, parcours clavier, mesure de performance
    sur reseau contraint.
-4. Traiter les deux points de securite du chapitre 3.
+5. Traiter les deux points de securite du chapitre 3.
