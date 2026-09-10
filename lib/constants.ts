@@ -28,6 +28,29 @@ export const MODE_LABELS: Record<StoredMode, string> = {
   analyse: 'Analyse',
 };
 
+/**
+ * Niveau d'execution d'un raccourci, de A a E.
+ *
+ * Ce n'est pas une etiquette de difficulte : c'est ce qui decide combien une
+ * commande a le droit de demander avant de produire. Un niveau A part de la
+ * piece jointe et rend son resultat; un niveau E mene une mission en
+ * plusieurs etapes. La liste est fermee, comme l'enum en base.
+ */
+export const EXECUTION_LEVELS = ['A', 'B', 'C', 'D', 'E'] as const;
+export type ExecutionLevel = (typeof EXECUTION_LEVELS)[number];
+
+/**
+ * Ce que le niveau change pour la personne qui copie. Formule cote usage, pas
+ * cote moteur : l'interface ne parle jamais le vocabulaire du backend.
+ */
+export const EXECUTION_LEVEL_LABELS: Record<ExecutionLevel, string> = {
+  A: 'Résultat immédiat',
+  B: 'Une précision demandée',
+  C: 'Quelques précisions demandées',
+  D: 'Cadrage guidé',
+  E: 'Accompagnement complet',
+};
+
 export const APP_ROLES = ['user', 'admin', 'super_admin'] as const;
 export type AppRole = (typeof APP_ROLES)[number];
 

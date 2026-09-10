@@ -260,6 +260,23 @@ export type Database = {
         }>;
         Relationships: [];
       };
+      prompt_aliases: {
+        Row: {
+          alias_prompt_id: string;
+          canonical_prompt_id: string;
+          created_at: string;
+          id: string;
+          preset: Json;
+          updated_at: string;
+        };
+        Insert: {
+          alias_prompt_id: string;
+          canonical_prompt_id: string;
+          preset?: Json;
+        };
+        Update: Partial<{ canonical_prompt_id: string; preset: Json }>;
+        Relationships: [];
+      };
       prompt_media: {
         Row: {
           alt: string | null;
@@ -400,6 +417,7 @@ export type Database = {
           is_free: boolean;
           is_new: boolean;
           is_pinned: boolean;
+          level: Database['public']['Enums']['execution_level'] | null;
           limitations: string | null;
           media_ready: boolean;
           minimal_context: string | null;
@@ -410,6 +428,7 @@ export type Database = {
           output_formats: Database['public']['Enums']['output_format_kind'][];
           output_type: Database['public']['Enums']['output_type'];
           preserve_rules: string | null;
+          preset_key: string | null;
           priority: string;
           published_at: string | null;
           quality_criteria: string | null;
@@ -475,6 +494,8 @@ export type Database = {
           is_pinned: boolean;
           media_ready: boolean;
           show_image_card: boolean;
+          level: Database['public']['Enums']['execution_level'] | null;
+          preset_key: string | null;
           thumbnail_spec: string | null;
           admin_notes: string | null;
           sort_order: number;
@@ -738,6 +759,7 @@ export type Database = {
       compatibility_level: 'excellent' | 'bon' | 'partiel' | 'non_supporte';
       content_status: 'draft' | 'published' | 'archived';
       entitlement_status: 'active' | 'suspended' | 'revoked';
+      execution_level: 'A' | 'B' | 'C' | 'D' | 'E';
       input_example_kind:
         | 'photo_produit'
         | 'photo_lieu'

@@ -27,13 +27,17 @@ begin
   perform tests_assert(v_image = 130, format('%s raccourcis image au lieu de 130.', v_image));
   perform tests_assert(v_texte = 190, format('%s raccourcis texte au lieu de 190.', v_texte));
 
-  select count(*) into v_n from public.categories where external_ref is not null;
+  -- Les familles V5 portent elles aussi une reference externe. Ce controle
+  -- ne parle que des treize familles de la V2 : le compter autrement le
+  -- ferait echouer a chaque famille ajoutee ailleurs.
+  select count(*) into v_n from public.categories
+  where external_ref is not null and external_ref not like '%-V5-%';
   perform tests_assert(v_n = 13, format('%s categories V2 au lieu de 13.', v_n));
 
   select count(*) into v_image from public.categories
-    where external_ref like 'IMG-%';
+    where external_ref like 'IMG-%' and external_ref not like '%-V5-%';
   select count(*) into v_texte from public.categories
-    where external_ref like 'TXT-%';
+    where external_ref like 'TXT-%' and external_ref not like '%-V5-%';
   perform tests_assert(v_image = 6, format('%s categories image au lieu de 6.', v_image));
   perform tests_assert(v_texte = 7, format('%s categories texte au lieu de 7.', v_texte));
 
