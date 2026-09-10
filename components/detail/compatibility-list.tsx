@@ -15,12 +15,19 @@ type Provider = { key: string; name: string; compatibility: Enums<'compatibility
 export function CompatibilityList({
   providers,
   compact = false,
+  colonnes = false,
   selected,
   onSelect,
 }: {
   providers: Provider[];
   /** Variante des cartes : une ligne de noms, sans interaction. */
   compact?: boolean;
+  /**
+   * Trois colonnes egales plutot qu'un retour a la ligne. A 390 px, les trois
+   * pastilles ne tiennent pas cote a cote : laissees libres, elles se posent
+   * deux puis une, ce qui se lit comme un choix inacheve.
+   */
+  colonnes?: boolean;
   selected?: string;
   onSelect?: (key: string) => void;
 }) {
@@ -40,10 +47,12 @@ export function CompatibilityList({
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className={colonnes ? 'grid grid-cols-3 gap-2' : 'flex flex-wrap gap-2'}>
       {providers.map((entry) => {
         const actif = entry.key === selected;
-        const apparence = `touch-target inline-flex items-center gap-1.5 rounded-full px-3.5 text-[14px] font-medium transition-colors duration-[var(--duration-fast)] ${
+        const apparence = `touch-target inline-flex items-center justify-center gap-1.5 rounded-full text-[14px] font-medium transition-colors duration-[var(--duration-fast)] ${
+          colonnes ? 'px-2' : 'px-3.5'
+        } ${
           actif
             ? 'bg-[color:var(--color-brand)] text-white'
             : 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'

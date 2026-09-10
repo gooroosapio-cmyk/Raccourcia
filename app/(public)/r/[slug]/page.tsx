@@ -5,9 +5,8 @@ import { getAliasDestination, getPromptDetail, getPublicConfig } from '@/lib/cat
 import { getAccessState } from '@/lib/access/entitlement';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
-import { CopyCommandButton } from '@/components/cards/copy-command-button';
+import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
-import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { InputExampleList } from '@/components/detail/input-example-list';
 import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { OutputFormatList } from '@/components/detail/output-format-list';
@@ -153,12 +152,6 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
         </Section>
       ) : null}
 
-      {compatibles.length > 0 ? (
-        <Section titre="Compatible avec">
-          <CompatibilityList providers={compatibles} />
-        </Section>
-      ) : null}
-
       <section className="mt-8 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
         {prompt.isFree ? (
           /*
@@ -170,10 +163,17 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
            * precis ou on lui montrait ce qu'il y a derriere.
            */
           <>
-            <CopyCommandButton
+            {/* L'IA se choisit ici, pas ailleurs : chaque commande porte un
+                texte different par IA, et quelqu'un qui ouvre ce lien depuis
+                une conversation n'utilise pas forcement la premiere de la
+                liste. Lui servir le texte d'une autre etait une erreur
+                silencieuse — la commande marchait moins bien, sans qu'il
+                puisse savoir pourquoi. */}
+            <ChoixMoteur
               promptId={prompt.id}
-              provider={compatibles[0]?.key ?? 'chatgpt'}
+              providers={compatibles}
               surface="page-publique"
+              locked={false}
               proposerOuverture
             />
             {!hasFullAccess ? (
