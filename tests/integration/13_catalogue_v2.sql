@@ -41,8 +41,19 @@ begin
   perform tests_assert(v_image = 6, format('%s categories image au lieu de 6.', v_image));
   perform tests_assert(v_texte = 7, format('%s categories texte au lieu de 7.', v_texte));
 
-  select count(*) into v_n from public.prompt_questions;
-  perform tests_assert(v_n = 594, format('%s questions au lieu de 594.', v_n));
+  -- Le questionnaire de la V2, sans celui que le catalogue V5 a pose par
+  -- dessus. `level` est le seul marqueur d'une commande passee en V5 : les
+  -- 433 commandes canoniques y ont recu leurs propres questions successives,
+  -- ce qui fait tomber le compte de 594 a 152. Les deux valeurs sont admises
+  -- pour que ce controle dise la meme chose avant et apres cet import.
+  select count(*) into v_n
+  from public.prompt_questions q
+  join public.prompts p on p.id = q.prompt_id
+  where p.level is null;
+  perform tests_assert(
+    v_n in (594, 152),
+    format('%s questions V2 au lieu de 594 (avant V5) ou 152 (apres).', v_n)
+  );
 
   -- --- Integrite relationnelle ---------------------------------------
 

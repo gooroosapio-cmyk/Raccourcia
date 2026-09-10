@@ -1,0 +1,1734 @@
+[
+  {
+    "ref": "RCI-IMG-001",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-002",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-003",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-004",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-005",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-006",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-007",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-008",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-009",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-010",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-044",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-045",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-046",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-047",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-048",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-049",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-091",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-092",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-093",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-094",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-095",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-111",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-112",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-113",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-114",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-115",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-135",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-136",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-148",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-133",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-143",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-147",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-149",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-134",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-146",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-139",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-140",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-145",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-142",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-137",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-138",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-144",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-150",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-131",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-132",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-141",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-011",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-012",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-015",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-016",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-018",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-019",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-020",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-021",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-022",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-023",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-063",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-064",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-065",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-066",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-067",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-068",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-069",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-070",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-071",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-116",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-117",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-118",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-119",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-152",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-151",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-193",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-159",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-189",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-166",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-201",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-192",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-186",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-185",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-196",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-187",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-195",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-199",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-171",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-188",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-181",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-200",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-172",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-158",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-205",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-173",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-194",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-210",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-165",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-182",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-183",
+    "family_id": "IMG-V5-06"
+  },
+  {
+    "ref": "RCI-IMG-191",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-184",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-170",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-202",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-198",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-197",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-179",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-175",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-208",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-203",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-168",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-209",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-190",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-157",
+    "family_id": "IMG-V5-02"
+  },
+  {
+    "ref": "RCI-IMG-207",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-025",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-026",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-027",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-029",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-030",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-031",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-034",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-072",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-073",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-074",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-075",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-076",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-077",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-078",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-120",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-121",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-122",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-246",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-232",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-251",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-224",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-221",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-250",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-235",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-230",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-220",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-242",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-233",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-229",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-231",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-223",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-219",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-237",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-226",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-212",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-247",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-238",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-216",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-252",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-249",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-248",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-243",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-225",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-241",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-253",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-218",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-236",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-228",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-240",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-244",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-255",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-254",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-239",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-234",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-227",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-222",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-213",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-245",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-217",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-013",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-014",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-028",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-032",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-033",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-079",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-080",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-081",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-082",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-083",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-084",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-085",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-086",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-087",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-088",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-089",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-090",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-123",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-124",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-125",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-264",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-269",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-261",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-263",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-270",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-262",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-266",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-265",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-259",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-256",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-260",
+    "family_id": "IMG-V5-03"
+  },
+  {
+    "ref": "RCI-IMG-267",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-035",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-036",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-037",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-038",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-039",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-040",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-041",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-042",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-043",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-126",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-127",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-128",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-289",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-283",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-281",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-278",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-279",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-287",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-290",
+    "family_id": "IMG-V5-01"
+  },
+  {
+    "ref": "RCI-IMG-286",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-284",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-288",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-285",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-282",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-280",
+    "family_id": "IMG-V5-04"
+  },
+  {
+    "ref": "RCI-IMG-050",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-051",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-052",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-053",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-054",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-055",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-056",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-057",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-058",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-059",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-060",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-061",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-096",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-097",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-098",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-099",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-100",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-101",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-102",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-103",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-104",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-105",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-106",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-107",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-108",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-109",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-110",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-129",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-130",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-295",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-301",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-316",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-297",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-311",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-299",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-325",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-313",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-293",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-308",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-314",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-327",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-329",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-319",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-330",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-320",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-291",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-317",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-312",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-324",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-307",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-302",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-323",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-310",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-315",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-300",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-296",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-305",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-318",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-306",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-326",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-322",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-309",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-292",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-303",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-321",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-294",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-304",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-298",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-IMG-328",
+    "family_id": "IMG-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-004",
+    "family_id": "TXT-V5-01"
+  },
+  {
+    "ref": "RCI-TXT-028",
+    "family_id": "TXT-V5-01"
+  },
+  {
+    "ref": "RCI-TXT-029",
+    "family_id": "TXT-V5-01"
+  },
+  {
+    "ref": "RCI-TXT-020",
+    "family_id": "TXT-V5-01"
+  },
+  {
+    "ref": "RCI-TXT-065",
+    "family_id": "TXT-V5-01"
+  },
+  {
+    "ref": "RCI-TXT-067",
+    "family_id": "TXT-V5-01"
+  },
+  {
+    "ref": "RCI-TXT-085",
+    "family_id": "TXT-V5-01"
+  },
+  {
+    "ref": "RCI-TXT-001",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-003",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-010",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-145",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-204",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-021",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-011",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-012",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-054",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-033",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-058",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-059",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-207",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-208",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-200",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-ANA-009",
+    "family_id": "TXT-V5-02"
+  },
+  {
+    "ref": "RCI-TXT-007",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-042",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-044",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-063",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-006",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-019",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-212",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-047",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-069",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-070",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-ANA-014",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-ANA-013",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-022",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-023",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-025",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-ANA-017",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-072",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-073",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-074",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-075",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-076",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-ANA-023",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-077",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-078",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-080",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-151",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-071",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-153",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-035",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-036",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-094",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-159",
+    "family_id": "TXT-V5-04"
+  },
+  {
+    "ref": "RCI-TXT-017",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-141",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-018",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-052",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-053",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-060",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-143",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-196",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-193",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-197",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-146",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-ANA-005",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-ANA-019",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-154",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-155",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-ANA-021",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-ANA-022",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-ANA-040",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-TXT-231",
+    "family_id": "TXT-V5-05"
+  },
+  {
+    "ref": "RCI-ANA-016",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-ANA-007",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-V5-077",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-V5-078",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-156",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-ANA-024",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-ANA-025",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-230",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-038",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-039",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-091",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-097",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-ANA-011",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-ANA-033",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-088",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-090",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-ANA-035",
+    "family_id": "TXT-V5-06"
+  },
+  {
+    "ref": "RCI-TXT-214",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-215",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-218",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-222",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-223",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-ANA-027",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-226",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-225",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-224",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-227",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-228",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-016",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-232",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-ANA-029",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-ANA-032",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-158",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-087",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-233",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-089",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-014",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-TXT-083",
+    "family_id": "TXT-V5-07"
+  },
+  {
+    "ref": "RCI-ANA-028",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-161",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-162",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-164",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-168",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-166",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-167",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-234",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-170",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-171",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-172",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-173",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-174",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-175",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-178",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-181",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-183",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-184",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-185",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-186",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-187",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-188",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-235",
+    "family_id": "TXT-V5-08"
+  },
+  {
+    "ref": "RCI-TXT-045",
+    "family_id": "TXT-V5-03"
+  },
+  {
+    "ref": "RCI-TXT-050",
+    "family_id": "TXT-V5-07"
+  }
+]
