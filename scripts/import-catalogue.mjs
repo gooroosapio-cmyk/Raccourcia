@@ -437,9 +437,15 @@ ${SHARED_COLUMNS.map((column) => `  ${column} = excluded.${column},`).join('\n')
 -- --- Categories v1 devenues sans objet --------------------------------
 -- Archivees, jamais supprimees : leurs raccourcis ont deja rejoint la
 -- taxonomie v2 juste au-dessus, et l'historique reste consultable.
+--
+-- Bornee aux categories de la v1, celles qui n'ont pas de reference externe.
+-- Sans cette borne, l'instruction archive tout ce qu'elle ne connait pas :
+-- rejouee apres la migration du socle V5, elle archivait les quatorze
+-- familles neuves, vides par construction, que la bascule devra publier.
 update public.categories
    set status = 'archived'
- where slug not in (
+ where external_ref is null
+   and slug not in (
    select d.slug from jsonb_to_recordset(
      ${jsonLiteral([...parentCategories, ...childCategories].map((c) => ({ slug: c.slug })))}::jsonb
    ) as d(slug text)
