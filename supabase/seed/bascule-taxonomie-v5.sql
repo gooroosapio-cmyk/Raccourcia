@@ -255,26 +255,36 @@ begin
     raise exception 'Plus aucune commande offerte n''est visible.';
   end if;
 
-  -- Chaque adresse effectivement retiree du catalogue doit conduire
-  -- quelque part. Celles qui restent en ligne n'ont besoin de personne.
+  -- Chaque adresse que cette bascule vient de retirer doit conduire quelque
+  -- part. La sauvegarde dit lesquelles : un raccourci deja archive avant
+  -- qu'on arrive l'a ete pour ses raisons, et son adresse ne repondait deja
+  -- plus. Le lui reprocher ici ferait echouer la bascule sur un etat
+  -- anterieur qu'elle n'a pas cree — c'est exactement ce qui est arrive au
+  -- premier essai, sur /dialogue, archive de longue date en meme temps que
+  -- sa commande canonique /story.
   select count(*) into v_adresses
   from public.prompt_aliases a
   join public.prompts ancien on ancien.id = a.alias_prompt_id
-  where ancien.status = 'archived'
+  join public.prompts_avant_bascule_v5 s on s.id = ancien.id
+  where s.status = 'published'
+    and ancien.status = 'archived'
     and not exists (select 1 from public.resoudre_alias(ancien.slug));
   if v_adresses > 0 then
-    raise exception '% anciennes adresses retirees ne menent nulle part.', v_adresses;
+    raise exception '% adresses retirees par cette bascule ne menent nulle part.', v_adresses;
   end if;
 
-  -- Ceux qu'on a gardes se signalent : c'est une situation a regler, pas un
-  -- etat d'equilibre.
+  -- Tout raccourci absorbe dont la commande canonique n'est pas publiee se
+  -- signale, qu'il soit reste en ligne ou qu'il ait ete retire avant. C'est
+  -- une situation a regler, pas un etat d'equilibre : publier la commande
+  -- canonique, puis rejouer la bascule.
   select count(*), string_agg(ancien.command::text || ' (attend ' || canon.command::text || ')', ', ')
     into v_gardes, v_noms_gardes
   from public.prompt_aliases a
-  join public.prompts ancien on ancien.id = a.alias_prompt_id and ancien.status = 'published'
-  join public.prompts canon on canon.id = a.canonical_prompt_id;
+  join public.prompts ancien on ancien.id = a.alias_prompt_id
+  join public.prompts canon on canon.id = a.canonical_prompt_id
+  where canon.status <> 'published';
   if v_gardes > 0 then
-    raise notice '% raccourcis absorbes restent en ligne, leur commande canonique n''etant pas publiee : %.',
+    raise notice '% raccourcis absorbes attendent leur commande canonique : %.',
       v_gardes, v_noms_gardes;
   end if;
 
