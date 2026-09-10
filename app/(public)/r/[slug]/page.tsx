@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getPromptDetail, getPublicConfig } from '@/lib/catalog/queries';
+import { getAliasDestination, getPromptDetail, getPublicConfig } from '@/lib/catalog/queries';
 import { getAccessState } from '@/lib/access/entitlement';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
@@ -32,7 +32,16 @@ export async function generateMetadata({
   // Les metadonnees ne doivent jamais faire echouer la page : en cas
   // d'incident, on retombe sur un titre neutre et le rendu prend le relais.
   const prompt = await getPromptDetail(slug).catch(() => null);
-  if (!prompt) return { title: 'Commande' };
+  if (!prompt) {
+    // Une ancienne adresse redirige : le titre neutre ne serait vu que le
+    // temps de la redirection, mais un apercu de partage, lui, s'y arrete.
+    const destination = await getAliasDestination(slug).catch(() => null);
+    if (destination) {
+      const cible = await getPromptDetail(destination.slug).catch(() => null);
+      if (cible) return { title: `${cible.command} - ${cible.name}` };
+    }
+    return { title: 'Commande' };
+  }
 
   return {
     title: `${prompt.command} - ${prompt.name}`,
@@ -66,7 +75,16 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
     throw error;
   }
 
-  if (!prompt) notFound();
+  if (!prompt) {
+    // Cette adresse a peut-etre ete partagee avant que le raccourci ne
+    // devienne un mode d'une commande plus large. Le lien doit conduire la
+    // ou le travail se fait, pas s'excuser. Redirection permanente : c'est
+    // bien un changement d'adresse definitif, et les moteurs de recherche
+    // reportent alors ce que l'ancienne page avait gagne.
+    const destination = await getAliasDestination(slug);
+    if (destination) permanentRedirect(`/r/${destination.slug}`);
+    notFound();
+  }
 
   const { hasFullAccess } = await getAccessState();
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');

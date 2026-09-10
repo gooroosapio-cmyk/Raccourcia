@@ -399,6 +399,7 @@ export type Database = {
       prompts: {
         Row: {
           admin_notes: string | null;
+          aliases: string[];
           avoid_rules: string | null;
           category_id: string | null;
           command: string;
@@ -435,6 +436,7 @@ export type Database = {
           required_variables: string[];
           result_summary: string | null;
           risk_level: Database['public']['Enums']['risk_level'];
+          search_aliases: string | null;
           search_text: string | null;
           short_description: string;
           show_image_card: boolean;
@@ -496,6 +498,7 @@ export type Database = {
           show_image_card: boolean;
           level: Database['public']['Enums']['execution_level'] | null;
           preset_key: string | null;
+          aliases: string[];
           thumbnail_spec: string | null;
           admin_notes: string | null;
           sort_order: number;
@@ -748,6 +751,10 @@ export type Database = {
       resolve_prompt: {
         Args: { p_prompt_id: string; p_provider_key: string; p_surface?: string };
         Returns: { command: string; payload: string; version_id: string; version_label: string }[];
+      };
+      resoudre_alias: {
+        Args: { p_slug: string };
+        Returns: { slug: string; preset: Json }[];
       };
       track_prompt_view: { Args: { p_prompt_id: string }; Returns: undefined };
     };

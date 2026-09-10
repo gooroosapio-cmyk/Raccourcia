@@ -16,6 +16,7 @@ import {
 } from '@/lib/constants';
 import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import { clesDeTri } from '@/lib/catalog/tri';
+import { normaliserRecherche, portesDeRecherche } from '@/lib/catalog/recherche';
 import type { BeforeAfter, CategoryNode, PromptCard, PromptDetail } from '@/lib/catalog/types';
 import type { Enums } from '@/lib/supabase/database.types';
 import type { CatalogQuery } from '@/lib/validation/schemas';
@@ -325,23 +326,6 @@ export type CatalogPage = {
 };
 
 /**
- * Forme de comparaison d'un texte saisi.
- *
- * Doit donner le meme resultat que `public.texte_normalise` en base, sans
- * quoi la recherche ne trouverait pas ce que la colonne generee contient.
- * Minuscules, accents retires, tout ce qui n'est ni lettre ni chiffre
- * ramene a l'espace : « d'usage », « d usage » et « D'USAGE » se rejoignent.
- */
-export function normaliserRecherche(terme: string): string {
-  return terme
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-}
-
-/**
  * Retire le nom d'une commande verrouillee avant l'envoi au navigateur.
  *
  * Ne pas l'afficher ne suffit pas : la carte est un composant client, donc
@@ -478,12 +462,7 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
     if (categorieIds) requete = requete.in('category_id', categorieIds);
 
-    if (terme) {
-      const motif = `%${terme}%`;
-      requete = famillesTrouvees.length
-        ? requete.or(`search_norm.ilike.${motif},category_id.in.(${famillesTrouvees.join(',')})`)
-        : requete.ilike('search_norm', motif);
-    }
+    if (terme) requete = requete.or(portesDeRecherche(terme, famillesTrouvees));
 
     if (query.provider) requete = requete.eq('prompt_variants.ai_providers.key', query.provider);
     if (query.access) requete = requete.eq('is_free', query.access === 'gratuit');
@@ -677,6 +656,31 @@ export async function getPromptDetail(slug: string): Promise<PromptDetail | null
       .sort((a, b) => a.sort_order - b.sort_order)
       .map((media) => ({ kind: media.kind, url: mediaUrl(media.storage_path), alt: media.alt })),
   };
+}
+
+/**
+ * Adresse courante d'une commande qu'on cherche sous un ancien nom.
+ *
+ * Un lien comme /r/adsocial a pu partir par message il y a des semaines. Le
+ * raccourci est devenu un mode d'une commande plus large ; la page doit
+ * conduire la ou le travail se fait, pas afficher « introuvable ».
+ *
+ * `null` quand rien ne correspond : la page reste alors introuvable, ce qui
+ * est la bonne reponse pour une adresse qui n'a jamais existe.
+ */
+export async function getAliasDestination(
+  slug: string,
+): Promise<{ slug: string; mode: string | null } | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc('resoudre_alias', { p_slug: slug });
+  const destination = error ? undefined : data?.[0];
+  if (!destination) return null;
+
+  const preset = destination.preset as Record<string, unknown> | null;
+  const mode = typeof preset?.mode === 'string' ? preset.mode : null;
+
+  return { slug: destination.slug, mode };
 }
 
 /** Vue Favoris : exactement les memes cartes que Decouvrir. */

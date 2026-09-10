@@ -183,6 +183,34 @@ def main():
         }
         (renommages if m['historical_id'] == m['canonical_id'] else alias).append(entree)
 
+    # --- Noms auxquels chaque commande repond ---------------------------
+    # Quelqu'un qui a garde « /adsocial » ou « /emailpro » en tete doit
+    # retrouver la commande qui fait le travail. On rassemble donc, pour
+    # chaque commande canonique : ses modes, les noms des raccourcis devenus
+    # ses modes, leurs titres d'origine, et son propre nom d'avant quand elle
+    # a ete renommee.
+    noms = {}
+
+    def ajouter(ref, *valeurs):
+        cible = noms.setdefault(ref, [])
+        for valeur in valeurs:
+            valeur = str(valeur or '').strip().lstrip('/')
+            if valeur and valeur not in cible:
+                cible.append(valeur)
+
+    for c in commandes:
+        ajouter(c['id'], *json.loads(c['presets_json']))
+    for entree in alias + renommages:
+        ajouter(
+            entree['canonical_ref'],
+            entree['command'],
+            entree['preset'].get('mode'),
+            entree['preset'].get('historical_title'),
+        )
+
+    for c in canoniques:
+        c['aliases'] = noms.get(c['ref'], [])
+
     # Cible de rangement, mise de cote : la bascule de navigation s'en sert
     # bien apres l'import, quand les familles V5 deviennent visibles.
     rangement = [{'ref': c['ref'], 'family_id': c['family_id']} for c in canoniques]

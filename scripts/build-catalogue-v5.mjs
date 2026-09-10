@@ -141,6 +141,7 @@ const lignesCommandes = commandes.map((c) => ({
   output_type: c.domain === 'IMAGE' ? 'image' : 'text',
   max_questions: questionsParRef.get(c.ref) ?? null,
   questionnaire_mode: 'successif',
+  aliases: c.aliases,
 }));
 
 const CHAMPS_COMMANDE = `ref text, command text, slug text, family_id text, title text,
@@ -148,7 +149,7 @@ const CHAMPS_COMMANDE = `ref text, command text, slug text, family_id text, titl
   required_variables text[], optional_variables text[], sufficient_context text,
   blocking_condition text, default_values text, preserve text, avoid text,
   output_format text, risk_level text, mode text, input_type text, output_type text,
-  max_questions smallint, questionnaire_mode text`;
+  max_questions smallint, questionnaire_mode text, aliases text[]`;
 
 function lotCommandes(numero, tranche, cumul, total) {
   return `-- Lot ${numero} : commandes canoniques ${cumul - tranche.length + 1} a ${cumul} sur ${total}.
@@ -172,6 +173,7 @@ select * from jsonb_to_recordset(${litteralJson(tranche)}::jsonb) as d(
 --    brouillon, rangees dans leur famille V5 : invisibles des deux cotes.
 insert into public.prompts (
   external_ref, command, slug, name, mode, category_id, short_description, use_cases,
+  intention, aliases,
   level, preset_key, required_variables, optional_variables, sufficient_context,
   blocking_condition, default_values, preserve_rules, avoid_rules, output_format,
   input_type, output_type, risk_level, show_image_card, catalog_version, status,
@@ -179,7 +181,7 @@ insert into public.prompts (
 )
 select
   l.ref, l.command::extensions.citext, l.slug, l.title, l.mode::public.app_mode, c.id,
-  l.short_description, array[l.main_use_case],
+  l.short_description, array[l.main_use_case], l.main_use_case, l.aliases,
   l.level::public.execution_level, l.preset_key,
   l.required_variables, l.optional_variables, l.sufficient_context,
   l.blocking_condition, l.default_values, l.preserve, l.avoid, l.output_format,
@@ -196,11 +198,22 @@ where not exists (select 1 from public.prompts p where p.external_ref = l.ref);
 --    charge), status, is_free, is_pinned, is_featured, is_new, et tous les
 --    champs media. Le classeur est la source du texte, pas des decisions
 --    d'exploitation ni des visuels.
+--
+--    Les cas d'usage non plus : le classeur V5 ne donne qu'une phrase de
+--    situation, qui tient bien dans l'intention mais ferait un mauvais
+--    libelle sur une carte. Les cas d'usage courts deja en place restent.
 update public.prompts p
 set command = l.command::extensions.citext,
     name = l.title,
     short_description = l.short_description,
-    use_cases = array[l.main_use_case],
+    -- La mission du classeur devient l'intention : c'est elle que la fiche
+    -- d'une commande texte affiche a la place du visuel, et c'est par elle
+    -- qu'une recherche par besoin retrouve la commande.
+    intention = l.main_use_case,
+    -- Les noms auxquels la commande repond : anciens noms, raccourcis
+    -- devenus des modes, modes. Sans eux, quelqu'un qui a garde /emailpro
+    -- en tete ne trouve plus rien.
+    aliases = l.aliases,
     level = l.level::public.execution_level,
     preset_key = l.preset_key,
     required_variables = l.required_variables,
