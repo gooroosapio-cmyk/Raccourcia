@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - bascule-seule
           - supabase/seed/v5
           - supabase/seed/v5-lot-01
           - supabase/seed/images-responsives
@@ -92,7 +93,12 @@ jobs:
                    ' publies=' || count(*) filter (where status = 'published')
             from public.prompts;"
 
+      # Rejouer les 66 lots du catalogue V5 represente cinq megaoctets de SQL
+      # pour un resultat qui, la deuxieme fois, ne change rien. « bascule-seule »
+      # saute cette etape : la bascule est une dizaine d'instructions, elle n'a
+      # pas besoin qu'on reimporte le catalogue pour s'executer.
       - name: Appliquer les lots
+        if: inputs.dossier != 'bascule-seule'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -119,7 +125,9 @@ jobs:
       # elles demandent donc deux mots differents. Sans le second, l'import
       # depose le contenu V5 dans la taxonomie actuelle et n'y touche pas.
       - name: Basculer la taxonomie V5
-        if: inputs.bascule == 'basculer' && inputs.dossier == 'supabase/seed/v5'
+        if: >-
+          inputs.bascule == 'basculer' &&
+          (inputs.dossier == 'supabase/seed/v5' || inputs.dossier == 'bascule-seule')
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
