@@ -61,11 +61,15 @@ export function ContextLogicCard({
 }
 
 /**
- * Question contextuelle telle qu'elle se pose, avec ses choix.
+ * Question contextuelle telle qu'elle se pose, avec ses choix quand il y en a.
  *
  * Purement illustratif : rien n'est cliquable ici, et rien ne pretend
  * l'etre. Un faux formulaire qui ne repond pas au doigt serait pire
  * qu'une image.
+ *
+ * Le catalogue V5 pose ses questions en clair, sans choix fermes : la
+ * commande relit ce qu'on lui a donne et repart des la reponse. La liste
+ * disparait alors au lieu de laisser un blanc sous la question.
  */
 export function QuestionExempleMock({ question, choix }: { question: string; choix: string[] }) {
   return (
@@ -73,7 +77,7 @@ export function QuestionExempleMock({ question, choix }: { question: string; cho
       <p className="text-[length:var(--texte-carte)] font-semibold text-[color:var(--color-night)]">
         {question}
       </p>
-      <ul className="mt-2.5 flex flex-wrap gap-1.5">
+      <ul className="mt-2.5 flex flex-wrap gap-1.5" hidden={choix.length === 0}>
         {choix.slice(0, 4).map((option, index) => (
           <li
             key={option}

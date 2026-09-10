@@ -1,4 +1,4 @@
-import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
+import type { ExecutionLevel, InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 /**
@@ -32,6 +32,19 @@ export type PromptCard = {
   isNew: boolean;
   isFeatured: boolean;
   riskLevel: Enums<'risk_level'>;
+  /**
+   * Ce que la commande fera avant de produire, de A a E. `null` pour une
+   * commande que le catalogue n'a pas encore graduee : la fiche n'annonce
+   * alors rien plutot que d'inventer un niveau.
+   */
+  level: ExecutionLevel | null;
+  /** Plafond de questions successives. `null` vaut aucune question. */
+  maxQuestions: number | null;
+  /**
+   * Ce que la commande sait faire en plus de son cas principal : les titres
+   * des raccourcis qu'elle a absorbes. Vide pour la plupart des commandes.
+   */
+  modes: string[];
   /** Comparaison complete, ou `null` tant que les deux visuels manquent. */
   beforeAfter: BeforeAfter | null;
   thumbnailUrl: string | null;

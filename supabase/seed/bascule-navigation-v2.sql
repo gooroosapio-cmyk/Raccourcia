@@ -36,7 +36,10 @@ declare
   v_sans_version integer;
 begin
   select count(*) into v_prompts from public.prompts where catalog_version = 'v2.1';
-  select count(*) into v_categories from public.categories where external_ref is not null;
+  -- Les familles V5 arrivent par migration, invisibles : elles ne font pas
+  -- partie des treize familles que cette bascule doit trouver.
+  select count(*) into v_categories from public.categories
+  where external_ref is not null and external_ref not like '%-V5-%';
   select count(*) into v_questions from public.prompt_questions;
 
   select count(*) into v_sans_version
@@ -85,9 +88,15 @@ where catalog_version = 'v2.1';
 -- ---------------------------------------------------------------------
 
 -- `is_visible` est derivee du statut par declencheur : publier suffit.
+--
+-- Bornee aux treize familles de la V2 : les familles V5, posees par
+-- migration et volontairement invisibles tant qu'elles sont vides, portent
+-- elles aussi une reference externe. Sans cette borne, rejouer la bascule
+-- publiait quatorze rayons deserts.
 update public.categories
 set status = 'published'::public.content_status
-where external_ref is not null;
+where external_ref is not null
+  and external_ref not like '%-V5-%';
 
 -- `published_at` n'est pose que la premiere fois : la date de mise en ligne
 -- d'un raccourci deja publie ne doit pas etre reecrite.
@@ -130,6 +139,9 @@ begin
   select count(*) into v_vides
   from public.categories c
   where c.external_ref is not null
+    -- Les familles V5 sont vides par construction jusqu'a leur lot : elles
+    -- sont aussi invisibles, donc elles ne font de cul-de-sac pour personne.
+    and c.external_ref not like '%-V5-%'
     and not exists (
       select 1 from public.prompts p
       where p.category_id = c.id and p.status = 'published'

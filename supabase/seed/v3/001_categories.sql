@@ -33,7 +33,11 @@ do $ctrl$
 declare
   v_total integer;
 begin
-  select count(*) into v_total from public.categories where external_ref is not null;
+  -- Les familles V5 arrivent par migration, invisibles, avant que ce lot ne
+  -- soit rejoue. Compter toutes les references externes ferait echouer un
+  -- controle qui ne parle que des treize familles de la V3.
+  select count(*) into v_total from public.categories
+  where external_ref is not null and external_ref not like '%-V5-%';
   if v_total <> 13 then
     raise exception 'Lot 1 incomplet : % categories au lieu de 13.', v_total;
   end if;

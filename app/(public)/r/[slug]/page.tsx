@@ -1,17 +1,19 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getPromptDetail, getPublicConfig } from '@/lib/catalog/queries';
+import { getAliasDestination, getPromptDetail, getPublicConfig } from '@/lib/catalog/queries';
 import { getAccessState } from '@/lib/access/entitlement';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
-import { CopyCommandButton } from '@/components/cards/copy-command-button';
+import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
-import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { InputExampleList } from '@/components/detail/input-example-list';
+import { ModesCommande } from '@/components/detail/modes-commande';
+import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { OutputFormatList } from '@/components/detail/output-format-list';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
+import { decrireNiveau } from '@/lib/catalog/niveau';
 
 /**
  * Page publique partageable d'une commande.
@@ -32,7 +34,16 @@ export async function generateMetadata({
   // Les metadonnees ne doivent jamais faire echouer la page : en cas
   // d'incident, on retombe sur un titre neutre et le rendu prend le relais.
   const prompt = await getPromptDetail(slug).catch(() => null);
-  if (!prompt) return { title: 'Commande' };
+  if (!prompt) {
+    // Une ancienne adresse redirige : le titre neutre ne serait vu que le
+    // temps de la redirection, mais un apercu de partage, lui, s'y arrete.
+    const destination = await getAliasDestination(slug).catch(() => null);
+    if (destination) {
+      const cible = await getPromptDetail(destination.slug).catch(() => null);
+      if (cible) return { title: `${cible.command} - ${cible.name}` };
+    }
+    return { title: 'Commande' };
+  }
 
   return {
     title: `${prompt.command} - ${prompt.name}`,
@@ -66,10 +77,20 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
     throw error;
   }
 
-  if (!prompt) notFound();
+  if (!prompt) {
+    // Cette adresse a peut-etre ete partagee avant que le raccourci ne
+    // devienne un mode d'une commande plus large. Le lien doit conduire la
+    // ou le travail se fait, pas s'excuser. Redirection permanente : c'est
+    // bien un changement d'adresse definitif, et les moteurs de recherche
+    // reportent alors ce que l'ancienne page avait gagne.
+    const destination = await getAliasDestination(slug);
+    if (destination) permanentRedirect(`/r/${destination.slug}`);
+    notFound();
+  }
 
   const { hasFullAccess } = await getAccessState();
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
+  const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
 
   return (
     <article className="pt-2">
@@ -111,6 +132,15 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
         </ul>
       ) : null}
 
+      {/* La meme annonce que dans la fiche de l'application : quelqu'un qui
+          arrive par un lien partage doit savoir, lui aussi, si la commande
+          rend un resultat tout de suite ou conduit un travail. */}
+      {niveau ? (
+        <div className="mt-5">
+          <NiveauExecution niveau={niveau} />
+        </div>
+      ) : null}
+
       {prompt.inputExamples.length > 0 ? (
         <Section titre="Exemples d’entrées">
           <InputExampleList inputs={prompt.inputExamples} />
@@ -123,9 +153,9 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
         </Section>
       ) : null}
 
-      {compatibles.length > 0 ? (
-        <Section titre="Compatible avec">
-          <CompatibilityList providers={compatibles} />
+      {prompt.modes.length > 0 ? (
+        <Section titre="Elle sait aussi faire">
+          <ModesCommande modes={prompt.modes} />
         </Section>
       ) : null}
 
@@ -140,10 +170,17 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
            * precis ou on lui montrait ce qu'il y a derriere.
            */
           <>
-            <CopyCommandButton
+            {/* L'IA se choisit ici, pas ailleurs : chaque commande porte un
+                texte different par IA, et quelqu'un qui ouvre ce lien depuis
+                une conversation n'utilise pas forcement la premiere de la
+                liste. Lui servir le texte d'une autre etait une erreur
+                silencieuse — la commande marchait moins bien, sans qu'il
+                puisse savoir pourquoi. */}
+            <ChoixMoteur
               promptId={prompt.id}
-              provider={compatibles[0]?.key ?? 'chatgpt'}
+              providers={compatibles}
               surface="page-publique"
+              locked={false}
               proposerOuverture
             />
             {!hasFullAccess ? (

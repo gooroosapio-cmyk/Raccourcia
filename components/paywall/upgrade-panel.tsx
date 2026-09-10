@@ -18,7 +18,16 @@ export type Offre = {
  * ecrit en dur : ni le prix, ni le nombre de commandes, ni le lien d'achat.
  * Aucun compteur d'acheteurs, aucun temoignage, aucune rarete artificielle.
  */
-export function UpgradePanel({ offre, compact = false }: { offre: Offre; compact?: boolean }) {
+export function UpgradePanel({
+  offre,
+  compact = false,
+  titrePrincipal = false,
+}: {
+  offre: Offre;
+  compact?: boolean;
+  /** Vrai lorsque ce panneau porte le titre de la page qui l'affiche. */
+  titrePrincipal?: boolean;
+}) {
   const avantages = [
     {
       titre: 'Toutes les commandes',
@@ -38,13 +47,18 @@ export function UpgradePanel({ offre, compact = false }: { offre: Offre; compact
     <div className={compact ? undefined : 'text-center'}>
       {!compact ? <Halo /> : null}
 
-      <h2
+      {/* Ce panneau sert deux endroits : la page d'offre, ou cette phrase
+          est le titre de la page, et la feuille du paywall, ou elle est un
+          titre parmi d'autres dans un ecran deja titre. Le niveau suit donc
+          l'endroit, jamais l'apparence. */}
+      <Titre
+        principal={titrePrincipal}
         className={`font-semibold text-[color:var(--color-night)] ${
           compact ? 'text-[20px]' : 'text-[30px] leading-tight'
         }`}
       >
         Tout RaccourcIA, sans limites.
-      </h2>
+      </Titre>
       <p
         className={`mt-2 leading-relaxed text-[color:var(--color-muted)] ${
           compact ? 'text-[14px]' : 'mx-auto max-w-[38ch] text-[16px]'
@@ -161,5 +175,22 @@ function CheckIcon() {
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+/** `h1` quand le panneau titre la page, `h2` quand il vit dans une feuille. */
+function Titre({
+  principal,
+  className,
+  children,
+}: {
+  principal: boolean;
+  className: string;
+  children: React.ReactNode;
+}) {
+  return principal ? (
+    <h1 className={className}>{children}</h1>
+  ) : (
+    <h2 className={className}>{children}</h2>
   );
 }

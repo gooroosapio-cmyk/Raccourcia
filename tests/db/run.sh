@@ -141,6 +141,41 @@ if compgen -G "$ROOT/supabase/seed/v3/*.sql" > /dev/null; then
     from public.prompts where catalog_version = 'v2.1';"
 fi
 
+if compgen -G "$ROOT/supabase/seed/v5/*.sql" > /dev/null; then
+  # Catalogue V5 : le texte editorial, les payloads par moteur, les questions
+  # et les alias. Applique deux fois, comme les lots V2 : un lot qui cree un
+  # doublon ou une version de trop au second passage est un lot casse.
+  #
+  # Rien n'est publie ici et aucune commande ne change de famille : les
+  # quatorze familles V5 restent invisibles jusqu'a la bascule.
+  echo "==> Catalogue V5 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/v5/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  # Trois raccourcis n'ont aucune destination dans le catalogue V5 :
+  # /voiceguide, /financecases et /goalsystem. La production les a archives
+  # il y a longtemps ; le seed V2, lui, publie tout ce qu'il importe. On
+  # remet donc la base de recette dans l'etat de la production avant de
+  # basculer — sans quoi le garde-fou de la bascule refuse, et il a raison.
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null -c "
+    update public.prompts set status = 'archived'
+    where command::text in ('/voiceguide', '/financecases', '/goalsystem');"
+
+  # La bascule vient apres les lots, et deux fois : une bascule qui ne
+  # supporte pas d'etre rejouee est une bascule qu'on n'ose plus lancer.
+  for passe in 1 2; do
+    run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null \
+      < "$ROOT/supabase/seed/bascule-taxonomie-v5.sql"
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) || ' commandes V5, ' ||
+           (select count(*) from public.prompt_versions where version_label = 'v5-final' and is_current) || ' payloads courants, ' ||
+           (select count(*) from public.prompt_aliases) || ' alias'
+    from public.prompts where level is not null;"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

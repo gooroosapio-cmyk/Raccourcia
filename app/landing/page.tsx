@@ -17,14 +17,12 @@ import { FAQAccordion, type EntreeFAQ } from '@/components/landing/faq-accordion
 import { LandingHeader } from '@/components/landing/landing-header';
 import { PricingCard } from '@/components/landing/pricing-card';
 import { SectionNumerotee } from '@/components/landing/section-numerotee';
-import { ShowcaseCard } from '@/components/landing/showcase-card';
 import { StickyMobileCTA } from '@/components/landing/sticky-mobile-cta';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
 import {
   getCategoriesVitrine,
   getPublicConfig,
   getQuestionExemple,
-  getShowcasePrompts,
   type CategorieVitrine,
 } from '@/lib/catalog/queries';
 import { avisPublies } from '@/lib/landing/avis';
@@ -55,26 +53,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/**
- * Raccourcis montres en vitrine, dans cet ordre.
- *
- * La liste est editoriale ; son contenu vient du catalogue. Une commande qui
- * en disparait disparait de la page, au lieu d'y survivre en promesse.
- */
-const VITRINE = ['/xray', '/explodeview', '/packshot', '/poster', '/headshot', '/blueprint'];
-
 export default async function LandingPage() {
   const config = await getPublicConfig();
 
-  let vitrine: Awaited<ReturnType<typeof getShowcasePrompts>> = [];
   let categories: CategorieVitrine[] = [];
   let question: Awaited<ReturnType<typeof getQuestionExemple>> = null;
 
   // Le catalogue peut etre injoignable : la page doit alors tenir debout sans
   // lui. Ses arguments ne dependent pas de la grille.
   try {
-    [vitrine, categories, question] = await Promise.all([
-      getShowcasePrompts(VITRINE),
+    [categories, question] = await Promise.all([
       getCategoriesVitrine(),
       getQuestionExemple('/xray'),
     ]);
@@ -107,7 +95,7 @@ export default async function LandingPage() {
         <Probleme />
         <Difference />
         <Systeme />
-        <Bibliotheque vitrine={vitrine} categories={categories} total={totalRaccourcis} />
+        <Bibliotheque categories={categories} total={totalRaccourcis} />
         <Contexte question={question} />
         <Preuve avis={avis} />
         <Offre
@@ -458,15 +446,7 @@ function Systeme() {
 /* 04 — La bibliotheque                                                */
 /* ------------------------------------------------------------------ */
 
-function Bibliotheque({
-  vitrine,
-  categories,
-  total,
-}: {
-  vitrine: Awaited<ReturnType<typeof getShowcasePrompts>>;
-  categories: CategorieVitrine[];
-  total: number;
-}) {
+function Bibliotheque({ categories, total }: { categories: CategorieVitrine[]; total: number }) {
   const image = categories.filter((categorie) => categorie.mode === 'image');
   const texte = categories.filter((categorie) => categorie.mode === 'texte');
 
@@ -484,13 +464,21 @@ function Bibliotheque({
         }
       />
 
-      {vitrine.length > 0 ? (
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-          {vitrine.map((prompt, index) => (
-            <ShowcaseCard key={prompt.id} prompt={prompt} priority={index < 2} />
-          ))}
-        </div>
-      ) : null}
+      {/* Une capture de la bibliotheque telle qu'elle est, plutot qu'une
+          vitrine de six cartes dont les reservees s'affichaient floutees. Le
+          floutage disait ce qu'on n'a pas encore; la capture montre ce qu'on
+          obtient. Elle est verticale : le cadre s'arrete donc a la largeur
+          d'un telephone, sans quoi elle ferait mille quatre cents pixels de
+          haut sur ordinateur. */}
+      <Image
+        src="/landing/bibliotheque.webp"
+        alt="La bibliothèque RaccourcIA : quatre commandes avec leur résultat, leur nom, ce qu’elles font et un bouton Copier."
+        width={1080}
+        height={1750}
+        loading="lazy"
+        sizes="(max-width: 460px) 100vw, 420px"
+        className="mx-auto mt-10 w-full max-w-[420px] rounded-[20px] border border-[color:var(--color-line)] shadow-[var(--shadow-card)]"
+      />
 
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
         <FamilleCategories
@@ -840,8 +828,8 @@ function PiedDePage() {
             <Image
               src="/landing/logo-raccourcia.webp"
               alt="RaccourcIA"
-              width={720}
-              height={158}
+              width={577}
+              height={129}
               loading="lazy"
               className="h-7 w-auto"
             />

@@ -147,6 +147,12 @@ export function CopyCommandButton({
     );
   }, [locked, onLockedClick, promptId, proposerOuverture, provider, show, surface]);
 
+  const cle = provider as ProviderKey;
+  const nomIA = PROVIDER_LABELS[cle];
+
+  // Le nom de l'IA dans le libelle : chaque commande porte un texte different
+  // par IA, et le bouton est le dernier endroit ou l'on peut encore
+  // s'apercevoir qu'on va copier celui d'une autre.
   const libelle = locked
     ? compact
       ? 'Débloquer'
@@ -155,7 +161,9 @@ export function CopyCommandButton({
       ? 'Copie'
       : compact
         ? 'Copier'
-        : 'Copier la commande';
+        : nomIA
+          ? `Copier pour ${nomIA}`
+          : 'Copier la commande';
 
   const ton = locked
     ? 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'
@@ -163,7 +171,6 @@ export function CopyCommandButton({
       ? 'bg-[color:var(--color-success)] text-white'
       : 'bg-[color:var(--color-brand)] text-white hover:bg-[color:var(--color-brand-strong)]';
 
-  const cle = provider as ProviderKey;
   const adresse = PROVIDER_URLS[cle];
 
   return (
@@ -175,7 +182,11 @@ export function CopyCommandButton({
         // mais le bouton paraitrait casse. On garde l'etat visible a la place.
         aria-busy={etat === 'chargement'}
         aria-label={
-          locked ? 'Débloquer RaccourcIA pour copier cette commande' : 'Copier la commande'
+          locked
+            ? 'Débloquer RaccourcIA pour copier cette commande'
+            : nomIA
+              ? `Copier la commande pour ${nomIA}`
+              : 'Copier la commande'
         }
         className={`touch-target inline-flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] font-semibold transition-[background-color,transform] duration-[var(--duration-fast)] active:scale-[0.98] ${
           compact ? 'h-11 px-3 text-[13px]' : 'h-13 px-4 text-[15px]'

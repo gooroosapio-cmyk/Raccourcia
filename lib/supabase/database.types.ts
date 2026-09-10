@@ -260,6 +260,23 @@ export type Database = {
         }>;
         Relationships: [];
       };
+      prompt_aliases: {
+        Row: {
+          alias_prompt_id: string;
+          canonical_prompt_id: string;
+          created_at: string;
+          id: string;
+          preset: Json;
+          updated_at: string;
+        };
+        Insert: {
+          alias_prompt_id: string;
+          canonical_prompt_id: string;
+          preset?: Json;
+        };
+        Update: Partial<{ canonical_prompt_id: string; preset: Json }>;
+        Relationships: [];
+      };
       prompt_media: {
         Row: {
           alt: string | null;
@@ -382,6 +399,7 @@ export type Database = {
       prompts: {
         Row: {
           admin_notes: string | null;
+          aliases: string[];
           avoid_rules: string | null;
           category_id: string | null;
           command: string;
@@ -400,6 +418,7 @@ export type Database = {
           is_free: boolean;
           is_new: boolean;
           is_pinned: boolean;
+          level: Database['public']['Enums']['execution_level'] | null;
           limitations: string | null;
           media_ready: boolean;
           minimal_context: string | null;
@@ -410,12 +429,14 @@ export type Database = {
           output_formats: Database['public']['Enums']['output_format_kind'][];
           output_type: Database['public']['Enums']['output_type'];
           preserve_rules: string | null;
+          preset_key: string | null;
           priority: string;
           published_at: string | null;
           quality_criteria: string | null;
           required_variables: string[];
           result_summary: string | null;
           risk_level: Database['public']['Enums']['risk_level'];
+          search_aliases: string | null;
           search_text: string | null;
           short_description: string;
           show_image_card: boolean;
@@ -475,6 +496,9 @@ export type Database = {
           is_pinned: boolean;
           media_ready: boolean;
           show_image_card: boolean;
+          level: Database['public']['Enums']['execution_level'] | null;
+          preset_key: string | null;
+          aliases: string[];
           thumbnail_spec: string | null;
           admin_notes: string | null;
           sort_order: number;
@@ -728,6 +752,10 @@ export type Database = {
         Args: { p_prompt_id: string; p_provider_key: string; p_surface?: string };
         Returns: { command: string; payload: string; version_id: string; version_label: string }[];
       };
+      resoudre_alias: {
+        Args: { p_slug: string };
+        Returns: { slug: string; preset: Json }[];
+      };
       track_prompt_view: { Args: { p_prompt_id: string }; Returns: undefined };
     };
     Enums: {
@@ -738,6 +766,7 @@ export type Database = {
       compatibility_level: 'excellent' | 'bon' | 'partiel' | 'non_supporte';
       content_status: 'draft' | 'published' | 'archived';
       entitlement_status: 'active' | 'suspended' | 'revoked';
+      execution_level: 'A' | 'B' | 'C' | 'D' | 'E';
       input_example_kind:
         | 'photo_produit'
         | 'photo_lieu'

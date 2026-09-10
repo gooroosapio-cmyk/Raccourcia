@@ -834,9 +834,15 @@ on conflict (external_ref) do update set
 -- --- Categories v1 devenues sans objet --------------------------------
 -- Archivees, jamais supprimees : leurs raccourcis ont deja rejoint la
 -- taxonomie v2 juste au-dessus, et l'historique reste consultable.
+--
+-- Bornee aux categories de la v1, celles qui n'ont pas de reference externe.
+-- Sans cette borne, l'instruction archive tout ce qu'elle ne connait pas :
+-- rejouee apres la migration du socle V5, elle archivait les quatorze
+-- familles neuves, vides par construction, que la bascule devra publier.
 update public.categories
    set status = 'archived'
- where slug not in (
+ where external_ref is null
+   and slug not in (
    select d.slug from jsonb_to_recordset(
      $raccourcia$[{"slug":"image-technique-pedagogique"},{"slug":"image-produit-publicite"},{"slug":"image-retouche-transformation"},{"slug":"image-portrait-identite"},{"slug":"image-styles-effets"},{"slug":"texte-business-croissance"},{"slug":"texte-communication-contenu"},{"slug":"texte-travail-pilotage"},{"slug":"texte-produit-experience"},{"slug":"texte-apprentissage-carriere"},{"slug":"image-technique-pedagogique-vue-technique"},{"slug":"image-technique-pedagogique-information-visuelle"},{"slug":"image-produit-publicite-produit-e-commerce"},{"slug":"image-produit-publicite-campagnes-social"},{"slug":"image-retouche-transformation-retouche-ciblee"},{"slug":"image-retouche-transformation-lieux-lifestyle"},{"slug":"image-portrait-identite-portrait-beaute"},{"slug":"image-portrait-identite-mode-identite"},{"slug":"image-styles-effets-cinema-spectaculaire"},{"slug":"image-styles-effets-illustration-matieres"},{"slug":"texte-business-croissance-offre-strategie"},{"slug":"texte-business-croissance-marketing-acquisition"},{"slug":"texte-communication-contenu-marque-editorial"},{"slug":"texte-communication-contenu-relation-reseaux"},{"slug":"texte-travail-pilotage-documents-operations"},{"slug":"texte-travail-pilotage-analyser-decider"},{"slug":"texte-produit-experience-produit-ux"},{"slug":"texte-produit-experience-support-tech"},{"slug":"texte-apprentissage-carriere-carriere-recrutement"},{"slug":"texte-apprentissage-carriere-etudes-creativite"}]$raccourcia$::jsonb
    ) as d(slug text)

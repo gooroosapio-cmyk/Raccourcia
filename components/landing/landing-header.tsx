@@ -43,8 +43,8 @@ export function LandingHeader({ purchaseUrl, prix }: { purchaseUrl: string; prix
           <Image
             src="/landing/logo-raccourcia.webp"
             alt="RaccourcIA"
-            width={720}
-            height={158}
+            width={577}
+            height={129}
             priority
             className="h-7 w-auto sm:h-8"
           />

@@ -1,0 +1,182 @@
+[
+  {
+    "ref": "RCI-TXT-016",
+    "command": "/pitchdecktext",
+    "canonical_ref": "RCI-TXT-016",
+    "canonical_command": "/pitchdeck",
+    "preset": {
+      "mode": "pitchdecktext",
+      "historical_title": "Texte pitch deck",
+      "intent": "Rédiger le contenu textuel d'un deck.",
+      "required_variables": ["projet", "audience"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-059",
+    "command": "/webinaroutline",
+    "canonical_ref": "RCI-TXT-059",
+    "canonical_command": "/webinar",
+    "preset": {
+      "mode": "webinaroutline",
+      "historical_title": "Plan de webinaire",
+      "intent": "Structurer un webinaire qui enseigne et convertit.",
+      "required_variables": ["sujet", "offre"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-004",
+    "command": "/emailpro",
+    "canonical_ref": "RCI-TXT-004",
+    "canonical_command": "/messagepro",
+    "preset": {
+      "mode": "emailpro",
+      "historical_title": "Email professionnel",
+      "intent": "Rédiger un email clair et utile.",
+      "required_variables": ["objectif", "destinataire"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-007",
+    "command": "/linkedinpost",
+    "canonical_ref": "RCI-TXT-007",
+    "canonical_command": "/socialpost",
+    "preset": {
+      "mode": "linkedinpost",
+      "historical_title": "Post LinkedIn",
+      "intent": "Rédiger un post LinkedIn clair et engageant.",
+      "required_variables": ["idee", "audience"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-020",
+    "command": "/pressrelease",
+    "canonical_ref": "RCI-TXT-020",
+    "canonical_command": "/presskit",
+    "preset": {
+      "mode": "pressrelease",
+      "historical_title": "Communiqué de presse",
+      "intent": "Rédiger un communiqué clair et credible.",
+      "required_variables": ["annonce", "organisation"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-022",
+    "command": "/briefcreative",
+    "canonical_ref": "RCI-TXT-022",
+    "canonical_command": "/creativebrief",
+    "preset": {
+      "mode": "briefcreative",
+      "historical_title": "Brief créatif",
+      "intent": "Transformer une idee en brief actionnable.",
+      "required_variables": ["objectif", "support"]
+    }
+  },
+  {
+    "ref": "RCI-ANA-007",
+    "command": "/marketmap",
+    "canonical_ref": "RCI-ANA-007",
+    "canonical_command": "/marketresearch",
+    "preset": {
+      "mode": "marketmap",
+      "historical_title": "Carte marché",
+      "intent": "Cartographier acteurs et segments d'un marché.",
+      "required_variables": ["marche"]
+    }
+  },
+  {
+    "ref": "RCI-ANA-027",
+    "command": "/contractscan",
+    "canonical_ref": "RCI-ANA-027",
+    "canonical_command": "/contractreview",
+    "preset": {
+      "mode": "contractscan",
+      "historical_title": "Scan contrat",
+      "intent": "Reperer points d'attention dans un contrat.",
+      "required_variables": ["contrat"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-035",
+    "command": "/jobpost",
+    "canonical_ref": "RCI-TXT-035",
+    "canonical_command": "/recruitmentkit",
+    "preset": {
+      "mode": "jobpost",
+      "historical_title": "Annonce emploi",
+      "intent": "Rédiger une annonce de poste claire.",
+      "required_variables": ["poste", "entreprise"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-036",
+    "command": "/cvrewrite",
+    "canonical_ref": "RCI-TXT-036",
+    "canonical_command": "/applicationkit",
+    "preset": {
+      "mode": "cvrewrite",
+      "historical_title": "CV optimisé",
+      "intent": "Reecrire un CV pour plus d'impact.",
+      "required_variables": ["cv", "objectif"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-039",
+    "command": "/quiz",
+    "canonical_ref": "RCI-TXT-039",
+    "canonical_command": "/assessment",
+    "preset": {
+      "mode": "quiz",
+      "historical_title": "Quiz QCM",
+      "intent": "Créer un quiz objectif.",
+      "required_variables": ["sujet", "niveau"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-090",
+    "command": "/debugplan",
+    "canonical_ref": "RCI-TXT-090",
+    "canonical_command": "/debugfix",
+    "preset": {
+      "mode": "debugplan",
+      "historical_title": "Plan de débogage",
+      "intent": "Établir une démarché de diagnostic reproductible.",
+      "required_variables": ["probleme", "contexte"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-091",
+    "command": "/studynotes",
+    "canonical_ref": "RCI-TXT-091",
+    "canonical_command": "/learn",
+    "preset": {
+      "mode": "studynotes",
+      "historical_title": "Fiche de révision",
+      "intent": "Transformer un cours en notes structurées.",
+      "required_variables": ["source", "niveau"]
+    }
+  },
+  {
+    "ref": "RCI-ANA-028",
+    "command": "/financialsnapshot",
+    "canonical_ref": "RCI-ANA-028",
+    "canonical_command": "/financialreview",
+    "preset": {
+      "mode": "financialsnapshot",
+      "historical_title": "Snapshot financier",
+      "intent": "Lire rapidement une situation financiere fournie.",
+      "required_variables": ["chiffres"]
+    }
+  },
+  {
+    "ref": "RCI-TXT-234",
+    "command": "/invoicegenerator",
+    "canonical_ref": "RCI-TXT-234",
+    "canonical_command": "/invoice",
+    "preset": {
+      "mode": "invoicegenerator",
+      "historical_title": "Modèle de facture",
+      "intent": "Préparer une facture structurée à partir d’informations vérifiées.",
+      "required_variables": ["émetteur", "client", "lignes"]
+    }
+  }
+]

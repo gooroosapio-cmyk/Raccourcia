@@ -16,6 +16,8 @@ import {
 } from '@/lib/constants';
 import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import { clesDeTri } from '@/lib/catalog/tri';
+import { modesLisibles } from '@/lib/catalog/modes';
+import { normaliserRecherche, portesDeRecherche } from '@/lib/catalog/recherche';
 import type { BeforeAfter, CategoryNode, PromptCard, PromptDetail } from '@/lib/catalog/types';
 import type { Enums } from '@/lib/supabase/database.types';
 import type { CatalogQuery } from '@/lib/validation/schemas';
@@ -187,10 +189,12 @@ const COUNT_COLUMNS = 'id, prompt_variants!inner(ai_providers!inner(key))';
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
   show_image_card, is_free, is_new, is_featured, risk_level, sort_order,
+  level, max_questions,
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
   prompt_variants!inner(compatibility, status, ai_providers!inner(key, name, is_active)),
-  prompt_media(kind, storage_path, alt, sort_order)
+  prompt_media(kind, storage_path, alt, sort_order),
+  prompt_aliases!prompt_aliases_canonical_prompt_id_fkey(preset)
 `;
 
 type CardRow = {
@@ -210,6 +214,9 @@ type CardRow = {
   is_new: boolean;
   is_featured: boolean;
   risk_level: Enums<'risk_level'>;
+  level: Enums<'execution_level'> | null;
+  max_questions: number | null;
+  prompt_aliases: { preset: unknown }[] | null;
   intention: string | null;
   expected_input: string | null;
   limitations: string | null;
@@ -283,6 +290,9 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     isNew: row.is_new,
     isFeatured: row.is_featured,
     riskLevel: row.risk_level,
+    level: row.level,
+    maxQuestions: row.max_questions,
+    modes: modesLisibles((row.prompt_aliases ?? []).map((entree) => entree.preset)),
     thumbnailUrl: thumbnail ? mediaUrl(thumbnail.storage_path) : null,
     thumbnailAlt: thumbnail?.alt ?? null,
     providers: (row.prompt_variants ?? [])
@@ -325,23 +335,6 @@ export type CatalogPage = {
 };
 
 /**
- * Forme de comparaison d'un texte saisi.
- *
- * Doit donner le meme resultat que `public.texte_normalise` en base, sans
- * quoi la recherche ne trouverait pas ce que la colonne generee contient.
- * Minuscules, accents retires, tout ce qui n'est ni lettre ni chiffre
- * ramene a l'espace : « d'usage », « d usage » et « D'USAGE » se rejoignent.
- */
-export function normaliserRecherche(terme: string): string {
-  return terme
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-}
-
-/**
  * Retire le nom d'une commande verrouillee avant l'envoi au navigateur.
  *
  * Ne pas l'afficher ne suffit pas : la carte est un composant client, donc
@@ -372,6 +365,9 @@ function masquerCommande(card: PromptCard): PromptCard {
     // Les etiquettes ne sont affichees nulle part et portent parfois le mot
     // de la commande : elles n'ont aucune raison de voyager jusqu'ici.
     tags: [],
+    // Les modes ne s'affichent que sur la fiche, et une carte masquee
+    // n'ouvre pas de fiche : ils n'ont rien a faire dans la page.
+    modes: [],
     shortDescription: nettoyer(card.shortDescription),
     resultSummary: nettoyer(card.resultSummary),
     useCases: card.useCases.map(nettoyer),
@@ -478,12 +474,7 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
     if (categorieIds) requete = requete.in('category_id', categorieIds);
 
-    if (terme) {
-      const motif = `%${terme}%`;
-      requete = famillesTrouvees.length
-        ? requete.or(`search_norm.ilike.${motif},category_id.in.(${famillesTrouvees.join(',')})`)
-        : requete.ilike('search_norm', motif);
-    }
+    if (terme) requete = requete.or(portesDeRecherche(terme, famillesTrouvees));
 
     if (query.provider) requete = requete.eq('prompt_variants.ai_providers.key', query.provider);
     if (query.access) requete = requete.eq('is_free', query.access === 'gratuit');
@@ -605,37 +596,6 @@ export async function getCategoriesVitrine(): Promise<CategorieVitrine[]> {
   );
 }
 
-export async function getShowcasePrompts(commands: string[]): Promise<PromptCard[]> {
-  const supabase = await createClient();
-  const [{ isMember, hasFullAccess }, favorites] = await Promise.all([
-    getAccessState(),
-    getFavoriteIds(),
-  ]);
-
-  const { data, error } = await supabase
-    .from('prompts')
-    .select(CARD_COLUMNS)
-    .in('command', commands)
-    .eq('status', 'published');
-
-  if (error) throw new CatalogUnavailableError(error);
-
-  const rows = (data ?? []) as unknown as CardRow[];
-  const parCommande = new Map(rows.map((row) => [row.command.toLowerCase(), row]));
-
-  // L'ordre demande est conserve : il est editorial, pas alphabetique. Le
-  // masquage vient apres le classement, sinon il n'y aurait plus de nom sur
-  // lequel s'appuyer pour ranger.
-  return commands
-    .map((commande) => parCommande.get(commande.toLowerCase()))
-    .filter((row): row is CardRow => row !== undefined)
-    .map((row) => {
-      const carte = toCard(row, favorites);
-      const verrouille = !hasFullAccess && !carte.isFree;
-      return !isMember && verrouille ? masquerCommande(carte) : carte;
-    });
-}
-
 /** Question contextuelle d'un raccourci, telle qu'elle est stockee. */
 export type QuestionExemple = { question: string; choices: string[] };
 
@@ -708,6 +668,31 @@ export async function getPromptDetail(slug: string): Promise<PromptDetail | null
       .sort((a, b) => a.sort_order - b.sort_order)
       .map((media) => ({ kind: media.kind, url: mediaUrl(media.storage_path), alt: media.alt })),
   };
+}
+
+/**
+ * Adresse courante d'une commande qu'on cherche sous un ancien nom.
+ *
+ * Un lien comme /r/adsocial a pu partir par message il y a des semaines. Le
+ * raccourci est devenu un mode d'une commande plus large ; la page doit
+ * conduire la ou le travail se fait, pas afficher « introuvable ».
+ *
+ * `null` quand rien ne correspond : la page reste alors introuvable, ce qui
+ * est la bonne reponse pour une adresse qui n'a jamais existe.
+ */
+export async function getAliasDestination(
+  slug: string,
+): Promise<{ slug: string; mode: string | null } | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc('resoudre_alias', { p_slug: slug });
+  const destination = error ? undefined : data?.[0];
+  if (!destination) return null;
+
+  const preset = destination.preset as Record<string, unknown> | null;
+  const mode = typeof preset?.mode === 'string' ? preset.mode : null;
+
+  return { slug: destination.slug, mode };
 }
 
 /** Vue Favoris : exactement les memes cartes que Decouvrir. */

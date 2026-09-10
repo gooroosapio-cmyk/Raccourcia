@@ -27,18 +27,33 @@ begin
   perform tests_assert(v_image = 130, format('%s raccourcis image au lieu de 130.', v_image));
   perform tests_assert(v_texte = 190, format('%s raccourcis texte au lieu de 190.', v_texte));
 
-  select count(*) into v_n from public.categories where external_ref is not null;
+  -- Les familles V5 portent elles aussi une reference externe. Ce controle
+  -- ne parle que des treize familles de la V2 : le compter autrement le
+  -- ferait echouer a chaque famille ajoutee ailleurs.
+  select count(*) into v_n from public.categories
+  where external_ref is not null and external_ref not like '%-V5-%';
   perform tests_assert(v_n = 13, format('%s categories V2 au lieu de 13.', v_n));
 
   select count(*) into v_image from public.categories
-    where external_ref like 'IMG-%';
+    where external_ref like 'IMG-%' and external_ref not like '%-V5-%';
   select count(*) into v_texte from public.categories
-    where external_ref like 'TXT-%';
+    where external_ref like 'TXT-%' and external_ref not like '%-V5-%';
   perform tests_assert(v_image = 6, format('%s categories image au lieu de 6.', v_image));
   perform tests_assert(v_texte = 7, format('%s categories texte au lieu de 7.', v_texte));
 
-  select count(*) into v_n from public.prompt_questions;
-  perform tests_assert(v_n = 594, format('%s questions au lieu de 594.', v_n));
+  -- Le questionnaire de la V2, sans celui que le catalogue V5 a pose par
+  -- dessus. `level` est le seul marqueur d'une commande passee en V5 : les
+  -- 433 commandes canoniques y ont recu leurs propres questions successives,
+  -- ce qui fait tomber le compte de 594 a 152. Les deux valeurs sont admises
+  -- pour que ce controle dise la meme chose avant et apres cet import.
+  select count(*) into v_n
+  from public.prompt_questions q
+  join public.prompts p on p.id = q.prompt_id
+  where p.level is null;
+  perform tests_assert(
+    v_n in (594, 152),
+    format('%s questions V2 au lieu de 594 (avant V5) ou 152 (apres).', v_n)
+  );
 
   -- --- Integrite relationnelle ---------------------------------------
 
@@ -106,7 +121,14 @@ begin
   select count(*) into v_fuite
   from information_schema.column_privileges
   where table_schema = 'public' and table_name = 'prompt_versions'
-    and column_name = 'payload' and grantee in ('anon', 'authenticated');
+    and column_name = 'payload'
+    -- Sur `privilege_type` et non sur la seule presence d'une ligne : la
+    -- production accorde `REFERENCES` sur toutes les colonnes, ce qui ne
+    -- permet pas de lire une seule valeur. Compter large aurait fait crier
+    -- ce controle sur une base saine, et un controle qui crie a tort
+    -- finit par ne plus etre lu.
+    and privilege_type = 'SELECT'
+    and grantee in ('anon', 'authenticated');
   perform tests_assert(v_fuite = 0, 'Le payload V2 est lisible par un role client.');
 end $$;
 

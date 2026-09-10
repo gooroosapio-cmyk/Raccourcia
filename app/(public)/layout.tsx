@@ -8,7 +8,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col px-5 pb-10 lg:max-w-3xl">
       <header className="flex items-center justify-between py-4">
-        <Link href="/" aria-label="Accueil RaccourcIA">
+        {/* Meme raison qu'au pied de page : la zone touchee atteint la
+            hauteur d'un doigt sans que l'en-tete ne grandisse. */}
+        <Link href="/" aria-label="Accueil RaccourcIA" className="-my-2 py-2">
           <Logo className="text-lg" />
         </Link>
 

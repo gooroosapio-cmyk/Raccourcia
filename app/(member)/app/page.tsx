@@ -112,6 +112,12 @@ export default async function DiscoverPage({
     <div className="space-y-3 pt-1">
       {renvoye ? <PaywallAutoOpen /> : null}
 
+      {/* La page n'avait aucun titre de niveau 1 : un lecteur d'ecran
+          annoncait « Que voulez-vous creer ? » comme premier repere, sans
+          jamais dire ou l'on se trouve. Le titre reste invisible — l'ecran,
+          lui, se lit d'un coup d'oeil. */}
+      <h1 className="sr-only">Bibliothèque de commandes RaccourcIA</h1>
+
       <DiscoveryConsole
         modes={modes}
         mode={mode}
