@@ -131,6 +131,16 @@ begin
   where exists (select 1 from public.prompt_aliases b where b.alias_prompt_id = a.canonical_prompt_id);
   perform tests_assert(v_n = 0, format('%s alias forment une chaine.', v_n));
 
+  -- Chaque mode porte son libelle lisible : c'est lui, et non le nom
+  -- technique, que la fiche affiche sous « Elle sait aussi faire ». Un
+  -- preset sans titre disparaitrait de la liste sans que rien ne le dise,
+  -- et la commande semblerait couvrir moins de besoins qu'elle n'en couvre.
+  select count(*) into v_n
+  from public.prompt_aliases a
+  where coalesce(a.preset ->> 'historical_title', '') = ''
+     or coalesce(a.preset ->> 'mode', '') = '';
+  perform tests_assert(v_n = 0, format('%s modes sans libelle ou sans nom.', v_n));
+
   -- --- Non-regression : rien ne disparait de l'ecran -------------------
 
   -- Le danger le plus concret de cet import : ranger une commande publiee

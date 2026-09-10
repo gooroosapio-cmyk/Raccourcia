@@ -8,6 +8,7 @@ import { AvertissementResultats } from '@/components/detail/avertissement-result
 import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
 import { InputExampleList } from '@/components/detail/input-example-list';
+import { ModesCommande } from '@/components/detail/modes-commande';
 import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { OutputFormatList } from '@/components/detail/output-format-list';
 import { NetworkError } from '@/components/ui/network-error';
@@ -149,6 +150,12 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
       {prompt.outputFormats.length > 0 ? (
         <Section titre="Résultat">
           <OutputFormatList formats={prompt.outputFormats} />
+        </Section>
+      ) : null}
+
+      {prompt.modes.length > 0 ? (
+        <Section titre="Elle sait aussi faire">
+          <ModesCommande modes={prompt.modes} />
         </Section>
       ) : null}
 

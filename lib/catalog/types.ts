@@ -40,6 +40,11 @@ export type PromptCard = {
   level: ExecutionLevel | null;
   /** Plafond de questions successives. `null` vaut aucune question. */
   maxQuestions: number | null;
+  /**
+   * Ce que la commande sait faire en plus de son cas principal : les titres
+   * des raccourcis qu'elle a absorbes. Vide pour la plupart des commandes.
+   */
+  modes: string[];
   /** Comparaison complete, ou `null` tant que les deux visuels manquent. */
   beforeAfter: BeforeAfter | null;
   thumbnailUrl: string | null;

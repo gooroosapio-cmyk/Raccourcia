@@ -7,6 +7,7 @@ import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-af
 import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { InputExampleList } from '@/components/detail/input-example-list';
+import { ModesCommande } from '@/components/detail/modes-commande';
 import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { OutputFormatList } from '@/components/detail/output-format-list';
 import { SheetCloseButton } from '@/components/ui/sheet-close';
@@ -331,6 +332,11 @@ export function PromptDetailSheet({
                   S’adapte à votre contexte. Si une information manque, l’IA posera une ou deux
                   questions courtes.
                 </p>
+              ) : null}
+              {prompt.modes.length > 0 ? (
+                <Section titre="Elle sait aussi faire">
+                  <ModesCommande modes={prompt.modes} />
+                </Section>
               ) : null}
             </div>
           </div>

@@ -16,6 +16,7 @@ import {
 } from '@/lib/constants';
 import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import { clesDeTri } from '@/lib/catalog/tri';
+import { modesLisibles } from '@/lib/catalog/modes';
 import { normaliserRecherche, portesDeRecherche } from '@/lib/catalog/recherche';
 import type { BeforeAfter, CategoryNode, PromptCard, PromptDetail } from '@/lib/catalog/types';
 import type { Enums } from '@/lib/supabase/database.types';
@@ -192,7 +193,8 @@ const CARD_COLUMNS = `
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
   prompt_variants!inner(compatibility, status, ai_providers!inner(key, name, is_active)),
-  prompt_media(kind, storage_path, alt, sort_order)
+  prompt_media(kind, storage_path, alt, sort_order),
+  prompt_aliases!prompt_aliases_canonical_prompt_id_fkey(preset)
 `;
 
 type CardRow = {
@@ -214,6 +216,7 @@ type CardRow = {
   risk_level: Enums<'risk_level'>;
   level: Enums<'execution_level'> | null;
   max_questions: number | null;
+  prompt_aliases: { preset: unknown }[] | null;
   intention: string | null;
   expected_input: string | null;
   limitations: string | null;
@@ -289,6 +292,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     riskLevel: row.risk_level,
     level: row.level,
     maxQuestions: row.max_questions,
+    modes: modesLisibles((row.prompt_aliases ?? []).map((entree) => entree.preset)),
     thumbnailUrl: thumbnail ? mediaUrl(thumbnail.storage_path) : null,
     thumbnailAlt: thumbnail?.alt ?? null,
     providers: (row.prompt_variants ?? [])
@@ -361,6 +365,9 @@ function masquerCommande(card: PromptCard): PromptCard {
     // Les etiquettes ne sont affichees nulle part et portent parfois le mot
     // de la commande : elles n'ont aucune raison de voyager jusqu'ici.
     tags: [],
+    // Les modes ne s'affichent que sur la fiche, et une carte masquee
+    // n'ouvre pas de fiche : ils n'ont rien a faire dans la page.
+    modes: [],
     shortDescription: nettoyer(card.shortDescription),
     resultSummary: nettoyer(card.resultSummary),
     useCases: card.useCases.map(nettoyer),
