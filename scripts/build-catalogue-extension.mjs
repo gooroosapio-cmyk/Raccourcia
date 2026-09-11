@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Genere les lots SQL de l'extension IMAGE V5.1 depuis data/catalogue/v5-1/.
+ * Genere les lots SQL d'une extension IMAGE depuis data/catalogue/<version>/.
  *
- *   node scripts/build-catalogue-v5-1.mjs
+ *   node scripts/build-catalogue-extension.mjs v5-2
  *
- * Cinquante commandes IMAGE qui rejoignent les six familles existantes. Ce
- * generateur differe de celui de la V5 sur un point qui change tout : il
- * n'ecrit que des lignes neuves. Aucune commande existante n'est mise a
+ * Les commandes rejoignent les familles existantes. Ce generateur differe de
+ * celui du catalogue V5 sur un point qui change tout : il n'ecrit que des
+ * lignes neuves. Aucune commande existante n'est mise a
  * jour, aucun payload remplace, aucun questionnaire efface. Un identifiant
  * deja pris fait passer sa ligne, il ne l'ecrase pas.
  *
@@ -21,12 +21,20 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const DATA = join(ROOT, 'data', 'catalogue', 'v5-1');
-const OUT = join(ROOT, 'supabase', 'seed', 'v5-1');
+
+/** « v5-1 », « v5-2 »… Le dossier de donnees porte le meme nom que le lot. */
+const version = process.argv[2];
+if (!/^v\d+-\d+$/.test(version ?? '')) {
+  throw new Error('Usage : build-catalogue-extension.mjs <version>, par exemple v5-2');
+}
+
+const DATA = join(ROOT, 'data', 'catalogue', version);
+const OUT = join(ROOT, 'supabase', 'seed', version);
 
 const TAG = '$raccourcia$';
-const VERSION = 'v5-1-extension';
-const CATALOGUE = 'v5.1';
+const VERSION = `${version}-extension`;
+/** `catalog_version` en base : « v5-1 » s'y ecrit « v5.1 ». */
+const CATALOGUE = version.replace('-', '.');
 
 const lire = (nom) => JSON.parse(readFileSync(join(DATA, `${nom}.json`), 'utf8'));
 
@@ -95,8 +103,8 @@ function lotCommandes(numero, tranche, cumul, total) {
 -- moteur et une relecture humaine avant publication ; l'administration les
 -- publiera quand elle l'aura faite.
 
-drop table if exists lot_v5_1;
-create temporary table lot_v5_1 as
+drop table if exists lot_extension;
+create temporary table lot_extension as
 select * from jsonb_to_recordset(${litteralJson(tranche)}::jsonb) as d(
   ${CHAMPS}
 );
@@ -118,7 +126,7 @@ select
   l.input_type::public.input_type, 'image'::public.output_type,
   l.risk_level::public.risk_level, true, '${CATALOGUE}',
   'draft'::public.content_status, l.max_questions, 'successif'
-from lot_v5_1 l
+from lot_extension l
 join public.categories f on f.external_ref = l.family_id
 where not exists (select 1 from public.prompts p where p.external_ref = l.ref)
   and not exists (select 1 from public.prompts p where p.command = l.command::extensions.citext);
@@ -128,7 +136,7 @@ insert into public.prompt_variants (prompt_id, provider_id, compatibility, statu
 select p.id, ia.id, 'excellent'::public.compatibility_level,
        'published'::public.content_status,
        'declare_unavailable_if_no_image_tool'::public.fallback_behavior
-from lot_v5_1 l
+from lot_extension l
 join public.prompts p on p.external_ref = l.ref
 cross join public.ai_providers ia
 on conflict (prompt_id, provider_id) do nothing;
@@ -138,16 +146,16 @@ declare
   v_posees integer;
   v_attendues integer;
 begin
-  select count(*) into v_attendues from lot_v5_1;
+  select count(*) into v_attendues from lot_extension;
   select count(*) into v_posees
-  from lot_v5_1 l join public.prompts p on p.external_ref = l.ref;
+  from lot_extension l join public.prompts p on p.external_ref = l.ref;
   if v_posees <> v_attendues then
     raise exception 'Lot ${numero} : % commandes sur % posees. Un identifiant ou un nom etait deja pris.',
       v_posees, v_attendues;
   end if;
 end $ctrl$;
 
-drop table lot_v5_1;
+drop table lot_extension;
 `;
 }
 
@@ -157,15 +165,15 @@ function lotPayloads(numero, tranche, cumul, total) {
 -- Un texte propre a chaque IA. Les commandes etant neuves, aucune version
 -- courante n'existe : rien n'est retire, tout est pose.
 
-drop table if exists lot_v5_1_payloads;
-create temporary table lot_v5_1_payloads as
+drop table if exists lot_extension_payloads;
+create temporary table lot_extension_payloads as
 select * from jsonb_to_recordset(${litteralJson(tranche)}::jsonb) as x(
   ref text, moteur text, payload text, sha256 text
 );
 
 insert into public.prompt_versions (variant_id, version_label, payload, status, is_current, published_at)
 select v.id, '${VERSION}', l.payload, 'published'::public.version_status, true, now()
-from lot_v5_1_payloads l
+from lot_extension_payloads l
 join public.prompts p on p.external_ref = l.ref
 join public.prompt_variants v on v.prompt_id = p.id
 join public.ai_providers pr on pr.id = v.provider_id and pr.key = l.moteur
@@ -178,7 +186,7 @@ declare
   v_pose integer;
 begin
   select count(*) into v_pose
-  from lot_v5_1_payloads l
+  from lot_extension_payloads l
   join public.prompts p on p.external_ref = l.ref
   join public.prompt_variants v on v.prompt_id = p.id
   join public.ai_providers pr on pr.id = v.provider_id and pr.key = l.moteur
@@ -189,7 +197,7 @@ begin
   end if;
 end $ctrl$;
 
-drop table lot_v5_1_payloads;
+drop table lot_extension_payloads;
 `;
 }
 
@@ -275,4 +283,4 @@ for (let i = 0; i * TAILLE_PAYLOADS < payloads.length; i += 1) {
 
 ecrire('800_questions.sql', lotQuestions);
 
-console.log(`${fichiers.length} lots ecrits dans supabase/seed/v5-1/`);
+console.log(`${fichiers.length} lots ecrits dans supabase/seed/${version}/`);

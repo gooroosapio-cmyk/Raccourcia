@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - supabase/seed/v5-2
           - supabase/seed/v5-1
           - bascule-seule
           - supabase/seed/v5

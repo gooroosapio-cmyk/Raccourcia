@@ -176,28 +176,32 @@ if compgen -G "$ROOT/supabase/seed/v5/*.sql" > /dev/null; then
     from public.prompts where level is not null;"
 fi
 
-if compgen -G "$ROOT/supabase/seed/v5-1/*.sql" > /dev/null; then
-  # Extension IMAGE V5.1 : cinquante commandes neuves dans les familles
-  # existantes. Appliquee deux fois : un lot d'insertion qui creerait un
-  # doublon au second passage serait un lot casse.
-  #
-  # Elles arrivent en brouillon : rien n'apparait a l'ecran tant que
-  # l'administration ne les publie pas.
-  echo "==> Extension V5.1 (x2, verification d'idempotence)"
+# Extensions IMAGE : des commandes neuves dans les familles existantes.
+# Chacune est appliquee deux fois — un lot d'insertion qui creerait un
+# doublon au second passage serait un lot casse — et dans l'ordre des
+# versions, chaque extension supposant les precedentes posees.
+#
+# Elles arrivent en brouillon : rien n'apparait a l'ecran tant que
+# l'administration ne les publie pas.
+for dossier in "$ROOT"/supabase/seed/v5-[0-9]*/; do
+  [ -d "$dossier" ] || continue
+  version="$(basename "$dossier")"
+  echo "==> Extension ${version/v5-/V5.} (x2, verification d'idempotence)"
   for passe in 1 2; do
-    for file in "$ROOT"/supabase/seed/v5-1/*.sql; do
+    for file in "$dossier"*.sql; do
       run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
     done
   done
   run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
-    select '    ' || count(*) || ' commandes V5.1, ' ||
+    select '    ' || count(*) || ' commandes ${version/v5-/v5.}, ' ||
            (select count(*) from public.prompt_versions pv
               join public.prompt_variants v on v.id = pv.variant_id
-              join public.prompts p on p.id = v.prompt_id and p.catalog_version = 'v5.1'
+              join public.prompts p on p.id = v.prompt_id
+                   and p.catalog_version = '${version/v5-/v5.}'
             where pv.is_current) || ' payloads, ' ||
            count(*) filter (where status = 'published') || ' publiees'
-    from public.prompts where catalog_version = 'v5.1';"
-fi
+    from public.prompts where catalog_version = '${version/v5-/v5.}';"
+done
 
 echo "==> Tests d'integration"
 status=0
