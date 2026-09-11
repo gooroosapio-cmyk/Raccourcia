@@ -242,13 +242,23 @@ export function PromptDetailSheet({
                 </div>
               ) : null}
 
-              <div className="mt-4 flex items-center justify-between gap-2">
-                <h2
-                  id="fiche-commande"
-                  className="commande truncate text-[22px] font-semibold text-[color:var(--color-brand)]"
-                >
-                  {prompt.command}
-                </h2>
+              {/* Le titre d'abord, le raccourci ensuite. C'est l'ordre dans
+              lequel on decouvre une commande : on sait d'abord ce qu'elle
+              fait, on apprend ensuite comment l'appeler. La carte qui a
+              amene ici portait ce meme titre — la fiche ne change pas de
+              nom en cours de route. */}
+              <div className="mt-4 flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <h2
+                    id="fiche-commande"
+                    className="text-[22px] font-semibold leading-tight text-[color:var(--color-night)]"
+                  >
+                    {prompt.name}
+                  </h2>
+                  <p className="commande truncate text-[length:var(--texte-corps)] font-semibold text-[color:var(--color-brand)]">
+                    {prompt.command}
+                  </p>
+                </div>
                 <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
               </div>
 

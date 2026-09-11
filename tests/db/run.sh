@@ -203,6 +203,23 @@ for dossier in "$ROOT"/supabase/seed/v5-[0-9]*/; do
     from public.prompts where catalog_version = '${version/v5-/v5.}';"
 done
 
+# Refonte globale des payloads : les trois textes de 533 commandes sont
+# remplaces. Applique deux fois : au second passage la version courante porte
+# deja le nouveau texte, rien ne doit bouger.
+if [ -d "$ROOT/supabase/seed/v6-payloads" ]; then
+  echo "==> Refonte V6 des payloads (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/v6-payloads/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) filter (where is_current and version_label = 'v6-payloads') ||
+           ' payloads refondus, ' ||
+           count(*) filter (where status = 'retired') || ' versions conservees en historique'
+    from public.prompt_versions;"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

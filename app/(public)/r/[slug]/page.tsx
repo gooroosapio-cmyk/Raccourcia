@@ -40,16 +40,16 @@ export async function generateMetadata({
     const destination = await getAliasDestination(slug).catch(() => null);
     if (destination) {
       const cible = await getPromptDetail(destination.slug).catch(() => null);
-      if (cible) return { title: `${cible.command} - ${cible.name}` };
+      if (cible) return { title: `${cible.name} - ${cible.command}` };
     }
     return { title: 'Commande' };
   }
 
   return {
-    title: `${prompt.command} - ${prompt.name}`,
+    title: `${prompt.name} - ${prompt.command}`,
     description: prompt.resultSummary,
     openGraph: {
-      title: `${prompt.command} - ${prompt.name}`,
+      title: `${prompt.name} - ${prompt.command}`,
       description: prompt.resultSummary,
       images: prompt.beforeAfter ? [prompt.beforeAfter.afterUrl] : undefined,
     },
@@ -104,10 +104,18 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
         </div>
       ) : null}
 
-      <div className="flex items-center justify-between gap-2">
-        <h1 className="commande truncate text-[26px] font-semibold text-[color:var(--color-brand)]">
-          {prompt.command}
-        </h1>
+      {/* Le titre d'abord, le raccourci ensuite, comme sur la fiche en
+          bibliotheque : cette page est celle qu'on partage, et un lien qui
+          s'annonce « /seoaudit » ne dit rien a qui le recoit. */}
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="text-[26px] font-semibold leading-tight text-[color:var(--color-night)]">
+            {prompt.name}
+          </h1>
+          <p className="commande truncate text-[length:var(--texte-corps)] font-semibold text-[color:var(--color-brand)]">
+            {prompt.command}
+          </p>
+        </div>
         <AccessBadge free={prompt.isFree} locked={false} isNew={prompt.isNew} />
       </div>
 

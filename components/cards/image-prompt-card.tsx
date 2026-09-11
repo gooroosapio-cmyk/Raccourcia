@@ -75,7 +75,7 @@ export function ImagePromptCard({
             <ResultThumbnail
               url={prompt.thumbnailUrl}
               alt={masque ? description : prompt.thumbnailAlt}
-              libelle={masque ? description : prompt.command}
+              libelle={prompt.name}
               mission={niveau?.mission ?? false}
               priority={priority}
             />
@@ -86,21 +86,17 @@ export function ImagePromptCard({
         </span>
 
         <span className="flex flex-1 flex-col gap-1 px-2.5 pb-2 pt-2">
-          {masque ? null : (
-            <span className="commande truncate text-[length:var(--texte-commande-carte)] font-bold text-[color:var(--color-brand)]">
-              {prompt.command}
-            </span>
-          )}
+          {/* Le titre, pas la commande. « Rayon X » se comprend sans rien
+              savoir du produit ; « /xray » demande de deja connaitre la
+              convention. Le raccourci attend dans la fiche, ou il est
+              explique et copiable. */}
+          <span className="line-clamp-3 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+            {prompt.name}
+          </span>
 
           {/* Ce que fait ce raccourci, pas le format qu'il produit :
-              `result_summary` se repete a l'identique sur toute une famille.
-              Quand la commande est masquee, la description recupere sa ligne :
-              elle devient la seule chose a lire, elle a droit a la place. */}
-          <span
-            className={`text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)] ${
-              masque ? 'line-clamp-3' : 'line-clamp-2'
-            }`}
-          >
+              `result_summary` se repete a l'identique sur toute une famille. */}
+          <span className="line-clamp-2 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-muted)]">
             {description}
           </span>
 

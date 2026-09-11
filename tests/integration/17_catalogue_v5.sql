@@ -47,11 +47,16 @@ begin
   );
   perform tests_assert(v_n = 0, format('%s variantes V5 sans version courante.', v_n));
 
+  -- Trois textes courants par commande du socle V5, quelle que soit leur
+  -- etiquette. Ce controle nommait « v5-final » tant que c'etait la seule
+  -- etiquette possible ; la refonte V6 remplace ces textes sans rien retirer
+  -- au catalogue, et ce qui compte ici reste le meme : aucune commande du
+  -- socle ne doit avoir perdu un moteur en route.
   select count(*) into v_n
   from public.prompt_versions pv
   join public.prompt_variants v on v.id = pv.variant_id
   join public.prompts p on p.id = v.prompt_id and p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]'
-  where pv.is_current and pv.version_label = 'v5-final';
+  where pv.is_current;
   perform tests_assert(v_n = 1299, format('%s payloads V5 courants au lieu de 1299.', v_n));
 
   -- Le selecteur d'IA de la fiche ne sert a rien si les trois moteurs
@@ -73,6 +78,12 @@ end $$;
 -- servi a Gemini. L'empreinte, elle, ne passe que si chaque payload est
 -- arrive a sa place : elle porte sur (commande, moteur, empreinte du texte),
 -- triee, et vaut la meme chose que celle calculee sur le classeur source.
+--
+-- Elle porte sur l'etiquette « v5-final » et non sur la version courante.
+-- Avant la refonte V6 ces textes etaient les textes courants ; depuis, ils
+-- sont retires et la V6 a pris leur place. Le controle en devient plus fort :
+-- il ne dit plus seulement que les textes du classeur V5 sont bien arrives,
+-- il dit qu'ils sont toujours la, intacts, apres avoir ete remplaces.
 do $$
 declare
   v_empreinte text;
@@ -85,7 +96,7 @@ begin
   join public.prompt_variants v on v.id = pv.variant_id
   join public.ai_providers pr on pr.id = v.provider_id
   join public.prompts p on p.id = v.prompt_id and p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]'
-  where pv.is_current;
+  where pv.version_label = 'v5-final';
 
   perform tests_assert(
     v_empreinte = '5bb9c0ad17a84bee1e1e35656db4af56',
