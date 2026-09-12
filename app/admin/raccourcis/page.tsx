@@ -3,10 +3,8 @@ import Link from 'next/link';
 import { listAdminCategories, listAdminPrompts } from '@/lib/admin/queries';
 import type { AdminPromptFilters as FiltresListe } from '@/lib/admin/queries';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
-import { MediaBadge } from '@/components/ui/media-badge';
-import { PromptRowActions } from '@/components/admin/prompt-row-actions';
-import { StatusBadge } from '@/components/ui/status-badge';
-import { CONTENT_STATUS, MODES, MODE_LABELS, type Mode } from '@/lib/constants';
+import { AdminPromptRowItem } from '@/components/admin/prompt-row';
+import { CONTENT_STATUS, MODES, type Mode } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 export const metadata = { title: 'Raccourcis' };
@@ -76,46 +74,7 @@ export default async function AdminPromptsPage({
       ) : (
         <ul className="space-y-2">
           {items.map((prompt) => (
-            <li
-              key={prompt.id}
-              className="flex items-center gap-2 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-3"
-            >
-              {/* Le lien ne couvre que le texte : un bouton place a
-                  l'interieur d'un lien reste un lien, et l'etoile ouvrirait
-                  la fiche au lieu d'epingler. */}
-              <Link
-                href={`/admin/raccourcis/${prompt.id}`}
-                className="flex min-w-0 flex-1 items-center justify-between gap-3"
-              >
-                <div className="min-w-0">
-                  <p className="truncate font-mono text-[15px] font-semibold text-[color:var(--color-night)]">
-                    {prompt.command}
-                  </p>
-                  <p className="truncate text-[13px] text-[color:var(--color-muted)]">
-                    {prompt.name}
-                  </p>
-                  <p className="mt-0.5 text-[12px] text-[color:var(--color-muted)]">
-                    {MODE_LABELS[prompt.mode]}
-                    {prompt.categoryName ? ` - ${prompt.categoryName}` : ' - sans catégorie'}
-                  </p>
-                </div>
-                <span className="flex shrink-0 flex-col items-end gap-1">
-                  <StatusBadge status={prompt.status} />
-                  <MediaBadge
-                    avant={prompt.hasBefore}
-                    apres={prompt.hasAfter}
-                    compare={prompt.mode === 'image'}
-                  />
-                </span>
-              </Link>
-
-              <PromptRowActions
-                promptId={prompt.id}
-                free={prompt.isFree}
-                pinned={prompt.isPinned}
-                status={prompt.status}
-              />
-            </li>
+            <AdminPromptRowItem key={prompt.id} prompt={prompt} />
           ))}
         </ul>
       )}
