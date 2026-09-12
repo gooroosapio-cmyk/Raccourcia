@@ -48,3 +48,7 @@ supabase/.env
 /blob-report/
 /playwright/.cache/
 .tmp/
+
+# Les visuels avant/apres passent par le stockage Supabase. Ils ont transite
+# par le depot le temps d'un import ; l'historique les garde, l'arbre non.
+data/visuels/images/

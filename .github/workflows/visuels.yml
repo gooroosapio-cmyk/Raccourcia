@@ -114,6 +114,19 @@ jobs:
 
           echo "Cle plausible."
 
+      - name: Verifier que les images sont la
+        run: |
+          if [ ! -d data/visuels/images ]; then
+            echo "Le dossier data/visuels/images est absent."
+            echo
+            echo "Les images ne vivent pas dans le depot : elles y transitent le temps"
+            echo "d un import, puis en sortent une fois deposees dans le stockage."
+            echo "Pour un nouveau depot, les y remettre avant de relancer — le releve"
+            echo "dit quels fichiers il attend, sous avant/ et apres/."
+            exit 1
+          fi
+          echo "$(find data/visuels/images -type f | wc -l) fichiers presents."
+
       - name: Deposer les visuels
         env:
           # L URL du projet est publique : elle est servie dans chaque page du
