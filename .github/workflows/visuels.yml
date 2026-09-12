@@ -1,0 +1,79 @@
+name: Visuels
+
+# Depose les visuels avant/apres dans le stockage et enregistre leurs lignes.
+#
+# Separe du workflow Catalogue : celui-la parle a la base par psql, celui-ci
+# au stockage de fichiers, qui est une autre interface et une autre cle. Les
+# melanger donnerait un workflow qui demande plus de droits qu'il n'en faut
+# pour la plupart de ses usages.
+#
+# Le declenchement est manuel et demande de taper le nom du projet. Un depot
+# de visuels se decide, il ne se declenche pas parce qu'une branche a bouge.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Taper "raccourcia" pour confirmer le depot des visuels'
+        required: true
+        type: string
+      releve:
+        description: 'Releve a appliquer'
+        required: true
+        default: data/visuels/v5-avant-apres.json
+        type: choice
+        options:
+          - data/visuels/v5-avant-apres.json
+
+jobs:
+  depot:
+    name: Deposer les visuels
+    runs-on: ubuntu-latest
+    # `production` porte le secret et, si l'environnement est protege, une
+    # validation humaine avant execution.
+    environment: production
+
+    steps:
+      - name: Verifier la confirmation
+        if: inputs.confirmation != 'raccourcia'
+        run: |
+          echo "Confirmation absente ou incorrecte : depot annule."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verifier que la cle est presente
+        env:
+          CLE: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -z "${CLE:-}" ]; then
+            echo "Le secret SUPABASE_SERVICE_ROLE_KEY est vide ou absent de l environnement production."
+            echo
+            echo "L ajouter dans Settings > Environments > production > Add secret,"
+            echo "avec la valeur de la cle service_role du projet Supabase."
+            exit 1
+          fi
+          echo "Cle presente."
+
+      - name: Deposer les visuels
+        env:
+          # L URL du projet est publique : elle est servie dans chaque page du
+          # site. Seule la cle est un secret.
+          SUPABASE_URL: https://jhqajkhovtcjklrjgwrx.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/import-visuels.mjs "${{ inputs.releve }}" data/visuels/images
+
+      - name: Etat apres depot
+        env:
+          SUPABASE_URL: https://jhqajkhovtcjklrjgwrx.supabase.co
+          CLE: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          curl -s "$SUPABASE_URL/rest/v1/prompt_media?select=kind" \
+            -H "apikey: $CLE" -H "Authorization: Bearer $CLE" \
+            -H "Prefer: count=exact" -H "Range: 0-0" -o /dev/null -D - \
+            | grep -i 'content-range' \
+            | sed 's/^/  visuels en base : /'

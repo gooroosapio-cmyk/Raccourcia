@@ -1,1465 +1,1319 @@
 {
-  "source": "Cinq classeurs d extension visuelle, un par famille IMAGE",
+  "source": "RaccourcIA_Catalogue_Final_Avant_Apres.xlsx — cinq familles IMAGE, images incorporees",
   "entrees": [
     {
       "command": "/webhero",
       "external_ref": "RCI-IMG-157",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-c74c67ee-b7f3-47ec-b224-47256c935fb7.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/webhero.jpg"
     },
     {
       "command": "/landinghero",
       "external_ref": "RCI-IMG-158",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-ab17433f-6fad-4b5c-a47b-5386a433c97d.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/landinghero.jpg"
     },
     {
       "command": "/offerstackvisual",
       "external_ref": "RCI-IMG-165",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-bac8fdfe-6577-466b-af19-e8091d8038aa.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/offerstackvisual.jpg"
     },
     {
       "command": "/testimonialcard",
       "external_ref": "RCI-IMG-168",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-c47ce223-036c-4b7b-a4a0-01294ee050f2.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/testimonialcard.jpg"
     },
     {
       "command": "/pricecard",
       "external_ref": "RCI-IMG-170",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-bcce0b38-cdce-4d27-8f05-5e1b881463bf.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/pricecard.jpg"
     },
     {
       "command": "/giftcard",
       "external_ref": "RCI-IMG-172",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-a8f747ce-9749-40d5-b605-8dc7d80a24a5.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/giftcard.jpg"
     },
     {
       "command": "/loyaltycard",
       "external_ref": "RCI-IMG-173",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-b44b2149-acf4-4b72-922c-eadde2dce0a1.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/loyaltycard.jpg"
     },
     {
       "command": "/restaurantmenu",
       "external_ref": "RCI-IMG-175",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-c1c54a04-7281-4700-b60a-8e41ec047508.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/a4d119f0c1e8.jpg",
+      "apres": "apres/restaurantmenu.jpg"
     },
     {
       "command": "/qrmenu",
       "external_ref": "RCI-IMG-179",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-c00e0722-4195-4aad-ab1d-ba1cdc27aee6.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/qrmenu.jpg"
     },
     {
       "command": "/magazinecover",
       "external_ref": "RCI-IMG-194",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-b5586db1-3071-446a-88b4-2a6c66158721.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/magazinecover.jpg"
     },
     {
       "command": "/productcarousel",
       "external_ref": "RCI-IMG-198",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-be7b1d6e-6c3b-4dbc-bfbb-deb706468583.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/productcarousel.jpg"
     },
     {
       "command": "/featurespotlight",
       "external_ref": "RCI-IMG-200",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-a758e0f8-b879-4a34-b753-51f2909da14f.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/featurespotlight.jpg"
     },
     {
       "command": "/problemsolutionad",
       "external_ref": "RCI-IMG-202",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-bd7c8754-9f1e-4e91-beba-fd7fb7c56d98.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/problemsolutionad.jpg"
     },
     {
       "command": "/seasonalcampaign",
       "external_ref": "RCI-IMG-203",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-c3be9d87-f648-4b4d-a383-5caa1d2bb5d4.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/seasonalcampaign.jpg"
     },
     {
       "command": "/localbusinessad",
       "external_ref": "RCI-IMG-205",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-acea975f-efe9-4fde-8284-f28cc7c251df.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/localbusinessad.jpg"
     },
     {
       "command": "/tradebooth",
       "external_ref": "RCI-IMG-209",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-c48c2fc5-5922-41ef-874f-b3923887c653.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/tradebooth.jpg"
     },
     {
       "command": "/podcastcover",
       "external_ref": "RCI-IMG-336",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-bbd865bf-fa5d-4969-9672-8564e20d92d0.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/podcastcover.jpg"
     },
     {
       "command": "/streamerkit",
       "external_ref": "RCI-IMG-337",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-c3fc4026-cc62-4db3-89c0-46d2764cea67.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/streamerkit.jpg"
     },
     {
       "command": "/creatorbrandkit",
       "external_ref": "RCI-IMG-338",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-a2cd22ff-f51a-4868-86f2-00c542be2771.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/creatorbrandkit.jpg"
     },
     {
       "command": "/challengepost",
       "external_ref": "RCI-IMG-339",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-a0ddd92c-06ac-449d-ae85-be90f1bd02be.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/challengepost.jpg"
     },
     {
       "command": "/eventlineup",
       "external_ref": "RCI-IMG-340",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-a5ad48f7-d62a-47de-9d87-2ebbde7ee3f2.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/eventlineup.jpg"
     },
     {
       "command": "/musicreleasekit",
       "external_ref": "RCI-IMG-341",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-ba106a61-0584-4216-9bb7-4adf9a039955.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/musicreleasekit.jpg"
     },
     {
       "command": "/profilelaunch",
       "external_ref": "RCI-IMG-342",
       "famille": "IMG-V5-02",
       "famille_nom": "Publicité et contenu commercial",
-      "statut_au_releve": "draft",
-      "classeur": "04 Publicite et contenu",
-      "avant": "upload/01-1000283590.jpg",
-      "apres": "generated_images/exec-bfa2851d-e08a-492e-b02a-b0f612e4f833.png"
+      "classeur": "04 Publicité",
+      "avant": "avant/caaa246042c5.jpg",
+      "apres": "apres/profilelaunch.jpg"
     },
     {
       "command": "/retouchclean",
       "external_ref": "RCI-IMG-033",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "published",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-345cfb31-049f-4d34-8119-bbcb47aa976a.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/retouchclean.jpg"
     },
     {
       "command": "/teamportrait",
       "external_ref": "RCI-IMG-213",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-3d6b0b7b-2f4e-4f10-88c5-978871e59aae.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/teamportrait.jpg"
     },
     {
       "command": "/birthdayportrait",
       "external_ref": "RCI-IMG-221",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-0cad6398-cb99-412f-b440-3c0776a70c2d.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/birthdayportrait.jpg"
     },
     {
       "command": "/luxuryportrait",
       "external_ref": "RCI-IMG-225",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-2603c278-ddfb-4803-b144-fceae6b5f104.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/luxuryportrait.jpg"
     },
     {
       "command": "/sportshero",
       "external_ref": "RCI-IMG-227",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-39065102-50b3-4e20-985a-c39ce6ff3757.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/sportshero.jpg"
     },
     {
       "command": "/campaignportrait",
       "external_ref": "RCI-IMG-235",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-0e9ef7c3-e39f-4d31-9496-f13f18748789.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/campaignportrait.jpg"
     },
     {
       "command": "/lookbook",
       "external_ref": "RCI-IMG-243",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-24fe4af9-c443-4537-a941-7c7041ad6bcb.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/lookbook.jpg"
     },
     {
       "command": "/braidpreview",
       "external_ref": "RCI-IMG-250",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-0d5244b6-83c0-4239-8c8b-f709f6648cf0.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/braidpreview.jpg"
     },
     {
       "command": "/beardstyle",
       "external_ref": "RCI-IMG-251",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-06f037ef-d48f-4297-ae98-c1238d00c7b0.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/beardstyle.jpg"
     },
     {
       "command": "/skinretouch",
       "external_ref": "RCI-IMG-260",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-3740cc1a-d20e-4499-8447-029a25ce1672.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/skinretouch.jpg"
     },
     {
       "command": "/eyeglassglare",
       "external_ref": "RCI-IMG-261",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-15e626e4-d722-4d42-8020-8bfc822061e9.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/eyeglassglare.jpg"
     },
     {
       "command": "/retro80s",
       "external_ref": "RCI-IMG-343",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-35b9459e-4116-4f62-aaa9-3fadd404f590.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/retro80s.jpg"
     },
     {
       "command": "/yearbook90s",
       "external_ref": "RCI-IMG-344",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-480995a0-74ab-4b01-a447-1b53f1c62625.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/yearbook90s.jpg"
     },
     {
       "command": "/y2kflash",
       "external_ref": "RCI-IMG-345",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-451a4694-fac8-4de3-bd4e-708f1fda9708.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/y2kflash.jpg"
     },
     {
       "command": "/throwback2016",
       "external_ref": "RCI-IMG-346",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-3e01f1d2-1cd4-4063-ba57-af552eaf3633.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/throwback2016.jpg"
     },
     {
       "command": "/babyself",
       "external_ref": "RCI-IMG-347",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-0638eae2-be55-43dc-a226-e9ec38fe82a3.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/babyself.jpg"
     },
     {
       "command": "/childmeet",
       "external_ref": "RCI-IMG-348",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-1051e75c-2503-4f1d-9244-93768beb6dc5.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/childmeet.jpg"
     },
     {
       "command": "/genderflip",
       "external_ref": "RCI-IMG-349",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-2392f6b1-a891-4425-ada2-37759bd8a3ff.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/genderflip.jpg"
     },
     {
       "command": "/faceswapduo",
       "external_ref": "RCI-IMG-350",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-172bb158-cdb2-4923-8ff6-72a06b1eee95.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/faceswapduo.jpg"
     },
     {
       "command": "/futurechild",
       "external_ref": "RCI-IMG-351",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-1efc88e6-e1b5-4dd8-8672-a22ddf839363.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/futurechild.jpg"
     },
     {
       "command": "/twinsurprise",
       "external_ref": "RCI-IMG-352",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-40fe4e59-38ac-49a9-9943-32acde07d95d.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/twinsurprise.jpg"
     },
     {
       "command": "/parallelself",
       "external_ref": "RCI-IMG-353",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-2d6c1c51-8017-4468-adc1-194a85f8760f.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/parallelself.jpg"
     },
     {
       "command": "/miniceo",
       "external_ref": "RCI-IMG-354",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-2849b600-9eff-4047-b19e-03e8a441411c.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/miniceo.jpg"
     },
     {
       "command": "/redcarpet",
       "external_ref": "RCI-IMG-355",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-33ba477c-809e-4f66-9801-b42f42a6afa3.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/redcarpet.jpg"
     },
     {
       "command": "/royalcoronation",
       "external_ref": "RCI-IMG-356",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-35f53ea8-b21c-4419-92dc-55109a4c774f.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/royalcoronation.jpg"
     },
     {
       "command": "/afrobeatsstar",
       "external_ref": "RCI-IMG-357",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-014c23c5-9d93-41cd-a455-60a1567972a0.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/afrobeatsstar.jpg"
     },
     {
       "command": "/nollywoodscene",
       "external_ref": "RCI-IMG-358",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-2c0e7a8f-ccfa-42b0-8820-3914e15dada3.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/nollywoodscene.jpg"
     },
     {
       "command": "/dreamcareergrid",
       "external_ref": "RCI-IMG-359",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-15194eae-246f-4d29-b1f7-1b7057114fb7.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/dreamcareergrid.jpg"
     },
     {
       "command": "/styleswapduo",
       "external_ref": "RCI-IMG-360",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-3d6629b6-d871-4deb-828a-1090f5aea456.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/styleswapduo.jpg"
     },
     {
       "command": "/friendgroupcast",
       "external_ref": "RCI-IMG-361",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-1b67baed-905b-47dc-a51b-80b466e7678c.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/friendgroupcast.jpg"
     },
     {
       "command": "/clonecrew",
       "external_ref": "RCI-IMG-362",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-11bd9929-724b-415c-9484-470a4c2ff5e6.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/clonecrew.jpg"
     },
     {
       "command": "/pastfutureduo",
       "external_ref": "RCI-IMG-363",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-2eb0a27b-8793-44d4-a862-3f4f696a6635.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/pastfutureduo.jpg"
     },
     {
       "command": "/profilepicset",
       "external_ref": "RCI-IMG-364",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-3354e33b-d33b-4998-9556-b112dc0295fb.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/profilepicset.jpg"
     },
     {
       "command": "/festivalheadliner",
       "external_ref": "RCI-IMG-365",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-1ad7305f-148f-4678-862a-539f8790ed20.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/festivalheadliner.jpg"
     },
     {
       "command": "/powercover",
       "external_ref": "RCI-IMG-381",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-30afcf41-4349-47d7-a506-75fdea796ea0.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/powercover.jpg"
     },
     {
       "command": "/paparazziflash",
       "external_ref": "RCI-IMG-382",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-2d694b24-69ab-4b59-86ea-06b13ee3f001.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/paparazziflash.jpg"
     },
     {
       "command": "/runwaydebut",
       "external_ref": "RCI-IMG-383",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-370a6ecd-7876-4a9f-9071-6b85b2b5c52a.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/runwaydebut.jpg"
     },
     {
       "command": "/airportfit",
       "external_ref": "RCI-IMG-384",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-02050191-e070-4317-b44a-09ab3ebf9baa.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/airportfit.jpg"
     },
     {
       "command": "/castingcard",
       "external_ref": "RCI-IMG-385",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-0f984524-e6bb-4e30-88a9-5c08e0d24b3f.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/castingcard.jpg"
     },
     {
       "command": "/fashionpolaroid",
       "external_ref": "RCI-IMG-386",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-18bd2923-1236-444b-9937-d423e690c964.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/fashionpolaroid.jpg"
     },
     {
       "command": "/presskitportrait",
       "external_ref": "RCI-IMG-387",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-31e200a1-fd10-429c-8089-aa445292dd91.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/presskitportrait.jpg"
     },
     {
       "command": "/galaeditorial",
       "external_ref": "RCI-IMG-388",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-220903ad-cd9d-4473-a4ed-d2230bf3ab92.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/galaeditorial.jpg"
     },
     {
       "command": "/streetcasting",
       "external_ref": "RCI-IMG-389",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-3a347e5a-1d72-4c11-afa2-795773b51b07.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/streetcasting.jpg"
     },
     {
       "command": "/signaturelook",
       "external_ref": "RCI-IMG-390",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-370f6136-91d6-4409-bd2c-b908d497adc5.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/signaturelook.jpg"
     },
     {
       "command": "/personalbrandkit",
       "external_ref": "RCI-IMG-391",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-2ee8913a-70a1-4ae4-bda0-bb237439679a.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/personalbrandkit.jpg"
     },
     {
       "command": "/coloranalysis",
       "external_ref": "RCI-IMG-392",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-13a49efb-e4bb-4d90-90cd-a7a7c6b1b1c0.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/coloranalysis.jpg"
     },
     {
       "command": "/identitysheet",
       "external_ref": "RCI-IMG-393",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-23ee9daa-c0f3-4f2c-aeac-8fc0c16695db.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/identitysheet.jpg"
     },
     {
       "command": "/lookcontinuity",
       "external_ref": "RCI-IMG-394",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-257a3c85-6250-4976-8d1b-460e89bc9bd2.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/lookcontinuity.jpg"
     },
     {
       "command": "/fashioncampaignset",
       "external_ref": "RCI-IMG-395",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-17a2f119-3918-4175-9b45-131325b1e4e5.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/fashioncampaignset.jpg"
     },
     {
       "command": "/mirrorfit",
       "external_ref": "RCI-IMG-396",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-29ef540c-ae1a-4473-81eb-3ef079115de7.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/mirrorfit.jpg"
     },
     {
       "command": "/datingprofile",
       "external_ref": "RCI-IMG-397",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-1472e7a5-fe83-47b5-b798-340362d96e5b.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/datingprofile.jpg"
     },
     {
       "command": "/btsfashion",
       "external_ref": "RCI-IMG-398",
       "famille": "IMG-V5-03",
       "famille_nom": "Portrait, mode et identité",
-      "statut_au_releve": "draft",
-      "classeur": "01 Portrait, mode et identite",
-      "avant": "upload/01-1000283570.jpg",
-      "apres": "generated_images/exec-0d9f0d59-5a53-43d8-a4e7-a0af065ef657.png"
+      "classeur": "01 Portrait identité",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/btsfashion.jpg"
     },
     {
       "command": "/daytonight",
       "external_ref": "RCI-IMG-082",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "published",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-cf0f82fc-f372-4df6-91ff-5f898a19946c.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/daytonight.jpg"
     },
     {
       "command": "/seasonshift",
       "external_ref": "RCI-IMG-083",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "published",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-e106b249-1344-4ebc-a89f-24a45e7a2d1d.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/seasonshift.jpg"
     },
     {
       "command": "/weatherchange",
       "external_ref": "RCI-IMG-084",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "published",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-e665cd1d-24b6-447f-b52f-6396e9b98da9.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/weatherchange.jpg"
     },
     {
       "command": "/skyswap",
       "external_ref": "RCI-IMG-090",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "published",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-e5110477-237d-4a3c-bc40-05a1d8a557bd.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/skyswap.jpg"
     },
     {
       "command": "/boothdesign",
       "external_ref": "RCI-IMG-278",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-ce176173-42c5-4519-8e66-d902cd364766.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/boothdesign.jpg"
     },
     {
       "command": "/eventstage",
       "external_ref": "RCI-IMG-279",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-d49a3c85-4f29-4485-89d9-940f941541f9.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/eventstage.jpg"
     },
     {
       "command": "/weddingdecor",
       "external_ref": "RCI-IMG-280",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-e8eb5542-147b-49d6-9d66-4f37cd6bbd75.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/ba2ba41d3c0b.jpg",
+      "apres": "apres/weddingdecor.jpg"
     },
     {
       "command": "/birthdaydecor",
       "external_ref": "RCI-IMG-281",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-cc94f8fc-2d82-476b-afe5-054b7e69b752.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/ba2ba41d3c0b.jpg",
+      "apres": "apres/birthdaydecor.jpg"
     },
     {
       "command": "/realestatehero",
       "external_ref": "RCI-IMG-282",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-dd7a4b43-2c51-47e1-8187-ccf9e1f26e99.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/realestatehero.jpg"
     },
     {
       "command": "/airbnbhero",
       "external_ref": "RCI-IMG-283",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-cbbe36bc-f038-47ff-8df2-1a596f6c36a7.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/ba2ba41d3c0b.jpg",
+      "apres": "apres/airbnbhero.jpg"
     },
     {
       "command": "/hotelroom",
       "external_ref": "RCI-IMG-284",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-d7ae43c5-aaf8-4463-bf1e-ac9317b582bc.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/ba2ba41d3c0b.jpg",
+      "apres": "apres/hotelroom.jpg"
     },
     {
       "command": "/pooldesign",
       "external_ref": "RCI-IMG-285",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-dc2adb6c-bb43-40e9-94fb-d58a2392d1a7.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/pooldesign.jpg"
     },
     {
       "command": "/gardenplan",
       "external_ref": "RCI-IMG-286",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-d52c2e50-3ee3-499d-8071-acd965c65738.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/gardenplan.jpg"
     },
     {
       "command": "/facaderenovation",
       "external_ref": "RCI-IMG-287",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-d4d5d0e3-8d54-49e0-9740-d62ed9515ad4.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/facaderenovation.jpg"
     },
     {
       "command": "/nightarchitecture",
       "external_ref": "RCI-IMG-288",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-db10b3df-7533-4ce7-bf80-afb386ec66b4.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/nightarchitecture.jpg"
     },
     {
       "command": "/aerialproperty",
       "external_ref": "RCI-IMG-289",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-cb4bf2e1-6a04-479c-a534-cb4268155739.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/aerialproperty.jpg"
     },
     {
       "command": "/dreamworkspace",
       "external_ref": "RCI-IMG-366",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-d078f9d4-abbb-42b2-b588-7a631ae4fc35.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/ba2ba41d3c0b.jpg",
+      "apres": "apres/dreamworkspace.jpg"
     },
     {
       "command": "/travelpostcard",
       "external_ref": "RCI-IMG-367",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-e5426abb-e2be-4118-86d1-93c9ce29fb95.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/travelpostcard.jpg"
     },
     {
       "command": "/futurehomevision",
       "external_ref": "RCI-IMG-368",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-d4ef2143-a5a0-4cd2-8857-2ea38b79c3e6.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/9fefc5d81a63.jpg",
+      "apres": "apres/futurehomevision.jpg"
     },
     {
       "command": "/roompersonality",
       "external_ref": "RCI-IMG-369",
       "famille": "IMG-V5-04",
       "famille_nom": "Lieux, architecture et intérieur",
-      "statut_au_releve": "draft",
-      "classeur": "05 Lieux et architecture",
-      "avant": "upload/01-1000283048.jpg",
-      "apres": "generated_images/exec-dfc0ff50-b751-41b6-ad7f-ae37835138cf.png"
+      "classeur": "05 Lieux intérieur",
+      "avant": "avant/ba2ba41d3c0b.jpg",
+      "apres": "apres/roompersonality.jpg"
     },
     {
       "command": "/colorswap",
       "external_ref": "RCI-IMG-014",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "published",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-5605d87e-ae4c-4d0f-9364-576e83f0a009.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/colorswap.jpg"
     },
     {
       "command": "/backgroundswap",
       "external_ref": "RCI-IMG-028",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "published",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-49d78396-d7e2-4f2d-b1d9-8b3bd7c9f57e.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/backgroundswap.jpg"
     },
     {
       "command": "/colorgrade",
       "external_ref": "RCI-IMG-032",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "published",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-500450fc-cca5-4764-bf7d-6c3d969a8ade.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/colorgrade.jpg"
     },
     {
       "command": "/extendframe",
       "external_ref": "RCI-IMG-080",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "published",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-5d5ce65d-4a48-400d-8a51-ae1fb0f9b48f.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/extendframe.jpg"
     },
     {
       "command": "/depthblur",
       "external_ref": "RCI-IMG-088",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "published",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-59fd218c-eabb-415e-a1b4-109964be3c0d.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/depthblur.jpg"
     },
     {
       "command": "/motionfreeze",
       "external_ref": "RCI-IMG-089",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "published",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-69207874-7eeb-4e5f-8fe0-9eb51f6796e5.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/motionfreeze.jpg"
     },
     {
       "command": "/deblur",
       "external_ref": "RCI-IMG-124",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "published",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-5937a38a-af1f-40fc-a87c-6c24fee121f1.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/deblur.jpg"
     },
     {
       "command": "/jpegrepair",
       "external_ref": "RCI-IMG-263",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-628bfd76-bef3-4add-be22-f1040f9eca5b.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/jpegrepair.jpg"
     },
     {
       "command": "/colorrestore",
       "external_ref": "RCI-IMG-264",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-517b3f19-d3ce-4847-b4e5-203674a04c63.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/colorrestore.jpg"
     },
     {
       "command": "/croprecompose",
       "external_ref": "RCI-IMG-269",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-56b6aecf-82ed-47bb-a11a-e647e422be9e.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/croprecompose.jpg"
     },
     {
       "command": "/lowlightrescue",
       "external_ref": "RCI-IMG-270",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-6888e1df-df5b-42d4-8a46-0cbd722fa3c0.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/lowlightrescue.jpg"
     },
     {
       "command": "/fouruniverses",
       "external_ref": "RCI-IMG-370",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-5fd20b0a-fa2a-47dc-aea4-5eadcae51261.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/fouruniverses.jpg"
     },
     {
       "command": "/hologramself",
       "external_ref": "RCI-IMG-376",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-60ab6579-7c74-4f89-9125-1c9ab82240a1.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/hologramself.jpg"
     },
     {
       "command": "/fantasycreature",
       "external_ref": "RCI-IMG-377",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-5d737ef7-bf59-455d-aff5-1061af38ce84.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/fantasycreature.jpg"
     },
     {
       "command": "/disposablefilm",
       "external_ref": "RCI-IMG-399",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-5c1d8461-397b-4a30-9880-c6bd7b3d49d4.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/disposablefilm.jpg"
     },
     {
       "command": "/ccdnight",
       "external_ref": "RCI-IMG-400",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-4bc54b93-a683-46e6-ab01-f0a7ff1c25cf.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/ccdnight.jpg"
     },
     {
       "command": "/fisheyeflash",
       "external_ref": "RCI-IMG-406",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-5f1cdb58-1b26-4424-8919-3a3d170657a5.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/fisheyeflash.jpg"
     },
     {
       "command": "/cctvframe",
       "external_ref": "RCI-IMG-407",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-4f977dd3-7c39-41b7-9043-aa5588d8c235.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/cctvframe.jpg"
     },
     {
       "command": "/infraredlook",
       "external_ref": "RCI-IMG-408",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-61882105-dba8-4a18-afc2-dedfc7868ae8.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/infraredlook.jpg"
     },
     {
       "command": "/lightleakfilm",
       "external_ref": "RCI-IMG-410",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-65838f0b-4926-4583-8ae3-613f1ca78c26.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/lightleakfilm.jpg"
     },
     {
       "command": "/longexposuretrail",
       "external_ref": "RCI-IMG-411",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-66cc2b56-1dd9-4713-8090-705bff9da2e6.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/longexposuretrail.jpg"
     },
     {
       "command": "/halftonepress",
       "external_ref": "RCI-IMG-412",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-604cb9e4-931e-436f-9067-92185d1543e3.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/halftonepress.jpg"
     },
     {
       "command": "/lenticularshift",
       "external_ref": "RCI-IMG-413",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-6493b617-2acc-424a-a3d0-647d72aa0616.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/lenticularshift.jpg"
     },
     {
       "command": "/motionecho",
       "external_ref": "RCI-IMG-415",
       "famille": "IMG-V5-05",
       "famille_nom": "Création, styles et effets visuels",
-      "statut_au_releve": "draft",
-      "classeur": "02 Creation, styles et effets",
-      "avant": "upload/01-1000283571.jpg",
-      "apres": "generated_images/exec-68beb223-3ed7-4bbf-90eb-ea22d614ed23.png"
+      "classeur": "02 Création effets",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/motionecho.jpg"
     },
     {
       "command": "/stepdiagram",
       "external_ref": "RCI-IMG-131",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-8d2b2a78-55bf-4d7f-9066-2dedaeeb1ffb.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/stepdiagram.jpg"
     },
     {
       "command": "/systemmapvisual",
       "external_ref": "RCI-IMG-132",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-8dec24ae-540a-4883-b713-96954b630eba.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/systemmapvisual.jpg"
     },
     {
       "command": "/partslabel",
       "external_ref": "RCI-IMG-137",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-7a6828f3-c82c-4731-bc2f-ed7b33a35187.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/partslabel.jpg"
     },
     {
       "command": "/safetyvisual",
       "external_ref": "RCI-IMG-138",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-817a0b26-adc9-428e-90a4-337cf7e0ca50.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/safetyvisual.jpg"
     },
     {
       "command": "/troubleshootvisual",
       "external_ref": "RCI-IMG-141",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-97b54918-37f4-40ab-9396-ea9da1ad6e95.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/troubleshootvisual.jpg"
     },
     {
       "command": "/networktopology",
       "external_ref": "RCI-IMG-142",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-7148ac4a-5313-409f-90b1-0f7ec6cfbd51.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/networktopology.jpg"
     },
     {
       "command": "/scientificplate",
       "external_ref": "RCI-IMG-144",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-83edd497-7bf3-41af-8f54-6859f477f80f.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/scientificplate.jpg"
     },
     {
       "command": "/specsheet",
       "external_ref": "RCI-IMG-150",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-8b659ac3-6202-4bb4-93b4-a9aceb470f09.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/specsheet.jpg"
     },
     {
       "command": "/packagingdieline",
       "external_ref": "RCI-IMG-183",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-750229cb-accb-4fa0-9411-e8e87f72d120.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/packagingdieline.jpg"
     },
     {
       "command": "/outfitbreakdown",
       "external_ref": "RCI-IMG-378",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-72474390-f6ed-4fad-abbb-7033e88bfae9.png"
+      "classeur": "03 Technique",
+      "avant": "avant/b288f65bf880.jpg",
+      "apres": "apres/outfitbreakdown.jpg"
     },
     {
       "command": "/lightsetup",
       "external_ref": "RCI-IMG-379",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-6f9e6144-4af6-4d51-8a21-49e677b45e41.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/lightsetup.jpg"
     },
     {
       "command": "/shotboard",
       "external_ref": "RCI-IMG-380",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-8666f347-fbbe-4dd3-b5e5-231fbbcf9169.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/shotboard.jpg"
     },
     {
       "command": "/digitaltwin",
       "external_ref": "RCI-IMG-416",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-6d1b3285-767c-4a3f-8035-9cd1a8de11c2.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/digitaltwin.jpg"
     },
     {
       "command": "/pointcloud",
       "external_ref": "RCI-IMG-417",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-7bc854ce-84ed-4405-a683-c0521c42ba63.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/pointcloud.jpg"
     },
     {
       "command": "/signalpath",
       "external_ref": "RCI-IMG-418",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-88d73139-771f-4106-bab6-7f996d2c7cc2.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/signalpath.jpg"
     },
     {
       "command": "/energypath",
       "external_ref": "RCI-IMG-419",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-6ef20787-4ca7-4a10-bf14-4ab23b559d40.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/energypath.jpg"
     },
     {
       "command": "/wiringroute",
       "external_ref": "RCI-IMG-420",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-9e3c32b5-11c3-4624-9ddd-098284082d20.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/wiringroute.jpg"
     },
     {
       "command": "/toolpath",
       "external_ref": "RCI-IMG-421",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-9630fc5e-9380-4d8f-9f08-32e2943594b6.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/toolpath.jpg"
     },
     {
       "command": "/weldmap",
       "external_ref": "RCI-IMG-422",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-9e276625-6105-4000-b0c9-dbd6d012b841.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/weldmap.jpg"
     },
     {
       "command": "/tolerancechain",
       "external_ref": "RCI-IMG-423",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-90b343ea-dad4-4abb-8b98-708f7fc43f22.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/tolerancechain.jpg"
     },
     {
       "command": "/soundfield",
       "external_ref": "RCI-IMG-424",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-8acd52d3-6b4c-42a7-b769-be7b409dfb7b.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/soundfield.jpg"
     },
     {
       "command": "/coveragezone",
       "external_ref": "RCI-IMG-425",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-6abf74f5-27b5-4605-b30c-7fd0565a0ab7.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/coveragezone.jpg"
     },
     {
       "command": "/sunpath",
       "external_ref": "RCI-IMG-426",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-8d3d9221-8352-4fc4-aa82-e89581094e84.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/sunpath.jpg"
     },
     {
       "command": "/ergonomicreach",
       "external_ref": "RCI-IMG-427",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-6f2ed5b1-b666-4115-92b3-d3b98e5f3d62.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/ergonomicreach.jpg"
     },
     {
       "command": "/eyetracking",
       "external_ref": "RCI-IMG-428",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-6f63d8c1-662e-437a-8070-5f7b69471de5.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/eyetracking.jpg"
     },
     {
       "command": "/reversecad",
       "external_ref": "RCI-IMG-429",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-81047f42-a0db-4bbd-bd75-213dc8cf7020.png"
+      "classeur": "03 Technique",
+      "avant": "avant/185ca1bb33ba.jpg",
+      "apres": "apres/reversecad.jpg"
     },
     {
       "command": "/servicepoints",
       "external_ref": "RCI-IMG-430",
       "famille": "IMG-V5-06",
       "famille_nom": "Technique, information et visualisation",
-      "statut_au_releve": "draft",
-      "classeur": "03 Technique et information",
-      "avant": "upload/01-1000283578.jpg",
-      "apres": "generated_images/exec-864c3e61-c2f4-4fa9-939b-d2ccf045a157.png"
+      "classeur": "03 Technique",
+      "avant": "avant/21ea687812e3.jpg",
+      "apres": "apres/servicepoints.jpg"
     }
   ]
 }
