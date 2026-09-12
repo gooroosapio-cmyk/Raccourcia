@@ -6,6 +6,11 @@
 -- texte d'un autre, une commande rangee dans une famille invisible, un
 -- questionnaire de l'ancien catalogue laisse au milieu du nouveau. Chacune de
 -- ces trois pannes est silencieuse a l'ecran, et chacune a son controle ici.
+--
+-- La borne `coalesce(catalog_version, '') !~ '^v5[.][1-9]'` revient partout :
+-- `level` marquait le catalogue V5 tant qu'il etait seul a etre gradue.
+-- L'extension V5.1 l'est aussi, et ces controles ne parlent que des 433
+-- commandes du classeur final.
 begin;
 
 do $$
@@ -18,11 +23,11 @@ begin
 
   -- `level` est le seul marqueur d'une commande passee en V5 : les colonnes
   -- de version restent celles de la V2, que la refonte ne reecrit pas.
-  select count(*) into v_n from public.prompts where level is not null;
+  select count(*) into v_n from public.prompts where level is not null and coalesce(catalog_version, '') !~ '^v5[.][1-9]';
   perform tests_assert(v_n = 433, format('%s commandes V5 au lieu de 433.', v_n));
 
-  select count(*) into v_image from public.prompts where level is not null and mode = 'image';
-  select count(*) into v_texte from public.prompts where level is not null and mode = 'texte';
+  select count(*) into v_image from public.prompts where level is not null and coalesce(catalog_version, '') !~ '^v5[.][1-9]' and mode = 'image';
+  select count(*) into v_texte from public.prompts where level is not null and coalesce(catalog_version, '') !~ '^v5[.][1-9]' and mode = 'texte';
   perform tests_assert(v_image = 296, format('%s commandes image au lieu de 296.', v_image));
   perform tests_assert(v_texte = 137, format('%s commandes texte au lieu de 137.', v_texte));
 
@@ -30,30 +35,35 @@ begin
 
   select count(*) into v_n
   from public.prompts p
-  where p.level is not null
+  where p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]'
     and (select count(*) from public.prompt_variants v where v.prompt_id = p.id) <> 3;
   perform tests_assert(v_n = 0, format('%s commandes V5 sans leurs trois variantes.', v_n));
 
   select count(*) into v_n
   from public.prompt_variants v
-  join public.prompts p on p.id = v.prompt_id and p.level is not null
+  join public.prompts p on p.id = v.prompt_id and p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]'
   where not exists (
     select 1 from public.prompt_versions pv where pv.variant_id = v.id and pv.is_current
   );
   perform tests_assert(v_n = 0, format('%s variantes V5 sans version courante.', v_n));
 
+  -- Trois textes courants par commande du socle V5, quelle que soit leur
+  -- etiquette. Ce controle nommait « v5-final » tant que c'etait la seule
+  -- etiquette possible ; la refonte V6 remplace ces textes sans rien retirer
+  -- au catalogue, et ce qui compte ici reste le meme : aucune commande du
+  -- socle ne doit avoir perdu un moteur en route.
   select count(*) into v_n
   from public.prompt_versions pv
   join public.prompt_variants v on v.id = pv.variant_id
-  join public.prompts p on p.id = v.prompt_id and p.level is not null
-  where pv.is_current and pv.version_label = 'v5-final';
+  join public.prompts p on p.id = v.prompt_id and p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]'
+  where pv.is_current;
   perform tests_assert(v_n = 1299, format('%s payloads V5 courants au lieu de 1299.', v_n));
 
   -- Le selecteur d'IA de la fiche ne sert a rien si les trois moteurs
   -- recoivent le meme texte : c'est exactement ce que la V5 corrige.
   select count(*) into v_n
   from public.prompts p
-  where p.level is not null
+  where p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]'
     and (select count(distinct pv.payload)
          from public.prompt_variants v
          join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
@@ -68,6 +78,12 @@ end $$;
 -- servi a Gemini. L'empreinte, elle, ne passe que si chaque payload est
 -- arrive a sa place : elle porte sur (commande, moteur, empreinte du texte),
 -- triee, et vaut la meme chose que celle calculee sur le classeur source.
+--
+-- Elle porte sur l'etiquette « v5-final » et non sur la version courante.
+-- Avant la refonte V6 ces textes etaient les textes courants ; depuis, ils
+-- sont retires et la V6 a pris leur place. Le controle en devient plus fort :
+-- il ne dit plus seulement que les textes du classeur V5 sont bien arrives,
+-- il dit qu'ils sont toujours la, intacts, apres avoir ete remplaces.
 do $$
 declare
   v_empreinte text;
@@ -79,8 +95,8 @@ begin
   from public.prompt_versions pv
   join public.prompt_variants v on v.id = pv.variant_id
   join public.ai_providers pr on pr.id = v.provider_id
-  join public.prompts p on p.id = v.prompt_id and p.level is not null
-  where pv.is_current;
+  join public.prompts p on p.id = v.prompt_id and p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]'
+  where pv.version_label = 'v5-final';
 
   perform tests_assert(
     v_empreinte = '5bb9c0ad17a84bee1e1e35656db4af56',
@@ -97,21 +113,21 @@ begin
   select count(*) into v_n
   from public.prompt_questions q
   join public.prompts p on p.id = q.prompt_id
-  where p.level is not null;
+  where p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]';
   perform tests_assert(v_n = 602, format('%s questions V5 au lieu de 602.', v_n));
 
   -- Quarante et une commandes ne posent aucune question : le contexte suffit.
   -- Elles ne doivent rien avoir garde de l'ancien questionnaire.
   select count(*) into v_n
   from public.prompts p
-  where p.level is not null and p.max_questions is null
+  where p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]' and p.max_questions is null
     and exists (select 1 from public.prompt_questions q where q.prompt_id = p.id);
   perform tests_assert(v_n = 0, format('%s commandes V5 sans plafond portent encore des questions.', v_n));
 
   -- Le plafond annonce vaut exactement ce que la commande peut poser.
   select count(*) into v_n
   from public.prompts p
-  where p.level is not null
+  where p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]'
     and coalesce(p.max_questions, 0)
         <> (select count(*) from public.prompt_questions q where q.prompt_id = p.id);
   perform tests_assert(v_n = 0, format('%s commandes V5 annoncent un plafond faux.', v_n));
@@ -199,7 +215,7 @@ begin
   -- deja illustree l'est toujours apres.
   select count(*) into v_n
   from public.prompts p
-  where p.level is not null and p.mode = 'image'
+  where p.level is not null and coalesce(p.catalog_version, '') !~ '^v5[.][1-9]' and p.mode = 'image'
     and p.catalog_version = 'v2.1'
     and coalesce(p.default_image_path, '') = '';
   perform tests_assert(v_n = 0, format('%s commandes image V5 ont perdu leur visuel.', v_n));

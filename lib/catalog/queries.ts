@@ -93,42 +93,6 @@ export const getLegalInfo = cache(async (): Promise<Record<LegalKey, string>> =>
 });
 
 /**
- * Volumes du catalogue, pour la fenetre d'offre.
- *
- * Les chiffres sont lus et non ecrits en dur : ils doivent suivre le
- * catalogue, sans quoi l'argumentaire mentirait des la premiere publication.
- *
- * On ne compte que les raccourcis d'une categorie visible. Un raccourci
- * publie dans une categorie masquee existe en base mais ne s'ouvre nulle
- * part : l'annoncer dans la fenetre d'offre serait promettre une commande
- * que l'acheteur ne trouverait jamais.
- */
-export const getCatalogCounts = cache(async () => {
-  const supabase = await createClient();
-
-  const { data: visibles } = await supabase.from('categories').select('id').eq('is_visible', true);
-
-  const rayons = (visibles ?? []).map((categorie) => categorie.id);
-  if (rayons.length === 0) return { total: 0, free: 0 };
-
-  const [total, offerts] = await Promise.all([
-    supabase
-      .from('prompts')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'published')
-      .in('category_id', rayons),
-    supabase
-      .from('prompts')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'published')
-      .eq('is_free', true)
-      .in('category_id', rayons),
-  ]);
-
-  return { total: total.count ?? 0, free: offerts.count ?? 0 };
-});
-
-/**
  * Domaines proposes dans la bibliotheque.
  *
  * Le catalogue v2.0 n'en expose que deux : l'analyse est devenue une

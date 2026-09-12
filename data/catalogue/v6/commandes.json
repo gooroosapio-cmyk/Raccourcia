@@ -1,0 +1,3733 @@
+[
+  {
+    "ref": "RCI-IMG-189",
+    "command": "/bagmockup",
+    "titre": "Mockup sac",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-116",
+    "command": "/beautyshot",
+    "titre": "Beauty shot produit",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-186",
+    "command": "/bottlemockup",
+    "titre": "Mockup bouteille",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-185",
+    "command": "/boxmockup",
+    "titre": "Mockup boîte",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-334",
+    "command": "/brandmascot",
+    "titre": "Mascotte de marque",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-071",
+    "command": "/bundlemockup",
+    "titre": "Bundle produit",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-187",
+    "command": "/canmockup",
+    "titre": "Mockup canette",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-066",
+    "command": "/chromeshot",
+    "titre": "Rendu chrome",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-188",
+    "command": "/cupmockup",
+    "titre": "Mockup gobelet",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-331",
+    "command": "/customsneaker",
+    "titre": "Sneaker personnalisée",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-290",
+    "command": "/foodmenuphoto",
+    "titre": "Photo de menu",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-042",
+    "command": "/foodstyling",
+    "titre": "Food styling",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-067",
+    "command": "/glassmorph",
+    "titre": "Produit en verre",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-119",
+    "command": "/ingredientburst",
+    "titre": "Explosion d’ingrédients",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-016",
+    "command": "/labelmockup",
+    "titre": "Etiquette mockup",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-064",
+    "command": "/levitation",
+    "titre": "Lévitation d'objets",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-012",
+    "command": "/luxmockup",
+    "titre": "Mockup premium",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-065",
+    "command": "/macrodetail",
+    "titre": "Macro détail",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-043",
+    "command": "/menuhero",
+    "titre": "Hero menu",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-210",
+    "command": "/merchandising",
+    "titre": "Plan merchandising",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-332",
+    "command": "/merchdrop",
+    "titre": "Collection de merchandising",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-182",
+    "command": "/packagingdesign",
+    "titre": "Concept packaging",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-011",
+    "command": "/packshot",
+    "titre": "Packshot studio",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-191",
+    "command": "/phonecase",
+    "titre": "Mockup coque téléphone",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-333",
+    "command": "/phonewallpaper",
+    "titre": "Fond d’écran personnalisé",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-184",
+    "command": "/pouchmockup",
+    "titre": "Mockup sachet",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-068",
+    "command": "/productburst",
+    "titre": "Explosion de bénéfices",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-335",
+    "command": "/productcharacter",
+    "titre": "Produit personnage",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-259",
+    "command": "/productcleanup",
+    "titre": "Nettoyage produit",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-197",
+    "command": "/productgrid",
+    "titre": "Grille de produits",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-015",
+    "command": "/producthero",
+    "titre": "Hero produit",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-118",
+    "command": "/productinuse",
+    "titre": "Produit en situation",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-256",
+    "command": "/removebackground",
+    "titre": "Détourage propre",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-208",
+    "command": "/retailstand",
+    "titre": "Présentoir magasin",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-070",
+    "command": "/shelfmockup",
+    "titre": "Mockup en rayon",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-013",
+    "command": "/textureclean",
+    "titre": "Texture propre",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-190",
+    "command": "/tshirtmockup",
+    "titre": "Mockup textile",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-069",
+    "command": "/unboxing",
+    "titre": "Scène unboxing",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-207",
+    "command": "/windowdisplay",
+    "titre": "Vitrine commerciale",
+    "famille": "IMG-V5-01",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-152",
+    "command": "/adcampaignset",
+    "titre": "Pack de campagne",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-151",
+    "command": "/adcreative",
+    "titre": "Créatif publicitaire",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-193",
+    "command": "/albumcover",
+    "titre": "Pochette musicale",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-159",
+    "command": "/appstorecreative",
+    "titre": "Visuel App Store",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-166",
+    "command": "/beforeafterad",
+    "titre": "Publicité avant-après",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-201",
+    "command": "/benefitvisual",
+    "titre": "Bénéfice visualisé",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-023",
+    "command": "/billboard",
+    "titre": "Mockup billboard",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-192",
+    "command": "/bookcover",
+    "titre": "Couverture de livre",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-196",
+    "command": "/brochurecover",
+    "titre": "Couverture brochure",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-021",
+    "command": "/carouselcover",
+    "titre": "Cover carousel",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-195",
+    "command": "/catalogcover",
+    "titre": "Couverture catalogue",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-339",
+    "command": "/challengepost",
+    "titre": "Visuel de challenge social",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-199",
+    "command": "/comparisonad",
+    "titre": "Publicité comparative",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-171",
+    "command": "/couponcreative",
+    "titre": "Coupon promotionnel",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-338",
+    "command": "/creatorbrandkit",
+    "titre": "Kit de marque créateur",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-181",
+    "command": "/deliveryad",
+    "titre": "Publicité livraison",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-117",
+    "command": "/dynamicad",
+    "titre": "Publicité dynamique",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-340",
+    "command": "/eventlineup",
+    "titre": "Affiche de programmation",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-200",
+    "command": "/featurespotlight",
+    "titre": "Focus fonctionnalité",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-172",
+    "command": "/giftcard",
+    "titre": "Carte cadeau",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-158",
+    "command": "/landinghero",
+    "titre": "Hero de landing page",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-063",
+    "command": "/liquidsplash",
+    "titre": "Splash liquide",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-205",
+    "command": "/localbusinessad",
+    "titre": "Publicité commerce local",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-173",
+    "command": "/loyaltycard",
+    "titre": "Carte de fidélité",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-194",
+    "command": "/magazinecover",
+    "titre": "Couverture magazine",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-020",
+    "command": "/memepro",
+    "titre": "Meme propre",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-341",
+    "command": "/musicreleasekit",
+    "titre": "Kit de sortie musicale",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-165",
+    "command": "/offerstackvisual",
+    "titre": "Pile d’offre",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-336",
+    "command": "/podcastcover",
+    "titre": "Couverture de podcast",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-019",
+    "command": "/poster",
+    "titre": "Affiche impact",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-170",
+    "command": "/pricecard",
+    "titre": "Carte de prix",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-202",
+    "command": "/problemsolutionad",
+    "titre": "Problème-solution",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-198",
+    "command": "/productcarousel",
+    "titre": "Carrousel produit",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-342",
+    "command": "/profilelaunch",
+    "titre": "Lancement de profil",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-179",
+    "command": "/qrmenu",
+    "titre": "Affiche menu QR",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-175",
+    "command": "/restaurantmenu",
+    "titre": "Menu de restaurant",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-203",
+    "command": "/seasonalcampaign",
+    "titre": "Campagne saisonnière",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-337",
+    "command": "/streamerkit",
+    "titre": "Kit visuel de streamer",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-168",
+    "command": "/testimonialcard",
+    "titre": "Carte témoignage",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-018",
+    "command": "/thumbnail",
+    "titre": "Miniature virale",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-209",
+    "command": "/tradebooth",
+    "titre": "Stand salon",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-022",
+    "command": "/ugcscene",
+    "titre": "Scene UGC",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-157",
+    "command": "/webhero",
+    "titre": "Hero de site",
+    "famille": "IMG-V5-02",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-246",
+    "command": "/accessorytryon",
+    "titre": "Essayage accessoires",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-357",
+    "command": "/afrobeatsstar",
+    "titre": "Vedette Afrobeats",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-077",
+    "command": "/ageprogression",
+    "titre": "Projection d'âge",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-384",
+    "command": "/airportfit",
+    "titre": "Airport fit",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-232",
+    "command": "/artisanportrait",
+    "titre": "Portrait d’artisan",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-030",
+    "command": "/avatarpro",
+    "titre": "Avatar professionnel",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-347",
+    "command": "/babyself",
+    "titre": "Ma version bébé",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-251",
+    "command": "/beardstyle",
+    "titre": "Style de barbe",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-224",
+    "command": "/beautyportrait",
+    "titre": "Portrait beauté",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-221",
+    "command": "/birthdayportrait",
+    "titre": "Portrait anniversaire",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-250",
+    "command": "/braidpreview",
+    "titre": "Aperçu tresses",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-122",
+    "command": "/brandportrait",
+    "titre": "Portrait de marque",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-398",
+    "command": "/btsfashion",
+    "titre": "Coulisses de shooting mode",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-235",
+    "command": "/campaignportrait",
+    "titre": "Portrait de campagne",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-385",
+    "command": "/castingcard",
+    "titre": "Comp card mannequin",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-230",
+    "command": "/chefportrait",
+    "titre": "Portrait de chef",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-348",
+    "command": "/childmeet",
+    "titre": "Rencontre avec mon moi enfant",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-362",
+    "command": "/clonecrew",
+    "titre": "Mon équipe de clones",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-392",
+    "command": "/coloranalysis",
+    "titre": "Analyse couleur visuelle",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-220",
+    "command": "/coupleportrait",
+    "titre": "Portrait de couple",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-242",
+    "command": "/coverportrait",
+    "titre": "Portrait de couverture sociale",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-233",
+    "command": "/creatorportrait",
+    "titre": "Portrait créateur",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-397",
+    "command": "/datingprofile",
+    "titre": "Série de profil naturel",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-229",
+    "command": "/djportrait",
+    "titre": "Portrait DJ",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-231",
+    "command": "/doctorportrait",
+    "titre": "Portrait médical",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-359",
+    "command": "/dreamcareergrid",
+    "titre": "Mes quatre carrières rêvées",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-075",
+    "command": "/duotoneportrait",
+    "titre": "Portrait duotone",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-073",
+    "command": "/editorialfashion",
+    "titre": "Éditorial mode",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-223",
+    "command": "/editorialportrait",
+    "titre": "Portrait éditorial",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-034",
+    "command": "/expression",
+    "titre": "Expression cible",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-261",
+    "command": "/eyeglassglare",
+    "titre": "Reflets de lunettes",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-121",
+    "command": "/fabricdrape",
+    "titre": "Simulation de drapé",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-350",
+    "command": "/faceswapduo",
+    "titre": "Échange de visages en duo",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-219",
+    "command": "/familyportrait",
+    "titre": "Portrait de famille",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-078",
+    "command": "/fantasylook",
+    "titre": "Look fantastique",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-395",
+    "command": "/fashioncampaignset",
+    "titre": "Mini-campagne mode",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-386",
+    "command": "/fashionpolaroid",
+    "titre": "Digitals mannequin",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-365",
+    "command": "/festivalheadliner",
+    "titre": "Tête d’affiche de festival",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-237",
+    "command": "/filmnoirportrait",
+    "titre": "Portrait film noir",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-226",
+    "command": "/fitnessportrait",
+    "titre": "Portrait fitness",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-212",
+    "command": "/founderportrait",
+    "titre": "Portrait de fondateur",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-361",
+    "command": "/friendgroupcast",
+    "titre": "Casting de notre groupe",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-351",
+    "command": "/futurechild",
+    "titre": "Portrait d’enfant imaginaire",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-388",
+    "command": "/galaeditorial",
+    "titre": "Éditorial de gala",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-349",
+    "command": "/genderflip",
+    "titre": "Mon autre présentation",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-247",
+    "command": "/glassestryon",
+    "titre": "Essayage lunettes",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-238",
+    "command": "/goldenhourportrait",
+    "titre": "Portrait heure dorée",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-216",
+    "command": "/graduationportrait",
+    "titre": "Portrait de diplômé",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-252",
+    "command": "/haircolor",
+    "titre": "Couleur de cheveux",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-026",
+    "command": "/hairstyle",
+    "titre": "Changer coiffure",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-025",
+    "command": "/headshot",
+    "titre": "Headshot pro",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-249",
+    "command": "/headwrapstyle",
+    "titre": "Style de foulard",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-393",
+    "command": "/identitysheet",
+    "titre": "Planche d’identité visuelle",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-248",
+    "command": "/jewelrytryon",
+    "titre": "Essayage bijoux",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-243",
+    "command": "/lookbook",
+    "titre": "Lookbook mode",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-394",
+    "command": "/lookcontinuity",
+    "titre": "Continuité du même look",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-225",
+    "command": "/luxuryportrait",
+    "titre": "Portrait luxe",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-241",
+    "command": "/magazineportrait",
+    "titre": "Portrait couverture",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-031",
+    "command": "/makeup",
+    "titre": "Essai maquillage",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-253",
+    "command": "/makeupboard",
+    "titre": "Planche maquillage",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-218",
+    "command": "/maternityportrait",
+    "titre": "Portrait maternité",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-354",
+    "command": "/miniceo",
+    "titre": "Mini dirigeant",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-396",
+    "command": "/mirrorfit",
+    "titre": "Fit check miroir",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-236",
+    "command": "/monochromeportrait",
+    "titre": "Portrait monochrome",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-228",
+    "command": "/musicianportrait",
+    "titre": "Portrait musicien",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-240",
+    "command": "/neonportrait",
+    "titre": "Portrait néon",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-358",
+    "command": "/nollywoodscene",
+    "titre": "Scène de cinéma africain",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-027",
+    "command": "/outfit",
+    "titre": "Changer tenue",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-244",
+    "command": "/outfitgrid",
+    "titre": "Grille de tenues",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-382",
+    "command": "/paparazziflash",
+    "titre": "Paparazzi flash",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-353",
+    "command": "/parallelself",
+    "titre": "Moi dans une autre vie",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-076",
+    "command": "/passportphoto",
+    "titre": "Photo d'identité propre",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-363",
+    "command": "/pastfutureduo",
+    "titre": "Moi face à mon futur",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-391",
+    "command": "/personalbrandkit",
+    "titre": "Kit photo de marque personnelle",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-255",
+    "command": "/portraitbackground",
+    "titre": "Fond de portrait",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-029",
+    "command": "/portraitcinema",
+    "titre": "Portrait cinéma",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-254",
+    "command": "/posecoach",
+    "titre": "Variantes de pose",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-381",
+    "command": "/powercover",
+    "titre": "Couverture business iconique",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-387",
+    "command": "/presskitportrait",
+    "titre": "Portrait dossier de presse",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-364",
+    "command": "/profilepicset",
+    "titre": "Pack de photos de profil",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-239",
+    "command": "/rainportrait",
+    "titre": "Portrait sous la pluie",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-355",
+    "command": "/redcarpet",
+    "titre": "Moment tapis rouge",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-033",
+    "command": "/retouchclean",
+    "titre": "Retouche naturelle",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-343",
+    "command": "/retro80s",
+    "titre": "Moi dans les années 80",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-356",
+    "command": "/royalcoronation",
+    "titre": "Mon couronnement",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-383",
+    "command": "/runwaydebut",
+    "titre": "Début sur le podium",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-390",
+    "command": "/signaturelook",
+    "titre": "Look signature",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-074",
+    "command": "/silhouetteportrait",
+    "titre": "Portrait silhouette",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-260",
+    "command": "/skinretouch",
+    "titre": "Retouche peau naturelle",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-234",
+    "command": "/speakerportrait",
+    "titre": "Portrait conférencier",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-227",
+    "command": "/sportshero",
+    "titre": "Athlète héroïque",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-389",
+    "command": "/streetcasting",
+    "titre": "Casting de rue",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-222",
+    "command": "/streetportrait",
+    "titre": "Portrait de rue",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-072",
+    "command": "/studiorelight",
+    "titre": "Relighting studio",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-360",
+    "command": "/styleswapduo",
+    "titre": "Échange de styles",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-213",
+    "command": "/teamportrait",
+    "titre": "Portrait d’équipe",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-346",
+    "command": "/throwback2016",
+    "titre": "Retour en 2016",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-352",
+    "command": "/twinsurprise",
+    "titre": "Mon jumeau imaginaire",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-245",
+    "command": "/uniformtryon",
+    "titre": "Essayage uniforme",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-120",
+    "command": "/wardrobeboard",
+    "titre": "Planche de garde-robe",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-217",
+    "command": "/weddingportrait",
+    "titre": "Portrait de mariage",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-345",
+    "command": "/y2kflash",
+    "titre": "Moi en mode Y2K",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-344",
+    "command": "/yearbook90s",
+    "titre": "Photo de classe années 90",
+    "famille": "IMG-V5-03",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-289",
+    "command": "/aerialproperty",
+    "titre": "Vue aérienne immobilière",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-283",
+    "command": "/airbnbhero",
+    "titre": "Hero location courte durée",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-126",
+    "command": "/architecturalrender",
+    "titre": "Rendu architectural",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-281",
+    "command": "/birthdaydecor",
+    "titre": "Décoration anniversaire",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-278",
+    "command": "/boothdesign",
+    "titre": "Stand événementiel",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-082",
+    "command": "/daytonight",
+    "titre": "Jour vers nuit",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-366",
+    "command": "/dreamworkspace",
+    "titre": "Mon espace de travail idéal",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-041",
+    "command": "/eventdecor",
+    "titre": "Décoration événementielle",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-279",
+    "command": "/eventstage",
+    "titre": "Scène événementielle",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-287",
+    "command": "/facaderenovation",
+    "titre": "Rénovation façade",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-040",
+    "command": "/floorplan",
+    "titre": "Plan espace",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-036",
+    "command": "/furnitureswap",
+    "titre": "Changer mobilier",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-368",
+    "command": "/futurehomevision",
+    "titre": "Vision de ma future maison",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-286",
+    "command": "/gardenplan",
+    "titre": "Aménagement jardin",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-038",
+    "command": "/homestaging",
+    "titre": "Home staging",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-284",
+    "command": "/hotelroom",
+    "titre": "Chambre d’hôtel",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-127",
+    "command": "/landscaperedesign",
+    "titre": "Aménagement paysager",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-288",
+    "command": "/nightarchitecture",
+    "titre": "Architecture de nuit",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-123",
+    "command": "/perspectivefix",
+    "titre": "Correction de perspective",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-285",
+    "command": "/pooldesign",
+    "titre": "Concept piscine",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-282",
+    "command": "/realestatehero",
+    "titre": "Visuel immobilier",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-369",
+    "command": "/roompersonality",
+    "titre": "Une pièce à mon image",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-035",
+    "command": "/roomredesign",
+    "titre": "Redesign de pièce",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-083",
+    "command": "/seasonshift",
+    "titre": "Changer de saison",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-090",
+    "command": "/skyswap",
+    "titre": "Remplacement de ciel",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-039",
+    "command": "/storefront",
+    "titre": "Facade boutique",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-128",
+    "command": "/tablescape",
+    "titre": "Mise en scène de table",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-367",
+    "command": "/travelpostcard",
+    "titre": "Carte postale imaginaire",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-037",
+    "command": "/wallcolor",
+    "titre": "Couleur murale",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-084",
+    "command": "/weatherchange",
+    "titre": "Changer la météo",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-280",
+    "command": "/weddingdecor",
+    "titre": "Décoration mariage",
+    "famille": "IMG-V5-04",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-295",
+    "command": "/actionfigure",
+    "titre": "Figurine articulée",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-301",
+    "command": "/animeportrait",
+    "titre": "Portrait animation japonaise",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-130",
+    "command": "/aurorabloom",
+    "titre": "Floraison d’aurore",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-028",
+    "command": "/backgroundswap",
+    "titre": "Changer fond",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-316",
+    "command": "/balloonart",
+    "titre": "Sculpture ballon",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-297",
+    "command": "/brickfigure",
+    "titre": "Figurine en briques",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-400",
+    "command": "/ccdnight",
+    "titre": "Compact CCD de nuit",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-407",
+    "command": "/cctvframe",
+    "titre": "Capture CCTV cinématique",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-311",
+    "command": "/ceramic",
+    "titre": "Céramique peinte",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-058",
+    "command": "/cinematicstill",
+    "titre": "Photogramme cinéma",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-051",
+    "command": "/clay",
+    "titre": "Style pâte modelée",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-299",
+    "command": "/claymation",
+    "titre": "Style claymation",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-325",
+    "command": "/cloudportrait",
+    "titre": "Portrait de nuages",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-032",
+    "command": "/colorgrade",
+    "titre": "Color grading",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-264",
+    "command": "/colorrestore",
+    "titre": "Restauration des couleurs",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-014",
+    "command": "/colorswap",
+    "titre": "Changement couleur",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-057",
+    "command": "/comic",
+    "titre": "Case comic",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-313",
+    "command": "/crochet",
+    "titre": "Version crochet",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-269",
+    "command": "/croprecompose",
+    "titre": "Recadrage intelligent",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-101",
+    "command": "/crystallize",
+    "titre": "Cristallisation",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-109",
+    "command": "/datamosh",
+    "titre": "Datamosh artistique",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-124",
+    "command": "/deblur",
+    "titre": "Réduction du flou",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-088",
+    "command": "/depthblur",
+    "titre": "Flou de profondeur",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-399",
+    "command": "/disposablefilm",
+    "titre": "Pellicule jetable",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-059",
+    "command": "/doubleexposure",
+    "titre": "Double exposition",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-110",
+    "command": "/dreamscape",
+    "titre": "Paysage onirique",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-106",
+    "command": "/embroidery",
+    "titre": "Broderie textile",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-293",
+    "command": "/emojiavatar",
+    "titre": "Avatar emoji",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-308",
+    "command": "/etching",
+    "titre": "Gravure ancienne",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-080",
+    "command": "/extendframe",
+    "titre": "Extension de cadre",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-377",
+    "command": "/fantasycreature",
+    "titre": "Ma créature fantastique",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-314",
+    "command": "/feltcraft",
+    "titre": "Feutrine artisanale",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-327",
+    "command": "/fireeffect",
+    "titre": "Sculpture de feu",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-406",
+    "command": "/fisheyeflash",
+    "titre": "Fisheye au flash",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-329",
+    "command": "/flowersculpture",
+    "titre": "Sculpture florale",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-319",
+    "command": "/foodminiature",
+    "titre": "Miniature culinaire",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-370",
+    "command": "/fouruniverses",
+    "titre": "Moi dans quatre univers",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-330",
+    "command": "/galaxybody",
+    "titre": "Silhouette cosmique",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-320",
+    "command": "/giantproduct",
+    "titre": "Produit géant",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-060",
+    "command": "/glitch",
+    "titre": "Glitch premium",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-055",
+    "command": "/graffiti",
+    "titre": "Graffiti mural",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-129",
+    "command": "/gravityflip",
+    "titre": "Gravité inversée",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-412",
+    "command": "/halftonepress",
+    "titre": "Trame presse",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-291",
+    "command": "/handwritten",
+    "titre": "Écriture manuscrite",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-376",
+    "command": "/hologramself",
+    "titre": "Ma version holographique",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-317",
+    "command": "/icecarving",
+    "titre": "Sculpture de glace",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-408",
+    "command": "/infraredlook",
+    "titre": "Photo infrarouge",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-103",
+    "command": "/inkcloud",
+    "titre": "Nuage d'encre",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-263",
+    "command": "/jpegrepair",
+    "titre": "Réparation JPEG",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-312",
+    "command": "/knitted",
+    "titre": "Version tricot",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-413",
+    "command": "/lenticularshift",
+    "titre": "Effet lenticulaire",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-324",
+    "command": "/levitatingcity",
+    "titre": "Ville en lévitation",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-410",
+    "command": "/lightleakfilm",
+    "titre": "Fuite de lumière film",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-099",
+    "command": "/lightpaint",
+    "titre": "Light painting",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-307",
+    "command": "/linocut",
+    "titre": "Linogravure",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-108",
+    "command": "/liquidmetal",
+    "titre": "Métal liquide",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-411",
+    "command": "/longexposuretrail",
+    "titre": "Traînées de pose longue",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-270",
+    "command": "/lowlightrescue",
+    "titre": "Sauvetage basse lumière",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-104",
+    "command": "/lowpoly",
+    "titre": "Low poly",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-302",
+    "command": "/mangapanel",
+    "titre": "Case manga",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-050",
+    "command": "/miniature",
+    "titre": "Diorama miniature",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-323",
+    "command": "/mirrorworld",
+    "titre": "Monde miroir",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-310",
+    "command": "/mosaic",
+    "titre": "Mosaïque",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-415",
+    "command": "/motionecho",
+    "titre": "Échos de mouvement",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-089",
+    "command": "/motionfreeze",
+    "titre": "Mouvement figé",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-375",
+    "command": "/muralself",
+    "titre": "Mon portrait mural",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-053",
+    "command": "/neon",
+    "titre": "Lueur néon",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-409",
+    "command": "/nightvisionlook",
+    "titre": "Vision nocturne",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-262",
+    "command": "/noisecleanup",
+    "titre": "Réduction du bruit",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-266",
+    "command": "/objectreplace",
+    "titre": "Remplacer un objet",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-265",
+    "command": "/oldphotocolor",
+    "titre": "Colorisation photo ancienne",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-105",
+    "command": "/origami",
+    "titre": "Origami",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-052",
+    "command": "/papercut",
+    "titre": "Découpe papier",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-315",
+    "command": "/paperquilling",
+    "titre": "Papier quilling",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-102",
+    "command": "/particleburst",
+    "titre": "Dispersion en particules",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-371",
+    "command": "/passporteras",
+    "titre": "Portraits d’identité à travers les époques",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-373",
+    "command": "/photoboothstory",
+    "titre": "Histoire en photomaton",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-300",
+    "command": "/pixelart",
+    "titre": "Pixel art",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-296",
+    "command": "/plushie",
+    "titre": "Version peluche",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-097",
+    "command": "/portalworld",
+    "titre": "Portail vers un autre monde",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-405",
+    "command": "/receiptposter",
+    "titre": "Affiche ticket de caisse",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-085",
+    "command": "/reflectionfix",
+    "titre": "Corriger les reflets",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-125",
+    "command": "/relightmatch",
+    "titre": "Harmonisation lumineuse",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-079",
+    "command": "/removeobject",
+    "titre": "Suppression d'objet",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-081",
+    "command": "/restorephoto",
+    "titre": "Restauration photo",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-054",
+    "command": "/retrofuture",
+    "titre": "Rétrofuturisme",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-305",
+    "command": "/risograph",
+    "titre": "Style risographie",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-318",
+    "command": "/sandsculpture",
+    "titre": "Sculpture de sable",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-414",
+    "command": "/scanography",
+    "titre": "Scanographie",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-401",
+    "command": "/scrapbookdump",
+    "titre": "Scrapbook photo dump",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-306",
+    "command": "/screenprint",
+    "titre": "Sérigraphie",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-402",
+    "command": "/scribbleoverlay",
+    "titre": "Griffonnages sur photo",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-086",
+    "command": "/shadowmatch",
+    "titre": "Harmoniser les ombres",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-326",
+    "command": "/smokeeffect",
+    "titre": "Sculpture de fumée",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-322",
+    "command": "/splitreality",
+    "titre": "Réalité divisée",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-309",
+    "command": "/stainedglass",
+    "titre": "Vitrail",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-374",
+    "command": "/statueself",
+    "titre": "Ma statue monumentale",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-292",
+    "command": "/stickerpack",
+    "titre": "Pack de stickers",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-303",
+    "command": "/storybook",
+    "titre": "Illustration jeunesse",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-096",
+    "command": "/surrealgiant",
+    "titre": "Sujet géant",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-404",
+    "command": "/tabloidfrontpage",
+    "titre": "Une de tabloïd fictif",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-267",
+    "command": "/textremove",
+    "titre": "Retirer un texte",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-061",
+    "command": "/tiltshift",
+    "titre": "Effet photo tilt-shift",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-098",
+    "command": "/timeslice",
+    "titre": "Tranche temporelle",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-321",
+    "command": "/tinyworkers",
+    "titre": "Petits ouvriers",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-294",
+    "command": "/toybox",
+    "titre": "Personnage en boîte",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-372",
+    "command": "/tradingcard",
+    "titre": "Ma carte légendaire",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-100",
+    "command": "/underwater",
+    "titre": "Monde sous-marin",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-087",
+    "command": "/upscale",
+    "titre": "Agrandissement propre",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-304",
+    "command": "/vintageposter",
+    "titre": "Affiche vintage",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-298",
+    "command": "/vinylfigure",
+    "titre": "Figurine vinyle",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-056",
+    "command": "/watercolor",
+    "titre": "Aquarelle",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-328",
+    "command": "/watereffect",
+    "titre": "Sculpture d’eau",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-107",
+    "command": "/woodcarve",
+    "titre": "Sculpture sur bois",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-403",
+    "command": "/xeroxzine",
+    "titre": "Zine photocopié",
+    "famille": "IMG-V5-05",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-111",
+    "command": "/airflowview",
+    "titre": "Flux d’air visualisé",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-049",
+    "command": "/anatomyview",
+    "titre": "Anatomie objet",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-008",
+    "command": "/assembly",
+    "titre": "Guide d’assemblage",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-135",
+    "command": "/beforeafterdiagram",
+    "titre": "Schéma avant-après",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-004",
+    "command": "/blueprint",
+    "titre": "Plan blueprint",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-136",
+    "command": "/calloutdiagram",
+    "titre": "Schéma à repères",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-112",
+    "command": "/circuittrace",
+    "titre": "Traçage de circuit",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-148",
+    "command": "/comparisongrid",
+    "titre": "Grille comparative",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-045",
+    "command": "/comparisonvisual",
+    "titre": "Comparatif visuel",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-425",
+    "command": "/coveragezone",
+    "titre": "Zone de couverture",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-003",
+    "command": "/crosssection",
+    "titre": "Coupe transversale complète",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-006",
+    "command": "/cutaway",
+    "titre": "Ouverture cutaway locale",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-133",
+    "command": "/datadiagram",
+    "titre": "Diagramme de données",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-143",
+    "command": "/datapipelinevisual",
+    "titre": "Pipeline de données",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-416",
+    "command": "/digitaltwin",
+    "titre": "Jumeau numérique",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-094",
+    "command": "/dimensionview",
+    "titre": "Vue cotée",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-147",
+    "command": "/ecosystemmap",
+    "titre": "Carte d’écosystème",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-419",
+    "command": "/energypath",
+    "titre": "Chemin de l’énergie",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-427",
+    "command": "/ergonomicreach",
+    "titre": "Zones d’atteinte ergonomique",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-002",
+    "command": "/explodeview",
+    "titre": "Vue éclatée",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-428",
+    "command": "/eyetracking",
+    "titre": "Carte d’attention visuelle",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-149",
+    "command": "/featurediagram",
+    "titre": "Fonctionnalités visualisées",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-134",
+    "command": "/flowchartvisual",
+    "titre": "Organigramme de flux",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-146",
+    "command": "/geologycutaway",
+    "titre": "Coupe géologique",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-005",
+    "command": "/ghostview",
+    "titre": "Vue fantôme",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-044",
+    "command": "/infographic",
+    "titre": "Infographie claire",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-139",
+    "command": "/installationmap",
+    "titre": "Guide d’installation",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-095",
+    "command": "/instructionvisual",
+    "titre": "Notice visuelle",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-010",
+    "command": "/isometric",
+    "titre": "Vue isométrique",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-114",
+    "command": "/layerstack",
+    "titre": "Empilement des couches",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-379",
+    "command": "/lightsetup",
+    "titre": "Schéma d’éclairage photo",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-140",
+    "command": "/maintenancevisual",
+    "titre": "Entretien illustré",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-047",
+    "command": "/mapvisual",
+    "titre": "Carte stylisée",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-007",
+    "command": "/materialscan",
+    "titre": "Scan des matières",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-115",
+    "command": "/mechanismcycle",
+    "titre": "Cycle du mécanisme",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-145",
+    "command": "/medicalillustration",
+    "titre": "Illustration médicale",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-142",
+    "command": "/networktopology",
+    "titre": "Topologie réseau",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-378",
+    "command": "/outfitbreakdown",
+    "titre": "Décryptage de tenue",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-183",
+    "command": "/packagingdieline",
+    "titre": "Aperçu de découpe packaging",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-137",
+    "command": "/partslabel",
+    "titre": "Pièces légendées",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-091",
+    "command": "/patentdrawing",
+    "titre": "Dessin brevet",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-417",
+    "command": "/pointcloud",
+    "titre": "Nuage de points 3D",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-046",
+    "command": "/processvisual",
+    "titre": "Process visuel",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-429",
+    "command": "/reversecad",
+    "titre": "Reconstruction CAD conceptuelle",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-138",
+    "command": "/safetyvisual",
+    "titre": "Consignes de sécurité visuelles",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-009",
+    "command": "/schematic",
+    "titre": "Schéma simplifié",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-144",
+    "command": "/scientificplate",
+    "titre": "Planche scientifique",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-430",
+    "command": "/servicepoints",
+    "titre": "Points de maintenance",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-380",
+    "command": "/shotboard",
+    "titre": "Storyboard de tournage",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-418",
+    "command": "/signalpath",
+    "titre": "Chemin du signal",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-424",
+    "command": "/soundfield",
+    "titre": "Champ sonore",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-150",
+    "command": "/specsheet",
+    "titre": "Fiche technique visuelle",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-131",
+    "command": "/stepdiagram",
+    "titre": "Étapes illustrées",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-113",
+    "command": "/stressmap",
+    "titre": "Carte de contraintes",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-426",
+    "command": "/sunpath",
+    "titre": "Course du soleil",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-132",
+    "command": "/systemmapvisual",
+    "titre": "Carte de système",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-093",
+    "command": "/thermalmap",
+    "titre": "Carte thermique visuelle",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-048",
+    "command": "/timelinevisual",
+    "titre": "Frise chronologique visuelle",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-423",
+    "command": "/tolerancechain",
+    "titre": "Chaîne de tolérances",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-421",
+    "command": "/toolpath",
+    "titre": "Parcours d’outil",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-141",
+    "command": "/troubleshootvisual",
+    "titre": "Diagnostic visuel",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-422",
+    "command": "/weldmap",
+    "titre": "Carte des soudures",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-092",
+    "command": "/wireframe",
+    "titre": "Vue filaire",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-420",
+    "command": "/wiringroute",
+    "titre": "Parcours de câblage",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-IMG-001",
+    "command": "/xray",
+    "titre": "Vue X-ray",
+    "famille": "IMG-V5-06",
+    "domaine": "image"
+  },
+  {
+    "ref": "RCI-TXT-065",
+    "command": "/crisisstatement",
+    "titre": "Communiquer en situation sensible",
+    "famille": "TXT-V5-01",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-004",
+    "command": "/messagepro",
+    "titre": "Rédiger un message professionnel",
+    "famille": "TXT-V5-01",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-020",
+    "command": "/presskit",
+    "titre": "Préparer une communication presse",
+    "famille": "TXT-V5-01",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-028",
+    "command": "/rewriteclear",
+    "titre": "Réécrire et clarifier un texte",
+    "famille": "TXT-V5-01",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-067",
+    "command": "/speech",
+    "titre": "Préparer une prise de parole",
+    "famille": "TXT-V5-01",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-085",
+    "command": "/supportreply",
+    "titre": "Répondre à un client ou à un commentaire",
+    "famille": "TXT-V5-01",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-029",
+    "command": "/translateadapt",
+    "titre": "Traduire et adapter",
+    "famille": "TXT-V5-01",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-010",
+    "command": "/adcopy",
+    "titre": "Rédiger une campagne publicitaire",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-033",
+    "command": "/case_study",
+    "titre": "Valoriser un résultat client réel",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-012",
+    "command": "/faq",
+    "titre": "Créer une FAQ utile",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-009",
+    "command": "/funnelaudit",
+    "titre": "Diagnostiquer les freins à la conversion",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-001",
+    "command": "/landingcopy",
+    "titre": "Créer ou améliorer une page de vente",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-058",
+    "command": "/leadmagnet",
+    "titre": "Créer un contenu utile à offrir",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-003",
+    "command": "/offer",
+    "titre": "Construire une offre claire",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-054",
+    "command": "/pricingpage",
+    "titre": "Rédiger une page de tarifs",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-011",
+    "command": "/productdesc",
+    "titre": "Rédiger une fiche produit",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-021",
+    "command": "/proposal",
+    "titre": "Rédiger une proposition commerciale",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-207",
+    "command": "/referralprogram",
+    "titre": "Concevoir un programme de recommandation",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-208",
+    "command": "/retentioncampaign",
+    "titre": "Préparer une campagne de fidélisation",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-200",
+    "command": "/salesfunnel",
+    "titre": "Construire un parcours de vente",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-204",
+    "command": "/salesplaybook",
+    "titre": "Préparer un entretien commercial",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-145",
+    "command": "/salessequence",
+    "titre": "Préparer une séquence commerciale",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-059",
+    "command": "/webinar",
+    "titre": "Écrire un webinaire complet",
+    "famille": "TXT-V5-02",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-042",
+    "command": "/blogpost",
+    "titre": "Rédiger un article ou une tribune",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-212",
+    "command": "/brandstory",
+    "titre": "Raconter une marque",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-019",
+    "command": "/brandvoice",
+    "titre": "Définir une voix de marque",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-014",
+    "command": "/contentaudit",
+    "titre": "Trier et améliorer ses contenus",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-070",
+    "command": "/contentrepurpose",
+    "titre": "Décliner un contenu existant",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-022",
+    "command": "/creativebrief",
+    "titre": "Préparer un brief de création",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-069",
+    "command": "/editorialcalendar",
+    "titre": "Planifier ses contenus",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-047",
+    "command": "/naming",
+    "titre": "Trouver un nom ou une signature",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-006",
+    "command": "/newsletter",
+    "titre": "Rédiger une newsletter",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-063",
+    "command": "/podcastscript",
+    "titre": "Préparer un épisode de podcast",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-044",
+    "command": "/scriptvideo",
+    "titre": "Écrire un script vidéo",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-013",
+    "command": "/seoaudit",
+    "titre": "Optimiser le contenu d’une page pour la recherche",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-007",
+    "command": "/socialpost",
+    "titre": "Créer une publication sociale",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-045",
+    "command": "/story",
+    "titre": "Écrire une fiction ou un dialogue",
+    "famille": "TXT-V5-03",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-036",
+    "command": "/applicationkit",
+    "titre": "Préparer une candidature",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-159",
+    "command": "/careerplan",
+    "titre": "Construire un plan de progression professionnelle",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-153",
+    "command": "/changeplan",
+    "titre": "Accompagner un changement",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-071",
+    "command": "/decisionlog",
+    "titre": "Tenir un journal des décisions",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-078",
+    "command": "/handover",
+    "titre": "Préparer une passation",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-094",
+    "command": "/interviewprep",
+    "titre": "Se préparer à un entretien",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-023",
+    "command": "/kpi",
+    "titre": "Définir des indicateurs utiles",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-025",
+    "command": "/meetingagenda",
+    "titre": "Préparer une réunion utile",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-017",
+    "command": "/meetingnotes",
+    "titre": "Produire un compte rendu et ses actions",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-076",
+    "command": "/okr",
+    "titre": "Définir des objectifs mesurables",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-080",
+    "command": "/oneonone",
+    "titre": "Préparer un entretien individuel",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-072",
+    "command": "/projectbrief",
+    "titre": "Cadrer un projet ou une délégation",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-077",
+    "command": "/raci",
+    "titre": "Clarifier les responsabilités",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-035",
+    "command": "/recruitmentkit",
+    "titre": "Préparer un recrutement",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-075",
+    "command": "/retrospective",
+    "titre": "Mener une rétrospective constructive",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-074",
+    "command": "/riskregister",
+    "titre": "Construire un registre des risques",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-023",
+    "command": "/sop",
+    "titre": "Formaliser et améliorer une procédure",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-073",
+    "command": "/statusreport",
+    "titre": "Rédiger un point d’avancement",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-151",
+    "command": "/weeklyplan",
+    "titre": "Organiser ses priorités",
+    "famille": "TXT-V5-04",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-155",
+    "command": "/assumptionaudit",
+    "titre": "Tester les hypothèses d’un projet",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-141",
+    "command": "/businessmodel",
+    "titre": "Définir un modèle économique",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-017",
+    "command": "/businessplan",
+    "titre": "Construire un business plan",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-146",
+    "command": "/customersegment",
+    "titre": "Comprendre et segmenter ses clients",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-019",
+    "command": "/decisionmatrix",
+    "titre": "Préparer une décision argumentée",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-231",
+    "command": "/duediligence",
+    "titre": "Préparer une vérification approfondie",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-197",
+    "command": "/feasibilitystudy",
+    "titre": "Évaluer la faisabilité d’un projet",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-143",
+    "command": "/franchisebrief",
+    "titre": "Structurer un projet de franchise",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-021",
+    "command": "/gapanalysis",
+    "titre": "Passer de l’existant à une cible",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-040",
+    "command": "/growthideas",
+    "titre": "Trouver et tester des idées utiles",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-053",
+    "command": "/gtmplan",
+    "titre": "Préparer l’accès à un marché",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-005",
+    "command": "/journey",
+    "titre": "Cartographier l’expérience client",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-052",
+    "command": "/launchplan",
+    "titre": "Préparer un lancement",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-196",
+    "command": "/operatingmodel",
+    "titre": "Définir son organisation opérationnelle",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-060",
+    "command": "/partnerpitch",
+    "titre": "Préparer une proposition de partenariat",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-018",
+    "command": "/positioning",
+    "titre": "Définir son positionnement",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-022",
+    "command": "/rootcause",
+    "titre": "Rechercher la cause d’un problème",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-154",
+    "command": "/scenarioanalysis",
+    "titre": "Explorer plusieurs scénarios",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-193",
+    "command": "/strategicplan",
+    "titre": "Construire un plan stratégique",
+    "famille": "TXT-V5-05",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-039",
+    "command": "/assessment",
+    "titre": "Créer une évaluation et son corrigé",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-088",
+    "command": "/codereview",
+    "titre": "Relire du code et proposer des corrections",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-024",
+    "command": "/datainsights",
+    "titre": "Analyser un jeu de données",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-090",
+    "command": "/debugfix",
+    "titre": "Diagnostiquer et corriger un problème technique",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-016",
+    "command": "/docsynthese",
+    "titre": "Résumer et croiser des documents",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-156",
+    "command": "/evidencecheck",
+    "titre": "Vérifier des affirmations",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-091",
+    "command": "/learn",
+    "titre": "Comprendre et réviser un sujet",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-097",
+    "command": "/learningpath",
+    "titre": "Construire un parcours d’apprentissage",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-038",
+    "command": "/lessonplan",
+    "titre": "Construire une séance de formation",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-007",
+    "command": "/marketresearch",
+    "titre": "Étudier un marché et ses acteurs",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-033",
+    "command": "/promptaudit",
+    "titre": "Auditer et réécrire un prompt",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-V5-077",
+    "command": "/researchbrief",
+    "titre": "Rechercher et documenter un sujet",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-035",
+    "command": "/securitybasic",
+    "titre": "Préparer un audit de sécurité initial",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-025",
+    "command": "/surveyanalyse",
+    "titre": "Analyser des réponses et retours clients",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-011",
+    "command": "/uixaudit",
+    "titre": "Auditer une interface et ses parcours",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-230",
+    "command": "/vendorcompare",
+    "titre": "Comparer des fournisseurs",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-V5-078",
+    "command": "/watchbrief",
+    "titre": "Produire une veille ponctuelle",
+    "famille": "TXT-V5-06",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-087",
+    "command": "/apioutline",
+    "titre": "Spécifier une API",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-222",
+    "command": "/contractamendment",
+    "titre": "Rédiger un avenant",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-214",
+    "command": "/contractdraft",
+    "titre": "Préparer un modèle de contrat",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-027",
+    "command": "/contractreview",
+    "titre": "Comprendre et relire un document juridique",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-223",
+    "command": "/contracttermination",
+    "titre": "Préparer une résiliation contractuelle",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-233",
+    "command": "/databasedesign",
+    "titre": "Concevoir une base de données",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-218",
+    "command": "/employmentcontract",
+    "titre": "Préparer un contrat de travail",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-226",
+    "command": "/legalnotice",
+    "titre": "Préparer les mentions légales",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-016",
+    "command": "/pitchdeck",
+    "titre": "Construire une présentation de projet",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-050",
+    "command": "/policycopy",
+    "titre": "Rédiger une politique de service",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-225",
+    "command": "/privacypolicy",
+    "titre": "Rédiger une politique de confidentialité",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-227",
+    "command": "/procurementrfp",
+    "titre": "Préparer une consultation de prestataires",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-083",
+    "command": "/releasenotes",
+    "titre": "Présenter les changements d’une version",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-029",
+    "command": "/roadmap",
+    "titre": "Prioriser un produit et sa feuille de route",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-215",
+    "command": "/servicecontract",
+    "titre": "Rédiger un contrat de prestation",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-089",
+    "command": "/sqlhelp",
+    "titre": "Écrire et vérifier une requête SQL",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-232",
+    "command": "/techspec",
+    "titre": "Définir une fonctionnalité et ses spécifications",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-228",
+    "command": "/tenderresponse",
+    "titre": "Répondre à un appel d’offres",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-224",
+    "command": "/termsconditions",
+    "titre": "Préparer des conditions générales",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-032",
+    "command": "/testplan",
+    "titre": "Préparer des tests fonctionnels",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-158",
+    "command": "/usabilitytest",
+    "titre": "Préparer un test avec des utilisateurs",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-014",
+    "command": "/uxmicrocopy",
+    "titre": "Rédiger les textes d’une interface",
+    "famille": "TXT-V5-07",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-161",
+    "command": "/budgetplan",
+    "titre": "Construire et suivre un budget",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-186",
+    "command": "/capexplan",
+    "titre": "Évaluer un investissement d’entreprise",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-162",
+    "command": "/cashflowforecast",
+    "titre": "Prévoir sa trésorerie",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-181",
+    "command": "/cashreconciliation",
+    "titre": "Rapprocher banque et comptabilité",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-187",
+    "command": "/collectionsplan",
+    "titre": "Organiser les relances d’impayés",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-171",
+    "command": "/debtplan",
+    "titre": "Organiser le remboursement de ses dettes",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-166",
+    "command": "/expenseaudit",
+    "titre": "Analyser et réduire ses dépenses",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-185",
+    "command": "/financialdashboard",
+    "titre": "Construire un tableau de bord financier",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-235",
+    "command": "/financialmodel",
+    "titre": "Construire un modèle financier",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-ANA-028",
+    "command": "/financialreview",
+    "titre": "Comprendre ses résultats financiers",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-184",
+    "command": "/fundingneeds",
+    "titre": "Estimer un besoin de financement",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-173",
+    "command": "/investmentbrief",
+    "titre": "Comprendre un investissement",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-234",
+    "command": "/invoice",
+    "titre": "Préparer ou contrôler une facture",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-175",
+    "command": "/loancompare",
+    "titre": "Comparer des offres de financement",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-188",
+    "command": "/monthlyclose",
+    "titre": "Préparer la clôture mensuelle",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-170",
+    "command": "/paymentplan",
+    "titre": "Préparer un échéancier de paiement",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-174",
+    "command": "/portfolioreview",
+    "titre": "Examiner un portefeuille",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-168",
+    "command": "/pricingmodel",
+    "titre": "Construire ou revoir ses prix",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-167",
+    "command": "/revenueforecast",
+    "titre": "Prévoir son chiffre d’affaires",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-172",
+    "command": "/savingsplan",
+    "titre": "Préparer un plan d’épargne",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-183",
+    "command": "/taxprepchecklist",
+    "titre": "Préparer ses documents fiscaux",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-164",
+    "command": "/unit_economics",
+    "titre": "Calculer la rentabilité d’une activité",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  },
+  {
+    "ref": "RCI-TXT-178",
+    "command": "/workingcapital",
+    "titre": "Analyser le besoin en fonds de roulement",
+    "famille": "TXT-V5-08",
+    "domaine": "texte"
+  }
+]

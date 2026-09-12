@@ -1,0 +1,302 @@
+[
+  {
+    "ref": "RCI-IMG-381",
+    "sort_order": 1,
+    "question": "Souhaitez-vous fournir le titre et les accroches, ou dois-je créer un texte éditorial fictif très court ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-382",
+    "sort_order": 1,
+    "question": "Quel contexte doit évoquer la scène : sortie d’hôtel, restaurant, événement ou rue ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-383",
+    "sort_order": 1,
+    "question": "Souhaitez-vous préserver la tenue actuelle ou laisser l’IA créer un look de défilé ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-384",
+    "sort_order": 1,
+    "question": "Quel niveau de style voulez-vous : casual, smart, streetwear ou luxe discret ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-385",
+    "sort_order": 1,
+    "question": "Avez-vous des mensurations exactes à afficher, ou préférez-vous une version sans données physiques ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-386",
+    "sort_order": 1,
+    "question": "Voulez-vous une planche de plusieurs digitals ou une seule image ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-387",
+    "sort_order": 1,
+    "question": "Quel positionnement doit transmettre le portrait : créatif, institutionnel, premium ou accessible ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-388",
+    "sort_order": 1,
+    "question": "Souhaitez-vous une ambiance tapis rouge, dîner de gala ou portrait éditorial en coulisses ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-389",
+    "sort_order": 1,
+    "question": "Quel univers de rue doit guider le rendu : brut, minimal, coloré ou mode éditoriale ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-390",
+    "sort_order": 1,
+    "question": "Quel message le look doit-il transmettre en priorité ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-391",
+    "sort_order": 1,
+    "question": "Quels canaux doivent être couverts en priorité : LinkedIn, site, bio, presse ou réseaux ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-392",
+    "sort_order": 1,
+    "question": "Souhaitez-vous tester des palettes précises ou laisser l’IA proposer plusieurs directions visuelles ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-393",
+    "sort_order": 1,
+    "question": "Quelle tenue et quels accessoires doivent rester fixes dans toutes les vues ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-394",
+    "sort_order": 1,
+    "question": "Quelles scènes ou poses doivent être produites avec ce look inchangé ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-395",
+    "sort_order": 1,
+    "question": "Quel concept unique doit relier toute la campagne ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-396",
+    "sort_order": 1,
+    "question": "Quel décor doit accueillir le fit check : chambre, dressing, hôtel ou espace minimal ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-397",
+    "sort_order": 1,
+    "question": "Quel type d’images voulez-vous privilégier : portrait, activité, sortie, voyage ou mélange naturel ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-398",
+    "sort_order": 1,
+    "question": "Quel type de shooting doit-on voir en coulisses : beauté, mode, campagne ou éditorial ?",
+    "condition": "Sujet absent ou inexploitable; consentement ou identité ambiguë; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-399",
+    "sort_order": 1,
+    "question": "Souhaitez-vous un rendu plutôt soirée au flash, vacances ou souvenir quotidien ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-400",
+    "sort_order": 1,
+    "question": "Voulez-vous un rendu discret ou très marqué façon soirée 2000s ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-401",
+    "sort_order": 1,
+    "question": "Quel souvenir ou thème doit relier les images du scrapbook ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-402",
+    "sort_order": 1,
+    "question": "Voulez-vous des griffonnages minimalistes ou très expressifs ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-403",
+    "sort_order": 1,
+    "question": "Faut-il intégrer un titre exact ou laisser l’IA créer seulement des fragments décoratifs non factuels ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-404",
+    "sort_order": 1,
+    "question": "Voulez-vous fournir le titre principal ou laisser l’IA inventer un headline fictif et non factuel ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-405",
+    "sort_order": 1,
+    "question": "Quels éléments doivent être exacts et lesquels peuvent rester purement décoratifs ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-406",
+    "sort_order": 1,
+    "question": "Souhaitez-vous une déformation fisheye légère ou très expressive ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-407",
+    "sort_order": 1,
+    "question": "Voulez-vous une ambiance CCTV réaliste ou plus cinématographique ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-408",
+    "sort_order": 1,
+    "question": "Préférez-vous un faux infrarouge blanc/rouge classique ou une palette personnalisée ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-409",
+    "sort_order": 1,
+    "question": "Préférez-vous la vision nocturne verte classique ou un monochrome plus cinématique ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-410",
+    "sort_order": 1,
+    "question": "Voulez-vous une fuite discrète ou un accident de pellicule très visible ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-411",
+    "sort_order": 1,
+    "question": "Quels éléments doivent rester nets et lesquels doivent devenir des traînées ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-412",
+    "sort_order": 1,
+    "question": "Souhaitez-vous une trame noir et blanc, bichromie ou couleur limitée ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-413",
+    "sort_order": 1,
+    "question": "Quels deux états ou univers doivent alterner dans l’effet lenticulaire ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-414",
+    "sort_order": 1,
+    "question": "Quel type de composition doit être scanné : portrait, objet, fleurs, accessoires ou mélange ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-415",
+    "sort_order": 1,
+    "question": "Quel mouvement ou déplacement doit être décomposé ?",
+    "condition": "Image ou sujet absent; effet demandé ambigu au point de changer la mission; texte exact indispensable manquant; contradiction rendant le résultat trompeur."
+  },
+  {
+    "ref": "RCI-IMG-416",
+    "sort_order": 1,
+    "question": "Le jumeau doit-il être conceptuel ou fondé sur des données techniques réellement fournies ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-417",
+    "sort_order": 1,
+    "question": "Le rendu doit-il être purement esthétique ou représenter des données de scan réellement disponibles ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-418",
+    "sort_order": 1,
+    "question": "Quels composants ou étapes du trajet sont confirmés et doivent apparaître ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-419",
+    "sort_order": 1,
+    "question": "Disposez-vous de valeurs réelles à afficher ou faut-il rester sur un schéma conceptuel sans chiffres ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-420",
+    "sort_order": 1,
+    "question": "Quels départs, arrivées ou câbles sont confirmés et doivent être tracés ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-421",
+    "sort_order": 1,
+    "question": "Quel procédé doit être représenté : CNC, laser, découpe, impression 3D ou autre ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-422",
+    "sort_order": 1,
+    "question": "Quels joints ou symboles de soudure sont déjà définis dans vos données ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-423",
+    "sort_order": 1,
+    "question": "Quelles cotes et tolérances exactes doivent entrer dans la chaîne ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-424",
+    "sort_order": 1,
+    "question": "Avez-vous des mesures/simulations acoustiques, ou faut-il produire une illustration conceptuelle clairement signalée ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-425",
+    "sort_order": 1,
+    "question": "Disposez-vous d’un angle et d’une portée réels, ou faut-il rester sur une zone indicative ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-426",
+    "sort_order": 1,
+    "question": "Avez-vous l’orientation et le lieu/date nécessaires pour une représentation précise, ou souhaitez-vous un schéma conceptuel ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-427",
+    "sort_order": 1,
+    "question": "Disposez-vous d’un gabarit ou de dimensions réelles, ou faut-il rester sur une illustration conceptuelle ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-428",
+    "sort_order": 1,
+    "question": "Avez-vous des données réelles d’eye-tracking ou souhaitez-vous une estimation heuristique clairement indiquée comme telle ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-429",
+    "sort_order": 1,
+    "question": "Disposez-vous de dimensions ou vues supplémentaires, ou faut-il produire uniquement une reconstruction conceptuelle ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  },
+  {
+    "ref": "RCI-IMG-430",
+    "sort_order": 1,
+    "question": "Quels points de maintenance sont confirmés par la notice ou vos données ?",
+    "condition": "Sujet ou document absent; donnée exacte indispensable non fournie; absence de repère nécessaire à la précision revendiquée; contradiction rendant le résultat techniquement trompeur."
+  }
+]

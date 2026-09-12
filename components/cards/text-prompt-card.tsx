@@ -32,7 +32,6 @@ export function TextPromptCard({
   provider,
   locked,
   free,
-  masque = false,
   visiteur = false,
   onOpen,
 }: {
@@ -40,11 +39,6 @@ export function TextPromptCard({
   provider: string;
   locked: boolean;
   free: boolean;
-  /**
-   * Vrai pour un visiteur devant une commande verrouillee : le nom de la
-   * commande disparait, seule sa description reste.
-   */
-  masque?: boolean;
   /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
   visiteur?: boolean;
   onOpen: (prompt: PromptCardData) => void;
@@ -118,20 +112,16 @@ export function TextPromptCard({
         </VisualSlot>
 
         <span className="flex flex-1 flex-col gap-1 px-2.5 pb-2 pt-2">
-          {masque ? null : (
-            <span className="commande truncate text-[length:var(--texte-commande-carte)] font-bold text-[color:var(--color-brand)]">
-              {prompt.command}
-            </span>
-          )}
+          {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
+              convention des raccourcis. Le raccourci attend dans la fiche. */}
+          <span className="line-clamp-3 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+            {prompt.name}
+          </span>
 
           {/* Comment le raccourci s'y prend, sous ce qu'il cherche a obtenir.
               Jamais `result_summary` en premier : il se repete a l'identique
               sur toute une famille. */}
-          <span
-            className={`text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)] ${
-              masque ? 'line-clamp-3' : 'line-clamp-2'
-            }`}
-          >
+          <span className="line-clamp-2 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-muted)]">
             {description}
           </span>
 

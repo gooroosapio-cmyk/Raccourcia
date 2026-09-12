@@ -6,7 +6,7 @@ import { PaywallLayer } from '@/components/paywall/paywall-provider';
 import { Toaster } from '@/components/ui/toast';
 import { deviceLabelFromUserAgent, getUser, registerCurrentSession } from '@/lib/auth/session';
 import { getAccessState } from '@/lib/access/entitlement';
-import { getCatalogCounts, getPublicConfig } from '@/lib/catalog/queries';
+import { getPublicConfig } from '@/lib/catalog/queries';
 
 /**
  * Coquille de la bibliotheque : en-tete compact, contenu, barre basse.
@@ -35,11 +35,7 @@ export default async function MemberLayout({ children }: { children: React.React
     await registerCurrentSession(deviceLabelFromUserAgent(headerList.get('user-agent')));
   }
 
-  const [acces, config, counts] = await Promise.all([
-    getAccessState(),
-    getPublicConfig(),
-    getCatalogCounts(),
-  ]);
+  const [acces, config] = await Promise.all([getAccessState(), getPublicConfig()]);
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col lg:max-w-6xl">
@@ -66,12 +62,7 @@ export default async function MemberLayout({ children }: { children: React.React
           `hasFullAccess` couvre les deux. */}
       <PaywallLayer
         hasAccess={acces.hasFullAccess}
-        offre={{
-          purchaseUrl: config.purchaseUrl,
-          price: config.price,
-          freeCount: counts.free,
-          totalCount: counts.total,
-        }}
+        offre={{ purchaseUrl: config.purchaseUrl, price: config.price }}
       />
       <Toaster />
     </div>

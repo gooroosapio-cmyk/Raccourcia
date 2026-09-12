@@ -72,7 +72,10 @@
   --texte-page: 25px;
   --texte-section: 19px;
   --texte-commande-fiche: 21px;
-  --texte-commande-carte: 15px;
+  /* Le titre porte la carte depuis que la commande a rejoint la fiche : 14 px
+     tient un titre entier sur trois lignes la ou 15 px en coupait la moitie,
+     et reste nettement au-dessus des 13 px de la description. */
+  --texte-titre-carte: 14px;
   --texte-corps: 15px;
   --texte-carte: 13px;
   --texte-meta: 12px;

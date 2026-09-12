@@ -23,10 +23,10 @@ export function ResultThumbnail({
   url: string | null;
   alt: string | null;
   /**
-   * Ce que la vignette montre, pour l'annonce vocale. La carte y met la
-   * commande quand elle l'affiche, et sa description quand elle la masque :
-   * un texte de remplacement qui nommerait la commande la rendrait lisible a
-   * qui ne doit pas encore la lire.
+   * Ce que la vignette montre, pour l'annonce vocale. La carte y met le titre
+   * du raccourci : il decrit le resultat sans nommer la commande, que la
+   * carte n'affiche plus et qu'un visiteur verrouille ne doit pas encore
+   * lire.
    */
   libelle: string;
   /** Vrai pour une commande qui conduit un travail en plusieurs etapes. */

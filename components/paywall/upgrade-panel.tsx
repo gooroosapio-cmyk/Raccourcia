@@ -3,8 +3,6 @@ import Link from 'next/link';
 export type Offre = {
   purchaseUrl: string;
   price: { current: number; regular: number | null; currency: string };
-  freeCount: number;
-  totalCount: number;
 };
 
 /**
@@ -14,9 +12,14 @@ export type Offre = {
  * argumentaires distincts finiraient par diverger, et l'un des deux serait
  * faux.
  *
- * Tous les chiffres viennent du catalogue et de la configuration. Rien n'est
- * ecrit en dur : ni le prix, ni le nombre de commandes, ni le lien d'achat.
+ * Le prix et le lien d'achat viennent de la configuration, jamais du code.
  * Aucun compteur d'acheteurs, aucun temoignage, aucune rarete artificielle.
+ *
+ * Et plus aucun decompte du catalogue : annoncer « 252 commandes » engage a
+ * les avoir, oblige a corriger la phrase a chaque publication, et vieillit
+ * mal entre deux deploiements. Ce que l'offre promet est plus simple et
+ * reste vrai — tout le catalogue, nouveautes comprises. Ces chiffres
+ * existent toujours, dans l'administration, ou ils servent a piloter.
  */
 export function UpgradePanel({
   offre,
@@ -31,7 +34,7 @@ export function UpgradePanel({
   const avantages = [
     {
       titre: 'Toutes les commandes',
-      corps: `Les ${offre.totalCount} commandes, en Image et en Texte, sans exception.`,
+      corps: 'Le catalogue entier, en Image et en Texte, sans exception.',
     },
     {
       titre: 'Nouveautés incluses',
@@ -64,8 +67,8 @@ export function UpgradePanel({
           compact ? 'text-[14px]' : 'mx-auto max-w-[38ch] text-[16px]'
         }`}
       >
-        Vous pouvez copier {offre.freeCount} commandes librement. L’accès à vie ouvre les{' '}
-        {offre.totalCount}, en un seul paiement.
+        Certaines commandes se copient librement. L’accès à vie ouvre tout le catalogue, en un seul
+        paiement.
       </p>
 
       <ul className={`mt-5 space-y-3 ${compact ? '' : 'text-left'}`}>

@@ -14,15 +14,24 @@ declare
 begin
   -- --- Les noms alternatifs sont la ------------------------------------
 
-  select count(*) into v_n from public.prompts
-  where level is not null and cardinality(aliases) = 0;
-  perform tests_assert(v_n = 0, format('%s commandes V5 ne repondent a aucun autre nom.', v_n));
+  -- Portee sur les commandes qui ont absorbe quelque chose. Une commande
+  -- qui n'a jamais rien absorbe n'a aucun autre nom a porter — l'extension
+  -- V5.1 en apporte cinquante, et elles sont parfaitement legitimes.
+  select count(*) into v_n
+  from public.prompts p
+  where cardinality(p.aliases) = 0
+    and exists (select 1 from public.prompt_aliases a where a.canonical_prompt_id = p.id);
+  perform tests_assert(v_n = 0,
+    format('%s commandes ont absorbe un raccourci sans en porter le nom.', v_n));
 
   -- La colonne de comparaison suit la liste sans que rien n'ait a la tenir
   -- a jour : c'est une colonne generee, et c'est ce qui la rend fiable.
-  select count(*) into v_n from public.prompts
-  where level is not null and coalesce(search_aliases, '') = '';
-  perform tests_assert(v_n = 0, format('%s commandes V5 sans forme de comparaison.', v_n));
+  select count(*) into v_n
+  from public.prompts p
+  where coalesce(p.search_aliases, '') = ''
+    and exists (select 1 from public.prompt_aliases a where a.canonical_prompt_id = p.id);
+  perform tests_assert(v_n = 0,
+    format('%s commandes destinataires d''un alias sans forme de comparaison.', v_n));
 
   -- --- Les quinze renommees repondent a leur ancien nom -----------------
 

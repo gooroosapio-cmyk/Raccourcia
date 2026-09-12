@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getAccessState } from '@/lib/access/entitlement';
-import { getCatalogCounts, getPublicConfig } from '@/lib/catalog/queries';
+import { getPublicConfig } from '@/lib/catalog/queries';
 import { UpgradePanel } from '@/components/paywall/upgrade-panel';
 
 export const metadata = {
@@ -16,11 +16,7 @@ export const metadata = {
  * de vente.
  */
 export default async function OfferPage() {
-  const [config, counts, { hasLifetimeAccess }] = await Promise.all([
-    getPublicConfig(),
-    getCatalogCounts(),
-    getAccessState(),
-  ]);
+  const [config, { hasLifetimeAccess }] = await Promise.all([getPublicConfig(), getAccessState()]);
 
   return (
     <div className="pt-4">
@@ -42,12 +38,7 @@ export default async function OfferPage() {
       ) : (
         <UpgradePanel
           titrePrincipal
-          offre={{
-            purchaseUrl: config.purchaseUrl,
-            price: config.price,
-            freeCount: counts.free,
-            totalCount: counts.total,
-          }}
+          offre={{ purchaseUrl: config.purchaseUrl, price: config.price }}
         />
       )}
 

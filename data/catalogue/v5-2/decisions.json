@@ -1,0 +1,44 @@
+[
+  {
+    "ref": "RCI-IMG-381",
+    "command": "/powercover",
+    "recommandation": "preset_existant",
+    "cible": "/magazineportrait",
+    "raison": "Mission proche d’une commande existante; conserver le raccourci public mais mutualiser le moteur si la base confirme le recouvrement."
+  },
+  {
+    "ref": "RCI-IMG-383",
+    "command": "/runwaydebut",
+    "recommandation": "preset_existant",
+    "cible": "/editorialfashion",
+    "raison": "Mission proche d’une commande existante; conserver le raccourci public mais mutualiser le moteur si la base confirme le recouvrement."
+  },
+  {
+    "ref": "RCI-IMG-388",
+    "command": "/galaeditorial",
+    "recommandation": "preset_existant",
+    "cible": "/luxuryportrait",
+    "raison": "Mission proche d’une commande existante; conserver le raccourci public mais mutualiser le moteur si la base confirme le recouvrement."
+  },
+  {
+    "ref": "RCI-IMG-389",
+    "command": "/streetcasting",
+    "recommandation": "preset_existant",
+    "cible": "/streetportrait",
+    "raison": "Mission proche d’une commande existante; conserver le raccourci public mais mutualiser le moteur si la base confirme le recouvrement."
+  },
+  {
+    "ref": "RCI-IMG-395",
+    "command": "/fashioncampaignset",
+    "recommandation": "preset_existant",
+    "cible": "/campaignportrait",
+    "raison": "Mission proche d’une commande existante; conserver le raccourci public mais mutualiser le moteur si la base confirme le recouvrement."
+  },
+  {
+    "ref": "RCI-IMG-397",
+    "command": "/datingprofile",
+    "recommandation": "preset_existant",
+    "cible": "/profilepicset",
+    "raison": "Mission proche d’une commande existante; conserver le raccourci public mais mutualiser le moteur si la base confirme le recouvrement."
+  }
+]

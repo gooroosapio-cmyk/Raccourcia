@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Logo } from '@/components/ui/logo';
 import { LegalFooter } from '@/components/navigation/legal-footer';
-import { getCatalogCounts, getPublicConfig } from '@/lib/catalog/queries';
+import { getPublicConfig } from '@/lib/catalog/queries';
 
 /**
  * Accueil public. Il montre la valeur avant le verrou : le contenu complet
@@ -17,7 +17,7 @@ import { getCatalogCounts, getPublicConfig } from '@/lib/catalog/queries';
  * l'ecran.
  */
 export default async function LandingPage() {
-  const [counts, config] = await Promise.all([getCatalogCounts(), getPublicConfig()]);
+  const config = await getPublicConfig();
 
   const benefices = [
     {
@@ -85,12 +85,6 @@ export default async function LandingPage() {
             />
           </svg>
         </Link>
-
-        {counts.free > 0 ? (
-          <p className="mt-2 text-[length:var(--texte-meta)] text-[color:var(--color-muted)]">
-            {counts.free} commandes gratuites sur {counts.total}
-          </p>
-        ) : null}
       </section>
 
       <section className="mt-6 space-y-1.5">
