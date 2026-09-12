@@ -91,9 +91,12 @@ export default async function AdminDashboardPage() {
               <li key={prompt.id}>
                 <Link
                   href={`/admin/raccourcis/${prompt.id}`}
-                  className="font-mono text-[14px] font-medium text-[color:var(--color-brand)]"
+                  className="text-[14px] text-[color:var(--color-night)]"
                 >
-                  {prompt.command}
+                  <span className="font-medium">{prompt.name}</span>{' '}
+                  <span className="commande text-[13px] text-[color:var(--color-brand)]">
+                    {prompt.command}
+                  </span>
                 </Link>
               </li>
             ))}

@@ -5,6 +5,11 @@ import { publicEnv } from '@/lib/env';
 import { STORAGE_BUCKETS } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
+/** URL publique d'un media stocke dans Supabase Storage. */
+function mediaUrl(storagePath: string): string {
+  return `${publicEnv().NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKETS.PROMPT_MEDIA}/${storagePath}`;
+}
+
 /**
  * Lectures du back-office.
  *
@@ -27,6 +32,12 @@ export type AdminPromptRow = {
   hasBefore: boolean;
   /** Visuel « apres » : celui que la carte montre dans la grille. */
   hasAfter: boolean;
+  /**
+   * L'apercu du resultat, quand il existe. C'est ce qui permet de
+   * reconnaitre un raccourci dans une liste de six cents sans l'ouvrir : le
+   * nom dit ce qu'il promet, l'image dit ce qu'il rend.
+   */
+  afterUrl: string | null;
   updatedAt: string;
 };
 
@@ -57,9 +68,12 @@ function toRow(row: {
   is_pinned: boolean;
   updated_at: string;
   categories: { name: string } | null;
-  prompt_media: { kind: Enums<'media_kind'> }[] | null;
+  prompt_media: { kind: Enums<'media_kind'>; storage_path: string; sort_order: number }[] | null;
 }): AdminPromptRow {
   const visuels = row.prompt_media ?? [];
+  const apres = visuels
+    .filter((media) => media.kind === 'after')
+    .sort((a, b) => a.sort_order - b.sort_order)[0];
   return {
     id: row.id,
     command: row.command,
@@ -70,13 +84,14 @@ function toRow(row: {
     isPinned: row.is_pinned,
     categoryName: row.categories?.name ?? null,
     hasBefore: visuels.some((media) => media.kind === 'before'),
-    hasAfter: visuels.some((media) => media.kind === 'after'),
+    hasAfter: Boolean(apres),
+    afterUrl: apres ? mediaUrl(apres.storage_path) : null,
     updatedAt: row.updated_at,
   };
 }
 
 const ROW_COLUMNS =
-  'id, command, name, mode, status, is_free, is_pinned, updated_at, categories(name), prompt_media(kind)';
+  'id, command, name, mode, status, is_free, is_pinned, updated_at, categories(name), prompt_media(kind, storage_path, sort_order)';
 
 export async function getAdminDashboard(): Promise<AdminDashboard> {
   const supabase = await createClient();
@@ -301,7 +316,7 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
       .map((media) => ({
         id: media.id,
         kind: media.kind,
-        url: `${publicEnv().NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKETS.PROMPT_MEDIA}/${media.storage_path}`,
+        url: mediaUrl(media.storage_path),
         alt: media.alt,
       })),
   };
