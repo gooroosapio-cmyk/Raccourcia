@@ -46,9 +46,16 @@ jobs:
         with:
           node-version: 22
 
-      - name: Verifier que la cle est presente
+      - name: Verifier la cle
+        # Ce qui est affiche ici ne revele jamais la cle : sa longueur, la
+        # forme de son prefixe, et — pour une cle JWT — le role et le projet
+        # qu'elle declare, qui sont lisibles par quiconque la detient deja.
+        # C'est ce qui distingue « cle tronquee au copier-coller » de « cle
+        # anon prise pour la cle de service » ou « cle d'un autre projet »,
+        # sans quoi il ne reste qu'a deviner.
         env:
           CLE: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          PROJET: jhqajkhovtcjklrjgwrx
         run: |
           if [ -z "${CLE:-}" ]; then
             echo "Le secret SUPABASE_SERVICE_ROLE_KEY est vide ou absent de l environnement production."
@@ -57,7 +64,55 @@ jobs:
             echo "avec la valeur de la cle service_role du projet Supabase."
             exit 1
           fi
-          echo "Cle presente."
+
+          echo "Longueur : ${#CLE} caracteres."
+
+          case "$CLE" in
+            *[[:space:]]*)
+              echo "La cle contient une espace ou un retour a la ligne : le copier-coller a emporte autre chose."
+              exit 1 ;;
+          esac
+
+          case "$CLE" in
+            eyJ*)
+              echo "Forme : jeton JWT classique."
+              charge=$(printf '%s' "$CLE" | cut -d. -f2)
+              # base64url, et le rembourrage saute souvent au decoupage.
+              charge=$(printf '%s' "$charge" | tr '_-' '/+')
+              while [ $(( ${#charge} % 4 )) -ne 0 ]; do charge="${charge}="; done
+              clair=$(printf '%s' "$charge" | base64 -d 2>/dev/null || true)
+              # Les espaces apres les deux-points sont tolerees : un jeton
+              # reel est compact, mais un controle qui casse sur une espace
+              # est un controle qui ment un jour ou l'autre.
+              role=$(printf '%s' "$clair" | grep -o '"role"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*"\([^"]*\)"$/\1/')
+              ref=$(printf '%s' "$clair" | grep -o '"ref"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*"\([^"]*\)"$/\1/')
+              echo "Role declare : ${role:-illisible}"
+              echo "Projet declare : ${ref:-illisible}"
+              if [ -n "$role" ] && [ "$role" != "service_role" ]; then
+                echo
+                echo "Ce n est pas la cle de service : cette cle porte le role « $role »."
+                echo "Dans Supabase, Project Settings > API > Project API keys, prendre la"
+                echo "ligne service_role et non la ligne anon."
+                exit 1
+              fi
+              if [ -n "$ref" ] && [ "$ref" != "$PROJET" ]; then
+                echo
+                echo "Cette cle appartient au projet « $ref », pas a « $PROJET »."
+                exit 1
+              fi ;;
+            sb_secret_*)
+              echo "Forme : cle secrete de nouvelle generation." ;;
+            sb_publishable_*)
+              echo "Cette cle est PUBLIABLE : elle n a pas le droit d ecrire un visuel."
+              echo "Prendre la cle secrete, celle qui commence par sb_secret_."
+              exit 1 ;;
+            *)
+              echo "Forme inattendue : ni jeton JWT, ni cle sb_secret_."
+              echo "La valeur collee n est probablement pas une cle d API."
+              exit 1 ;;
+          esac
+
+          echo "Cle plausible."
 
       - name: Deposer les visuels
         env:
