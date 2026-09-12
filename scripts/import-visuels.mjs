@@ -7,12 +7,17 @@
  *     node scripts/import-visuels.mjs data/visuels/v5-avant-apres.json ~/images
  *
  * Le second argument est le dossier qui contient les fichiers aux chemins
- * annonces par le classeur (« upload/... », « generated_images/... »).
+ * annonces par le releve (« avant/... », « apres/... »).
+ *
+ * Aucune dependance : le script parle directement aux interfaces REST de
+ * Supabase avec le `fetch` de Node. C'est voulu — il est lance a la main,
+ * souvent depuis une machine ou le depot n'est pas installe, et « il manque
+ * un paquet » est une facon stupide d'echouer a mi-parcours.
  *
  * La cle de service ne vit que dans l'environnement de la personne qui lance
  * le script : elle n'est ni lue depuis un fichier, ni ecrite, ni affichee.
- * C'est aussi pour cela que ce script ne tourne pas dans l'integration
- * continue — un import de visuels se decide, il ne se declenche pas.
+ * C'est aussi pour cela qu'il ne tourne pas dans l'integration continue — un
+ * import de visuels se decide, il ne se declenche pas.
  *
  * Trois regles qui ne se negocient pas :
  *
@@ -20,14 +25,13 @@
  *    est laissee telle quelle : les images deposees depuis l'administration
  *    restent celles qui s'affichent. Le script le dit et passe.
  * 2. Chaque commande recoit sa propre copie des octets, meme quand le
- *    classeur donne la meme image « avant » a toute une famille. Supprimer
- *    ou remplacer un visuel efface le fichier du stockage : un chemin
- *    partage ferait disparaitre l'image de cinquante autres fiches.
+ *    releve donne la meme image « avant » a toute une famille. Supprimer ou
+ *    remplacer un visuel efface le fichier du stockage : un chemin partage
+ *    ferait disparaitre l'image de cinquante autres fiches.
  * 3. Un fichier manquant arrete le script avant le moindre envoi. Mieux vaut
  *    ne rien importer qu'importer a moitie.
  */
 
-import { createClient } from '@supabase/supabase-js';
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { extname, join, resolve } from 'node:path';
 
@@ -43,22 +47,39 @@ const TYPES = {
 };
 const POIDS_MAX = 10 * 1024 * 1024;
 
-const [fichierMapping, dossierImages] = process.argv.slice(2);
-if (!fichierMapping || !dossierImages) {
-  console.error('Usage : import-visuels.mjs <mapping.json> <dossier-images>');
+const [fichierReleve, dossierImages] = process.argv.slice(2);
+if (!fichierReleve || !dossierImages) {
+  console.error('Usage : import-visuels.mjs <releve.json> <dossier-images>');
   process.exit(1);
 }
 
-const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+const base = (process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').replace(
+  /\/+$/,
+  '',
+);
 const cle = process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!url || !cle) {
+if (!base || !cle) {
   console.error('SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent etre dans l environnement.');
   process.exit(1);
 }
 
-const supabase = createClient(url, cle, { auth: { persistSession: false } });
-const mapping = JSON.parse(readFileSync(fichierMapping, 'utf8'));
-const entrees = mapping.entrees;
+const entetes = { apikey: cle, Authorization: `Bearer ${cle}` };
+
+/** Lit une table par l'interface REST, en tranches pour ne pas allonger l'URL. */
+async function lireParLots(table, colonnes, champ, valeurs, taille = 100) {
+  const lignes = [];
+  for (let i = 0; i < valeurs.length; i += taille) {
+    const tranche = valeurs.slice(i, i + taille);
+    const url = `${base}/rest/v1/${table}?select=${colonnes}&${champ}=in.(${tranche.join(',')})`;
+    const reponse = await fetch(url, { headers: entetes });
+    if (!reponse.ok) throw new Error(`${table} : ${reponse.status} ${await reponse.text()}`);
+    lignes.push(...(await reponse.json()));
+  }
+  return lignes;
+}
+
+const releve = JSON.parse(readFileSync(fichierReleve, 'utf8'));
+const entrees = releve.entrees;
 const racine = resolve(dossierImages);
 
 // --- Controle prealable ----------------------------------------------------
@@ -93,23 +114,24 @@ if (manquants.length || refuses.length) {
   process.exit(1);
 }
 
-console.log(
-  `${entrees.length} commandes, ${new Set(entrees.flatMap((e) => [e.avant, e.apres])).size} fichiers distincts. Rien ne manque.`,
-);
+const distincts = new Set(entrees.flatMap((e) => [e.avant, e.apres])).size;
+console.log(`${entrees.length} commandes, ${distincts} fichiers distincts. Rien ne manque.`);
 
 // --- Resolution des commandes ---------------------------------------------
 // Le rapprochement se fait sur la reference externe, stable, et la commande
 // sert de controle : une reference qui aurait glisse ne doit pas ecrire dans
 // la mauvaise fiche.
 
-const refs = entrees.map((e) => e.external_ref);
-const { data: prompts, error: erreurPrompts } = await supabase
-  .from('prompts')
-  .select('id, command, external_ref')
-  .in('external_ref', refs);
-
-if (erreurPrompts) {
-  console.error('Lecture des commandes impossible :', erreurPrompts.message);
+let prompts;
+try {
+  prompts = await lireParLots(
+    'prompts',
+    'id,command,external_ref',
+    'external_ref',
+    entrees.map((e) => e.external_ref),
+  );
+} catch (erreur) {
+  console.error('Lecture des commandes impossible :', erreur.message);
   process.exit(1);
 }
 
@@ -125,7 +147,7 @@ if (absentes.length || desaccords.length) {
     console.error(`Commande absente du catalogue : ${a.external_ref} ${a.command}`);
   for (const d of desaccords) {
     console.error(
-      `Desaccord : ${d.external_ref} porte ${parRef.get(d.external_ref).command}, le classeur dit ${d.command}`,
+      `Desaccord : ${d.external_ref} porte ${parRef.get(d.external_ref).command}, le releve dit ${d.command}`,
     );
   }
   process.exit(1);
@@ -133,16 +155,16 @@ if (absentes.length || desaccords.length) {
 
 // --- Ce qui est deja la ----------------------------------------------------
 
-const { data: dejaLa, error: erreurMedias } = await supabase
-  .from('prompt_media')
-  .select('prompt_id, kind')
-  .in(
+let dejaLa;
+try {
+  dejaLa = await lireParLots(
+    'prompt_media',
+    'prompt_id,kind',
     'prompt_id',
     [...parRef.values()].map((p) => p.id),
   );
-
-if (erreurMedias) {
-  console.error('Lecture des visuels existants impossible :', erreurMedias.message);
+} catch (erreur) {
+  console.error('Lecture des visuels existants impossible :', erreur.message);
   process.exit(1);
 }
 
@@ -154,7 +176,7 @@ let envoyes = 0;
 let conserves = 0;
 const echecs = [];
 
-for (const e of entrees) {
+for (const [index, e] of entrees.entries()) {
   const prompt = parRef.get(e.external_ref);
 
   for (const [kind, chemin] of [
@@ -174,38 +196,47 @@ for (const e of entrees) {
     const extension = type === 'image/jpeg' ? 'jpg' : type.split('/')[1];
     const cible = `prompts/${prompt.id}/${kind}-${Date.now()}.${extension}`;
 
-    const { error: erreurEnvoi } = await supabase.storage
-      .from(BUCKET)
-      .upload(cible, readFileSync(complet), { contentType: type, upsert: false });
+    const envoi = await fetch(`${base}/storage/v1/object/${BUCKET}/${cible}`, {
+      method: 'POST',
+      headers: { ...entetes, 'Content-Type': type, 'x-upsert': 'false' },
+      body: readFileSync(complet),
+    });
 
-    if (erreurEnvoi) {
-      echecs.push(`${e.command} ${kind} : ${erreurEnvoi.message}`);
+    if (!envoi.ok) {
+      echecs.push(`${e.command} ${kind} : envoi ${envoi.status} ${await envoi.text()}`);
       continue;
     }
 
-    const { error: erreurLigne } = await supabase.from('prompt_media').insert({
-      prompt_id: prompt.id,
-      kind,
-      storage_path: cible,
-      alt:
-        kind === 'before'
-          ? `Image de depart utilisee pour ${e.command}`
-          : `Resultat obtenu avec ${e.command}`,
+    const ligne = await fetch(`${base}/rest/v1/prompt_media`, {
+      method: 'POST',
+      headers: { ...entetes, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({
+        prompt_id: prompt.id,
+        kind,
+        storage_path: cible,
+        alt:
+          kind === 'before'
+            ? `Image de depart utilisee pour ${e.command}`
+            : `Resultat obtenu avec ${e.command}`,
+      }),
     });
 
-    if (erreurLigne) {
+    if (!ligne.ok) {
       // La ligne n'a pas pu etre ecrite : le fichier envoye ne sert plus a
       // rien et n'a aucune raison de rester dans le stockage.
-      await supabase.storage.from(BUCKET).remove([cible]);
-      echecs.push(`${e.command} ${kind} : ${erreurLigne.message}`);
+      await fetch(`${base}/storage/v1/object/${BUCKET}/${cible}`, {
+        method: 'DELETE',
+        headers: entetes,
+      }).catch(() => {});
+      echecs.push(`${e.command} ${kind} : ecriture ${ligne.status} ${await ligne.text()}`);
       continue;
     }
 
     envoyes += 1;
   }
 
-  if ((entrees.indexOf(e) + 1) % 25 === 0) {
-    console.log(`  ${entrees.indexOf(e) + 1}/${entrees.length} commandes traitees`);
+  if ((index + 1) % 25 === 0) {
+    console.log(`  ${index + 1}/${entrees.length} commandes traitees`);
   }
 }
 
