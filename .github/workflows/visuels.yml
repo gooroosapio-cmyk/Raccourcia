@@ -193,7 +193,13 @@ jobs:
               exists (select 1 from public.prompt_media m
                       where m.prompt_id = p.id and m.kind = 'before') as a_avant,
               exists (select 1 from public.prompt_media m
-                      where m.prompt_id = p.id and m.kind = 'after')  as a_apres
+                      where m.prompt_id = p.id and m.kind = 'after')  as a_apres,
+              -- La carte retombe sur un visuel de type « thumbnail » quand
+              -- l'apres manque : une commande qui en porte un n'est pas nue.
+              exists (select 1 from public.prompt_media m
+                      where m.prompt_id = p.id and m.kind = 'thumbnail') as a_vignette,
+              (select count(*) from public.prompt_media m
+                      where m.prompt_id = p.id) as visuels_total
             from public.prompts p
             left join public.categories c on c.id = p.category_id
             where p.status <> 'archived'
