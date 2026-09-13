@@ -47,7 +47,11 @@ export function Intentions({
 
       <ul className="grid grid-cols-2 gap-2">
         {intentions.map((intention) => (
-          <li key={intention.slug}>
+          // Un nombre impair de familles laisse un dernier bouton demi-large
+          // en bas de grille, qui se lit comme une case a moitie remplie. Il
+          // prend alors toute la ligne : le domaine image en compte trois
+          // depuis la refonte V6, le domaine texte sept.
+          <li key={intention.slug} className="[&:nth-child(odd):last-child]:col-span-2">
             <button
               type="button"
               onClick={() => onSelect(intention.slug)}

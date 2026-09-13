@@ -367,6 +367,23 @@ export async function listAdminCategories(): Promise<AdminCategory[]> {
   }));
 }
 
+/**
+ * Les categories dans lesquelles on range un raccourci aujourd'hui.
+ *
+ * Chaque refonte de taxonomie laisse derriere elle des rayons desactives et
+ * vides — la V6 en a laisse une douzaine pour le seul domaine image. Les
+ * proposer dans une liste deroulante revient a offrir de classer une
+ * commande la ou plus personne ne la cherchera.
+ *
+ * Une categorie desactivee qui porte encore des raccourcis reste proposee :
+ * c'est par elle qu'on les retrouve pour les en sortir.
+ */
+export function categoriesDeRangement(categories: AdminCategory[]): AdminCategory[] {
+  return categories.filter(
+    (category) => category.status !== 'archived' || category.promptCount > 0,
+  );
+}
+
 export type AdminConfigEntry = {
   key: string;
   value: string;

@@ -28,12 +28,15 @@ begin
   where catalog_version = 'v5.2' and mode <> 'image';
   perform tests_assert(v_n = 0, format('%s commandes V5.2 hors du mode image.', v_n));
 
-  -- Trois familles existantes, aucune nouvelle : le classeur n'en cree pas.
+  -- Des familles existantes, aucune nouvelle : le classeur n'en cree pas.
+  -- Le rayon exact change au fil des refontes — la V6 a regroupe les six
+  -- familles image en trois — mais une commande image reste rangee dans une
+  -- famille image du catalogue, jamais ailleurs.
   select count(*) into v_n
   from public.prompts p
   join public.categories c on c.id = p.category_id
-  where p.catalog_version = 'v5.2' and c.external_ref not like 'IMG-V5-%';
-  perform tests_assert(v_n = 0, format('%s commandes V5.2 rangees hors des familles image V5.', v_n));
+  where p.catalog_version = 'v5.2' and c.external_ref !~ '^IMG-V[0-9]+-';
+  perform tests_assert(v_n = 0, format('%s commandes V5.2 rangees hors des familles image.', v_n));
 
   -- Trois textes distincts par commande, comme pour tout le catalogue V5.
   select count(*) into v_n

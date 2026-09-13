@@ -22,7 +22,7 @@ on:
         required: true
         type: string
       bascule:
-        description: 'Basculer la taxonomie V5 apres les lots : taper "basculer". Laisser vide sinon.'
+        description: 'Changer la navigation (taxonomie V5, refonte image V6) : taper "basculer". Laisser vide sinon.'
         required: false
         default: ''
         type: string
@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - refonte-image-v6
           - supabase/seed/v6-payloads
           - supabase/seed/v5-2
           - supabase/seed/v5-1
@@ -101,7 +102,7 @@ jobs:
       # saute cette etape : la bascule est une dizaine d'instructions, elle n'a
       # pas besoin qu'on reimporte le catalogue pour s'executer.
       - name: Appliquer les lots
-        if: inputs.dossier != 'bascule-seule'
+        if: inputs.dossier != 'bascule-seule' && inputs.dossier != 'refonte-image-v6'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -139,6 +140,48 @@ jobs:
           psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
             < supabase/seed/bascule-taxonomie-v5.sql
 
+      # Refonte V6 du domaine Image : six familles deviennent trois.
+      #
+      # Deux fichiers, dans cet ordre. La migration pose les trois familles en
+      # brouillon — elle est idempotente, la rejouer ne cree rien. La bascule
+      # les publie, deplace les commandes et archive ce qui se vide, le tout
+      # dans une transaction avec ses controles de sortie : si le compte n'y
+      # est pas, rien ne reste a moitie fait.
+      #
+      # Comme la bascule V5, elle demande le mot « basculer » : c'est la
+      # navigation des membres qui change, pas seulement du contenu.
+      - name: Refondre les familles image (V6)
+        if: >-
+          inputs.dossier == 'refonte-image-v6' &&
+          inputs.bascule == 'basculer'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : les trois familles image'
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
+            < supabase/migrations/20260913120000_refonte_familles_image.sql
+          echo '  Bascule : deplacement et archivage'
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
+            < supabase/seed/bascule-image-v6.sql
+          echo '  Etat du domaine image :'
+          psql "$PGURL" -At -c "
+            select '    ' || c.name || ' : ' || count(*) filter (where p.status = 'published') ||
+                   ' commandes publiees'
+            from public.categories c
+            left join public.prompts p on p.category_id = c.id
+            where c.mode = 'image' and c.is_visible and c.external_ref is not null
+            group by c.name, c.sort_order order by c.sort_order;"
+
+      # Un dossier choisi sans le mot « basculer » ne doit pas se terminer sur
+      # un succes vert alors que rien n'a ete applique.
+      - name: Refonte image demandee sans confirmation
+        if: inputs.dossier == 'refonte-image-v6' && inputs.bascule != 'basculer'
+        run: |
+          echo "La refonte des familles image change la navigation des membres."
+          echo "Relancer en tapant « basculer » dans le second champ."
+          exit 1
+
       - name: Controle final
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
@@ -166,13 +209,15 @@ jobs:
                 raise exception '% raccourcis publies sans version copiable.', v_orphelins;
               end if;
 
-              -- Bornee aux familles de la V2 : celles de la V5 portent
-              -- elles aussi une reference externe et arrivent par migration,
-              -- invisibles. Sans cette borne, le controle final echouait
-              -- apres un import deja applique — le pire moment pour lever.
+              -- Bornee aux familles de la V2 : celles des refontes suivantes
+              -- portent elles aussi une reference externe et arrivent par
+              -- migration, invisibles. Sans cette borne, le controle final
+              -- echouait apres un import deja applique — le pire moment pour
+              -- lever. La forme de la reference les separe : « IMG-04 »
+              -- appartient a la V2, « IMG-V6-01 » non.
               select count(*) into v_categories
               from public.categories
-              where external_ref is not null and external_ref not like '%-V5-%';
+              where external_ref ~ '^(IMG|TXT)-[0-9]+\$';
               if v_categories <> 13 then
                 raise exception 'Attendu 13 familles V2, trouve %.', v_categories;
               end if;
