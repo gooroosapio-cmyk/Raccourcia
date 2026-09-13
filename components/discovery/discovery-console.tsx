@@ -377,15 +377,22 @@ function CategoryChips({
   return (
     <div className="relative -mx-5">
       <div ref={railRef} className="rail px-5">
+        {/* Pas de « Toutes » : trois familles tiennent a l'ecran, et le choix
+            de l'une d'elles est precisement ce qu'on demande ici. Une
+            quatrieme puce qui ne filtre rien ajouterait une decision sans
+            en resoudre aucune — la puce active se detache pour dire ou l'on
+            est, et la retoucher suffit a revenir en arriere. */}
         <div className="flex w-max gap-2 pb-1">
-          <Chip label="Toutes" active={!active} onClick={() => onSelect()} />
           {chips.map((chip) => (
             <Chip
               key={chip.slug}
               ref={chip.slug === active ? actifRef : undefined}
               label={chip.name}
               active={chip.slug === active}
-              onClick={() => onSelect(chip.slug)}
+              // Retoucher la famille choisie la deselectionne : c'est ce qui
+              // remplace la puce « Toutes », et c'est le geste qu'on tente
+              // naturellement quand on veut revenir a tout le domaine.
+              onClick={() => onSelect(chip.slug === active ? undefined : chip.slug)}
             />
           ))}
         </div>

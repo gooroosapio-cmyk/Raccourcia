@@ -49,6 +49,11 @@ supabase/.env
 /playwright/.cache/
 .tmp/
 
-# Les visuels avant/apres passent par le stockage Supabase. Ils ont transite
+# Les visuels avant/apres passent par le stockage Supabase. Ils transitent
 # par le depot le temps d'un import ; l'historique les garde, l'arbre non.
+#
+# Cette regle protege contre l'inclusion machinale. Pour un import, les
+# ajouter deliberement : git add -f data/visuels/images
+# Sans le -f, « git add -A » les ignore en silence et le workflow s'arrete
+# sur un dossier absent — ce qui est arrive une fois.
 data/visuels/images/

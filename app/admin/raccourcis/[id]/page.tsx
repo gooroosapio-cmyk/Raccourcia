@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { getAdminPrompt, listAdminCategories } from '@/lib/admin/queries';
+import { categoriesDeRangement, getAdminPrompt, listAdminCategories } from '@/lib/admin/queries';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { PromptIdentityForm } from '@/app/admin/raccourcis/[id]/identity-form';
 import { PromptVersionForms } from '@/app/admin/raccourcis/[id]/version-forms';
@@ -46,7 +46,7 @@ export default async function AdminPromptPage({ params }: { params: Promise<{ id
       <PromptPreview prompt={prompt} />
 
       <Section title="Identité">
-        <PromptIdentityForm prompt={prompt} categories={categories} />
+        <PromptIdentityForm prompt={prompt} categories={categoriesDeRangement(categories)} />
       </Section>
 
       <Section

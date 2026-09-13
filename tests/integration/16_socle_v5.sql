@@ -31,7 +31,7 @@ begin
   -- bascule les archive, elle ne les supprime pas. Une famille effacee
   -- emporterait le rangement d'origine de 320 raccourcis.
   select count(*) into v_v2 from public.categories
-  where external_ref is not null and external_ref not like '%-V5-%';
+  where external_ref ~ '^(IMG|TXT)-[0-9]+$';
   perform tests_assert(v_v2 = 13, format('%s familles V2 en base au lieu de 13.', v_v2));
 
   -- Six image et huit texte, dans l'ordre du classeur.

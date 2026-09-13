@@ -220,6 +220,25 @@ if [ -d "$ROOT/supabase/seed/v6-payloads" ]; then
     from public.prompt_versions;"
 fi
 
+# Domaine Image : six familles deviennent trois. La migration a pose les
+# trois familles en brouillon ; la bascule les publie, deplace les commandes
+# et archive ce qui se vide. Appliquee deux fois : une bascule qu'on ne peut
+# pas rejouer est une bascule qu'on n'ose plus lancer.
+if [[ -f "$ROOT/supabase/seed/bascule-image-v6.sql" ]]; then
+  echo "==> Bascule Image V6 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null \
+      < "$ROOT/supabase/seed/bascule-image-v6.sql"
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || (select count(*) from public.categories
+                      where mode = 'image' and is_visible
+                        and external_ref is not null) || ' familles image, ' ||
+           count(*) filter (where status <> 'archived') || ' commandes actives, ' ||
+           count(*) filter (where status = 'archived') || ' archivees'
+    from public.prompts where mode = 'image';"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

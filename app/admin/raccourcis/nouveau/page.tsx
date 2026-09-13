@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { listAdminCategories } from '@/lib/admin/queries';
+import { categoriesDeRangement, listAdminCategories } from '@/lib/admin/queries';
 import { NewPromptForm } from '@/app/admin/raccourcis/nouveau/new-prompt-form';
 
 export const metadata = { title: 'Nouveau raccourci' };
@@ -27,7 +27,7 @@ export default async function NewPromptPage() {
       </div>
 
       <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
-        <NewPromptForm categories={categories} />
+        <NewPromptForm categories={categoriesDeRangement(categories)} />
       </section>
     </div>
   );

@@ -33,11 +33,13 @@ do $ctrl$
 declare
   v_total integer;
 begin
-  -- Les familles V5 arrivent par migration, invisibles, avant que ce lot ne
-  -- soit rejoue. Compter toutes les references externes ferait echouer un
-  -- controle qui ne parle que des treize familles de la V3.
+  -- Les familles des versions suivantes arrivent par migration, invisibles,
+  -- avant que ce lot ne soit rejoue. Compter toutes les references externes
+  -- ferait echouer un controle qui ne parle que des treize familles de la V3.
+  -- On ne compte donc que la forme de reference propre a la V3 — « IMG-04 »,
+  -- « TXT-07 » — plutot que d'exclure chaque version au fil des refontes.
   select count(*) into v_total from public.categories
-  where external_ref is not null and external_ref not like '%-V5-%';
+  where external_ref ~ '^(IMG|TXT)-[0-9]+$';
   if v_total <> 13 then
     raise exception 'Lot 1 incomplet : % categories au lieu de 13.', v_total;
   end if;

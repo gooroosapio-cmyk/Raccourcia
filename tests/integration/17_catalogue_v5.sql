@@ -169,13 +169,17 @@ begin
   where p.status = 'published' and not c.is_visible;
   perform tests_assert(v_n = 0, format('%s commandes publiees sont rangees dans une famille invisible.', v_n));
 
-  -- Les quatorze familles V5 sont toutes dans le meme etat : en brouillon
-  -- avant la bascule, publiees apres. Une seule qui s'ecarterait des autres
-  -- serait un rayon ouvert par accident, ou fermate par accident.
+  -- Les huit familles texte de la V5 sont toutes dans le meme etat : en
+  -- brouillon avant la bascule, publiees apres. Une seule qui s'ecarterait
+  -- des autres serait un rayon ouvert par accident, ou ferme par accident.
+  --
+  -- Les six familles image de la V5 ne sont plus comptees ici : la refonte
+  -- V6 les a regroupees en trois et les a archivees. C'est le fichier de la
+  -- bascule image qui en repond.
   select count(*) into v_n from public.categories
-  where external_ref like '%-V5-%' and status = 'published';
-  perform tests_assert(v_n in (0, 14),
-    format('%s familles V5 publiees : ni toutes ouvertes, ni toutes fermees.', v_n));
+  where external_ref like 'TXT-V5-%' and status = 'published';
+  perform tests_assert(v_n in (0, 8),
+    format('%s familles texte V5 publiees : ni toutes ouvertes, ni toutes fermees.', v_n));
 
   select count(*) into v_n from public.categories
   where external_ref like '%-V5-%' and is_visible <> (status = 'published');

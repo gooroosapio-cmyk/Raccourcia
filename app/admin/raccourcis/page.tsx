@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { listAdminCategories, listAdminPrompts } from '@/lib/admin/queries';
+import { categoriesDeRangement, listAdminCategories, listAdminPrompts } from '@/lib/admin/queries';
 import type { AdminPromptFilters as FiltresListe } from '@/lib/admin/queries';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
 import { AdminPromptRowItem } from '@/components/admin/prompt-row';
@@ -64,7 +64,7 @@ export default async function AdminPromptsPage({
         categoryId={filters.categoryId}
         access={filters.access}
         media={filters.media}
-        categories={categories}
+        categories={categoriesDeRangement(categories)}
       />
 
       {items.length === 0 ? (
