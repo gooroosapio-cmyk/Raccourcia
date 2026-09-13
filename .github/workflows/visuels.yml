@@ -17,8 +17,16 @@ on:
         description: 'Taper "raccourcia" pour confirmer le depot des visuels'
         required: true
         type: string
+      tache:
+        description: 'Ce que fait ce declenchement'
+        required: true
+        default: depot
+        type: choice
+        options:
+          - depot
+          - inventaire
       releve:
-        description: 'Releve a appliquer'
+        description: 'Releve a appliquer (tache « depot » uniquement)'
         required: true
         default: data/visuels/v5-avant-apres.json
         type: choice
@@ -28,6 +36,7 @@ on:
 jobs:
   depot:
     name: Deposer les visuels
+    if: inputs.tache == 'depot'
     runs-on: ubuntu-latest
     # `production` porte le secret et, si l'environnement est protege, une
     # validation humaine avant execution.
@@ -145,3 +154,48 @@ jobs:
             -H "Prefer: count=exact" -H "Range: 0-0" -o /dev/null -D - \
             | grep -i 'content-range' \
             | sed 's/^/  visuels en base : /'
+
+  inventaire:
+    name: Inventorier les visuels manquants
+    if: inputs.tache == 'inventaire'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Installer psql
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client
+
+      # Lecture seule. Le resultat sort en CSV dans le journal : c'est la
+      # seule facon de faire redescendre une liste d'ici, et une liste de
+      # commandes n'a rien de confidentiel.
+      - name: Commandes sans visuel
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "${PGURL:-}" ]; then
+            echo "Le secret SUPABASE_DB_URL est absent de l environnement production."
+            exit 1
+          fi
+          echo '--- DEBUT CSV ---'
+          psql "$PGURL" -v ON_ERROR_STOP=1 --csv -c "
+            select
+              coalesce(c.external_ref, '(sans famille)') as famille_ref,
+              coalesce(c.name, '(sans famille)')         as famille,
+              c.is_visible                               as famille_visible,
+              p.command                                  as commande,
+              p.name                                     as titre,
+              p.mode                                     as domaine,
+              p.status                                   as statut,
+              p.is_free                                  as offert,
+              coalesce(p.external_ref, '')               as reference,
+              exists (select 1 from public.prompt_media m
+                      where m.prompt_id = p.id and m.kind = 'before') as a_avant,
+              exists (select 1 from public.prompt_media m
+                      where m.prompt_id = p.id and m.kind = 'after')  as a_apres
+            from public.prompts p
+            left join public.categories c on c.id = p.category_id
+            where p.status <> 'archived'
+            order by coalesce(c.external_ref, 'zzz'), p.command;"
+          echo '--- FIN CSV ---'
