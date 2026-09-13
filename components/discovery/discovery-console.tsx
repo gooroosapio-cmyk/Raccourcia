@@ -411,7 +411,11 @@ function Chip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`h-9 shrink-0 whitespace-nowrap rounded-full px-3.5 text-[length:var(--texte-carte)] font-medium transition-colors duration-[var(--duration-fast)] ${
+      // 44 px de haut, pas 36 : ces puces sont devenues la navigation
+      // principale du catalogue depuis que la bibliotheque s'ouvre sur une
+      // famille. Une cible de 36 px se manque au pouce, et se manquer ici
+      // veut dire changer de rayon sans l'avoir voulu.
+      className={`touch-target inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-4 text-[length:var(--texte-carte)] font-medium transition-colors duration-[var(--duration-fast)] ${
         active
           ? 'bg-[color:var(--color-brand)] text-white'
           : 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'
@@ -457,7 +461,9 @@ function ActiveFilterSummary({
           type="button"
           onClick={() => onRemove(cle)}
           aria-label={`Retirer le filtre ${libelles[valeur] ?? valeur}`}
-          className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[color:var(--color-brand-soft)] pl-3 pr-2 text-[13px] font-medium text-[color:var(--color-brand-strong)]"
+          // La pastille reste fine, la cible fait 44 px : retirer un filtre
+          // par erreur reinterroge le catalogue pour rien.
+          className="touch-target inline-flex items-center gap-1.5 rounded-full bg-[color:var(--color-brand-soft)] pl-3 pr-2 text-[13px] font-medium text-[color:var(--color-brand-strong)]"
         >
           {libelles[valeur] ?? valeur}
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -473,7 +479,7 @@ function ActiveFilterSummary({
       <button
         type="button"
         onClick={onClear}
-        className="h-8 px-1 text-[13px] font-medium text-[color:var(--color-muted)] underline underline-offset-2"
+        className="touch-target inline-flex items-center px-2 text-[13px] font-medium text-[color:var(--color-muted)] underline underline-offset-2"
       >
         Effacer
       </button>
