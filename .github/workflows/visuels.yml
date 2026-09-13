@@ -144,16 +144,34 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/import-visuels.mjs "${{ inputs.releve }}" data/visuels/images
 
+      # Le compte passait par l'interface REST avec un en-tete Range : elle a
+      # rendu 740 la ou la base en portait plus de mille, et un controle qui
+      # ment vaut moins que pas de controle. psql compte, lui, sans borne.
       - name: Etat apres depot
         env:
-          SUPABASE_URL: https://jhqajkhovtcjklrjgwrx.supabase.co
-          CLE: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          curl -s "$SUPABASE_URL/rest/v1/prompt_media?select=kind" \
-            -H "apikey: $CLE" -H "Authorization: Bearer $CLE" \
-            -H "Prefer: count=exact" -H "Range: 0-0" -o /dev/null -D - \
-            | grep -i 'content-range' \
-            | sed 's/^/  visuels en base : /'
+          if [ -z "${PGURL:-}" ]; then
+            echo "SUPABASE_DB_URL absent : etat final non releve."
+            exit 0
+          fi
+          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+          psql "$PGURL" -v ON_ERROR_STOP=1 -At -c "
+            select '  ' || count(*) || ' visuels en base, dont ' ||
+                   count(*) filter (where kind = 'before') || ' avant et ' ||
+                   count(*) filter (where kind = 'after')  || ' apres'
+            from public.prompt_media;"
+          psql "$PGURL" -v ON_ERROR_STOP=1 -At -c "
+            select '  ' || count(*) || ' commandes actives, dont ' ||
+                   count(*) filter (where exists (
+                     select 1 from public.prompt_media m
+                     where m.prompt_id = p.id and m.kind = 'after')) ||
+                   ' servies et ' ||
+                   count(*) filter (where not exists (
+                     select 1 from public.prompt_media m
+                     where m.prompt_id = p.id and m.kind = 'after')) ||
+                   ' encore sans visuel'
+            from public.prompts p where p.status <> 'archived';"
 
   inventaire:
     name: Inventorier les visuels manquants
