@@ -1,8 +1,7 @@
-import Link from 'next/link';
-
 import { getAccessState } from '@/lib/access/entitlement';
 import { getAvailableModes, getCatalogPage, getCategories } from '@/lib/catalog/queries';
 import { DiscoveryConsole } from '@/components/discovery/discovery-console';
+import { VoirPlus } from '@/components/discovery/voir-plus';
 import { AucunResultat } from '@/components/discovery/aucun-resultat';
 import { PromptGrid } from '@/components/cards/prompt-grid';
 import { PaywallAutoOpen } from '@/components/paywall/paywall-provider';
@@ -36,11 +35,49 @@ export default async function DiscoverPage({
   const demande = lire('mode') === 'text' ? 'texte' : lire('mode');
   const mode: Mode = modes.includes(demande as Mode) ? (demande as Mode) : modes[0]!;
 
+  // La bibliotheque s'ouvre sur une famille, jamais sur le domaine entier.
+  //
+  // Quatre cents commandes image d'un coup ne se parcourent pas : la premiere
+  // famille du domaine — les portraits — est celle par laquelle on entre, et
+  // les puces font le reste. Elle vient de la base et de son `sort_order` :
+  // aucune famille n'est nommee ici, changer l'ordre en administration change
+  // la porte d'entree.
+  //
+  // Une recherche, elle, traverse tout le domaine : chercher « logo » depuis
+  // les portraits et ne rien trouver, alors que la commande existe deux puces
+  // plus loin, serait un cul-de-sac. Sauf si une famille a ete choisie
+  // expressement — la puce active le dit a l'ecran, et l'ecran vide propose
+  // alors d'elargir.
+  let categories: Awaited<ReturnType<typeof getCategories>>;
+  let acces: Awaited<ReturnType<typeof getAccessState>>;
+  try {
+    [acces, categories] = await Promise.all([getAccessState(), getCategories(mode)]);
+  } catch (error) {
+    if (isCatalogUnavailable(error)) {
+      return (
+        <div className="pt-6">
+          <NetworkError />
+        </div>
+      );
+    }
+    throw error;
+  }
+
+  // Une famille demandee qui n'existe plus — un lien partage avant une
+  // refonte, un favori du navigateur — ne doit pas rendre un ecran vide qui
+  // parle de filtres que personne n'a poses. On retombe sur la porte
+  // d'entree, et la puce active dit ou l'on a atterri.
+  const connues = new Set(categories.flatMap((f) => [f.slug, ...f.children.map((c) => c.slug)]));
+  const demandee = lire('categorie');
+  const familleDemandee = demandee && connues.has(demandee) ? demandee : undefined;
+  const familleParDefaut = categories[0]?.slug;
+  const famille = familleDemandee ?? (lire('q') ? undefined : familleParDefaut);
+
   // Zod filtre les valeurs inconnues : un parametre d'URL bricole ne peut ni
   // atteindre la requete, ni faire echouer la page.
   const query = catalogQuery.parse({
     mode,
-    categorySlug: lire('categorie'),
+    categorySlug: famille,
     search: lire('q'),
     access: ['gratuit', 'membre'].includes(lire('acces') ?? '') ? lire('acces') : undefined,
     provider: ['chatgpt', 'claude', 'gemini'].includes(lire('ia') ?? '') ? lire('ia') : undefined,
@@ -55,24 +92,21 @@ export default async function DiscoverPage({
   const lots = Math.min(query.page, CATALOG_MAX_LOTS);
   const requete = { ...query, page: 1, pageSize: CATALOG_PAGE_SIZE * lots };
 
+  // La famille par defaut n'est pas un filtre : un ecran vide qui invite a
+  // « retirer un filtre » alors que l'utilisateur n'en a pose aucun ne dit
+  // rien d'utile.
   const filtre = Boolean(
-    query.search || query.categorySlug || query.access || query.provider || query.output,
+    query.search || familleDemandee || query.access || query.provider || query.output,
   );
 
   // L'Accueil est le catalogue, sans rangee thematique au-dessus. « Recents »
   // et « Favoris » ont leurs propres pages : les repeter ici repoussait la
   // liste hors de l'ecran, et un membre qui ouvre l'Accueil vient chercher
   // une commande, pas relire celles qu'il connait deja.
-  let acces: Awaited<ReturnType<typeof getAccessState>>;
-  let categories: Awaited<ReturnType<typeof getCategories>>;
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
 
   try {
-    [acces, categories, page] = await Promise.all([
-      getAccessState(),
-      getCategories(mode),
-      getCatalogPage(requete),
-    ]);
+    page = await getCatalogPage(requete);
   } catch (error) {
     // Un catalogue injoignable n'est pas un catalogue vide.
     if (isCatalogUnavailable(error)) {
@@ -99,9 +133,14 @@ export default async function DiscoverPage({
 
   // Le lot suivant reprend les filtres en cours : « Voir plus » ne doit jamais
   // reouvrir un catalogue different de celui qu'on regarde.
+  //
+  // La famille par defaut n'y figure pas : le serveur la redonne, et l'ecrire
+  // dans l'adresse ferait passer pour un choix ce qui n'est qu'une porte
+  // d'entree. Une recherche lancee ensuite s'en trouverait bornee sans que
+  // personne l'ait demande.
   const suivante = new URLSearchParams();
   suivante.set('mode', mode);
-  if (query.categorySlug) suivante.set('categorie', query.categorySlug);
+  if (familleDemandee) suivante.set('categorie', familleDemandee);
   if (query.search) suivante.set('q', query.search);
   if (query.access) suivante.set('acces', query.access);
   if (query.provider) suivante.set('ia', query.provider);
@@ -134,7 +173,18 @@ export default async function DiscoverPage({
         visiteur={!acces.isMember}
         emptyState={
           filtre ? (
-            <AucunResultat terme={query.search} mode={mode} />
+            <AucunResultat
+              terme={query.search}
+              mode={mode}
+              // Une recherche qui ne rend rien dans une famille choisie peut
+              // rendre quelque chose ailleurs : on propose d'elargir plutot
+              // que de laisser croire que la commande n'existe pas.
+              famille={
+                familleDemandee
+                  ? (categories.find((c) => c.slug === familleDemandee)?.name ?? null)
+                  : null
+              }
+            />
           ) : (
             <EmptyState
               title="Rien à afficher ici"
@@ -147,17 +197,11 @@ export default async function DiscoverPage({
       {page.hasMore ? (
         lots < CATALOG_MAX_LOTS ? (
           <div className="pt-1">
-            <Link
-              href={`/app?${suivante.toString()}`}
-              scroll={false}
-              className="flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[15px] font-medium text-[color:var(--color-night)]"
-            >
-              Voir plus de commandes
-            </Link>
+            <VoirPlus href={`/app?${suivante.toString()}`} />
           </div>
         ) : (
           <p className="pt-1 text-center text-[13px] text-[color:var(--color-muted)]">
-            Affinez la recherche ou choisissez une catégorie pour reduire la liste.
+            Affinez la recherche ou changez de catégorie pour réduire la liste.
           </p>
         )
       ) : null}

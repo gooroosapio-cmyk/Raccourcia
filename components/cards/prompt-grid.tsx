@@ -93,10 +93,11 @@ export function PromptGrid({
             <ImagePromptCard
               key={prompt.id}
               {...commun}
-              // Seules les deux premieres vignettes de la grille principale
-              // sont prioritaires : ce sont les seules certaines d'etre a
-              // l'ecran au chargement.
-              priority={prioritaire && index < 2}
+              // Les quatre premieres vignettes de la grille principale sont
+              // prioritaires : sur deux colonnes, un telephone en montre deux
+              // rangees avant le premier defilement. Deux seulement laissaient
+              // la seconde rangee se charger apres coup, sous les yeux.
+              priority={prioritaire && index < 4}
             />
           ) : (
             <TextPromptCard key={prompt.id} {...commun} />

@@ -7,7 +7,6 @@ import {
   FilterSheet,
   type FiltresAvances,
 } from '@/components/discovery/filter-sheet';
-import { Intentions } from '@/components/discovery/intentions';
 import { MODE_LABELS, type Mode } from '@/lib/constants';
 import type { CategoryNode } from '@/lib/catalog/types';
 
@@ -70,10 +69,16 @@ export function DiscoveryConsole({
     }
   }
 
+  // `remonter` pour les gestes qui changent la liste elle-meme — domaine,
+  // famille. Rester a la meme hauteur dans une liste qui n'est plus la meme
+  // laisse l'utilisateur au milieu de nulle part, devant des cartes qu'il
+  // n'a pas fait defiler. La recherche et les filtres, eux, affinent la
+  // liste en place : on ne lui reprend pas sa position.
   const push = useCallback(
-    (next: URLSearchParams) => {
+    (next: URLSearchParams, remonter = false) => {
       startTransition(() => {
         router.replace(`/app?${next.toString()}`, { scroll: false });
+        if (remonter) window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     },
     [router],
@@ -105,7 +110,7 @@ export function DiscoveryConsole({
     // zero, comme le lot en cours.
     next.delete('categorie');
     next.delete('page');
-    push(next);
+    push(next, true);
   };
 
   // Les fleches parcourent les onglets, comme le veut le motif ARIA : sur
@@ -125,12 +130,12 @@ export function DiscoveryConsole({
     choisirMode(modes[index]!);
   };
 
-  const choisirCategorie = (slug?: string) => {
+  const choisirCategorie = (slug: string) => {
+    if (slug === categorySlug) return;
     const next = new URLSearchParams(params.toString());
-    if (slug) next.set('categorie', slug);
-    else next.delete('categorie');
+    next.set('categorie', slug);
     next.delete('page');
-    push(next);
+    push(next, true);
   };
 
   const appliquerFiltres = (valeurs: FiltresAvances) => {
@@ -155,14 +160,6 @@ export function DiscoveryConsole({
     ...parent.children.map((child) => ({ slug: child.slug, name: child.name })),
   ]);
 
-  // Les raccourcis d'intention ne s'affichent que sur l'Accueil nu : des
-  // qu'un choix est fait, la rangee de chips dit la meme chose en une ligne.
-  const intentions = categories.map((famille) => ({
-    slug: famille.slug,
-    nom: famille.name,
-  }));
-  const vierge = !categorySlug && !search && actifs === 0;
-
   return (
     <div className="space-y-2.5">
       <div className="flex items-center gap-2">
@@ -178,16 +175,11 @@ export function DiscoveryConsole({
         ongletsRef={ongletsRef}
       />
 
-      {/* L'un ou l'autre, jamais les deux : ils proposent les memes familles. */}
-      {vierge ? (
-        <Intentions intentions={intentions} onSelect={choisirCategorie} />
-      ) : (
-        <CategoryChips chips={chips} active={categorySlug} onSelect={choisirCategorie} />
-      )}
+      <CategoryChips chips={chips} active={categorySlug} onSelect={choisirCategorie} />
 
       {/* Le compte disparait quand il n'y a rien : l'ecran vide le dit deja,
           et le lire deux fois de suite n'apprend rien de plus. */}
-      {!vierge && resultCount > 0 ? (
+      {resultCount > 0 ? (
         <p
           aria-live="polite"
           className="text-[length:var(--texte-carte)] text-[color:var(--color-muted)]"
@@ -363,7 +355,7 @@ function CategoryChips({
 }: {
   chips: { slug: string; name: string }[];
   active?: string;
-  onSelect: (slug?: string) => void;
+  onSelect: (slug: string) => void;
 }) {
   const railRef = useRef<HTMLDivElement>(null);
   const actifRef = useRef<HTMLButtonElement>(null);
@@ -377,22 +369,18 @@ function CategoryChips({
   return (
     <div className="relative -mx-5">
       <div ref={railRef} className="rail px-5">
-        {/* Pas de « Toutes » : les familles d'un domaine tiennent a l'ecran,
-            et le choix de l'une d'elles est precisement ce qu'on demande ici.
-            Une puce de plus qui ne filtre rien ajouterait une decision sans
-            en resoudre aucune — la puce active se detache pour dire ou l'on
-            est, et la retoucher suffit a revenir en arriere. */}
-        <div className="flex w-max gap-2 pb-1">
+        {/* Pas de « Toutes » : la bibliotheque s'ouvre sur une famille et on
+            en change comme on change d'onglet. Une puce de plus qui ne filtre
+            rien ajouterait une decision sans en resoudre aucune, et quatre
+            cents commandes d'un coup ne se parcourent pas. */}
+        <div role="group" aria-label="Catégories" className="flex w-max gap-2 pb-1">
           {chips.map((chip) => (
             <Chip
               key={chip.slug}
               ref={chip.slug === active ? actifRef : undefined}
               label={chip.name}
               active={chip.slug === active}
-              // Retoucher la famille choisie la deselectionne : c'est ce qui
-              // remplace la puce « Toutes », et c'est le geste qu'on tente
-              // naturellement quand on veut revenir a tout le domaine.
-              onClick={() => onSelect(chip.slug === active ? undefined : chip.slug)}
+              onClick={() => onSelect(chip.slug)}
             />
           ))}
         </div>

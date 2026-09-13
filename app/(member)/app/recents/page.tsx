@@ -39,9 +39,9 @@ export default async function RecentsPage() {
         locked={!hasFullAccess}
         emptyState={
           <EmptyState
-            title="Rien de récent."
-            body="Les commandes que vous copiez apparaissent ici, la plus recente en premier."
-            actionLabel="Parcourir la bibliotheque"
+            title="Rien de récent"
+            body="Les commandes que vous copiez apparaissent ici, la plus récente en premier."
+            actionLabel="Parcourir la bibliothèque"
             actionHref="/app"
           />
         }
