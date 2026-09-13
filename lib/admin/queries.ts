@@ -1,14 +1,8 @@
 import 'server-only';
 
 import { createClient } from '@/lib/supabase/server';
-import { publicEnv } from '@/lib/env';
-import { STORAGE_BUCKETS } from '@/lib/constants';
+import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
 import type { Enums } from '@/lib/supabase/database.types';
-
-/** URL publique d'un media stocke dans Supabase Storage. */
-function mediaUrl(storagePath: string): string {
-  return `${publicEnv().NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKETS.PROMPT_MEDIA}/${storagePath}`;
-}
 
 /**
  * Lectures du back-office.
@@ -85,7 +79,7 @@ function toRow(row: {
     categoryName: row.categories?.name ?? null,
     hasBefore: visuels.some((media) => media.kind === 'before'),
     hasAfter: Boolean(apres),
-    afterUrl: apres ? mediaUrl(apres.storage_path) : null,
+    afterUrl: apres ? urlVisuel(apres.storage_path, LARGEURS_VISUEL.apercu) : null,
     updatedAt: row.updated_at,
   };
 }
@@ -316,7 +310,7 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
       .map((media) => ({
         id: media.id,
         kind: media.kind,
-        url: mediaUrl(media.storage_path),
+        url: urlVisuel(media.storage_path, LARGEURS_VISUEL.comparaison),
         alt: media.alt,
       })),
   };

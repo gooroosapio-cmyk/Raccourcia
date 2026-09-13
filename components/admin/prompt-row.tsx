@@ -91,6 +91,7 @@ function Apercu({ url, mode }: { url: string | null; mode: AdminPromptRow['mode'
         alt=""
         width={64}
         height={64}
+        unoptimized
         sizes="64px"
         className="h-16 w-16 rounded-[10px] object-cover"
       />

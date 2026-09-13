@@ -140,9 +140,9 @@ jobs:
           psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
             < supabase/seed/bascule-taxonomie-v5.sql
 
-      # Refonte V6 du domaine Image : six familles deviennent trois.
+      # Refonte V6 du domaine Image : six familles deviennent quatre.
       #
-      # Deux fichiers, dans cet ordre. La migration pose les trois familles en
+      # Quatre fichiers, dans cet ordre. La migration pose les trois familles en
       # brouillon — elle est idempotente, la rejouer ne cree rien. La bascule
       # les publie, deplace les commandes et archive ce qui se vide, le tout
       # dans une transaction avec ses controles de sortie : si le compte n'y
@@ -161,9 +161,15 @@ jobs:
           echo '  Migration : les trois familles image'
           psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
             < supabase/migrations/20260913120000_refonte_familles_image.sql
+          echo '  Migration : la famille architecture et lieux'
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
+            < supabase/migrations/20260913170000_famille_architecture_image.sql
           echo '  Bascule : deplacement et archivage'
           psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
             < supabase/seed/bascule-image-v6.sql
+          echo '  Bascule : le quatrieme rayon'
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
+            < supabase/seed/bascule-image-v6-quatre.sql
           echo '  Etat du domaine image :'
           psql "$PGURL" -At -c "
             select '    ' || c.name || ' : ' || count(*) filter (where p.status = 'published') ||

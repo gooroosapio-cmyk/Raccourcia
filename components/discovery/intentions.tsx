@@ -49,8 +49,8 @@ export function Intentions({
         {intentions.map((intention) => (
           // Un nombre impair de familles laisse un dernier bouton demi-large
           // en bas de grille, qui se lit comme une case a moitie remplie. Il
-          // prend alors toute la ligne : le domaine image en compte trois
-          // depuis la refonte V6, le domaine texte sept.
+          // prend alors toute la ligne. Le domaine image en compte quatre et
+          // tombe juste ; le domaine texte en compte sept.
           <li key={intention.slug} className="[&:nth-child(odd):last-child]:col-span-2">
             <button
               type="button"

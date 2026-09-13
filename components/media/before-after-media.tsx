@@ -38,6 +38,9 @@ export function BeforeAfterMedia({
             src={media.beforeUrl}
             alt={media.beforeAlt}
             fill
+            // Rendue par le stockage a la largeur utile ; voir
+            // `lib/media/url.ts`.
+            unoptimized
             sizes={sizes}
             priority={priority}
             loading={priority ? undefined : 'lazy'}
@@ -49,6 +52,9 @@ export function BeforeAfterMedia({
             src={media.afterUrl}
             alt={media.afterAlt}
             fill
+            // Rendue par le stockage a la largeur utile ; voir
+            // `lib/media/url.ts`.
+            unoptimized
             sizes={sizes}
             priority={priority}
             loading={priority ? undefined : 'lazy'}

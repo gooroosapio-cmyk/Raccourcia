@@ -230,6 +230,14 @@ if [[ -f "$ROOT/supabase/seed/bascule-image-v6.sql" ]]; then
     run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null \
       < "$ROOT/supabase/seed/bascule-image-v6.sql"
   done
+  # Puis le dedoublement de la famille technique : quatre rayons au lieu de
+  # trois. Deux fois, comme la precedente.
+  if [[ -f "$ROOT/supabase/seed/bascule-image-v6-quatre.sql" ]]; then
+    for passe in 1 2; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null \
+        < "$ROOT/supabase/seed/bascule-image-v6-quatre.sql"
+    done
+  fi
   run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
     select '    ' || (select count(*) from public.categories
                       where mode = 'image' and is_visible
