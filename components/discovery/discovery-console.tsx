@@ -377,9 +377,9 @@ function CategoryChips({
   return (
     <div className="relative -mx-5">
       <div ref={railRef} className="rail px-5">
-        {/* Pas de « Toutes » : trois familles tiennent a l'ecran, et le choix
-            de l'une d'elles est precisement ce qu'on demande ici. Une
-            quatrieme puce qui ne filtre rien ajouterait une decision sans
+        {/* Pas de « Toutes » : les familles d'un domaine tiennent a l'ecran,
+            et le choix de l'une d'elles est precisement ce qu'on demande ici.
+            Une puce de plus qui ne filtre rien ajouterait une decision sans
             en resoudre aucune — la puce active se detache pour dire ou l'on
             est, et la retoucher suffit a revenir en arriere. */}
         <div className="flex w-max gap-2 pb-1">

@@ -42,8 +42,12 @@ export function ResultThumbnail({
         src={url}
         alt={alt ?? `Résultat obtenu avec ${libelle}`}
         fill
-        // Deux colonnes sur mobile, trois sur tablette, quatre au-dela : on
-        // ne telecharge jamais une image de pleine largeur pour une demi-carte.
+        // Le stockage a deja rendu la vignette a la bonne largeur : rien a
+        // redimensionner ici. L'optimiseur de l'hebergeur, lui, a un quota
+        // mensuel — epuise, il repond « Payment Required » et la vignette
+        // disparait. Une image du catalogue ne doit dependre d'aucun
+        // compteur exterieur.
+        unoptimized
         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
         priority={priority}
         loading={priority ? undefined : 'lazy'}

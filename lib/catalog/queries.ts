@@ -3,14 +3,12 @@ import 'server-only';
 import { cache } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { getAccessState } from '@/lib/access/entitlement';
-import { publicEnv } from '@/lib/env';
 import {
   CATALOG_PAGE_SIZE,
   CONFIG_FALLBACKS,
   CONFIG_KEYS,
   LEGAL_KEYS,
   MODES,
-  STORAGE_BUCKETS,
   type LegalKey,
   type Mode,
 } from '@/lib/constants';
@@ -22,11 +20,7 @@ import type { BeforeAfter, CategoryNode, PromptCard, PromptDetail } from '@/lib/
 import type { Enums } from '@/lib/supabase/database.types';
 import type { CatalogQuery } from '@/lib/validation/schemas';
 import { CatalogUnavailableError } from '@/lib/catalog/errors';
-
-/** URL publique d'un media stocke dans Supabase Storage. */
-function mediaUrl(storagePath: string): string {
-  return `${publicEnv().NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKETS.PROMPT_MEDIA}/${storagePath}`;
-}
+import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
 
 /**
  * Configuration runtime publique. Activer le mode Analyse ou fermer les pages
@@ -216,9 +210,9 @@ function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
   if (!before || !after) return null;
 
   return {
-    beforeUrl: mediaUrl(before.storage_path),
+    beforeUrl: urlVisuel(before.storage_path, LARGEURS_VISUEL.comparaison),
     beforeAlt: before.alt ?? 'Visuel de départ',
-    afterUrl: mediaUrl(after.storage_path),
+    afterUrl: urlVisuel(after.storage_path, LARGEURS_VISUEL.comparaison),
     afterAlt: after.alt ?? 'Résultat obtenu avec la commande',
   };
 }
@@ -257,7 +251,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     level: row.level,
     maxQuestions: row.max_questions,
     modes: modesLisibles((row.prompt_aliases ?? []).map((entree) => entree.preset)),
-    thumbnailUrl: thumbnail ? mediaUrl(thumbnail.storage_path) : null,
+    thumbnailUrl: thumbnail ? urlVisuel(thumbnail.storage_path, LARGEURS_VISUEL.vignette) : null,
     thumbnailAlt: thumbnail?.alt ?? null,
     providers: (row.prompt_variants ?? [])
       .filter((variant) => variant.status === 'published' && variant.ai_providers?.is_active)
@@ -630,7 +624,11 @@ export async function getPromptDetail(slug: string): Promise<PromptDetail | null
     categoryName: row.categories?.name ?? null,
     media: (row.prompt_media ?? [])
       .sort((a, b) => a.sort_order - b.sort_order)
-      .map((media) => ({ kind: media.kind, url: mediaUrl(media.storage_path), alt: media.alt })),
+      .map((media) => ({
+        kind: media.kind,
+        url: urlVisuel(media.storage_path, LARGEURS_VISUEL.comparaison),
+        alt: media.alt,
+      })),
   };
 }
 

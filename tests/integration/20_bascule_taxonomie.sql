@@ -34,12 +34,12 @@ begin
   where external_ref like 'TXT-V5-%' and is_visible;
   perform tests_assert(v_n = 8, format('%s familles texte visibles au lieu de 8.', v_n));
 
-  -- Le domaine image compte trois rayons depuis la V6, et aucun rescape des
+  -- Le domaine image compte quatre rayons depuis la V6, et aucun rescape des
   -- decoupages precedents : une ancienne famille image encore ouverte ferait
-  -- un septieme choix la ou l'ecran n'en propose que trois.
+  -- un choix de plus la ou l'ecran n'en propose que quatre.
   select count(*) into v_n from public.categories
   where mode = 'image' and external_ref is not null and is_visible;
-  perform tests_assert(v_n = 3, format('%s familles image visibles au lieu de 3.', v_n));
+  perform tests_assert(v_n = 4, format('%s familles image visibles au lieu de 4.', v_n));
 
   select count(*) into v_n
   from public.categories f

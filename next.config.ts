@@ -28,8 +28,11 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ['image/avif', 'image/webp'],
+    // `/storage/v1/**` couvre les deux formes d'adresse : le fichier
+    // d'origine (`object/public`) et le rendu redimensionne par le stockage
+    // (`render/image/public`), que les visuels du catalogue utilisent.
     remotePatterns: supabaseHost
-      ? [{ protocol: 'https', hostname: supabaseHost, pathname: '/storage/v1/object/public/**' }]
+      ? [{ protocol: 'https', hostname: supabaseHost, pathname: '/storage/v1/**' }]
       : [],
   },
   async headers() {

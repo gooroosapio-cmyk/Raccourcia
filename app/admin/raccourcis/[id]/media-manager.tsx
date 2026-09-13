@@ -219,6 +219,7 @@ function Emplacement({
             src={media.url}
             alt={media.alt ?? ''}
             fill
+            unoptimized
             sizes="320px"
             className="object-cover"
           />
@@ -343,6 +344,7 @@ function Apercus({
                 src={apres.url}
                 alt=""
                 fill
+                unoptimized
                 sizes="200px"
                 className="object-cover"
                 aria-hidden="true"
@@ -374,6 +376,7 @@ function Apercus({
                   src={visuel.url}
                   alt=""
                   fill
+                  unoptimized
                   sizes="120px"
                   className="object-cover"
                   aria-hidden="true"
