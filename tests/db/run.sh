@@ -247,6 +247,36 @@ if [[ -f "$ROOT/supabase/seed/bascule-image-v6.sql" ]]; then
     from public.prompts where mode = 'image';"
 fi
 
+# Catalogue V2 : la taxonomie de galerie et ses 692 cartes. Comme les lots
+# precedents, applique deux fois — un lot qui creerait un doublon ou
+# reecrirait un statut au second passage serait un lot casse.
+#
+# Les cartes arrivent en brouillon et sans payload. Rien ne s'affiche tant
+# que la bascule n'a pas ouvert les rayons.
+if compgen -G "$ROOT/supabase/seed/catalogue-v2/*.sql" > /dev/null; then
+  echo "==> Catalogue V2 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/catalogue-v2/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  # La bascule vient apres les lots, et deux fois elle aussi.
+  for passe in 1 2; do
+    run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null \
+      < "$ROOT/supabase/seed/bascule-catalogue-v2.sql"
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) filter (where status = 'published') || ' cartes publiees, ' ||
+           count(*) filter (where status = 'draft') || ' en brouillon, ' ||
+           count(*) filter (where payload_ready) || ' avec un texte a copier'
+    from public.prompts where catalog_v2;"
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) filter (where external_ref like 'V2-CAT-%' and is_visible) || ' categories ouvertes, ' ||
+           count(*) filter (where external_ref like 'V2-COL-%' and is_visible) || ' collections ouvertes, ' ||
+           (select count(*) from public.prompts where status = 'archived') || ' commandes archivees'
+    from public.categories;"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

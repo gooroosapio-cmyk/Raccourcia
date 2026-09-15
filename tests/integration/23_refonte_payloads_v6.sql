@@ -127,11 +127,16 @@ begin
 
   -- Le statut des commandes. Une refonte de texte ne publie rien : ce qui
   -- etait en brouillon le reste, ce qui etait publie le reste.
-  select count(*) into v_n
-  from public.prompts p
-  where p.catalog_version in ('v5.1', 'v5.2') and p.status <> 'draft';
-  perform tests_assert(v_n = 0,
-    format('%s commandes d extension publiees par la refonte.', v_n));
+  --
+  -- La refonte V2, elle, publie — c'est son objet. Le controle ne parle que
+  -- de la refonte des payloads, et se tait quand une autre est passee apres.
+  if not tests_catalogue_v2_applique() then
+    select count(*) into v_n
+    from public.prompts p
+    where p.catalog_version in ('v5.1', 'v5.2') and p.status <> 'draft';
+    perform tests_assert(v_n = 0,
+      format('%s commandes d extension publiees par la refonte.', v_n));
+  end if;
 
   -- --- Le contenu premium reste hors de portee --------------------------
 

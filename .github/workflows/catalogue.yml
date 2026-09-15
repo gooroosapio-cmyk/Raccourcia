@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - catalogue-v2
           - fermer-tables-sauvegarde
           - refonte-image-v6
           - supabase/seed/v6-payloads
@@ -106,7 +107,8 @@ jobs:
         if: >-
           inputs.dossier != 'bascule-seule' &&
           inputs.dossier != 'refonte-image-v6' &&
-          inputs.dossier != 'fermer-tables-sauvegarde'
+          inputs.dossier != 'fermer-tables-sauvegarde' &&
+          inputs.dossier != 'catalogue-v2'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -219,6 +221,57 @@ jobs:
             from pg_class c join pg_namespace n on n.oid = c.relnamespace
             where n.nspname = 'public' and c.relkind = 'r' and c.relname like '%avant%'
             order by c.relname;"
+
+      # Refonte V2 : le catalogue de galerie remplace le precedent.
+      #
+      # Deux migrations, les lots, puis la bascule. Les lots posent 692
+      # cartes en brouillon et sans texte ; la bascule ouvre les rayons,
+      # publie les 594 cartes que le classeur declare visibles, et archive
+      # l'ancien catalogue. Rien n'est supprime.
+      #
+      # Comme la bascule de taxonomie, elle demande le mot « basculer » :
+      # c'est tout ce que les membres voient qui change.
+      - name: Refondre le catalogue (V2)
+        if: inputs.dossier == 'catalogue-v2' && inputs.bascule == 'basculer'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          for fichier in \
+            supabase/migrations/20260915120000_socle_catalogue_v2.sql \
+            supabase/migrations/20260915130000_resolve_prompt_refuse_le_vide.sql; do
+            echo "  Migration : $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          total=$(ls supabase/seed/catalogue-v2/*.sql | wc -l)
+          n=0
+          for fichier in supabase/seed/catalogue-v2/*.sql; do
+            n=$((n + 1))
+            printf '  [%2d/%2d] %s\n' "$n" "$total" "$(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Bascule du catalogue'
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc < supabase/seed/bascule-catalogue-v2.sql
+          echo '  Etat du catalogue :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) filter (where status = 'published') || ' cartes publiees, ' ||
+                   count(*) filter (where status = 'draft') || ' en brouillon, ' ||
+                   count(*) filter (where payload_ready) || ' avec un texte a copier'
+            from public.prompts where catalog_v2;"
+          psql "$PGURL" -At -c "
+            select '    ' || c.name || ' : ' || count(*) filter (where p.status = 'published') || ' cartes'
+            from public.categories c
+            left join public.categories f on f.parent_id = c.id
+            left join public.prompts p on p.category_id = f.id
+            where c.external_ref like 'V2-CAT-%' and c.is_visible
+            group by c.name, c.sort_order order by c.sort_order;"
+
+      - name: Refonte V2 demandee sans confirmation
+        if: inputs.dossier == 'catalogue-v2' && inputs.bascule != 'basculer'
+        run: |
+          echo "La refonte V2 remplace le catalogue que les membres voient."
+          echo "Relancer en tapant « basculer » dans le second champ."
+          exit 1
 
       - name: Controle final
         env:
