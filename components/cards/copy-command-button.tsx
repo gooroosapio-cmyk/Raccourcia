@@ -77,6 +77,7 @@ export function CopyCommandButton({
   provider,
   surface,
   locked = false,
+  pret = true,
   compact = false,
   onLockedClick,
   proposerOuverture = false,
@@ -85,6 +86,14 @@ export function CopyCommandButton({
   provider: string;
   surface: 'carte' | 'detail' | 'page-publique';
   locked?: boolean;
+  /**
+   * Faux quand la commande n'a pas encore son texte.
+   *
+   * Le catalogue arrive par vagues : une carte existe, puis son texte. Entre
+   * les deux, le bouton ne promet rien qu'il ne puisse tenir — il le dit et
+   * ne part pas chercher un refus du serveur.
+   */
+  pret?: boolean;
   /** Variante des cartes : le libelle se reduit a "Copier". */
   compact?: boolean;
   onLockedClick?: () => void;
@@ -108,6 +117,9 @@ export function CopyCommandButton({
       onLockedClick?.();
       return;
     }
+    // Rien a copier : le bouton est deja desactive, ce filet tient si un
+    // rendu le laissait passer.
+    if (!pret) return;
 
     setEtat('chargement');
 
@@ -145,7 +157,7 @@ export function CopyCommandButton({
         }
       },
     );
-  }, [locked, onLockedClick, promptId, proposerOuverture, provider, show, surface]);
+  }, [locked, onLockedClick, pret, promptId, proposerOuverture, provider, show, surface]);
 
   const cle = provider as ProviderKey;
   const nomIA = PROVIDER_LABELS[cle];
@@ -157,19 +169,25 @@ export function CopyCommandButton({
     ? compact
       ? 'Débloquer'
       : 'Débloquer pour copier'
-    : etat === 'copie'
-      ? 'Copie'
-      : compact
-        ? 'Copier'
-        : nomIA
-          ? `Copier pour ${nomIA}`
-          : 'Copier la commande';
+    : !pret
+      ? compact
+        ? 'Bientôt'
+        : 'Texte bientôt disponible'
+      : etat === 'copie'
+        ? 'Copie'
+        : compact
+          ? 'Copier'
+          : nomIA
+            ? `Copier pour ${nomIA}`
+            : 'Copier la commande';
 
   const ton = locked
     ? 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'
-    : etat === 'copie'
-      ? 'bg-[color:var(--color-success)] text-white'
-      : 'bg-[color:var(--color-brand)] text-white hover:bg-[color:var(--color-brand-strong)]';
+    : !pret
+      ? 'bg-[color:var(--color-sky)] text-[color:var(--color-muted)]'
+      : etat === 'copie'
+        ? 'bg-[color:var(--color-success)] text-white'
+        : 'bg-[color:var(--color-brand)] text-white hover:bg-[color:var(--color-brand-strong)]';
 
   const adresse = PROVIDER_URLS[cle];
 
@@ -178,21 +196,24 @@ export function CopyCommandButton({
       <button
         type="button"
         onClick={copier}
+        disabled={!pret && !locked}
         // Jamais desactive pendant le chargement : la largeur resterait la meme
         // mais le bouton paraitrait casse. On garde l'etat visible a la place.
         aria-busy={etat === 'chargement'}
         aria-label={
           locked
             ? 'Débloquer RaccourcIA pour copier cette commande'
-            : nomIA
-              ? `Copier la commande pour ${nomIA}`
-              : 'Copier la commande'
+            : !pret
+              ? 'Le texte de cette commande n’est pas encore disponible'
+              : nomIA
+                ? `Copier la commande pour ${nomIA}`
+                : 'Copier la commande'
         }
         className={`touch-target inline-flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] font-semibold transition-[background-color,transform] duration-[var(--duration-fast)] active:scale-[0.98] ${
           compact ? 'h-11 px-3 text-[13px]' : 'h-13 px-4 text-[15px]'
-        } ${ton}`}
+        } ${ton} disabled:cursor-not-allowed`}
       >
-        {locked ? <LockIcon /> : etat === 'copie' ? <CheckIcon /> : <CopyIcon />}
+        {locked ? <LockIcon /> : !pret ? null : etat === 'copie' ? <CheckIcon /> : <CopyIcon />}
         <span className="truncate">{libelle}</span>
       </button>
 

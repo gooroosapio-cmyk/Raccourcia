@@ -6,12 +6,17 @@ import { usePathname } from 'next/navigation';
 /**
  * Barre basse : quatre destinations, libelles toujours visibles
  * (Spec UX/UI, 5). Les actions recurrentes restent a portee de pouce.
+ *
+ * Decouvrir mene a l'editorial, Bibliotheque a la totalite du catalogue par
+ * familles. Recents quitte la barre et revient dans Decouvrir sous
+ * « Reprendre » : c'est une liste qu'on relit, pas une destination qu'on
+ * vise, et la Bibliotheque avait besoin de sa place.
  */
 const ITEMS = [
   { href: '/app', label: 'Découvrir', icon: DiscoverIcon },
+  { href: '/app/bibliotheque', label: 'Bibliothèque', icon: LibraryIcon },
   { href: '/app/favoris', label: 'Favoris', icon: HeartIcon },
-  { href: '/app/recents', label: 'Récents', icon: ClockIcon },
-  { href: '/compte', label: 'Compte', icon: AccountIcon },
+  { href: '/compte', label: 'Profil', icon: AccountIcon },
 ] as const;
 
 export function BottomNav() {
@@ -69,11 +74,12 @@ function HeartIcon() {
   );
 }
 
-function ClockIcon() {
+function LibraryIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="2" />
-      <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <rect x="3.5" y="4" width="7" height="16" rx="1.6" stroke="currentColor" strokeWidth="2" />
+      <rect x="13.5" y="4" width="7" height="16" rx="1.6" stroke="currentColor" strokeWidth="2" />
+      <path d="M3.5 10h7M13.5 10h7" stroke="currentColor" strokeWidth="2" />
     </svg>
   );
 }

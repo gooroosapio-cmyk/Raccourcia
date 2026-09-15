@@ -29,6 +29,7 @@ export function ChoixMoteur({
   onSelect,
   onLockedClick,
   proposerOuverture = false,
+  pret = true,
 }: {
   promptId: string;
   /** Deja filtrees : une IA non supportee n'a pas a etre proposee. */
@@ -44,6 +45,12 @@ export function ChoixMoteur({
   onSelect?: (key: string) => void;
   onLockedClick?: () => void;
   proposerOuverture?: boolean;
+  /**
+   * Faux tant que la commande n'a pas son texte. La fiche continue de tout
+   * dire — ce que la commande fait, ce qu'elle attend — mais le bouton ne
+   * promet pas une copie qui n'arriverait pas.
+   */
+  pret?: boolean;
 }) {
   const [interne, setInterne] = useState<string | undefined>(undefined);
   const choisi = selected ?? interne ?? providers[0]?.key;
@@ -86,6 +93,7 @@ export function ChoixMoteur({
         provider={actif?.key ?? 'chatgpt'}
         surface={surface}
         locked={locked}
+        pret={pret}
         onLockedClick={onLockedClick}
         proposerOuverture={proposerOuverture}
       />

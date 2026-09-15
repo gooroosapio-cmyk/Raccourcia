@@ -155,10 +155,11 @@ export function DiscoveryConsole({
 
   const actifs = useMemo(() => Object.values(filtres).filter(Boolean).length, [filtres]);
 
-  const chips = categories.flatMap((parent) => [
-    { slug: parent.slug, name: parent.name },
-    ...parent.children.map((child) => ({ slug: child.slug, name: child.name })),
-  ]);
+  // Les familles seulement, jamais leurs collections. Le catalogue V2 en
+  // compte 53 : les aplatir ici donnait une rangee de cinquante puces qu'il
+  // fallait faire defiler pour trouver la sienne. Les collections ont leur
+  // ecran — la Bibliotheque — ou elles tiennent en tuiles.
+  const chips = categories.map((parent) => ({ slug: parent.slug, name: parent.name }));
 
   return (
     <div className="space-y-2.5">

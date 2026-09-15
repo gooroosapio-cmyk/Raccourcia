@@ -153,6 +153,7 @@ export function TextPromptCard({
           promptId={prompt.id}
           provider={actif?.key ?? 'chatgpt'}
           surface="carte"
+          pret={prompt.payloadReady}
           locked={locked}
           compact
           onLockedClick={ouvrirOffre}

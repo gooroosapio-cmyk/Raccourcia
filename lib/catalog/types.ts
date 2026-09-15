@@ -28,6 +28,20 @@ export type PromptCard = {
   useCases: string[];
   tags: string[];
   showImageCard: boolean;
+  /**
+   * Vrai quand la commande a un texte a copier.
+   *
+   * Le catalogue V2 arrive sans payload : une carte existe avant son texte.
+   * Le client ne peut pas le deviner — `prompt_versions` lui est ferme et
+   * doit le rester — donc la base le lui dit.
+   */
+  payloadReady: boolean;
+  /**
+   * Le mot du bouton d'action, tel que le catalogue le donne : « Creer ce
+   * visuel », « Activer le mode », « Lancer le parcours ». Un parcours et
+   * une commande image ne se lancent pas avec le meme verbe.
+   */
+  ctaLabel: string | null;
   isFree: boolean;
   isNew: boolean;
   isFeatured: boolean;
@@ -76,4 +90,39 @@ export type CategoryNode = {
   description: string;
   mode: Enums<'app_mode'>;
   children: { id: string; slug: string; name: string }[];
+};
+
+/**
+ * Une collection telle que la Bibliotheque la montre : une tuile.
+ *
+ * Elle porte de quoi se dessiner sans second aller-retour — son visuel, son
+ * nom, ce qu'elle contient — parce qu'une grille de cinquante tuiles qui
+ * irait chercher chacune son image ferait cinquante requetes.
+ */
+export type CollectionTile = {
+  id: string;
+  slug: string;
+  name: string;
+  /** Combien de commandes publiees s'y trouvent. */
+  count: number;
+  /**
+   * Le visuel d'une commande de la collection, quand il y en a un.
+   *
+   * Le catalogue V2 arrive sans images : la plupart des tuiles n'en auront
+   * pas avant longtemps. L'ecran ne montre alors pas un cadre vide mais une
+   * tuile typographique — un parti pris, pas une panne.
+   */
+  imageUrl: string | null;
+};
+
+/** Une famille de la Bibliotheque et ses collections. */
+export type LibraryFamily = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  mode: Enums<'app_mode'>;
+  /** Total des commandes publiees de la famille, collections comprises. */
+  count: number;
+  collections: CollectionTile[];
 };
