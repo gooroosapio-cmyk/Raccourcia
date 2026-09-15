@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - fermer-tables-sauvegarde
           - refonte-image-v6
           - supabase/seed/v6-payloads
           - supabase/seed/v5-2
@@ -102,7 +103,10 @@ jobs:
       # saute cette etape : la bascule est une dizaine d'instructions, elle n'a
       # pas besoin qu'on reimporte le catalogue pour s'executer.
       - name: Appliquer les lots
-        if: inputs.dossier != 'bascule-seule' && inputs.dossier != 'refonte-image-v6'
+        if: >-
+          inputs.dossier != 'bascule-seule' &&
+          inputs.dossier != 'refonte-image-v6' &&
+          inputs.dossier != 'fermer-tables-sauvegarde'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -187,6 +191,34 @@ jobs:
           echo "La refonte des familles image change la navigation des membres."
           echo "Relancer en tapant « basculer » dans le second champ."
           exit 1
+
+      # Les tables de sauvegarde heritaient d'un SELECT anon et d'une ecriture
+      # authenticated : `alter default privileges` les donne a toute table
+      # creee dans `public`, et un `create table as` de seed ne pose aucune
+      # policy pour les reprendre. Cette etape ferme les quatre.
+      #
+      # Aucune donnee n'est touchee, et la migration est idempotente : pas de
+      # mot de confirmation supplementaire, la seule confirmation du workflow
+      # suffit.
+      - name: Fermer les tables de sauvegarde
+        if: inputs.dossier == 'fermer-tables-sauvegarde'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
+            < supabase/migrations/20260915090000_fermer_les_tables_de_sauvegarde.sql
+          echo '  Etat des sauvegardes :'
+          psql "$PGURL" -At -c "
+            select '    ' || c.relname || ' : RLS=' || c.relrowsecurity ||
+                   ', droits navigateur=' ||
+                   coalesce((select string_agg(distinct g.grantee, ',')
+                             from information_schema.role_table_grants g
+                             where g.table_schema = 'public' and g.table_name = c.relname
+                               and g.grantee in ('anon','authenticated')), 'aucun')
+            from pg_class c join pg_namespace n on n.oid = c.relnamespace
+            where n.nspname = 'public' and c.relkind = 'r' and c.relname like '%avant%'
+            order by c.relname;"
 
       - name: Controle final
         env:

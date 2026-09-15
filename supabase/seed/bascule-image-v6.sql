@@ -25,6 +25,18 @@ from public.prompts p
 left join public.categories c on c.id = p.category_id
 where p.mode = 'image';
 
+-- La sauvegarde ne s'expose pas au navigateur.
+--
+-- `alter default privileges` (migration 20260905110000) donne a toute table
+-- creee ici un SELECT pour `anon` et une ecriture pour `authenticated`.
+-- C'est le bon defaut pour le catalogue, qui referme ensuite par RLS ; une
+-- sauvegarde, elle, n'a pas de policy et ne refermerait rien. Elle porte le
+-- rangement d'avant et permet le retour arriere : la laisser ouverte, c'est
+-- laisser n'importe quel compte connecte la vider.
+alter table public.prompts_avant_image_v6 enable row level security;
+revoke all on table public.prompts_avant_image_v6 from anon, authenticated;
+
+
 -- --- Garde : les trois familles doivent exister ------------------------
 
 do $garde$

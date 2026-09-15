@@ -23,6 +23,29 @@ comment on table public.prompts_avant_v5 is
 create table if not exists public.prompt_questions_avant_v5 as
 select q.*, now() as sauvegarde_le from public.prompt_questions q;
 
+-- La sauvegarde ne s'expose pas au navigateur.
+--
+-- `alter default privileges` (migration 20260905110000) donne a toute table
+-- creee ici un SELECT pour `anon` et une ecriture pour `authenticated`.
+-- C'est le bon defaut pour le catalogue, qui referme ensuite par RLS ; une
+-- sauvegarde, elle, n'a pas de policy et ne refermerait rien. Elle porte le
+-- rangement d'avant et permet le retour arriere : la laisser ouverte, c'est
+-- laisser n'importe quel compte connecte la vider.
+alter table public.prompts_avant_v5 enable row level security;
+revoke all on table public.prompts_avant_v5 from anon, authenticated;
+
+-- La sauvegarde ne s'expose pas au navigateur.
+--
+-- `alter default privileges` (migration 20260905110000) donne a toute table
+-- creee ici un SELECT pour `anon` et une ecriture pour `authenticated`.
+-- C'est le bon defaut pour le catalogue, qui referme ensuite par RLS ; une
+-- sauvegarde, elle, n'a pas de policy et ne refermerait rien. Elle porte le
+-- rangement d'avant et permet le retour arriere : la laisser ouverte, c'est
+-- laisser n'importe quel compte connecte la vider.
+alter table public.prompt_questions_avant_v5 enable row level security;
+revoke all on table public.prompt_questions_avant_v5 from anon, authenticated;
+
+
 comment on table public.prompt_questions_avant_v5 is
   'Questionnaire avant l''import V5. L''import remplace en bloc les questions des commandes V5.';
 
