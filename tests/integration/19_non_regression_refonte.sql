@@ -26,7 +26,14 @@ begin
   -- toujours, ou bien son adresse conduit a celle qui fait desormais le
   -- travail. Un nombre fige n'aurait rien dit — le catalogue a le droit de
   -- retrecir, il n'a pas le droit de perdre quelqu'un en route.
-  if exists (select 1 from information_schema.tables
+  --
+  -- Sauf quand le catalogue a ete remplace : la refonte V2 archive
+  -- volontairement tout ce que le classeur ne reprend pas, et le dire
+  -- « disparu sans relais » serait exact mais hors sujet. Ce qui reste
+  -- verifie alors, c'est qu'aucune ligne n'a ete detruite — voir la
+  -- sauvegarde `prompts_avant_v2` et le fichier 26.
+  if not tests_catalogue_v2_applique()
+     and exists (select 1 from information_schema.tables
              where table_schema = 'public' and table_name = 'prompts_avant_bascule_v5') then
     select count(*) into v_n
     from public.prompts_avant_bascule_v5 s
@@ -81,16 +88,45 @@ begin
       join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
       where v.prompt_id = p.id and v.status = 'published'
         and coalesce(pv.payload, '') <> ''
+    )
+    -- Le catalogue V2 arrive sans texte : ses cartes existent avant leur
+    -- payload, et le disent — `payload_ready` est faux, l'ecran n'offre pas
+    -- de copie, et `resolve_prompt` refuse. Une carte muette qui s'annonce
+    -- muette n'est pas une panne ; une carte muette qui se dit prete en est
+    -- une, et c'est ce que le controle suivant attrape.
+    and p.payload_ready;
+  perform tests_assert(v_n = 0,
+    format('%s commandes visibles se declarent copiables sans rien a copier.', v_n));
+
+  -- La reciproque : une commande qui a un texte doit se declarer prete,
+  -- sinon l'ecran cacherait un bouton qui marcherait.
+  select count(*) into v_n
+  from public.prompts p
+  where p.status = 'published'
+    and not p.payload_ready
+    and exists (
+      select 1
+      from public.prompt_variants v
+      join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
+      where v.prompt_id = p.id and v.status = 'published'
+        and coalesce(btrim(pv.payload), '') <> ''
     );
-  perform tests_assert(v_n = 0, format('%s commandes visibles ne se copient sur aucune IA.', v_n));
+  perform tests_assert(v_n = 0,
+    format('%s commandes copiables se declarent sans texte.', v_n));
 
   -- --- Les noms de commandes restent utilisables ------------------------
 
   -- R02 : une commande se recopie dans une conversation. Une majuscule, un
   -- espace ou un accent, et ce qui est colle ne correspond a rien.
+  --
+  -- Le motif reprend celui que le schema impose depuis l'origine, et non un
+  -- motif plus strict : le tiret et le chiffre initial se tapent aussi bien
+  -- que le reste, et le catalogue V2 en compte 113 — « /1990sflash »,
+  -- « /mariage-bengali ». Les refuser aurait voulu dire les renommer, donc
+  -- casser des identifiants que le classeur fournit.
   select count(*) into v_n
   from public.prompts
-  where status = 'published' and command::text !~ '^/[a-z][a-z0-9_]{2,31}$';
+  where status = 'published' and command::text !~ '^/[a-z0-9][a-z0-9_-]{2,39}$';
   perform tests_assert(v_n = 0, format('%s commandes publiees hors du motif R02.', v_n));
 
   -- Deux commandes homonymes rendraient la copie imprevisible.
@@ -101,10 +137,14 @@ begin
   perform tests_assert(v_n = 0, format('%s noms de commande en double.', v_n));
 
   -- Deux adresses identiques rendraient une fiche inatteignable.
+  -- Borne aux contenus actifs, comme l'index unique du schema : une ligne
+  -- archivee garde son adresse en trace, sans la reserver.
   select count(*) into v_n from (
-    select slug from public.prompts group by slug having count(*) > 1
+    select slug from public.prompts
+    where status <> 'archived'
+    group by slug having count(*) > 1
   ) doublons;
-  perform tests_assert(v_n = 0, format('%s adresses publiques en double.', v_n));
+  perform tests_assert(v_n = 0, format('%s adresses publiques actives en double.', v_n));
 
   -- --- Le palier d'essai existe toujours --------------------------------
 

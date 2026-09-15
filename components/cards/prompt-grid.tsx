@@ -28,6 +28,7 @@ export function PromptGrid({
   locked,
   visiteur = false,
   emptyState,
+  disposition = 'grille',
   initialProvider = 'chatgpt',
   prioritaire = true,
 }: {
@@ -44,6 +45,15 @@ export function PromptGrid({
    */
   visiteur?: boolean;
   emptyState: React.ReactNode;
+  /**
+   * « grille » remplit l'ecran, « rangee » defile lateralement.
+   *
+   * Une rangee sert a presenter quelques commandes sans manger la hauteur
+   * de l'Accueil : on en montre deux et demie, et le reste s'atteint du
+   * pouce. La fiche, le favori et la copie sont les memes dans les deux —
+   * c'est la disposition qui change, pas la carte.
+   */
+  disposition?: 'grille' | 'rangee';
   initialProvider?: string;
   /**
    * Faux pour les grilles secondaires de l'Accueil.
@@ -76,7 +86,17 @@ export function PromptGrid({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)] sm:grid-cols-3 lg:grid-cols-4">
+      <div
+        className={
+          disposition === 'rangee'
+            ? // Chaque carte fait 42 % de la largeur : deux entieres et le bord
+              // de la troisieme, qui dit qu'il y a une suite sans la montrer a
+              // moitie. Les marges negatives font affleurer la rangee aux bords
+              // de l'ecran, et le padding lui rend sa gouttiere.
+              'rail -mx-5 flex snap-x snap-mandatory gap-2 px-5 pb-1 [&>*]:w-[42%] [&>*]:shrink-0 [&>*]:snap-start sm:[&>*]:w-[30%] lg:[&>*]:w-[22%]'
+            : 'grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)] sm:grid-cols-3 lg:grid-cols-4'
+        }
+      >
         {prompts.map((prompt, index) => {
           const verrouille = locked && !prompt.isFree;
           const commun = {
@@ -93,10 +113,11 @@ export function PromptGrid({
             <ImagePromptCard
               key={prompt.id}
               {...commun}
-              // Seules les deux premieres vignettes de la grille principale
-              // sont prioritaires : ce sont les seules certaines d'etre a
-              // l'ecran au chargement.
-              priority={prioritaire && index < 2}
+              // Les quatre premieres vignettes de la grille principale sont
+              // prioritaires : sur deux colonnes, un telephone en montre deux
+              // rangees avant le premier defilement. Deux seulement laissaient
+              // la seconde rangee se charger apres coup, sous les yeux.
+              priority={prioritaire && index < 4}
             />
           ) : (
             <TextPromptCard key={prompt.id} {...commun} />

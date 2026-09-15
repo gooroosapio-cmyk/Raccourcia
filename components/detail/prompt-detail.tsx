@@ -357,6 +357,7 @@ export function PromptDetailSheet({
         <div className="shrink-0 border-t border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
           <ChoixMoteur
             promptId={prompt.id}
+            pret={prompt.payloadReady}
             providers={compatibles}
             surface="detail"
             locked={locked}

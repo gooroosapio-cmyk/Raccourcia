@@ -198,7 +198,17 @@ for (const [index, e] of entrees.entries()) {
 
     const envoi = await fetch(`${base}/storage/v1/object/${BUCKET}/${cible}`, {
       method: 'POST',
-      headers: { ...entetes, 'Content-Type': type, 'x-upsert': 'false' },
+      headers: {
+        ...entetes,
+        'Content-Type': type,
+        // Sans cet en-tete le stockage marque l'objet « no-cache » : le
+        // navigateur retelecharge la vignette a chaque remontee dans la
+        // grille, et le redimensionnement est refait a chaque fois. Une
+        // heure suffit — le chemin porte un horodatage, un visuel remplace
+        // ne reutilise jamais la meme adresse.
+        'Cache-Control': 'public, max-age=3600',
+        'x-upsert': 'false',
+      },
       body: readFileSync(complet),
     });
 

@@ -128,6 +128,7 @@ export function ImagePromptCard({
           promptId={prompt.id}
           provider={actif?.key ?? 'chatgpt'}
           surface="carte"
+          pret={prompt.payloadReady}
           locked={locked}
           compact
           onLockedClick={ouvrirOffre}

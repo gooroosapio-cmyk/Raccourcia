@@ -32,3 +32,22 @@ begin
   execute 'set local role anon';
 end;
 $$;
+
+-- Le catalogue V2 remplace l'ancien : ce qui etait publie est archive, et
+-- des commandes changent de domaine et de rayon. Plusieurs fichiers
+-- decrivent l'etat que leur import avait produit — un etat qui appartient
+-- desormais a l'histoire.
+--
+-- Ils gardent leurs controles d'integrite, qui portent sur des lignes
+-- toujours en base : comptes d'import, questionnaires, empreintes de
+-- payloads. Ils suspendent ceux qui parlent de la vitrine : ce qui est
+-- publie, visible, ou range dans telle famille.
+--
+-- Suspendre et non supprimer : le jour ou l'on rejoue un import sans la
+-- refonte V2, ces controles reprennent leur travail.
+create or replace function tests_catalogue_v2_applique()
+returns boolean language sql stable as $$
+  select exists (
+    select 1 from public.prompts where catalog_v2 and status = 'published'
+  )
+$$;

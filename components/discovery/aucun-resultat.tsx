@@ -14,8 +14,25 @@ import { useRouter } from 'next/navigation';
  * chaine au champ concatene du raccourci, donc deux mots ne se trouvent que
  * s'ils s'y suivent. Conseiller « fond blanc » serait conseiller un echec.
  */
-export function AucunResultat({ terme, mode }: { terme?: string; mode: string }) {
+export function AucunResultat({
+  terme,
+  mode,
+  famille = null,
+}: {
+  terme?: string;
+  mode: string;
+  /**
+   * Le nom de la famille choisie, quand il y en a une.
+   *
+   * La bibliotheque s'ouvre toujours sur une famille : une recherche qui ne
+   * rend rien dedans peut tres bien rendre quelque chose deux puces plus
+   * loin. Le dire, et proposer le geste, vaut mieux que de laisser croire
+   * que la commande n'existe pas.
+   */
+  famille?: string | null;
+}) {
   const router = useRouter();
+  const elargir = Boolean(terme && famille);
 
   return (
     <div className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-5 py-8 text-center">
@@ -24,7 +41,12 @@ export function AucunResultat({ terme, mode }: { terme?: string; mode: string })
       </p>
 
       <p className="mx-auto mt-2 max-w-[38ch] text-[length:var(--texte-corps)] leading-relaxed text-[color:var(--color-muted)]">
-        {terme ? (
+        {elargir ? (
+          <>
+            Rien ne correspond à «&nbsp;{terme}&nbsp;» dans {famille}. La commande existe peut-être
+            dans une autre catégorie.
+          </>
+        ) : terme ? (
           <>
             Rien ne correspond à «&nbsp;{terme}&nbsp;». Essayez un seul mot, celui de ce que vous
             voulez obtenir plutôt que le nom de la commande&nbsp;: «&nbsp;portrait&nbsp;»,
@@ -35,10 +57,28 @@ export function AucunResultat({ terme, mode }: { terme?: string; mode: string })
         )}
       </p>
 
+      {/* Elargir d'abord, reinitialiser ensuite : le premier garde ce qu'on
+          cherchait, le second l'abandonne. */}
+      {elargir ? (
+        <button
+          type="button"
+          onClick={() =>
+            router.replace(`/app?mode=${mode}&q=${encodeURIComponent(terme!)}`, { scroll: false })
+          }
+          className="touch-target mt-5 inline-flex w-full items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] px-5 text-[length:var(--texte-corps)] font-semibold text-white"
+        >
+          Chercher dans toutes les catégories
+        </button>
+      ) : null}
+
       <button
         type="button"
         onClick={() => router.replace(`/app?mode=${mode}`, { scroll: false })}
-        className="touch-target mt-5 inline-flex items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] px-5 text-[length:var(--texte-corps)] font-semibold text-white"
+        className={`touch-target mt-3 inline-flex items-center justify-center rounded-[color:var(--radius-control)] px-5 text-[length:var(--texte-corps)] font-semibold ${
+          elargir
+            ? 'text-[color:var(--color-brand)]'
+            : 'mt-5 bg-[color:var(--color-brand)] text-white'
+        }`}
       >
         Réinitialiser la recherche et les filtres
       </button>

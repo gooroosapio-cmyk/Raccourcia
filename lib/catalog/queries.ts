@@ -16,7 +16,13 @@ import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import { clesDeTri } from '@/lib/catalog/tri';
 import { modesLisibles } from '@/lib/catalog/modes';
 import { normaliserRecherche, portesDeRecherche } from '@/lib/catalog/recherche';
-import type { BeforeAfter, CategoryNode, PromptCard, PromptDetail } from '@/lib/catalog/types';
+import type {
+  BeforeAfter,
+  CategoryNode,
+  LibraryFamily,
+  PromptCard,
+  PromptDetail,
+} from '@/lib/catalog/types';
 import type { Enums } from '@/lib/supabase/database.types';
 import type { CatalogQuery } from '@/lib/validation/schemas';
 import { CatalogUnavailableError } from '@/lib/catalog/errors';
@@ -135,6 +141,92 @@ export const getCategories = cache(async (mode: Enums<'app_mode'>): Promise<Cate
 });
 
 /**
+ * La Bibliotheque : les familles, leurs collections, et de quoi les dessiner.
+ *
+ * Trois lectures, jamais une par tuile : les rayons visibles, le nombre de
+ * commandes publiees par rayon, et un visuel par collection. Cinquante-trois
+ * tuiles qui iraient chacune chercher son image feraient cinquante-trois
+ * requetes pour une seule page.
+ *
+ * Le visuel d'une collection est celui d'une de ses commandes — la premiere
+ * dans l'ordre du catalogue qui en porte un. Le catalogue V2 arrive sans
+ * images : la plupart des tuiles n'en auront pas, et l'ecran le prevoit.
+ */
+export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
+  const supabase = await createClient();
+
+  const [{ data: rayons, error }, { data: commandes }] = await Promise.all([
+    supabase
+      .from('categories')
+      .select('id, slug, name, short_description, mode, parent_id, sort_order')
+      .eq('is_visible', true)
+      .order('sort_order', { ascending: true }),
+    supabase
+      .from('prompts')
+      .select('category_id, sort_order, prompt_media(kind, storage_path, sort_order)')
+      .eq('status', 'published')
+      .order('sort_order', { ascending: true }),
+  ]);
+
+  // Les types generes ne declarent pas la relation prompts -> prompt_media :
+  // le reste du fichier fait de meme pour les cartes.
+  type LigneVisuel = {
+    category_id: string | null;
+    prompt_media: { kind: string; storage_path: string; sort_order: number }[] | null;
+  };
+
+  if (error) throw new CatalogUnavailableError(error);
+
+  const lignes = rayons ?? [];
+
+  // Ce que chaque rayon contient, et la premiere image qu'on y trouve.
+  const comptes = new Map<string, number>();
+  const visuels = new Map<string, string>();
+  for (const commande of (commandes ?? []) as unknown as LigneVisuel[]) {
+    if (!commande.category_id) continue;
+    comptes.set(commande.category_id, (comptes.get(commande.category_id) ?? 0) + 1);
+    if (visuels.has(commande.category_id)) continue;
+    const media = (commande.prompt_media ?? [])
+      .filter((m) => m.kind === 'after' || m.kind === 'thumbnail')
+      .sort((a, b) => a.sort_order - b.sort_order)[0];
+    if (media) {
+      visuels.set(commande.category_id, urlVisuel(media.storage_path, LARGEURS_VISUEL.vignette));
+    }
+  }
+
+  return (
+    lignes
+      .filter((rayon) => rayon.parent_id === null)
+      .map((famille) => {
+        const collections = lignes
+          .filter((rayon) => rayon.parent_id === famille.id)
+          .map((collection) => ({
+            id: collection.id,
+            slug: collection.slug,
+            name: collection.name,
+            count: comptes.get(collection.id) ?? 0,
+            imageUrl: visuels.get(collection.id) ?? null,
+          }));
+
+        return {
+          id: famille.id,
+          slug: famille.slug,
+          name: famille.name,
+          description: famille.short_description?.trim() ?? '',
+          mode: famille.mode,
+          // Les commandes rangees directement dans la famille comptent aussi :
+          // toutes les taxonomies n'ont pas deux niveaux.
+          count:
+            (comptes.get(famille.id) ?? 0) + collections.reduce((total, c) => total + c.count, 0),
+          collections,
+        };
+      })
+      // Une famille sans rien a montrer n'a pas de tuile a offrir.
+      .filter((famille) => famille.count > 0)
+  );
+});
+
+/**
  * Colonnes du comptage.
  *
  * Rien que l'identifiant, plus les jointures sur lesquelles les filtres
@@ -144,13 +236,25 @@ export const getCategories = cache(async (mode: Enums<'app_mode'>): Promise<Cate
 const COUNT_COLUMNS = 'id, prompt_variants!inner(ai_providers!inner(key))';
 
 /** Colonnes publiques d'un raccourci. `payload` n'y figure jamais. */
+/**
+ * Colonnes d'une carte de galerie.
+ *
+ * `prompt_variants` est une jointure externe, et non interne comme
+ * auparavant : une carte du catalogue V2 existe avant son texte, donc avant
+ * ses variantes. La reserver a celles qui ont deja un moteur ferait
+ * disparaitre six cents cartes de la galerie. C'est `payload_ready` qui dit
+ * si la commande se copie, et l'ecran s'y fie.
+ *
+ * Rien de premium ne passe ici : le payload n'est jamais selectionne.
+ */
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
-  show_image_card, is_free, is_new, is_featured, risk_level, sort_order,
+  show_image_card, payload_ready, cta_label,
+  is_free, is_new, is_featured, risk_level, sort_order,
   level, max_questions,
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
-  prompt_variants!inner(compatibility, status, ai_providers!inner(key, name, is_active)),
+  prompt_variants(compatibility, status, ai_providers(key, name, is_active)),
   prompt_media(kind, storage_path, alt, sort_order),
   prompt_aliases!prompt_aliases_canonical_prompt_id_fkey(preset)
 `;
@@ -168,6 +272,8 @@ type CardRow = {
   use_cases: string[];
   tags: string[];
   show_image_card: boolean;
+  payload_ready: boolean;
+  cta_label: string | null;
   is_free: boolean;
   is_new: boolean;
   is_featured: boolean;
@@ -244,6 +350,8 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     useCases: row.use_cases ?? [],
     tags: row.tags ?? [],
     showImageCard: row.show_image_card,
+    payloadReady: row.payload_ready,
+    ctaLabel: row.cta_label,
     isFree: row.is_free,
     isNew: row.is_new,
     isFeatured: row.is_featured,
@@ -372,15 +480,19 @@ async function resoudreCategorie(client: Client, slug?: string): Promise<string[
  */
 async function categoriesParRecherche(
   client: Client,
-  mode: Enums<'app_mode'>,
+  /** `null` pour chercher dans tous les domaines. */
+  mode: Enums<'app_mode'> | null,
   terme: string,
 ): Promise<string[]> {
-  const { data } = await client
+  let requete = client
     .from('categories')
     .select('id')
-    .eq('mode', mode)
     .eq('is_visible', true)
     .ilike('search_norm', `%${terme}%`);
+
+  if (mode) requete = requete.eq('mode', mode);
+
+  const { data } = await requete;
 
   const trouvees = (data ?? []).map((ligne) => ligne.id);
   if (trouvees.length === 0) return [];
@@ -417,7 +529,12 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   // doit ramener la famille entiere, pas seulement les commandes dont le
   // titre contient le mot.
   const terme = query.search ? normaliserRecherche(query.search) : '';
-  const famillesTrouvees = terme ? await categoriesParRecherche(supabase, query.mode, terme) : [];
+  // Une recherche a l'echelle du catalogue ne se borne pas au domaine : ni
+  // pour les commandes, ni pour les familles qu'on peut chercher par leur nom.
+  const transverse = query.portee === 'catalogue';
+  const famillesTrouvees = terme
+    ? await categoriesParRecherche(supabase, transverse ? null : query.mode, terme)
+    : [];
 
   // Une seule construction pour la lecture et pour le comptage : deux chaines
   // de filtres separees auraient fini par annoncer un total qui ne correspond
@@ -427,8 +544,9 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     let requete = supabase
       .from('prompts')
       .select(colonnes as '*', tete ? { count: 'exact', head: true } : undefined)
-      .eq('mode', query.mode)
       .eq('status', 'published');
+
+    if (!transverse) requete = requete.eq('mode', query.mode);
 
     if (categorieIds) requete = requete.in('category_id', categorieIds);
 
@@ -675,6 +793,55 @@ export async function getFavorites(): Promise<PromptCard[]> {
   const cards = ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
   // Conserver l'ordre "ajoute recemment d'abord".
   return ids.map((id) => cards.find((card) => card.id === id)).filter((card) => card !== undefined);
+}
+
+/**
+ * Une rangee de l'Accueil : quelques commandes choisies, tous domaines
+ * confondus.
+ *
+ * `getCatalogPage` ne sait travailler que dans un domaine a la fois, parce
+ * que la bibliotheque se parcourt domaine par domaine. L'Accueil, lui,
+ * presente : « Selection du moment » n'a pas a demander si l'on cherche une
+ * image ou un texte.
+ *
+ * Deux rangees, deux criteres, et rien d'invente : la mise en avant vient du
+ * catalogue, les nouveautes de la date de publication. Il n'y a pas de
+ * rangee « les plus utilisees » — le compte des copies vit dans
+ * `copy_events`, ferme au membre, et une popularite devinee vaudrait moins
+ * que pas de rangee du tout.
+ */
+export async function getRangeeAccueil(
+  critere: 'mise-en-avant' | 'nouveautes',
+  limite = 8,
+): Promise<PromptCard[]> {
+  const supabase = await createClient();
+  const favorites = await getFavoriteIds();
+
+  let requete = supabase
+    .from('prompts')
+    .select(CARD_COLUMNS)
+    .eq('status', 'published')
+    .limit(limite);
+
+  if (critere === 'mise-en-avant') {
+    requete = requete
+      .eq('is_featured', true)
+      // Ce qui a un visuel d'abord : une rangee de presentation sans image
+      // ne presente rien.
+      .order('media_ready', { ascending: false })
+      .order('sort_order', { ascending: true });
+  } else {
+    requete = requete
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .order('sort_order', { ascending: true });
+  }
+
+  // Derniere cle unique : sans elle, deux commandes ex aequo peuvent
+  // s'echanger d'un chargement a l'autre, et la rangee semble bouger seule.
+  const { data, error } = await requete.order('command', { ascending: true });
+  if (error) throw new CatalogUnavailableError(error);
+
+  return ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
 }
 
 /** Vue Recents : les raccourcis copies priment sur les simples consultations. */

@@ -186,6 +186,7 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
                 puisse savoir pourquoi. */}
             <ChoixMoteur
               promptId={prompt.id}
+              pret={prompt.payloadReady}
               providers={compatibles}
               surface="page-publique"
               locked={false}

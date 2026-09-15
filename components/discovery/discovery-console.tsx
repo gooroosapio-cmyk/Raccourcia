@@ -7,7 +7,6 @@ import {
   FilterSheet,
   type FiltresAvances,
 } from '@/components/discovery/filter-sheet';
-import { Intentions } from '@/components/discovery/intentions';
 import { MODE_LABELS, type Mode } from '@/lib/constants';
 import type { CategoryNode } from '@/lib/catalog/types';
 
@@ -26,6 +25,7 @@ export function DiscoveryConsole({
   mode,
   categories,
   categorySlug,
+  transverse = false,
   search,
   filtres,
   resultCount,
@@ -34,6 +34,15 @@ export function DiscoveryConsole({
   mode: Mode;
   categories: CategoryNode[];
   categorySlug?: string;
+  /**
+   * Vrai quand la recherche en cours traverse tout le catalogue.
+   *
+   * Le selecteur de domaine et les puces disparaissent alors : ils
+   * annonceraient une portee que la requete n'applique pas, et une commande
+   * « Texte » trouvee sous l'onglet « Image » ferait douter de l'un ou de
+   * l'autre.
+   */
+  transverse?: boolean;
   search?: string;
   filtres: FiltresAvances;
   /** Nombre reel de resultats de la selection, pas le nombre de cartes chargees. */
@@ -70,10 +79,16 @@ export function DiscoveryConsole({
     }
   }
 
+  // `remonter` pour les gestes qui changent la liste elle-meme — domaine,
+  // famille. Rester a la meme hauteur dans une liste qui n'est plus la meme
+  // laisse l'utilisateur au milieu de nulle part, devant des cartes qu'il
+  // n'a pas fait defiler. La recherche et les filtres, eux, affinent la
+  // liste en place : on ne lui reprend pas sa position.
   const push = useCallback(
-    (next: URLSearchParams) => {
+    (next: URLSearchParams, remonter = false) => {
       startTransition(() => {
         router.replace(`/app?${next.toString()}`, { scroll: false });
+        if (remonter) window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     },
     [router],
@@ -105,7 +120,7 @@ export function DiscoveryConsole({
     // zero, comme le lot en cours.
     next.delete('categorie');
     next.delete('page');
-    push(next);
+    push(next, true);
   };
 
   // Les fleches parcourent les onglets, comme le veut le motif ARIA : sur
@@ -125,12 +140,12 @@ export function DiscoveryConsole({
     choisirMode(modes[index]!);
   };
 
-  const choisirCategorie = (slug?: string) => {
+  const choisirCategorie = (slug: string) => {
+    if (slug === categorySlug) return;
     const next = new URLSearchParams(params.toString());
-    if (slug) next.set('categorie', slug);
-    else next.delete('categorie');
+    next.set('categorie', slug);
     next.delete('page');
-    push(next);
+    push(next, true);
   };
 
   const appliquerFiltres = (valeurs: FiltresAvances) => {
@@ -150,18 +165,11 @@ export function DiscoveryConsole({
 
   const actifs = useMemo(() => Object.values(filtres).filter(Boolean).length, [filtres]);
 
-  const chips = categories.flatMap((parent) => [
-    { slug: parent.slug, name: parent.name },
-    ...parent.children.map((child) => ({ slug: child.slug, name: child.name })),
-  ]);
-
-  // Les raccourcis d'intention ne s'affichent que sur l'Accueil nu : des
-  // qu'un choix est fait, la rangee de chips dit la meme chose en une ligne.
-  const intentions = categories.map((famille) => ({
-    slug: famille.slug,
-    nom: famille.name,
-  }));
-  const vierge = !categorySlug && !search && actifs === 0;
+  // Les familles seulement, jamais leurs collections. Le catalogue V2 en
+  // compte 53 : les aplatir ici donnait une rangee de cinquante puces qu'il
+  // fallait faire defiler pour trouver la sienne. Les collections ont leur
+  // ecran — la Bibliotheque — ou elles tiennent en tuiles.
+  const chips = categories.map((parent) => ({ slug: parent.slug, name: parent.name }));
 
   return (
     <div className="space-y-2.5">
@@ -170,24 +178,27 @@ export function DiscoveryConsole({
         <FilterButton count={actifs} onClick={() => setPanneauOuvert(true)} />
       </div>
 
-      <ModeSegmentedControl
-        modes={modes}
-        mode={mode}
-        onSelect={choisirMode}
-        onKeyDown={naviguerAuClavier}
-        ongletsRef={ongletsRef}
-      />
-
-      {/* L'un ou l'autre, jamais les deux : ils proposent les memes familles. */}
-      {vierge ? (
-        <Intentions intentions={intentions} onSelect={choisirCategorie} />
+      {transverse ? (
+        <p className="text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
+          Recherche dans tout le catalogue.
+        </p>
       ) : (
-        <CategoryChips chips={chips} active={categorySlug} onSelect={choisirCategorie} />
+        <>
+          <ModeSegmentedControl
+            modes={modes}
+            mode={mode}
+            onSelect={choisirMode}
+            onKeyDown={naviguerAuClavier}
+            ongletsRef={ongletsRef}
+          />
+
+          <CategoryChips chips={chips} active={categorySlug} onSelect={choisirCategorie} />
+        </>
       )}
 
       {/* Le compte disparait quand il n'y a rien : l'ecran vide le dit deja,
           et le lire deux fois de suite n'apprend rien de plus. */}
-      {!vierge && resultCount > 0 ? (
+      {resultCount > 0 ? (
         <p
           aria-live="polite"
           className="text-[length:var(--texte-carte)] text-[color:var(--color-muted)]"
@@ -233,7 +244,7 @@ function SearchField({ value, onChange }: { value: string; onChange: (v: string)
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder="Recherche une commande"
+        placeholder="Que souhaitez-vous créer ?"
         // La reserve de droite n'existe que lorsque la croix d'effacement est
         // la, c'est-a-dire quand le champ est rempli : la garder a vide
         // tronquait « Recherche une commande » sur un ecran de 360 px.
@@ -363,7 +374,7 @@ function CategoryChips({
 }: {
   chips: { slug: string; name: string }[];
   active?: string;
-  onSelect: (slug?: string) => void;
+  onSelect: (slug: string) => void;
 }) {
   const railRef = useRef<HTMLDivElement>(null);
   const actifRef = useRef<HTMLButtonElement>(null);
@@ -377,22 +388,18 @@ function CategoryChips({
   return (
     <div className="relative -mx-5">
       <div ref={railRef} className="rail px-5">
-        {/* Pas de « Toutes » : les familles d'un domaine tiennent a l'ecran,
-            et le choix de l'une d'elles est precisement ce qu'on demande ici.
-            Une puce de plus qui ne filtre rien ajouterait une decision sans
-            en resoudre aucune — la puce active se detache pour dire ou l'on
-            est, et la retoucher suffit a revenir en arriere. */}
-        <div className="flex w-max gap-2 pb-1">
+        {/* Pas de « Toutes » : la bibliotheque s'ouvre sur une famille et on
+            en change comme on change d'onglet. Une puce de plus qui ne filtre
+            rien ajouterait une decision sans en resoudre aucune, et quatre
+            cents commandes d'un coup ne se parcourent pas. */}
+        <div role="group" aria-label="Catégories" className="flex w-max gap-2 pb-1">
           {chips.map((chip) => (
             <Chip
               key={chip.slug}
               ref={chip.slug === active ? actifRef : undefined}
               label={chip.name}
               active={chip.slug === active}
-              // Retoucher la famille choisie la deselectionne : c'est ce qui
-              // remplace la puce « Toutes », et c'est le geste qu'on tente
-              // naturellement quand on veut revenir a tout le domaine.
-              onClick={() => onSelect(chip.slug === active ? undefined : chip.slug)}
+              onClick={() => onSelect(chip.slug)}
             />
           ))}
         </div>
@@ -423,7 +430,11 @@ function Chip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`h-9 shrink-0 whitespace-nowrap rounded-full px-3.5 text-[length:var(--texte-carte)] font-medium transition-colors duration-[var(--duration-fast)] ${
+      // 44 px de haut, pas 36 : ces puces sont devenues la navigation
+      // principale du catalogue depuis que la bibliotheque s'ouvre sur une
+      // famille. Une cible de 36 px se manque au pouce, et se manquer ici
+      // veut dire changer de rayon sans l'avoir voulu.
+      className={`touch-target inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-4 text-[length:var(--texte-carte)] font-medium transition-colors duration-[var(--duration-fast)] ${
         active
           ? 'bg-[color:var(--color-brand)] text-white'
           : 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'
@@ -469,7 +480,9 @@ function ActiveFilterSummary({
           type="button"
           onClick={() => onRemove(cle)}
           aria-label={`Retirer le filtre ${libelles[valeur] ?? valeur}`}
-          className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[color:var(--color-brand-soft)] pl-3 pr-2 text-[13px] font-medium text-[color:var(--color-brand-strong)]"
+          // La pastille reste fine, la cible fait 44 px : retirer un filtre
+          // par erreur reinterroge le catalogue pour rien.
+          className="touch-target inline-flex items-center gap-1.5 rounded-full bg-[color:var(--color-brand-soft)] pl-3 pr-2 text-[13px] font-medium text-[color:var(--color-brand-strong)]"
         >
           {libelles[valeur] ?? valeur}
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -485,7 +498,7 @@ function ActiveFilterSummary({
       <button
         type="button"
         onClick={onClear}
-        className="h-8 px-1 text-[13px] font-medium text-[color:var(--color-muted)] underline underline-offset-2"
+        className="touch-target inline-flex items-center px-2 text-[13px] font-medium text-[color:var(--color-muted)] underline underline-offset-2"
       >
         Effacer
       </button>

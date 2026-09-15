@@ -29,11 +29,16 @@ begin
   -- Le rayon exact change au fil des refontes — la V6 a regroupe les six
   -- familles image en trois — mais une commande image reste rangee dans une
   -- famille image du catalogue, jamais ailleurs.
-  select count(*) into v_n
-  from public.prompts p
-  join public.categories c on c.id = p.category_id
-  where p.catalog_version = 'v5.1' and c.external_ref !~ '^IMG-V[0-9]+-';
-  perform tests_assert(v_n = 0, format('%s commandes V5.1 rangees hors des familles image.', v_n));
+  -- Le classeur V2 reprend trois de ces commandes et les range dans ses
+  -- propres collections : le controle ci-dessous decrit la taxonomie image,
+  -- qui n'est plus celle de la galerie.
+  if not tests_catalogue_v2_applique() then
+    select count(*) into v_n
+    from public.prompts p
+    join public.categories c on c.id = p.category_id
+    where p.catalog_version = 'v5.1' and c.external_ref !~ '^IMG-V[0-9]+-';
+    perform tests_assert(v_n = 0, format('%s commandes V5.1 rangees hors des familles image.', v_n));
+  end if;
 
   -- Trois textes distincts par commande, comme pour tout le catalogue V5.
   select count(*) into v_n
@@ -50,9 +55,14 @@ begin
   -- L'extension arrive en brouillon. Une seule commande publiee par
   -- l'import, et cinquante cartes sans visuel apparaissent d'un coup dans
   -- le catalogue, sans qu'aucun texte n'ait ete relu.
-  select count(*) into v_n from public.prompts
-  where catalog_version = 'v5.1' and status <> 'draft';
-  perform tests_assert(v_n = 0, format('%s commandes V5.1 sont sorties du brouillon toutes seules.', v_n));
+  -- C'est l'import qui est surveille ici, pas la vitrine : la refonte V2
+  -- reprend certaines de ces commandes et publie celles que son classeur
+  -- declare visibles.
+  if not tests_catalogue_v2_applique() then
+    select count(*) into v_n from public.prompts
+    where catalog_version = 'v5.1' and status <> 'draft';
+    perform tests_assert(v_n = 0, format('%s commandes V5.1 sont sorties du brouillon toutes seules.', v_n));
+  end if;
 
   -- Aucun visuel : le classeur l'interdit explicitement, et une commande
   -- image sans visuel se range d'elle-meme en bas de sa famille.
@@ -66,15 +76,24 @@ begin
 
   -- --- Identite : rien ne doit se marcher dessus ------------------------
 
+  -- Borne aux contenus actifs, comme les index uniques du schema : une
+  -- ligne archivee garde son nom et son adresse en trace, sans les
+  -- reserver.
   select count(*) into v_n from (
-    select command from public.prompts group by command having count(*) > 1
+    select command from public.prompts
+    where status <> 'archived'
+    group by command having count(*) > 1
   ) doublons;
-  perform tests_assert(v_n = 0, format('%s noms de commande en double.', v_n));
+  perform tests_assert(v_n = 0, format('%s noms de commande actifs en double.', v_n));
 
+  -- Borne aux contenus actifs, comme l'index unique du schema : une ligne
+  -- archivee garde son adresse en trace, sans la reserver.
   select count(*) into v_n from (
-    select slug from public.prompts group by slug having count(*) > 1
+    select slug from public.prompts
+    where status <> 'archived'
+    group by slug having count(*) > 1
   ) doublons;
-  perform tests_assert(v_n = 0, format('%s adresses publiques en double.', v_n));
+  perform tests_assert(v_n = 0, format('%s adresses publiques actives en double.', v_n));
 
   select count(*) into v_n from (
     select external_ref from public.prompts where external_ref is not null
