@@ -1,5 +1,13 @@
 import { getAccessState } from '@/lib/access/entitlement';
-import { getAvailableModes, getCatalogPage, getCategories } from '@/lib/catalog/queries';
+import {
+  getAvailableModes,
+  getBibliotheque,
+  getCatalogPage,
+  getCategories,
+  getRangeeAccueil,
+  getRecents,
+} from '@/lib/catalog/queries';
+import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
 import { DiscoveryConsole } from '@/components/discovery/discovery-console';
 import { VoirPlus } from '@/components/discovery/voir-plus';
 import { AucunResultat } from '@/components/discovery/aucun-resultat';
@@ -71,7 +79,24 @@ export default async function DiscoverPage({
   const demandee = lire('categorie');
   const familleDemandee = demandee && connues.has(demandee) ? demandee : undefined;
   const familleParDefaut = categories[0]?.slug;
-  const famille = familleDemandee ?? (lire('q') ? undefined : familleParDefaut);
+
+  // Deux etats pour un seul ecran.
+  //
+  // Tant que rien n'est cherche ni choisi, l'Accueil presente : selection du
+  // moment, collections, nouveautes, reprise. Des qu'une recherche, une
+  // famille ou un filtre entre en jeu, il redevient une liste de resultats.
+  //
+  // Le meme bandeau — recherche, domaine, puces — coiffe les deux : c'est lui
+  // qui fait passer de l'un a l'autre, et le deplacer ferait perdre le fil.
+  const editorial =
+    !lire('q') &&
+    !familleDemandee &&
+    !lire('acces') &&
+    !lire('ia') &&
+    !lire('sortie') &&
+    !lire('page');
+
+  const famille = familleDemandee ?? (editorial || lire('q') ? undefined : familleParDefaut);
 
   // Zod filtre les valeurs inconnues : un parametre d'URL bricole ne peut ni
   // atteindre la requete, ni faire echouer la page.
@@ -104,9 +129,28 @@ export default async function DiscoverPage({
   // liste hors de l'ecran, et un membre qui ouvre l'Accueil vient chercher
   // une commande, pas relire celles qu'il connait deja.
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
+  let accueil: {
+    miseEnAvant: Awaited<ReturnType<typeof getRangeeAccueil>>;
+    nouveautes: Awaited<ReturnType<typeof getRangeeAccueil>>;
+    reprendre: Awaited<ReturnType<typeof getRecents>>;
+    familles: Awaited<ReturnType<typeof getBibliotheque>>;
+  } | null = null;
 
   try {
-    page = await getCatalogPage(requete);
+    if (editorial) {
+      // L'historique n'existe que pour un compte : le demander a un visiteur
+      // revient a interroger une table qui lui est fermee.
+      const [miseEnAvant, nouveautes, familles, reprendre] = await Promise.all([
+        getRangeeAccueil('mise-en-avant'),
+        getRangeeAccueil('nouveautes'),
+        getBibliotheque(),
+        acces.isMember ? getRecents() : Promise.resolve([]),
+      ]);
+      accueil = { miseEnAvant, nouveautes, familles, reprendre: reprendre.slice(0, 8) };
+      page = { items: [], hasMore: false, total: 0 };
+    } else {
+      page = await getCatalogPage(requete);
+    }
   } catch (error) {
     // Un catalogue injoignable n'est pas un catalogue vide.
     if (isCatalogUnavailable(error)) {
@@ -155,7 +199,24 @@ export default async function DiscoverPage({
           annoncait « Que voulez-vous creer ? » comme premier repere, sans
           jamais dire ou l'on se trouve. Le titre reste invisible — l'ecran,
           lui, se lit d'un coup d'oeil. */}
-      <h1 className="sr-only">Bibliothèque de commandes RaccourcIA</h1>
+      {/* Sur l'Accueil qui presente, le titre se voit : c'est la premiere
+          phrase que lit quelqu'un qui ouvre l'application, et « Bibliotheque
+          de commandes RaccourcIA » n'etait qu'un repere pour lecteur d'ecran.
+          Des qu'on cherche, il redevient invisible — les resultats parlent
+          d'eux-memes et la hauteur revient aux cartes. */}
+      {editorial ? (
+        <div className="pt-1">
+          <h1 className="text-[length:var(--texte-page)] font-bold leading-tight text-[color:var(--color-night)]">
+            Découvrez ce que vous pouvez créer
+          </h1>
+          <p className="mt-1 text-[length:var(--texte-corps)] leading-relaxed text-[color:var(--color-muted)]">
+            Explorez des commandes prêtes à l’emploi et trouvez rapidement celle qui correspond à
+            votre projet.
+          </p>
+        </div>
+      ) : (
+        <h1 className="sr-only">Bibliothèque de commandes RaccourcIA</h1>
+      )}
 
       <DiscoveryConsole
         modes={modes}
@@ -167,32 +228,43 @@ export default async function DiscoverPage({
         resultCount={page.total}
       />
 
-      <PromptGrid
-        prompts={page.items}
-        locked={!acces.hasFullAccess}
-        visiteur={!acces.isMember}
-        emptyState={
-          filtre ? (
-            <AucunResultat
-              terme={query.search}
-              mode={mode}
-              // Une recherche qui ne rend rien dans une famille choisie peut
-              // rendre quelque chose ailleurs : on propose d'elargir plutot
-              // que de laisser croire que la commande n'existe pas.
-              famille={
-                familleDemandee
-                  ? (categories.find((c) => c.slug === familleDemandee)?.name ?? null)
-                  : null
-              }
-            />
-          ) : (
-            <EmptyState
-              title="Rien à afficher ici"
-              body="Ce mode ne contient pas encore de commande publiée."
-            />
-          )
-        }
-      />
+      {accueil ? (
+        <AccueilEditorial
+          miseEnAvant={accueil.miseEnAvant}
+          nouveautes={accueil.nouveautes}
+          reprendre={accueil.reprendre}
+          familles={accueil.familles}
+          locked={!acces.hasFullAccess}
+          visiteur={!acces.isMember}
+        />
+      ) : (
+        <PromptGrid
+          prompts={page.items}
+          locked={!acces.hasFullAccess}
+          visiteur={!acces.isMember}
+          emptyState={
+            filtre ? (
+              <AucunResultat
+                terme={query.search}
+                mode={mode}
+                // Une recherche qui ne rend rien dans une famille choisie peut
+                // rendre quelque chose ailleurs : on propose d'elargir plutot
+                // que de laisser croire que la commande n'existe pas.
+                famille={
+                  familleDemandee
+                    ? (categories.find((c) => c.slug === familleDemandee)?.name ?? null)
+                    : null
+                }
+              />
+            ) : (
+              <EmptyState
+                title="Rien à afficher ici"
+                body="Ce mode ne contient pas encore de commande publiée."
+              />
+            )
+          }
+        />
+      )}
 
       {page.hasMore ? (
         lots < CATALOG_MAX_LOTS ? (

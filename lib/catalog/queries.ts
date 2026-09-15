@@ -785,6 +785,55 @@ export async function getFavorites(): Promise<PromptCard[]> {
   return ids.map((id) => cards.find((card) => card.id === id)).filter((card) => card !== undefined);
 }
 
+/**
+ * Une rangee de l'Accueil : quelques commandes choisies, tous domaines
+ * confondus.
+ *
+ * `getCatalogPage` ne sait travailler que dans un domaine a la fois, parce
+ * que la bibliotheque se parcourt domaine par domaine. L'Accueil, lui,
+ * presente : « Selection du moment » n'a pas a demander si l'on cherche une
+ * image ou un texte.
+ *
+ * Deux rangees, deux criteres, et rien d'invente : la mise en avant vient du
+ * catalogue, les nouveautes de la date de publication. Il n'y a pas de
+ * rangee « les plus utilisees » — le compte des copies vit dans
+ * `copy_events`, ferme au membre, et une popularite devinee vaudrait moins
+ * que pas de rangee du tout.
+ */
+export async function getRangeeAccueil(
+  critere: 'mise-en-avant' | 'nouveautes',
+  limite = 8,
+): Promise<PromptCard[]> {
+  const supabase = await createClient();
+  const favorites = await getFavoriteIds();
+
+  let requete = supabase
+    .from('prompts')
+    .select(CARD_COLUMNS)
+    .eq('status', 'published')
+    .limit(limite);
+
+  if (critere === 'mise-en-avant') {
+    requete = requete
+      .eq('is_featured', true)
+      // Ce qui a un visuel d'abord : une rangee de presentation sans image
+      // ne presente rien.
+      .order('media_ready', { ascending: false })
+      .order('sort_order', { ascending: true });
+  } else {
+    requete = requete
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .order('sort_order', { ascending: true });
+  }
+
+  // Derniere cle unique : sans elle, deux commandes ex aequo peuvent
+  // s'echanger d'un chargement a l'autre, et la rangee semble bouger seule.
+  const { data, error } = await requete.order('command', { ascending: true });
+  if (error) throw new CatalogUnavailableError(error);
+
+  return ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
+}
+
 /** Vue Recents : les raccourcis copies priment sur les simples consultations. */
 export async function getRecents(): Promise<PromptCard[]> {
   const supabase = await createClient();
