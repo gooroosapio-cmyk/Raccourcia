@@ -37,6 +37,16 @@ export const catalogQuery = z.object({
   // construit l'objet elle-meme, un visiteur ne peut donc pas s'en servir
   // pour reclamer tout le catalogue en une requete.
   pageSize: z.coerce.number().int().min(1).max(240).default(CATALOG_PAGE_SIZE),
+  // Jusqu'ou porte la recherche.
+  //
+  // « domaine » borne au mode courant : c'est ainsi qu'on parcourt la
+  // bibliotheque, rayon par rayon. « catalogue » ignore le mode, parce que
+  // chercher « logo » depuis les images et ne rien trouver, alors que la
+  // commande existe dans les modes IA, est un cul-de-sac.
+  //
+  // Jamais lue depuis l'URL : la page la deduit de ce que l'utilisateur a
+  // reellement choisi.
+  portee: z.enum(['domaine', 'catalogue']).default('domaine'),
 });
 
 export type CatalogQuery = z.infer<typeof catalogQuery>;

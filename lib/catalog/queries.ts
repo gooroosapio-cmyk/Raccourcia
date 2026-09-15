@@ -480,15 +480,19 @@ async function resoudreCategorie(client: Client, slug?: string): Promise<string[
  */
 async function categoriesParRecherche(
   client: Client,
-  mode: Enums<'app_mode'>,
+  /** `null` pour chercher dans tous les domaines. */
+  mode: Enums<'app_mode'> | null,
   terme: string,
 ): Promise<string[]> {
-  const { data } = await client
+  let requete = client
     .from('categories')
     .select('id')
-    .eq('mode', mode)
     .eq('is_visible', true)
     .ilike('search_norm', `%${terme}%`);
+
+  if (mode) requete = requete.eq('mode', mode);
+
+  const { data } = await requete;
 
   const trouvees = (data ?? []).map((ligne) => ligne.id);
   if (trouvees.length === 0) return [];
@@ -525,7 +529,12 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   // doit ramener la famille entiere, pas seulement les commandes dont le
   // titre contient le mot.
   const terme = query.search ? normaliserRecherche(query.search) : '';
-  const famillesTrouvees = terme ? await categoriesParRecherche(supabase, query.mode, terme) : [];
+  // Une recherche a l'echelle du catalogue ne se borne pas au domaine : ni
+  // pour les commandes, ni pour les familles qu'on peut chercher par leur nom.
+  const transverse = query.portee === 'catalogue';
+  const famillesTrouvees = terme
+    ? await categoriesParRecherche(supabase, transverse ? null : query.mode, terme)
+    : [];
 
   // Une seule construction pour la lecture et pour le comptage : deux chaines
   // de filtres separees auraient fini par annoncer un total qui ne correspond
@@ -535,8 +544,9 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     let requete = supabase
       .from('prompts')
       .select(colonnes as '*', tete ? { count: 'exact', head: true } : undefined)
-      .eq('mode', query.mode)
       .eq('status', 'published');
+
+    if (!transverse) requete = requete.eq('mode', query.mode);
 
     if (categorieIds) requete = requete.in('category_id', categorieIds);
 

@@ -45,3 +45,32 @@ export function portesDeRecherche(terme: string, famillesTrouvees: string[]): st
   }
   return portes.join(',');
 }
+
+/**
+ * Jusqu'ou porte une recherche.
+ *
+ * La regle tient en une phrase : on cherche dans tout le catalogue, sauf si
+ * l'utilisateur a lui-meme choisi une famille. Elle vit ici, hors de la page,
+ * pour la meme raison que l'ordre du catalogue vit hors des requetes — c'est
+ * une decision produit, elle se lit sans base et se verrouille par un test.
+ *
+ * Pourquoi tout le catalogue par defaut : chercher « logo » depuis les images
+ * et ne rien trouver, alors que la commande existe dans les modes IA, est un
+ * cul-de-sac. L'utilisateur n'a pas choisi de se limiter aux images, il est
+ * simplement arrive par la.
+ *
+ * Pourquoi la famille l'emporte : quand elle a ete choisie, la puce active le
+ * dit a l'ecran. Elargir en douce contredirait ce que l'ecran affiche, et
+ * l'ecran vide propose deja d'elargir d'un geste.
+ */
+export function porteeDeRecherche({
+  recherche,
+  familleChoisie,
+}: {
+  recherche?: string;
+  /** La famille demandee expressement, pas celle par defaut. */
+  familleChoisie?: string;
+}): 'domaine' | 'catalogue' {
+  if (!recherche) return 'domaine';
+  return familleChoisie ? 'domaine' : 'catalogue';
+}

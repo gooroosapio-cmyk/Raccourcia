@@ -8,6 +8,7 @@ import {
   getRecents,
 } from '@/lib/catalog/queries';
 import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
+import { porteeDeRecherche } from '@/lib/catalog/recherche';
 import { DiscoveryConsole } from '@/components/discovery/discovery-console';
 import { VoirPlus } from '@/components/discovery/voir-plus';
 import { AucunResultat } from '@/components/discovery/aucun-resultat';
@@ -100,8 +101,11 @@ export default async function DiscoverPage({
 
   // Zod filtre les valeurs inconnues : un parametre d'URL bricole ne peut ni
   // atteindre la requete, ni faire echouer la page.
+  const portee = porteeDeRecherche({ recherche: lire('q'), familleChoisie: familleDemandee });
+
   const query = catalogQuery.parse({
     mode,
+    portee,
     categorySlug: famille,
     search: lire('q'),
     access: ['gratuit', 'membre'].includes(lire('acces') ?? '') ? lire('acces') : undefined,
@@ -223,6 +227,7 @@ export default async function DiscoverPage({
         mode={mode}
         categories={categories}
         categorySlug={query.categorySlug}
+        transverse={portee === 'catalogue'}
         search={query.search}
         filtres={filtres}
         resultCount={page.total}

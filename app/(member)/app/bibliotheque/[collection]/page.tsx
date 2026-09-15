@@ -66,6 +66,8 @@ export default async function CollectionPage({
       // L'ordre du catalogue : c'est le classeur qui decide de ce qui vient
       // en premier dans une collection, pas la popularite du moment.
       sort: 'populaires',
+      // Une collection est un rayon : on y reste.
+      portee: 'domaine',
       page: 1,
       pageSize: CATALOG_PAGE_SIZE * lots,
     }),

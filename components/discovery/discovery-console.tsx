@@ -25,6 +25,7 @@ export function DiscoveryConsole({
   mode,
   categories,
   categorySlug,
+  transverse = false,
   search,
   filtres,
   resultCount,
@@ -33,6 +34,15 @@ export function DiscoveryConsole({
   mode: Mode;
   categories: CategoryNode[];
   categorySlug?: string;
+  /**
+   * Vrai quand la recherche en cours traverse tout le catalogue.
+   *
+   * Le selecteur de domaine et les puces disparaissent alors : ils
+   * annonceraient une portee que la requete n'applique pas, et une commande
+   * « Texte » trouvee sous l'onglet « Image » ferait douter de l'un ou de
+   * l'autre.
+   */
+  transverse?: boolean;
   search?: string;
   filtres: FiltresAvances;
   /** Nombre reel de resultats de la selection, pas le nombre de cartes chargees. */
@@ -168,15 +178,23 @@ export function DiscoveryConsole({
         <FilterButton count={actifs} onClick={() => setPanneauOuvert(true)} />
       </div>
 
-      <ModeSegmentedControl
-        modes={modes}
-        mode={mode}
-        onSelect={choisirMode}
-        onKeyDown={naviguerAuClavier}
-        ongletsRef={ongletsRef}
-      />
+      {transverse ? (
+        <p className="text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
+          Recherche dans tout le catalogue.
+        </p>
+      ) : (
+        <>
+          <ModeSegmentedControl
+            modes={modes}
+            mode={mode}
+            onSelect={choisirMode}
+            onKeyDown={naviguerAuClavier}
+            ongletsRef={ongletsRef}
+          />
 
-      <CategoryChips chips={chips} active={categorySlug} onSelect={choisirCategorie} />
+          <CategoryChips chips={chips} active={categorySlug} onSelect={choisirCategorie} />
+        </>
+      )}
 
       {/* Le compte disparait quand il n'y a rien : l'ecran vide le dit deja,
           et le lire deux fois de suite n'apprend rien de plus. */}
