@@ -4,9 +4,11 @@ import {
   getBibliotheque,
   getCatalogPage,
   getCategories,
-  getRangeeAccueil,
   getRecents,
+  getVivierDuFeed,
 } from '@/lib/catalog/queries';
+import { ordonnerLeFeed } from '@/lib/catalog/feed';
+import type { PromptCard } from '@/lib/catalog/types';
 import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
 import { porteeDeRecherche } from '@/lib/catalog/recherche';
 import { DiscoveryConsole } from '@/components/discovery/discovery-console';
@@ -134,8 +136,7 @@ export default async function DiscoverPage({
   // une commande, pas relire celles qu'il connait deja.
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
   let accueil: {
-    miseEnAvant: Awaited<ReturnType<typeof getRangeeAccueil>>;
-    nouveautes: Awaited<ReturnType<typeof getRangeeAccueil>>;
+    feed: PromptCard[];
     reprendre: Awaited<ReturnType<typeof getRecents>>;
     familles: Awaited<ReturnType<typeof getBibliotheque>>;
   } | null = null;
@@ -144,13 +145,18 @@ export default async function DiscoverPage({
     if (editorial) {
       // L'historique n'existe que pour un compte : le demander a un visiteur
       // revient a interroger une table qui lui est fermee.
-      const [miseEnAvant, nouveautes, familles, reprendre] = await Promise.all([
-        getRangeeAccueil('mise-en-avant'),
-        getRangeeAccueil('nouveautes'),
+      const [vivier, familles, reprendre] = await Promise.all([
+        getVivierDuFeed(),
         getBibliotheque(),
         acces.isMember ? getRecents() : Promise.resolve([]),
       ]);
-      accueil = { miseEnAvant, nouveautes, familles, reprendre: reprendre.slice(0, 8) };
+      accueil = {
+        feed: ordonnerLeFeed(vivier),
+        familles,
+        // Trois au plus : au-dela ce n'est plus une reprise, c'est un
+        // historique, et il a sa page.
+        reprendre: reprendre.slice(0, 3),
+      };
       page = { items: [], hasMore: false, total: 0 };
     } else {
       page = await getCatalogPage(requete);
@@ -203,19 +209,17 @@ export default async function DiscoverPage({
           annoncait « Que voulez-vous creer ? » comme premier repere, sans
           jamais dire ou l'on se trouve. Le titre reste invisible — l'ecran,
           lui, se lit d'un coup d'oeil. */}
-      {/* Sur l'Accueil qui presente, le titre se voit : c'est la premiere
-          phrase que lit quelqu'un qui ouvre l'application, et « Bibliotheque
-          de commandes RaccourcIA » n'etait qu'un repere pour lecteur d'ecran.
-          Des qu'on cherche, il redevient invisible — les resultats parlent
-          d'eux-memes et la hauteur revient aux cartes. */}
+      {/* En-tete compact. Le titre precedent tenait sur trois lignes et son
+          paragraphe sur deux : la premiere carte commencait a six cents
+          pixels du haut, sur un ecran qui en fait huit cents. Une question
+          courte suffit a dire ou l'on est. */}
       {editorial ? (
-        <div className="pt-1">
-          <h1 className="text-[length:var(--texte-page)] font-bold leading-tight text-[color:var(--color-night)]">
-            Découvrez ce que vous pouvez créer
+        <div>
+          <h1 className="text-[22px] font-bold leading-tight text-[color:var(--color-night)]">
+            Que voulez-vous créer&nbsp;?
           </h1>
-          <p className="mt-1 text-[length:var(--texte-corps)] leading-relaxed text-[color:var(--color-muted)]">
-            Explorez des commandes prêtes à l’emploi et trouvez rapidement celle qui correspond à
-            votre projet.
+          <p className="mt-0.5 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-muted)]">
+            Trouvez une transformation, un mode ou un parcours adapté à votre projet.
           </p>
         </div>
       ) : (
@@ -235,8 +239,7 @@ export default async function DiscoverPage({
 
       {accueil ? (
         <AccueilEditorial
-          miseEnAvant={accueil.miseEnAvant}
-          nouveautes={accueil.nouveautes}
+          feed={accueil.feed}
           reprendre={accueil.reprendre}
           familles={accueil.familles}
           locked={!acces.hasFullAccess}

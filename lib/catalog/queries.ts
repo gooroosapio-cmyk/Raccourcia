@@ -249,11 +249,12 @@ const COUNT_COLUMNS = 'id, prompt_variants!inner(ai_providers!inner(key))';
  */
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
-  show_image_card, payload_ready, cta_label,
+  show_image_card, payload_ready, cta_label, entity_type, images_min, default_ratio,
   is_free, is_new, is_featured, risk_level, sort_order,
   level, max_questions,
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
+  categories(slug, name),
   prompt_variants(compatibility, status, ai_providers(key, name, is_active)),
   prompt_media(kind, storage_path, alt, sort_order),
   prompt_aliases!prompt_aliases_canonical_prompt_id_fkey(preset)
@@ -273,6 +274,10 @@ type CardRow = {
   tags: string[];
   show_image_card: boolean;
   payload_ready: boolean;
+  entity_type: string | null;
+  images_min: number | null;
+  default_ratio: string | null;
+  categories: { slug: string; name: string } | null;
   cta_label: string | null;
   is_free: boolean;
   is_new: boolean;
@@ -350,6 +355,11 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     useCases: row.use_cases ?? [],
     tags: row.tags ?? [],
     showImageCard: row.show_image_card,
+    entityType: (row.entity_type as PromptCard['entityType']) ?? null,
+    collectionSlug: row.categories?.slug ?? null,
+    collectionName: row.categories?.name ?? null,
+    imagesMin: row.images_min,
+    defaultRatio: row.default_ratio,
     payloadReady: row.payload_ready,
     ctaLabel: row.cta_label,
     isFree: row.is_free,
@@ -824,14 +834,17 @@ export async function getRangeeAccueil(
     .limit(limite);
 
   if (critere === 'mise-en-avant') {
+    // Une rangee de presentation sans image ne presente rien : on exige le
+    // visuel plutot que de le preferer.
     requete = requete
       .eq('is_featured', true)
-      // Ce qui a un visuel d'abord : une rangee de presentation sans image
-      // ne presente rien.
-      .order('media_ready', { ascending: false })
+      .eq('media_ready', true)
       .order('sort_order', { ascending: true });
   } else {
+    // Une nouveaute se montre : sans visuel, elle n'annonce rien et la
+    // rangee ressemble a une liste de fiches vides.
     requete = requete
+      .eq('media_ready', true)
       .order('published_at', { ascending: false, nullsFirst: false })
       .order('sort_order', { ascending: true });
   }
@@ -839,6 +852,47 @@ export async function getRangeeAccueil(
   // Derniere cle unique : sans elle, deux commandes ex aequo peuvent
   // s'echanger d'un chargement a l'autre, et la rangee semble bouger seule.
   const { data, error } = await requete.order('command', { ascending: true });
+  if (error) throw new CatalogUnavailableError(error);
+
+  return ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
+}
+
+/**
+ * Le vivier du feed de l'Accueil.
+ *
+ * La requete ne fait qu'une chose, mais elle la fait bien : elle ecarte tout
+ * ce qui n'a rien a faire dans un espace editorial. Ce qui sort d'ici est
+ * publie, range dans un rayon visible, et **porte un visuel**. Une carte
+ * « Visuel a venir » dans un feed de decouverte donne l'impression d'un
+ * catalogue en chantier — elle reste accessible en bibliotheque, ou son
+ * absence d'image se comprend.
+ *
+ * `media_ready` est tenue par la base : elle vaut vrai des qu'une commande
+ * image porte un visuel de resultat. C'est le meme critere que la vignette
+ * des cartes, donc le feed ne peut pas afficher un cadre vide.
+ *
+ * L'ordre sort d'ici grossierement trie — mise en avant, poids editorial du
+ * classeur, ordre du catalogue. C'est `ordonnerLeFeed` qui l'alterne
+ * ensuite : une base sait trier par un score, pas dire « pas deux portraits
+ * de suite ».
+ */
+export async function getVivierDuFeed(limite = 60): Promise<PromptCard[]> {
+  const supabase = await createClient();
+  const favorites = await getFavoriteIds();
+
+  const { data, error } = await supabase
+    .from('prompts')
+    .select(CARD_COLUMNS)
+    .eq('status', 'published')
+    .eq('media_ready', true)
+    .order('is_featured', { ascending: false })
+    .order('priority_score', { ascending: false, nullsFirst: false })
+    .order('sort_order', { ascending: true })
+    // Derniere cle unique : sans elle, deux ex aequo s'echangent d'un
+    // chargement a l'autre et le feed semble bouger seul.
+    .order('command', { ascending: true })
+    .limit(limite);
+
   if (error) throw new CatalogUnavailableError(error);
 
   return ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));

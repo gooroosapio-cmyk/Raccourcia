@@ -8,14 +8,15 @@
 -- Le statut n'est jamais reecrit ici : la bascule seule ouvre un rayon.
 -- =====================================================================
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-orthographicboard', 'img-orthographicboard', '/orthographicboard', 'Planche orthographique', 'orthographicboard', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Réunit face, profil et dessus à la même échelle conceptuelle.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['planche orthographique', 'documentation', 'design et technique']::text[], 'Planche orthographique | RaccourcIA', 'Réunit face, profil et dessus à la même échelle conceptuelle.', 84, 551, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-orthographicboard', 'img-orthographicboard', '/orthographicboard', 'Planche orthographique', 'orthographicboard', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Réunit face, profil et dessus à la même échelle conceptuelle.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['planche orthographique', 'documentation', 'design et technique']::text[], 'Planche orthographique | RaccourcIA', 'Réunit face, profil et dessus à la même échelle conceptuelle.', 84, 551, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-orthographicboard',
   command = '/orthographicboard',
   name = 'Planche orthographique',
   slug = 'orthographicboard',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Réunit face, profil et dessus à la même échelle conceptuelle.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -41,14 +42,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-wearpoints', 'img-wearpoints', '/wearpoints', 'Points d’usure', 'wearpoints', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Met en évidence les zones d’usure observées ou prévues et les gestes de contrôle associés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['points dusure', 'documentation', 'design et technique']::text[], 'Points d’usure | RaccourcIA', 'Met en évidence les zones d’usure observées ou prévues et les gestes de contrôle associés.', 84, 552, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-wearpoints', 'img-wearpoints', '/wearpoints', 'Points d’usure', 'wearpoints', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Met en évidence les zones d’usure observées ou prévues et les gestes de contrôle associés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['points dusure', 'documentation', 'design et technique']::text[], 'Points d’usure | RaccourcIA', 'Met en évidence les zones d’usure observées ou prévues et les gestes de contrôle associés.', 84, 552, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-wearpoints',
   command = '/wearpoints',
   name = 'Points d’usure',
   slug = 'wearpoints',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Met en évidence les zones d’usure observées ou prévues et les gestes de contrôle associés.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -74,14 +76,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-processvisual', 'img-processvisual', '/processvisual', 'Processus visuel', 'processvisual', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Explique le fonctionnement d’un objet par une séquence illustrée.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['processus visuel', 'documentation', 'design et technique']::text[], 'Processus visuel | RaccourcIA', 'Explique le fonctionnement d’un objet par une séquence illustrée.', 84, 553, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-processvisual', 'img-processvisual', '/processvisual', 'Processus visuel', 'processvisual', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Explique le fonctionnement d’un objet par une séquence illustrée.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['processus visuel', 'documentation', 'design et technique']::text[], 'Processus visuel | RaccourcIA', 'Explique le fonctionnement d’un objet par une séquence illustrée.', 84, 553, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-processvisual',
   command = '/processvisual',
   name = 'Processus visuel',
   slug = 'processvisual',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Explique le fonctionnement d’un objet par une séquence illustrée.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -107,14 +110,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-repairsequence', 'img-repairsequence', '/repairsequence', 'Séquence de réparation', 'repairsequence', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Décompose une réparation validée en étapes visuelles avec outils, ordre et pièces confirmés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['sequence de reparation', 'documentation', 'design et technique']::text[], 'Séquence de réparation | RaccourcIA', 'Décompose une réparation validée en étapes visuelles avec outils, ordre et pièces confirmés.', 84, 554, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-repairsequence', 'img-repairsequence', '/repairsequence', 'Séquence de réparation', 'repairsequence', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Décompose une réparation validée en étapes visuelles avec outils, ordre et pièces confirmés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['sequence de reparation', 'documentation', 'design et technique']::text[], 'Séquence de réparation | RaccourcIA', 'Décompose une réparation validée en étapes visuelles avec outils, ordre et pièces confirmés.', 84, 554, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-repairsequence',
   command = '/repairsequence',
   name = 'Séquence de réparation',
   slug = 'repairsequence',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Décompose une réparation validée en étapes visuelles avec outils, ordre et pièces confirmés.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -140,14 +144,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-circuittrace', 'img-circuittrace', '/circuittrace', 'Traçage de circuit', 'circuittrace', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Met en évidence pistes et composants visibles d’une carte électronique.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['tracage de circuit', 'documentation', 'design et technique']::text[], 'Traçage de circuit | RaccourcIA', 'Met en évidence pistes et composants visibles d’une carte électronique.', 84, 555, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-circuittrace', 'img-circuittrace', '/circuittrace', 'Traçage de circuit', 'circuittrace', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Met en évidence pistes et composants visibles d’une carte électronique.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['tracage de circuit', 'documentation', 'design et technique']::text[], 'Traçage de circuit | RaccourcIA', 'Met en évidence pistes et composants visibles d’une carte électronique.', 84, 555, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-circuittrace',
   command = '/circuittrace',
   name = 'Traçage de circuit',
   slug = 'circuittrace',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Met en évidence pistes et composants visibles d’une carte électronique.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -173,14 +178,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-dimensionview', 'img-dimensionview', '/dimensionview', 'Vue cotée', 'dimensionview', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Ajoute dimensions fournies, lignes de cote et repères sans inventer.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['vue cotee', 'documentation', 'design et technique']::text[], 'Vue cotée | RaccourcIA', 'Ajoute dimensions fournies, lignes de cote et repères sans inventer.', 84, 556, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-dimensionview', 'img-dimensionview', '/dimensionview', 'Vue cotée', 'dimensionview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Ajoute dimensions fournies, lignes de cote et repères sans inventer.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['vue cotee', 'documentation', 'design et technique']::text[], 'Vue cotée | RaccourcIA', 'Ajoute dimensions fournies, lignes de cote et repères sans inventer.', 84, 556, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-dimensionview',
   command = '/dimensionview',
   name = 'Vue cotée',
   slug = 'dimensionview',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Ajoute dimensions fournies, lignes de cote et repères sans inventer.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -206,14 +212,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-wireframe', 'img-wireframe', '/wireframe', 'Vue filaire', 'wireframe', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Convertit les volumes en maillage tridimensionnel lisible.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['vue filaire', 'documentation', 'design et technique']::text[], 'Vue filaire | RaccourcIA', 'Convertit les volumes en maillage tridimensionnel lisible.', 84, 557, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-wireframe', 'img-wireframe', '/wireframe', 'Vue filaire', 'wireframe', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Convertit les volumes en maillage tridimensionnel lisible.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['vue filaire', 'documentation', 'design et technique']::text[], 'Vue filaire | RaccourcIA', 'Convertit les volumes en maillage tridimensionnel lisible.', 84, 557, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-wireframe',
   command = '/wireframe',
   name = 'Vue filaire',
   slug = 'wireframe',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Convertit les volumes en maillage tridimensionnel lisible.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -239,14 +246,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-xray', 'img-xray', '/xray', 'Vue X-ray', 'xray', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Rend l’enveloppe partiellement transparente pour montrer une structure conceptuelle.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['vue x ray', 'documentation', 'design et technique']::text[], 'Vue X-ray | RaccourcIA', 'Rend l’enveloppe partiellement transparente pour montrer une structure conceptuelle.', 84, 558, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-xray', 'img-xray', '/xray', 'Vue X-ray', 'xray', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Rend l’enveloppe partiellement transparente pour montrer une structure conceptuelle.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['vue x ray', 'documentation', 'design et technique']::text[], 'Vue X-ray | RaccourcIA', 'Rend l’enveloppe partiellement transparente pour montrer une structure conceptuelle.', 84, 558, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-xray',
   command = '/xray',
   name = 'Vue X-ray',
   slug = 'xray',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Rend l’enveloppe partiellement transparente pour montrer une structure conceptuelle.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -272,14 +280,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-explodeview', 'img-explodeview', '/explodeview', 'Vue éclatée', 'explodeview', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Sépare les composants selon leur ordre d’assemblage et leur position.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['vue eclatee', 'documentation', 'design et technique']::text[], 'Vue éclatée | RaccourcIA', 'Sépare les composants selon leur ordre d’assemblage et leur position.', 84, 559, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-explodeview', 'img-explodeview', '/explodeview', 'Vue éclatée', 'explodeview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Sépare les composants selon leur ordre d’assemblage et leur position.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['vue eclatee', 'documentation', 'design et technique']::text[], 'Vue éclatée | RaccourcIA', 'Sépare les composants selon leur ordre d’assemblage et leur position.', 84, 559, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-explodeview',
   command = '/explodeview',
   name = 'Vue éclatée',
   slug = 'explodeview',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Sépare les composants selon leur ordre d’assemblage et leur position.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -305,14 +314,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-biomaterialfinish', 'img-biomaterialfinish', '/biomaterialfinish', 'Biomatière', 'biomaterialfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Explore liège, mycélium ou fibres végétales dans un concept produit.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image', 'produit']::text[], array['biomatiere', 'matieres', 'design et technique']::text[], 'Biomatière | RaccourcIA', 'Explore liège, mycélium ou fibres végétales dans un concept produit.', 84, 560, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-biomaterialfinish', 'img-biomaterialfinish', '/biomaterialfinish', 'Biomatière', 'biomaterialfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Explore liège, mycélium ou fibres végétales dans un concept produit.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image', 'produit']::text[], array['biomatiere', 'matieres', 'design et technique']::text[], 'Biomatière | RaccourcIA', 'Explore liège, mycélium ou fibres végétales dans un concept produit.', 84, 560, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-biomaterialfinish',
   command = '/biomaterialfinish',
   name = 'Biomatière',
   slug = 'biomaterialfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Explore liège, mycélium ou fibres végétales dans un concept produit.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -338,14 +348,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-materialswap', 'img-materialswap', '/materialswap', 'Changement de matière', 'materialswap', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Remplace une matière choisie tout en conservant forme et assemblages.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['changement de matiere', 'matieres', 'design et technique']::text[], 'Changement de matière | RaccourcIA', 'Remplace une matière choisie tout en conservant forme et assemblages.', 84, 561, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-materialswap', 'img-materialswap', '/materialswap', 'Changement de matière', 'materialswap', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Remplace une matière choisie tout en conservant forme et assemblages.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['changement de matiere', 'matieres', 'design et technique']::text[], 'Changement de matière | RaccourcIA', 'Remplace une matière choisie tout en conservant forme et assemblages.', 84, 561, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-materialswap',
   command = '/materialswap',
   name = 'Changement de matière',
   slug = 'materialswap',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Remplace une matière choisie tout en conservant forme et assemblages.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -371,14 +382,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-chromefinish', 'img-chromefinish', '/chromefinish', 'Chrome miroir', 'chromefinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Rend le produit métallique et réfléchissant avec environnement cohérent.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image', 'produit']::text[], array['chrome miroir', 'matieres', 'design et technique']::text[], 'Chrome miroir | RaccourcIA', 'Rend le produit métallique et réfléchissant avec environnement cohérent.', 84, 562, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-chromefinish', 'img-chromefinish', '/chromefinish', 'Chrome miroir', 'chromefinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Rend le produit métallique et réfléchissant avec environnement cohérent.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image', 'produit']::text[], array['chrome miroir', 'matieres', 'design et technique']::text[], 'Chrome miroir | RaccourcIA', 'Rend le produit métallique et réfléchissant avec environnement cohérent.', 84, 562, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-chromefinish',
   command = '/chromefinish',
   name = 'Chrome miroir',
   slug = 'chromefinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Rend le produit métallique et réfléchissant avec environnement cohérent.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -404,14 +416,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-gradientfinish', 'img-gradientfinish', '/gradientfinish', 'Dégradé matière', 'gradientfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Applique une transition colorée continue adaptée aux volumes.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['degrade matiere', 'matieres', 'design et technique']::text[], 'Dégradé matière | RaccourcIA', 'Applique une transition colorée continue adaptée aux volumes.', 84, 563, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-gradientfinish', 'img-gradientfinish', '/gradientfinish', 'Dégradé matière', 'gradientfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Applique une transition colorée continue adaptée aux volumes.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['degrade matiere', 'matieres', 'design et technique']::text[], 'Dégradé matière | RaccourcIA', 'Applique une transition colorée continue adaptée aux volumes.', 84, 563, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-gradientfinish',
   command = '/gradientfinish',
   name = 'Dégradé matière',
   slug = 'gradientfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Applique une transition colorée continue adaptée aux volumes.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -437,14 +450,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-woodfinish', 'img-woodfinish', '/woodfinish', 'Finition bois', 'woodfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Teste essence, veinage et teinte sur les surfaces compatibles.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition bois', 'matieres', 'design et technique']::text[], 'Finition bois | RaccourcIA', 'Teste essence, veinage et teinte sur les surfaces compatibles.', 84, 564, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-woodfinish', 'img-woodfinish', '/woodfinish', 'Finition bois', 'woodfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Teste essence, veinage et teinte sur les surfaces compatibles.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition bois', 'matieres', 'design et technique']::text[], 'Finition bois | RaccourcIA', 'Teste essence, veinage et teinte sur les surfaces compatibles.', 84, 564, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-woodfinish',
   command = '/woodfinish',
   name = 'Finition bois',
   slug = 'woodfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Teste essence, veinage et teinte sur les surfaces compatibles.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -470,14 +484,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-glossfinish', 'img-glossfinish', '/glossfinish', 'Finition brillante', 'glossfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Augmente brillance et profondeur avec reflets contrôlés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition brillante', 'matieres', 'design et technique']::text[], 'Finition brillante | RaccourcIA', 'Augmente brillance et profondeur avec reflets contrôlés.', 84, 565, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-glossfinish', 'img-glossfinish', '/glossfinish', 'Finition brillante', 'glossfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Augmente brillance et profondeur avec reflets contrôlés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition brillante', 'matieres', 'design et technique']::text[], 'Finition brillante | RaccourcIA', 'Augmente brillance et profondeur avec reflets contrôlés.', 84, 565, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-glossfinish',
   command = '/glossfinish',
   name = 'Finition brillante',
   slug = 'glossfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Augmente brillance et profondeur avec reflets contrôlés.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -503,14 +518,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-leatherfinish', 'img-leatherfinish', '/leatherfinish', 'Finition cuir', 'leatherfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Applique grain, patine et couture à une surface souple.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition cuir', 'matieres', 'design et technique']::text[], 'Finition cuir | RaccourcIA', 'Applique grain, patine et couture à une surface souple.', 84, 566, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-leatherfinish', 'img-leatherfinish', '/leatherfinish', 'Finition cuir', 'leatherfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Applique grain, patine et couture à une surface souple.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition cuir', 'matieres', 'design et technique']::text[], 'Finition cuir | RaccourcIA', 'Applique grain, patine et couture à une surface souple.', 84, 566, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-leatherfinish',
   command = '/leatherfinish',
   name = 'Finition cuir',
   slug = 'leatherfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Applique grain, patine et couture à une surface souple.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -536,14 +552,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-ceramicfinish', 'img-ceramicfinish', '/ceramicfinish', 'Finition céramique', 'ceramicfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Transforme une surface en céramique mate, brillante ou craquelée.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition ceramique', 'matieres', 'design et technique']::text[], 'Finition céramique | RaccourcIA', 'Transforme une surface en céramique mate, brillante ou craquelée.', 84, 567, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-ceramicfinish', 'img-ceramicfinish', '/ceramicfinish', 'Finition céramique', 'ceramicfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Transforme une surface en céramique mate, brillante ou craquelée.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition ceramique', 'matieres', 'design et technique']::text[], 'Finition céramique | RaccourcIA', 'Transforme une surface en céramique mate, brillante ou craquelée.', 84, 567, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-ceramicfinish',
   command = '/ceramicfinish',
   name = 'Finition céramique',
   slug = 'ceramicfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Transforme une surface en céramique mate, brillante ou craquelée.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -569,14 +586,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-mattefinish', 'img-mattefinish', '/mattefinish', 'Finition mate', 'mattefinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Réduit les reflets et donne une surface douce sans perdre le volume.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition mate', 'matieres', 'design et technique']::text[], 'Finition mate | RaccourcIA', 'Réduit les reflets et donne une surface douce sans perdre le volume.', 84, 568, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-mattefinish', 'img-mattefinish', '/mattefinish', 'Finition mate', 'mattefinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Réduit les reflets et donne une surface douce sans perdre le volume.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition mate', 'matieres', 'design et technique']::text[], 'Finition mate | RaccourcIA', 'Réduit les reflets et donne une surface douce sans perdre le volume.', 84, 568, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-mattefinish',
   command = '/mattefinish',
   name = 'Finition mate',
   slug = 'mattefinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Réduit les reflets et donne une surface douce sans perdre le volume.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -602,14 +620,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-metalfinish', 'img-metalfinish', '/metalfinish', 'Finition métal', 'metalfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Transforme une surface en acier, laiton ou aluminium crédible.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition metal', 'matieres', 'design et technique']::text[], 'Finition métal | RaccourcIA', 'Transforme une surface en acier, laiton ou aluminium crédible.', 84, 569, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-metalfinish', 'img-metalfinish', '/metalfinish', 'Finition métal', 'metalfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Transforme une surface en acier, laiton ou aluminium crédible.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition metal', 'matieres', 'design et technique']::text[], 'Finition métal | RaccourcIA', 'Transforme une surface en acier, laiton ou aluminium crédible.', 84, 569, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-metalfinish',
   command = '/metalfinish',
   name = 'Finition métal',
   slug = 'metalfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Transforme une surface en acier, laiton ou aluminium crédible.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -635,14 +654,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-stonefinish', 'img-stonefinish', '/stonefinish', 'Finition pierre', 'stonefinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Applique marbre, granit ou terrazzo avec échelle de motif réaliste.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition pierre', 'matieres', 'design et technique']::text[], 'Finition pierre | RaccourcIA', 'Applique marbre, granit ou terrazzo avec échelle de motif réaliste.', 84, 570, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-stonefinish', 'img-stonefinish', '/stonefinish', 'Finition pierre', 'stonefinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Applique marbre, granit ou terrazzo avec échelle de motif réaliste.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition pierre', 'matieres', 'design et technique']::text[], 'Finition pierre | RaccourcIA', 'Applique marbre, granit ou terrazzo avec échelle de motif réaliste.', 84, 570, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-stonefinish',
   command = '/stonefinish',
   name = 'Finition pierre',
   slug = 'stonefinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Applique marbre, granit ou terrazzo avec échelle de motif réaliste.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -668,14 +688,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fabricfinish', 'img-fabricfinish', '/fabricfinish', 'Finition textile', 'fabricfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Teste coton, lin, velours ou maille avec plis cohérents.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition textile', 'matieres', 'design et technique']::text[], 'Finition textile | RaccourcIA', 'Teste coton, lin, velours ou maille avec plis cohérents.', 84, 571, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-fabricfinish', 'img-fabricfinish', '/fabricfinish', 'Finition textile', 'fabricfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Teste coton, lin, velours ou maille avec plis cohérents.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition textile', 'matieres', 'design et technique']::text[], 'Finition textile | RaccourcIA', 'Teste coton, lin, velours ou maille avec plis cohérents.', 84, 571, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fabricfinish',
   command = '/fabricfinish',
   name = 'Finition textile',
   slug = 'fabricfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Teste coton, lin, velours ou maille avec plis cohérents.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -701,14 +722,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-glassfinish', 'img-glassfinish', '/glassfinish', 'Finition verre', 'glassfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Convertit une zone en verre clair, fumé, dépoli ou coloré.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition verre', 'matieres', 'design et technique']::text[], 'Finition verre | RaccourcIA', 'Convertit une zone en verre clair, fumé, dépoli ou coloré.', 84, 572, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-glassfinish', 'img-glassfinish', '/glassfinish', 'Finition verre', 'glassfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Convertit une zone en verre clair, fumé, dépoli ou coloré.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['finition verre', 'matieres', 'design et technique']::text[], 'Finition verre | RaccourcIA', 'Convertit une zone en verre clair, fumé, dépoli ou coloré.', 84, 572, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-glassfinish',
   command = '/glassfinish',
   name = 'Finition verre',
   slug = 'glassfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Convertit une zone en verre clair, fumé, dépoli ou coloré.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -734,14 +756,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-colorways', 'img-colorways', '/colorways', 'Gamme de couleurs', 'colorways', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Présente plusieurs variantes colorées dans une planche homogène.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['gamme de couleurs', 'matieres', 'design et technique']::text[], 'Gamme de couleurs | RaccourcIA', 'Présente plusieurs variantes colorées dans une planche homogène.', 84, 573, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-colorways', 'img-colorways', '/colorways', 'Gamme de couleurs', 'colorways', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Présente plusieurs variantes colorées dans une planche homogène.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['gamme de couleurs', 'matieres', 'design et technique']::text[], 'Gamme de couleurs | RaccourcIA', 'Présente plusieurs variantes colorées dans une planche homogène.', 84, 573, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-colorways',
   command = '/colorways',
   name = 'Gamme de couleurs',
   slug = 'colorways',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Présente plusieurs variantes colorées dans une planche homogène.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -767,14 +790,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-iridescentfinish', 'img-iridescentfinish', '/iridescentfinish', 'Iridescence', 'iridescentfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Ajoute des reflets changeants nacrés ou holographiques.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['iridescence', 'matieres', 'design et technique']::text[], 'Iridescence | RaccourcIA', 'Ajoute des reflets changeants nacrés ou holographiques.', 84, 574, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-iridescentfinish', 'img-iridescentfinish', '/iridescentfinish', 'Iridescence', 'iridescentfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Ajoute des reflets changeants nacrés ou holographiques.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['iridescence', 'matieres', 'design et technique']::text[], 'Iridescence | RaccourcIA', 'Ajoute des reflets changeants nacrés ou holographiques.', 84, 574, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-iridescentfinish',
   command = '/iridescentfinish',
   name = 'Iridescence',
   slug = 'iridescentfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Ajoute des reflets changeants nacrés ou holographiques.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -800,14 +824,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-recycledfinish', 'img-recycledfinish', '/recycledfinish', 'Matière recyclée', 'recycledfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Visualise fibres, granulés ou composites recyclés plausibles.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['matiere recyclee', 'matieres', 'design et technique']::text[], 'Matière recyclée | RaccourcIA', 'Visualise fibres, granulés ou composites recyclés plausibles.', 84, 575, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-recycledfinish', 'img-recycledfinish', '/recycledfinish', 'Matière recyclée', 'recycledfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Visualise fibres, granulés ou composites recyclés plausibles.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['matiere recyclee', 'matieres', 'design et technique']::text[], 'Matière recyclée | RaccourcIA', 'Visualise fibres, granulés ou composites recyclés plausibles.', 84, 575, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-recycledfinish',
   command = '/recycledfinish',
   name = 'Matière recyclée',
   slug = 'recycledfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Visualise fibres, granulés ou composites recyclés plausibles.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -833,14 +858,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-translucentfinish', 'img-translucentfinish', '/translucentfinish', 'Matière translucide', 'translucentfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Laisse traverser la lumière tout en conservant une densité plausible.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['matiere translucide', 'matieres', 'design et technique']::text[], 'Matière translucide | RaccourcIA', 'Laisse traverser la lumière tout en conservant une densité plausible.', 84, 576, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-translucentfinish', 'img-translucentfinish', '/translucentfinish', 'Matière translucide', 'translucentfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Laisse traverser la lumière tout en conservant une densité plausible.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['matiere translucide', 'matieres', 'design et technique']::text[], 'Matière translucide | RaccourcIA', 'Laisse traverser la lumière tout en conservant une densité plausible.', 84, 576, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-translucentfinish',
   command = '/translucentfinish',
   name = 'Matière translucide',
   slug = 'translucentfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Laisse traverser la lumière tout en conservant une densité plausible.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -866,14 +892,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-patinafinish', 'img-patinafinish', '/patinafinish', 'Patine', 'patinafinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Vieillit la matière avec oxydation, marques et nuances réalistes.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['patine', 'matieres', 'design et technique']::text[], 'Patine | RaccourcIA', 'Vieillit la matière avec oxydation, marques et nuances réalistes.', 84, 577, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-patinafinish', 'img-patinafinish', '/patinafinish', 'Patine', 'patinafinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Vieillit la matière avec oxydation, marques et nuances réalistes.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['patine', 'matieres', 'design et technique']::text[], 'Patine | RaccourcIA', 'Vieillit la matière avec oxydation, marques et nuances réalistes.', 84, 577, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-patinafinish',
   command = '/patinafinish',
   name = 'Patine',
   slug = 'patinafinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Vieillit la matière avec oxydation, marques et nuances réalistes.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -899,14 +926,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-recolor', 'img-recolor', '/recolor', 'Recoloration ciblée', 'recolor', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Change uniquement les zones demandées sans altérer logos ni textures.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['recoloration ciblee', 'matieres', 'design et technique']::text[], 'Recoloration ciblée | RaccourcIA', 'Change uniquement les zones demandées sans altérer logos ni textures.', 84, 578, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-recolor', 'img-recolor', '/recolor', 'Recoloration ciblée', 'recolor', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Change uniquement les zones demandées sans altérer logos ni textures.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['recoloration ciblee', 'matieres', 'design et technique']::text[], 'Recoloration ciblée | RaccourcIA', 'Change uniquement les zones demandées sans altérer logos ni textures.', 84, 578, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-recolor',
   command = '/recolor',
   name = 'Recoloration ciblée',
   slug = 'recolor',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Change uniquement les zones demandées sans altérer logos ni textures.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -932,14 +960,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-weatheredfinish', 'img-weatheredfinish', '/weatheredfinish', 'Usure contrôlée', 'weatheredfinish', 'image'::public.app_mode, (select id from public.categories where slug = 'matieres'), 'Simule une usure de surface destinée au concept ou à la décoration.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['usure controlee', 'matieres', 'design et technique']::text[], 'Usure contrôlée | RaccourcIA', 'Simule une usure de surface destinée au concept ou à la décoration.', 84, 579, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-weatheredfinish', 'img-weatheredfinish', '/weatheredfinish', 'Usure contrôlée', 'weatheredfinish', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres'), 'Simule une usure de surface destinée au concept ou à la décoration.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['matieres', 'design-et-technique', 'commande-image']::text[], array['usure controlee', 'matieres', 'design et technique']::text[], 'Usure contrôlée | RaccourcIA', 'Simule une usure de surface destinée au concept ou à la décoration.', 84, 579, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-weatheredfinish',
   command = '/weatheredfinish',
   name = 'Usure contrôlée',
   slug = 'weatheredfinish',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'matieres'),
   short_description = 'Simule une usure de surface destinée au concept ou à la décoration.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -965,14 +994,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-roomstage', 'img-roomstage', '/roomstage', 'Aménagement virtuel', 'roomstage', 'image'::public.app_mode, (select id from public.categories where slug = 'espaces'), 'Aidez à se projeter dans une pièce sans cacher son état.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['espaces', 'design-et-technique', 'commande-image']::text[], array['amenagement virtuel', 'espaces', 'design et technique']::text[], 'Aménagement virtuel | RaccourcIA', 'Aidez à se projeter dans une pièce sans cacher son état.', 84, 580, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-roomstage', 'img-roomstage', '/roomstage', 'Aménagement virtuel', 'roomstage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espaces'), 'Aidez à se projeter dans une pièce sans cacher son état.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['espaces', 'design-et-technique', 'commande-image']::text[], array['amenagement virtuel', 'espaces', 'design et technique']::text[], 'Aménagement virtuel | RaccourcIA', 'Aidez à se projeter dans une pièce sans cacher son état.', 84, 580, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-roomstage',
   command = '/roomstage',
   name = 'Aménagement virtuel',
   slug = 'roomstage',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'espaces'),
   short_description = 'Aidez à se projeter dans une pièce sans cacher son état.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -998,14 +1028,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-roomrefresh', 'img-roomrefresh', '/roomrefresh', 'Relooking de pièce', 'roomrefresh', 'image'::public.app_mode, (select id from public.categories where slug = 'espaces'), 'Explorez une ambiance avant d’engager des travaux.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['espaces', 'design-et-technique', 'commande-image']::text[], array['relooking de piece', 'espaces', 'design et technique']::text[], 'Relooking de pièce | RaccourcIA', 'Explorez une ambiance avant d’engager des travaux.', 84, 581, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-roomrefresh', 'img-roomrefresh', '/roomrefresh', 'Relooking de pièce', 'roomrefresh', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espaces'), 'Explorez une ambiance avant d’engager des travaux.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['espaces', 'design-et-technique', 'commande-image']::text[], array['relooking de piece', 'espaces', 'design et technique']::text[], 'Relooking de pièce | RaccourcIA', 'Explorez une ambiance avant d’engager des travaux.', 84, 581, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-roomrefresh',
   command = '/roomrefresh',
   name = 'Relooking de pièce',
   slug = 'roomrefresh',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'espaces'),
   short_description = 'Explorez une ambiance avant d’engager des travaux.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1031,14 +1062,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-renovationconcept', 'img-renovationconcept', '/renovationconcept', 'Rénovation en projection', 'renovationconcept', 'image'::public.app_mode, (select id from public.categories where slug = 'espaces'), 'Comparez l’existant à un concept d’aménagement.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['espaces', 'design-et-technique', 'commande-image']::text[], array['renovation en projection', 'espaces', 'design et technique']::text[], 'Rénovation en projection | RaccourcIA', 'Comparez l’existant à un concept d’aménagement.', 84, 582, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-renovationconcept', 'img-renovationconcept', '/renovationconcept', 'Rénovation en projection', 'renovationconcept', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espaces'), 'Comparez l’existant à un concept d’aménagement.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['espaces', 'design-et-technique', 'commande-image']::text[], array['renovation en projection', 'espaces', 'design et technique']::text[], 'Rénovation en projection | RaccourcIA', 'Comparez l’existant à un concept d’aménagement.', 84, 582, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-renovationconcept',
   command = '/renovationconcept',
   name = 'Rénovation en projection',
   slug = 'renovationconcept',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'espaces'),
   short_description = 'Comparez l’existant à un concept d’aménagement.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1064,14 +1096,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-pressrelease', 'mode-pressrelease', '/pressrelease', 'Atelier communiqué', 'pressrelease', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un mode qui vérifie les faits fournis, clarifie l’annonce et construit un communiqué prêt à relire, sans prétendre à une publication officielle.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier communique', 'professionnels et vente', 'modes ia']::text[], 'Atelier communiqué | RaccourcIA', 'Un mode qui vérifie les faits fournis, clarifie l’annonce et construit un communiqué prêt à relire, sans prétendre à une publication officielle.', 78, 583, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-pressrelease', 'mode-pressrelease', '/pressrelease', 'Atelier communiqué', 'pressrelease', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un mode qui vérifie les faits fournis, clarifie l’annonce et construit un communiqué prêt à relire, sans prétendre à une publication officielle.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier communique', 'professionnels et vente', 'modes ia']::text[], 'Atelier communiqué | RaccourcIA', 'Un mode qui vérifie les faits fournis, clarifie l’annonce et construit un communiqué prêt à relire, sans prétendre à une publication officielle.', 78, 583, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-pressrelease',
   command = '/pressrelease',
   name = 'Atelier communiqué',
   slug = 'pressrelease',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un mode qui vérifie les faits fournis, clarifie l’annonce et construit un communiqué prêt à relire, sans prétendre à une publication officielle.',
   expected_input = 'Texte, brief ou document',
@@ -1097,14 +1130,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-copywriter', 'mode-copywriter', '/copywriter', 'Atelier de copywriting', 'copywriter', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un atelier qui clarifie cible, offre et preuves, puis construit des messages commerciaux et les améliore selon un objectif précis.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier de copywriting', 'professionnels et vente', 'modes ia']::text[], 'Atelier de copywriting | RaccourcIA', 'Un atelier qui clarifie cible, offre et preuves, puis construit des messages commerciaux et les améliore selon un objectif précis.', 78, 584, true, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-copywriter', 'mode-copywriter', '/copywriter', 'Atelier de copywriting', 'copywriter', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un atelier qui clarifie cible, offre et preuves, puis construit des messages commerciaux et les améliore selon un objectif précis.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier de copywriting', 'professionnels et vente', 'modes ia']::text[], 'Atelier de copywriting | RaccourcIA', 'Un atelier qui clarifie cible, offre et preuves, puis construit des messages commerciaux et les améliore selon un objectif précis.', 78, 584, true, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-copywriter',
   command = '/copywriter',
   name = 'Atelier de copywriting',
   slug = 'copywriter',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un atelier qui clarifie cible, offre et preuves, puis construit des messages commerciaux et les améliore selon un objectif précis.',
   expected_input = 'Texte, brief ou document',
@@ -1130,14 +1164,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-landingpage', 'mode-landingpage', '/landingpage', 'Atelier page de vente', 'landingpage', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un parcours de copywriting qui construit une page section par section après clarification de l’offre ; livraison du contenu, pas d’un site publié.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier page de vente', 'professionnels et vente', 'modes ia']::text[], 'Atelier page de vente | RaccourcIA', 'Un parcours de copywriting qui construit une page section par section après clarification de l’offre ; livraison du contenu, pas d’un site publié.', 78, 585, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-landingpage', 'mode-landingpage', '/landingpage', 'Atelier page de vente', 'landingpage', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un parcours de copywriting qui construit une page section par section après clarification de l’offre ; livraison du contenu, pas d’un site publié.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier page de vente', 'professionnels et vente', 'modes ia']::text[], 'Atelier page de vente | RaccourcIA', 'Un parcours de copywriting qui construit une page section par section après clarification de l’offre ; livraison du contenu, pas d’un site publié.', 78, 585, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-landingpage',
   command = '/landingpage',
   name = 'Atelier page de vente',
   slug = 'landingpage',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un parcours de copywriting qui construit une page section par section après clarification de l’offre ; livraison du contenu, pas d’un site publié.',
   expected_input = 'Texte, brief ou document',
@@ -1163,14 +1198,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-cialdini', 'mode-cialdini', '/cialdini', 'Atelier persuasion', 'cialdini', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Une revue d’offre à travers sept principes de persuasion, avec preuves disponibles et améliorations sans fausse urgence.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier persuasion', 'professionnels et vente', 'modes ia']::text[], 'Atelier persuasion | RaccourcIA', 'Une revue d’offre à travers sept principes de persuasion, avec preuves disponibles et améliorations sans fausse urgence.', 78, 586, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-cialdini', 'mode-cialdini', '/cialdini', 'Atelier persuasion', 'cialdini', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Une revue d’offre à travers sept principes de persuasion, avec preuves disponibles et améliorations sans fausse urgence.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier persuasion', 'professionnels et vente', 'modes ia']::text[], 'Atelier persuasion | RaccourcIA', 'Une revue d’offre à travers sept principes de persuasion, avec preuves disponibles et améliorations sans fausse urgence.', 78, 586, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-cialdini',
   command = '/cialdini',
   name = 'Atelier persuasion',
   slug = 'cialdini',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Une revue d’offre à travers sept principes de persuasion, avec preuves disponibles et améliorations sans fausse urgence.',
   expected_input = 'Texte, brief ou document',
@@ -1196,14 +1232,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-coldemail', 'mode-coldemail', '/coldemail', 'Atelier prospection', 'coldemail', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un mode qui analyse la cible et l’intérêt de l’offre, puis prépare trois e-mails cohérents, sans envoi automatique.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier prospection', 'professionnels et vente', 'modes ia']::text[], 'Atelier prospection | RaccourcIA', 'Un mode qui analyse la cible et l’intérêt de l’offre, puis prépare trois e-mails cohérents, sans envoi automatique.', 78, 587, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-coldemail', 'mode-coldemail', '/coldemail', 'Atelier prospection', 'coldemail', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un mode qui analyse la cible et l’intérêt de l’offre, puis prépare trois e-mails cohérents, sans envoi automatique.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['atelier prospection', 'professionnels et vente', 'modes ia']::text[], 'Atelier prospection | RaccourcIA', 'Un mode qui analyse la cible et l’intérêt de l’offre, puis prépare trois e-mails cohérents, sans envoi automatique.', 78, 587, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-coldemail',
   command = '/coldemail',
   name = 'Atelier prospection',
   slug = 'coldemail',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un mode qui analyse la cible et l’intérêt de l’offre, puis prépare trois e-mails cohérents, sans envoi automatique.',
   expected_input = 'Texte, brief ou document',
@@ -1229,14 +1266,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-ugcscript', 'mode-ugcscript', '/ugcscript', 'Atelier script UGC', 'ugcscript', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un atelier qui transforme une expérience produit documentée en script court avec accroche, démonstration et action finale, sans faux témoignage.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Oui', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['professionnels-et-vente', 'modes-ia', 'mode-ia', 'produit']::text[], array['atelier script ugc', 'professionnels et vente', 'modes ia']::text[], 'Atelier script UGC | RaccourcIA', 'Un atelier qui transforme une expérience produit documentée en script court avec accroche, démonstration et action finale, sans faux témoignage.', 78, 588, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-ugcscript', 'mode-ugcscript', '/ugcscript', 'Atelier script UGC', 'ugcscript', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un atelier qui transforme une expérience produit documentée en script court avec accroche, démonstration et action finale, sans faux témoignage.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Oui', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['professionnels-et-vente', 'modes-ia', 'mode-ia', 'produit']::text[], array['atelier script ugc', 'professionnels et vente', 'modes ia']::text[], 'Atelier script UGC | RaccourcIA', 'Un atelier qui transforme une expérience produit documentée en script court avec accroche, démonstration et action finale, sans faux témoignage.', 78, 588, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-ugcscript',
   command = '/ugcscript',
   name = 'Atelier script UGC',
   slug = 'ugcscript',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un atelier qui transforme une expérience produit documentée en script court avec accroche, démonstration et action finale, sans faux témoignage.',
   expected_input = 'Texte, brief ou document',
@@ -1262,14 +1300,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-chef-projet', 'mode-chef-projet', '/chef-projet', 'Chef de projet', 'chef-projet', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un mode qui transforme un objectif en étapes, dépendances et décisions à prendre, puis suit les changements de périmètre.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['chef de projet', 'professionnels et vente', 'modes ia']::text[], 'Chef de projet | RaccourcIA', 'Un mode qui transforme un objectif en étapes, dépendances et décisions à prendre, puis suit les changements de périmètre.', 78, 589, true, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-chef-projet', 'mode-chef-projet', '/chef-projet', 'Chef de projet', 'chef-projet', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un mode qui transforme un objectif en étapes, dépendances et décisions à prendre, puis suit les changements de périmètre.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['chef de projet', 'professionnels et vente', 'modes ia']::text[], 'Chef de projet | RaccourcIA', 'Un mode qui transforme un objectif en étapes, dépendances et décisions à prendre, puis suit les changements de périmètre.', 78, 589, true, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-chef-projet',
   command = '/chef-projet',
   name = 'Chef de projet',
   slug = 'chef-projet',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un mode qui transforme un objectif en étapes, dépendances et décisions à prendre, puis suit les changements de périmètre.',
   expected_input = 'Texte, brief ou document',
@@ -1295,14 +1334,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-redacteur-en-chef', 'mode-redacteur-en-chef', '/redacteur-en-chef', 'Comité éditorial', 'redacteur-en-chef', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un mode qui choisit l’angle, la hiérarchie et le ton d’un contenu, puis organise une révision argumentée.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['comite editorial', 'professionnels et vente', 'modes ia']::text[], 'Comité éditorial | RaccourcIA', 'Un mode qui choisit l’angle, la hiérarchie et le ton d’un contenu, puis organise une révision argumentée.', 78, 590, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-redacteur-en-chef', 'mode-redacteur-en-chef', '/redacteur-en-chef', 'Comité éditorial', 'redacteur-en-chef', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un mode qui choisit l’angle, la hiérarchie et le ton d’un contenu, puis organise une révision argumentée.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['comite editorial', 'professionnels et vente', 'modes ia']::text[], 'Comité éditorial | RaccourcIA', 'Un mode qui choisit l’angle, la hiérarchie et le ton d’un contenu, puis organise une révision argumentée.', 78, 590, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-redacteur-en-chef',
   command = '/redacteur-en-chef',
   name = 'Comité éditorial',
   slug = 'redacteur-en-chef',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un mode qui choisit l’angle, la hiérarchie et le ton d’un contenu, puis organise une révision argumentée.',
   expected_input = 'Texte, brief ou document',
@@ -1328,14 +1368,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-directeur-artistique', 'mode-directeur-artistique', '/directeur-artistique', 'Direction artistique', 'directeur-artistique', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un partenaire qui confronte le brief aux références, propose des pistes distinctes et aide à choisir une direction cohérente.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['direction artistique', 'professionnels et vente', 'modes ia']::text[], 'Direction artistique | RaccourcIA', 'Un partenaire qui confronte le brief aux références, propose des pistes distinctes et aide à choisir une direction cohérente.', 78, 591, true, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-directeur-artistique', 'mode-directeur-artistique', '/directeur-artistique', 'Direction artistique', 'directeur-artistique', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un partenaire qui confronte le brief aux références, propose des pistes distinctes et aide à choisir une direction cohérente.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['direction artistique', 'professionnels et vente', 'modes ia']::text[], 'Direction artistique | RaccourcIA', 'Un partenaire qui confronte le brief aux références, propose des pistes distinctes et aide à choisir une direction cohérente.', 78, 591, true, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-directeur-artistique',
   command = '/directeur-artistique',
   name = 'Direction artistique',
   slug = 'directeur-artistique',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un partenaire qui confronte le brief aux références, propose des pistes distinctes et aide à choisir une direction cohérente.',
   expected_input = 'Texte, brief ou document',
@@ -1361,14 +1402,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-recruteur', 'mode-recruteur', '/recruteur', 'Entretien d’embauche', 'recruteur', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un entretien simulé adapté au poste, suivi de retours sur les réponses et d’une préparation ciblée.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['entretien dembauche', 'professionnels et vente', 'modes ia']::text[], 'Entretien d’embauche | RaccourcIA', 'Un entretien simulé adapté au poste, suivi de retours sur les réponses et d’une préparation ciblée.', 78, 592, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-recruteur', 'mode-recruteur', '/recruteur', 'Entretien d’embauche', 'recruteur', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un entretien simulé adapté au poste, suivi de retours sur les réponses et d’une préparation ciblée.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['entretien dembauche', 'professionnels et vente', 'modes ia']::text[], 'Entretien d’embauche | RaccourcIA', 'Un entretien simulé adapté au poste, suivi de retours sur les réponses et d’une préparation ciblée.', 78, 592, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-recruteur',
   command = '/recruteur',
   name = 'Entretien d’embauche',
   slug = 'recruteur',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un entretien simulé adapté au poste, suivi de retours sur les réponses et d’une préparation ciblée.',
   expected_input = 'Texte, brief ou document',
@@ -1394,14 +1436,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-investisseur', 'mode-investisseur', '/investisseur', 'Face à l’investisseur', 'investisseur', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un investisseur fictif interroge le marché, les chiffres et les risques avant de rendre un avis argumenté.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['face a linvestisseur', 'professionnels et vente', 'modes ia']::text[], 'Face à l’investisseur | RaccourcIA', 'Un investisseur fictif interroge le marché, les chiffres et les risques avant de rendre un avis argumenté.', 78, 593, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-investisseur', 'mode-investisseur', '/investisseur', 'Face à l’investisseur', 'investisseur', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un investisseur fictif interroge le marché, les chiffres et les risques avant de rendre un avis argumenté.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['face a linvestisseur', 'professionnels et vente', 'modes ia']::text[], 'Face à l’investisseur | RaccourcIA', 'Un investisseur fictif interroge le marché, les chiffres et les risques avant de rendre un avis argumenté.', 78, 593, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-investisseur',
   command = '/investisseur',
   name = 'Face à l’investisseur',
   slug = 'investisseur',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un investisseur fictif interroge le marché, les chiffres et les risques avant de rendre un avis argumenté.',
   expected_input = 'Texte, brief ou document',
@@ -1427,14 +1470,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-adcopy', 'mode-adcopy', '/adcopy', 'Laboratoire publicitaire', 'adcopy', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Cinq angles de textes publicitaires sont comparés sur un même brief, puis affinés selon la cible et les preuves disponibles.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['laboratoire publicitaire', 'professionnels et vente', 'modes ia']::text[], 'Laboratoire publicitaire | RaccourcIA', 'Cinq angles de textes publicitaires sont comparés sur un même brief, puis affinés selon la cible et les preuves disponibles.', 78, 594, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-adcopy', 'mode-adcopy', '/adcopy', 'Laboratoire publicitaire', 'adcopy', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Cinq angles de textes publicitaires sont comparés sur un même brief, puis affinés selon la cible et les preuves disponibles.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['laboratoire publicitaire', 'professionnels et vente', 'modes ia']::text[], 'Laboratoire publicitaire | RaccourcIA', 'Cinq angles de textes publicitaires sont comparés sur un même brief, puis affinés selon la cible et les preuves disponibles.', 78, 594, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-adcopy',
   command = '/adcopy',
   name = 'Laboratoire publicitaire',
   slug = 'adcopy',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Cinq angles de textes publicitaires sont comparés sur un même brief, puis affinés selon la cible et les preuves disponibles.',
   expected_input = 'Texte, brief ou document',
@@ -1460,14 +1504,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-client-difficile', 'mode-client-difficile', '/client-difficile', 'Le client difficile', 'client-difficile', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Une simulation de client qui conteste prix, utilité et confiance ; la séance se termine par un débrief des réponses.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['le client difficile', 'professionnels et vente', 'modes ia']::text[], 'Le client difficile | RaccourcIA', 'Une simulation de client qui conteste prix, utilité et confiance ; la séance se termine par un débrief des réponses.', 78, 595, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-client-difficile', 'mode-client-difficile', '/client-difficile', 'Le client difficile', 'client-difficile', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Une simulation de client qui conteste prix, utilité et confiance ; la séance se termine par un débrief des réponses.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['le client difficile', 'professionnels et vente', 'modes ia']::text[], 'Le client difficile | RaccourcIA', 'Une simulation de client qui conteste prix, utilité et confiance ; la séance se termine par un débrief des réponses.', 78, 595, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-client-difficile',
   command = '/client-difficile',
   name = 'Le client difficile',
   slug = 'client-difficile',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Une simulation de client qui conteste prix, utilité et confiance ; la séance se termine par un débrief des réponses.',
   expected_input = 'Texte, brief ou document',
@@ -1493,14 +1538,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-chrissvoss', 'mode-chrissvoss', '/chrissvoss', 'Négociation inspirée de Chris Voss', 'chrissvoss', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un entraînement au miroir, à l’étiquetage émotionnel et aux questions ouvertes, suivi d’un débrief ; aucune affiliation revendiquée.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['negociation inspiree de chris voss', 'professionnels et vente', 'modes ia']::text[], 'Négociation inspirée de Chris Voss | RaccourcIA', 'Un entraînement au miroir, à l’étiquetage émotionnel et aux questions ouvertes, suivi d’un débrief ; aucune affiliation revendiquée.', 78, 596, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-chrissvoss', 'mode-chrissvoss', '/chrissvoss', 'Négociation inspirée de Chris Voss', 'chrissvoss', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un entraînement au miroir, à l’étiquetage émotionnel et aux questions ouvertes, suivi d’un débrief ; aucune affiliation revendiquée.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['negociation inspiree de chris voss', 'professionnels et vente', 'modes ia']::text[], 'Négociation inspirée de Chris Voss | RaccourcIA', 'Un entraînement au miroir, à l’étiquetage émotionnel et aux questions ouvertes, suivi d’un débrief ; aucune affiliation revendiquée.', 78, 596, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-chrissvoss',
   command = '/chrissvoss',
   name = 'Négociation inspirée de Chris Voss',
   slug = 'chrissvoss',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un entraînement au miroir, à l’étiquetage émotionnel et aux questions ouvertes, suivi d’un débrief ; aucune affiliation revendiquée.',
   expected_input = 'Texte, brief ou document',
@@ -1526,14 +1572,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-salespitch', 'mode-salespitch', '/salespitch', 'Pitch en 30 secondes', 'salespitch', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un entraînement oral simulé pour condenser une offre, tester sa compréhension et finaliser un pitch bref.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['pitch en 30 secondes', 'professionnels et vente', 'modes ia']::text[], 'Pitch en 30 secondes | RaccourcIA', 'Un entraînement oral simulé pour condenser une offre, tester sa compréhension et finaliser un pitch bref.', 78, 597, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-salespitch', 'mode-salespitch', '/salespitch', 'Pitch en 30 secondes', 'salespitch', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un entraînement oral simulé pour condenser une offre, tester sa compréhension et finaliser un pitch bref.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['pitch en 30 secondes', 'professionnels et vente', 'modes ia']::text[], 'Pitch en 30 secondes | RaccourcIA', 'Un entraînement oral simulé pour condenser une offre, tester sa compréhension et finaliser un pitch bref.', 78, 597, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-salespitch',
   command = '/salespitch',
   name = 'Pitch en 30 secondes',
   slug = 'salespitch',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un entraînement oral simulé pour condenser une offre, tester sa compréhension et finaliser un pitch bref.',
   expected_input = 'Texte, brief ou document',
@@ -1559,14 +1606,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-product-manager', 'mode-product-manager', '/product-manager', 'Revue produit', 'product-manager', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un examen du besoin utilisateur, de la proposition de valeur et des priorités, aboutissant à un périmètre de première version.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['professionnels-et-vente', 'modes-ia', 'mode-ia', 'produit']::text[], array['revue produit', 'professionnels et vente', 'modes ia']::text[], 'Revue produit | RaccourcIA', 'Un examen du besoin utilisateur, de la proposition de valeur et des priorités, aboutissant à un périmètre de première version.', 78, 598, true, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-product-manager', 'mode-product-manager', '/product-manager', 'Revue produit', 'product-manager', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un examen du besoin utilisateur, de la proposition de valeur et des priorités, aboutissant à un périmètre de première version.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['professionnels-et-vente', 'modes-ia', 'mode-ia', 'produit']::text[], array['revue produit', 'professionnels et vente', 'modes ia']::text[], 'Revue produit | RaccourcIA', 'Un examen du besoin utilisateur, de la proposition de valeur et des priorités, aboutissant à un périmètre de première version.', 78, 598, true, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-product-manager',
   command = '/product-manager',
   name = 'Revue produit',
   slug = 'product-manager',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un examen du besoin utilisateur, de la proposition de valeur et des priorités, aboutissant à un périmètre de première version.',
   expected_input = 'Texte, brief ou document',
@@ -1592,14 +1640,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-facilitateur', 'mode-facilitateur', '/facilitateur', 'Réunion qui avance', 'facilitateur', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Un animateur structure les contributions, repère les désaccords et produit une liste de décisions et d’actions.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['professionnels-et-vente', 'modes-ia', 'mode-ia', 'produit']::text[], array['reunion qui avance', 'professionnels et vente', 'modes ia']::text[], 'Réunion qui avance | RaccourcIA', 'Un animateur structure les contributions, repère les désaccords et produit une liste de décisions et d’actions.', 78, 599, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-facilitateur', 'mode-facilitateur', '/facilitateur', 'Réunion qui avance', 'facilitateur', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Un animateur structure les contributions, repère les désaccords et produit une liste de décisions et d’actions.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['professionnels-et-vente', 'modes-ia', 'mode-ia', 'produit']::text[], array['reunion qui avance', 'professionnels et vente', 'modes ia']::text[], 'Réunion qui avance | RaccourcIA', 'Un animateur structure les contributions, repère les désaccords et produit une liste de décisions et d’actions.', 78, 599, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-facilitateur',
   command = '/facilitateur',
   name = 'Réunion qui avance',
   slug = 'facilitateur',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Un animateur structure les contributions, repère les désaccords et produit une liste de décisions et d’actions.',
   expected_input = 'Texte, brief ou document',
@@ -1625,14 +1674,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = false,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('mode-negociateur', 'mode-negociateur', '/negociateur', 'Table de négociation', 'negociateur', 'texte'::public.app_mode, (select id from public.categories where slug = 'professionnels-et-vente'), 'Une préparation puis une simulation de négociation, avec objectifs, limites, concessions et bilan des accords possibles.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['table de negociation', 'professionnels et vente', 'modes ia']::text[], 'Table de négociation | RaccourcIA', 'Une préparation puis une simulation de négociation, avec objectifs, limites, concessions et bilan des accords possibles.', 78, 600, false, false, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('mode-negociateur', 'mode-negociateur', '/negociateur', 'Table de négociation', 'negociateur', 'texte'::public.app_mode, 'mode_ia', (select id from public.categories where slug = 'professionnels-et-vente'), 'Une préparation puis une simulation de négociation, avec objectifs, limites, concessions et bilan des accords possibles.', 'Texte, brief ou document', 'Conversation guidée et livrable texte', 'Activer le mode', 0, 5, null, null, false, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Une question à la fois si une donnée manque', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['professionnels-et-vente', 'modes-ia', 'mode-ia']::text[], array['table de negociation', 'professionnels et vente', 'modes ia']::text[], 'Table de négociation | RaccourcIA', 'Une préparation puis une simulation de négociation, avec objectifs, limites, concessions et bilan des accords possibles.', 78, 600, false, false, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'mode-negociateur',
   command = '/negociateur',
   name = 'Table de négociation',
   slug = 'negociateur',
   mode = 'texte'::public.app_mode,
+  entity_type = 'mode_ia',
   category_id = (select id from public.categories where slug = 'professionnels-et-vente'),
   short_description = 'Une préparation puis une simulation de négociation, avec objectifs, limites, concessions et bilan des accords possibles.',
   expected_input = 'Texte, brief ou document',

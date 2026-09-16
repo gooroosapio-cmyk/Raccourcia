@@ -20,10 +20,22 @@ import type { CollectionTile as Tile } from '@/lib/catalog/types';
  * meme chose sans avoir l'air cassee. La teinte suit le nom, donc elle ne
  * bouge pas d'un chargement a l'autre.
  */
-export function CollectionTile({ tile, famille }: { tile: Tile; famille: string }) {
+export function CollectionTile({
+  tile,
+  famille,
+  href,
+}: {
+  tile: Tile;
+  famille: string;
+  /**
+   * Ou mene la tuile. Par defaut la collection ; le premier palier de la
+   * Bibliotheque s'en sert pour pointer une famille, qui a la meme forme.
+   */
+  href?: string;
+}) {
   return (
     <Link
-      href={`/app/bibliotheque/${tile.slug}`}
+      href={href ?? `/app/bibliotheque/${tile.slug}`}
       className="group relative flex aspect-[16/10] w-full items-end overflow-hidden rounded-[color:var(--radius-card)] bg-[color:var(--color-sky)]"
     >
       {tile.imageUrl ? (

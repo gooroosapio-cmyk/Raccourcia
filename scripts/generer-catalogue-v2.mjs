@@ -127,6 +127,7 @@ function carte(c) {
     ['name', t(c.titre)],
     ['slug', t(c.slug)],
     ['mode', `${t(c.mode)}::public.app_mode`],
+    ['entity_type', t(c.type)],
     ['category_id', collection],
     ['short_description', t(c.description)],
     ['expected_input', t(c.entree_attendue)],

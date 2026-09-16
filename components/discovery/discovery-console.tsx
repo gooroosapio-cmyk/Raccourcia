@@ -244,7 +244,7 @@ function SearchField({ value, onChange }: { value: string; onChange: (v: string)
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder="Que souhaitez-vous créer ?"
+        placeholder="Décrivez ce que vous voulez obtenir"
         // La reserve de droite n'existe que lorsque la croix d'effacement est
         // la, c'est-a-dire quand le champ est rempli : la garder a vide
         // tronquait « Recherche une commande » sur un ecran de 360 px.

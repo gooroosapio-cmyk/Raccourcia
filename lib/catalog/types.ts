@@ -29,6 +29,23 @@ export type PromptCard = {
   tags: string[];
   showImageCard: boolean;
   /**
+   * Le genre d'experience : une transformation d'image, un mode
+   * conversationnel, un parcours guide. `null` pour une commande d'un import
+   * anterieur au catalogue V2 — l'ecran retombe alors sur son comportement
+   * precedent plutot que de deviner.
+   */
+  entityType: 'commande_image' | 'mode_ia' | 'parcours' | null;
+  /**
+   * Le rayon d'ou vient la carte, pour le sur-titre du feed et pour la
+   * regle qui interdit deux cartes du meme rayon a la suite.
+   */
+  collectionSlug: string | null;
+  collectionName: string | null;
+  /** Combien de photos la commande attend. `null` quand elle n'en attend pas. */
+  imagesMin: number | null;
+  /** Le format annonce du resultat : « 4:5 », « Multi-format ». */
+  defaultRatio: string | null;
+  /**
    * Vrai quand la commande a un texte a copier.
    *
    * Le catalogue V2 arrive sans payload : une carte existe avant son texte.

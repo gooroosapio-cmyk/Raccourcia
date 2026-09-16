@@ -239,7 +239,8 @@ jobs:
           set -euo pipefail
           for fichier in \
             supabase/migrations/20260915120000_socle_catalogue_v2.sql \
-            supabase/migrations/20260915130000_resolve_prompt_refuse_le_vide.sql; do
+            supabase/migrations/20260915130000_resolve_prompt_refuse_le_vide.sql \
+            supabase/migrations/20260916090000_type_d_experience.sql; do
             echo "  Migration : $(basename "$fichier")"
             psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
           done
