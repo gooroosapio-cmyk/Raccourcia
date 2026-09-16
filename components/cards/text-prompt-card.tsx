@@ -33,6 +33,7 @@ export function TextPromptCard({
   free,
   visiteur = false,
   rayon,
+  pleineLargeur = false,
   onOpen,
 }: {
   prompt: PromptCardData;
@@ -43,6 +44,15 @@ export function TextPromptCard({
   visiteur?: boolean;
   /** Position du rayon d'ou vient la carte, quand l'ecran la connait. */
   rayon?: number;
+  /**
+   * Vrai quand la carte occupe les deux colonnes.
+   *
+   * Un mode et un parcours demandent plus d'explication qu'une image : leur
+   * promesse ne se devine pas d'un coup d'oeil, elle se lit. Sur une demi-
+   * largeur, l'apercu se coupait au troisieme mot. Ils prennent donc la
+   * rangee entiere, et le texte passe a cote du cadre plutot qu'en dessous.
+   */
+  pleineLargeur?: boolean;
   onOpen: (prompt: PromptCardData) => void;
 }) {
   const { open: ouvrirOffre } = usePaywall();
@@ -60,7 +70,9 @@ export function TextPromptCard({
       <button
         type="button"
         onClick={() => onOpen(prompt)}
-        className="flex flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
+        className={`text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985] ${
+          pleineLargeur ? 'grid grid-cols-[104px_1fr] items-stretch' : 'flex flex-col'
+        }`}
       >
         <VisualSlot ton="texte" mission={niveau?.mission ?? false}>
           <span
@@ -87,7 +99,11 @@ export function TextPromptCard({
           </span>
         </VisualSlot>
 
-        <span className="flex items-start gap-1.5 px-2.5 pb-1.5 pt-2">
+        <span
+          className={`flex items-start gap-1.5 ${
+            pleineLargeur ? 'px-3 pb-2 pt-3' : 'px-2.5 pb-1.5 pt-2'
+          }`}
+        >
           {rayon !== undefined ? (
             <span
               aria-hidden="true"

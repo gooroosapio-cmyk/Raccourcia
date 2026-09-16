@@ -109,7 +109,7 @@ export function FeedDecouverte({
         </p>
       ) : null}
 
-      <div className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
+      <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 min-[400px]:gap-[var(--gouttiere-carte)]">
         {visibles.map((prompt, index) => {
           const verrouille = locked && !prompt.isFree;
           const apres = intercalaires.filter((element) => element.apres === index + 1);
@@ -124,6 +124,12 @@ export function FeedDecouverte({
             onOpen: ouvrir,
           };
 
+          // Un mode et un parcours demandent plus d'explication qu'une image :
+          // leur promesse se lit, elle ne se devine pas. Ils prennent la
+          // rangee entiere plutot que de voir leur apercu coupe au troisieme
+          // mot sur une demi-largeur.
+          const explique = prompt.entityType === 'mode_ia' || prompt.entityType === 'parcours';
+
           return (
             <Fragment key={prompt.id}>
               {prompt.showImageCard ? (
@@ -135,7 +141,9 @@ export function FeedDecouverte({
                   priority={index < 4}
                 />
               ) : (
-                <TextPromptCard {...commun} />
+                <div className={explique ? 'min-[360px]:col-span-2' : ''}>
+                  <TextPromptCard {...commun} pleineLargeur={explique} />
+                </div>
               )}
 
               {/* Un intercalaire traverse les deux colonnes : pose dans une

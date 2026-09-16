@@ -136,7 +136,7 @@ export function RayonsDepliables({ familles }: { familles: LibraryFamily[] }) {
             {ouvert ? (
               <div
                 id={identifiant}
-                className="mt-2 grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]"
+                className="mt-2 grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 min-[400px]:gap-[var(--gouttiere-carte)]"
               >
                 {famille.collections.map((collection) => (
                   <CollectionTile key={collection.id} tile={collection} famille={famille.name} />

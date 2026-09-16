@@ -113,7 +113,7 @@ export function PromptGrid({
               // des cartes, elles ne deviennent pas des affiches pour autant.
               // Pas d'`items-start` : les cartes d'une meme rangee partagent
               // leur hauteur, et le titre a deux lignes reservees de son cote.
-              'grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]'
+              'grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 min-[400px]:gap-[var(--gouttiere-carte)]'
         }
       >
         {prompts.map((prompt, index) => {
