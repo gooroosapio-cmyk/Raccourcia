@@ -224,7 +224,15 @@ jobs:
 
       # Refonte V2 : le catalogue de galerie remplace le precedent.
       #
-      # Deux migrations, les lots, puis la bascule. Les lots posent 692
+      # Les migrations sont nommees une par une, et non ramassees par un
+      # `ls` du dossier : ce workflow applique un lot precis a une base de
+      # production, et parcourir tout `supabase/migrations` y appliquerait
+      # aussi celles qu'une autre branche vient d'ajouter. La contrepartie
+      # est qu'une migration oubliee ici ne part jamais — et rien ne le dit.
+      # Toute migration dont le catalogue V2 depend doit donc etre ajoutee a
+      # cette liste dans le meme changement qui la cree.
+      #
+      # Les migrations, les lots, puis la bascule. Les lots posent 692
       # cartes en brouillon et sans texte ; la bascule ouvre les rayons,
       # publie les 594 cartes que le classeur declare visibles, et archive
       # l'ancien catalogue. Rien n'est supprime.
@@ -240,7 +248,8 @@ jobs:
           for fichier in \
             supabase/migrations/20260915120000_socle_catalogue_v2.sql \
             supabase/migrations/20260915130000_resolve_prompt_refuse_le_vide.sql \
-            supabase/migrations/20260916090000_type_d_experience.sql; do
+            supabase/migrations/20260916090000_type_d_experience.sql \
+            supabase/migrations/20260916140000_recherche_personnages_et_synonymes.sql; do
             echo "  Migration : $(basename "$fichier")"
             psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
           done
