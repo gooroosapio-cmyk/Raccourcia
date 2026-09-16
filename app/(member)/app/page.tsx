@@ -153,9 +153,10 @@ export default async function DiscoverPage({
       accueil = {
         feed: ordonnerLeFeed(vivier),
         familles,
-        // Trois au plus : au-dela ce n'est plus une reprise, c'est un
-        // historique, et il a sa page.
-        reprendre: reprendre.slice(0, 3),
+        // Une seule : la reprise se pose desormais dans le feed, entre deux
+        // idees. Trois cartes y formaient une rangee, c'est-a-dire un
+        // historique — et il a sa page.
+        reprendre: reprendre.slice(0, 1),
       };
       page = { items: [], hasMore: false, total: 0 };
     } else {
@@ -205,33 +206,40 @@ export default async function DiscoverPage({
     <div className="space-y-3 pt-1">
       {renvoye ? <PaywallAutoOpen /> : null}
 
-      {/* La page n'avait aucun titre de niveau 1 : un lecteur d'ecran
-          annoncait « Que voulez-vous creer ? » comme premier repere, sans
-          jamais dire ou l'on se trouve. Le titre reste invisible — l'ecran,
-          lui, se lit d'un coup d'oeil. */}
-      {/* En-tete compact. Le titre precedent tenait sur trois lignes et son
-          paragraphe sur deux : la premiere carte commencait a six cents
-          pixels du haut, sur un ecran qui en fait huit cents. Une question
-          courte suffit a dire ou l'on est. */}
+      {/* En-tete de l'Accueil : une affirmation, pas une question.
+          La question est passee dans le champ de recherche, juste dessous,
+          ou elle appelle une reponse — la lire deux fois de suite a deux
+          endroits ne demandait rien de plus, mais occupait une ligne de plus
+          sur un ecran qui en compte peu.
+
+          Hors Accueil, le titre reste invisible : la liste de resultats se
+          lit d'un coup d'oeil, mais un lecteur d'ecran a besoin d'un premier
+          repere qui dise ou l'on se trouve. */}
       {editorial ? (
         <div>
           <h1 className="text-[22px] font-bold leading-tight text-[color:var(--color-night)]">
-            Que voulez-vous créer&nbsp;?
+            Créez quelque chose d’unique
           </h1>
           <p className="mt-0.5 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-muted)]">
-            Trouvez une transformation, un mode ou un parcours adapté à votre projet.
+            Explorez des idées prêtes à transformer vos images, vos projets et vos conversations.
           </p>
         </div>
       ) : (
         <h1 className="sr-only">Bibliothèque de commandes RaccourcIA</h1>
       )}
 
+      {/* Le meme bandeau coiffe les deux etats, mais pas sous la meme forme :
+          sur l'Accueil il se reduit au champ de recherche. Il n'y a rien a
+          filtrer avant d'avoir cherche, et les controles de filtrage
+          reprennent leur place des la premiere liste de resultats. */}
       <DiscoveryConsole
         modes={modes}
         mode={mode}
         categories={categories}
         categorySlug={query.categorySlug}
         transverse={portee === 'catalogue'}
+        simple={editorial}
+        placeholder={editorial ? 'Que voulez-vous créer ?' : undefined}
         search={query.search}
         filtres={filtres}
         resultCount={page.total}

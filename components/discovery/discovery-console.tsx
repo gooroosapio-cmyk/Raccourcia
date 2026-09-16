@@ -26,6 +26,8 @@ export function DiscoveryConsole({
   categories,
   categorySlug,
   transverse = false,
+  simple = false,
+  placeholder,
   search,
   filtres,
   resultCount,
@@ -43,6 +45,18 @@ export function DiscoveryConsole({
    * l'autre.
    */
   transverse?: boolean;
+  /**
+   * Le champ de recherche seul, sans rien autour.
+   *
+   * C'est la forme de l'Accueil. Un ecran d'arrivee n'a rien a filtrer : il
+   * n'y a pas encore de resultat, donc le bouton de filtres, le selecteur
+   * Image/Texte et les puces de categories proposaient de restreindre une
+   * liste que personne n'avait demandee. Les filtres reprennent leur place
+   * des qu'une recherche existe, c'est-a-dire des que la page en montre une.
+   */
+  simple?: boolean;
+  /** Le texte du champ vide. L'Accueil demande, les resultats decrivent. */
+  placeholder?: string;
   search?: string;
   filtres: FiltresAvances;
   /** Nombre reel de resultats de la selection, pas le nombre de cartes chargees. */
@@ -165,6 +179,14 @@ export function DiscoveryConsole({
 
   const actifs = useMemo(() => Object.values(filtres).filter(Boolean).length, [filtres]);
 
+  // L'Accueil : la recherche occupe toute la largeur, et rien d'autre ne la
+  // borde. La frappe continue de mener aux resultats, ou les filtres
+  // reapparaissent — ils n'ont pas ete supprimes, ils ont ete deplaces la ou
+  // il y a quelque chose a filtrer.
+  if (simple) {
+    return <SearchField value={terme} onChange={setTerme} placeholder={placeholder} />;
+  }
+
   // Les familles seulement, jamais leurs collections. Le catalogue V2 en
   // compte 53 : les aplatir ici donnait une rangee de cinquante puces qu'il
   // fallait faire defiler pour trouver la sienne. Les collections ont leur
@@ -227,7 +249,15 @@ export function DiscoveryConsole({
   );
 }
 
-function SearchField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function SearchField({
+  value,
+  onChange,
+  placeholder = 'Décrivez ce que vous voulez obtenir',
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
   return (
     <label className="relative min-w-0 flex-1">
       <span className="sr-only">Recherche une commande</span>
@@ -244,7 +274,7 @@ function SearchField({ value, onChange }: { value: string; onChange: (v: string)
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder="Décrivez ce que vous voulez obtenir"
+        placeholder={placeholder}
         // La reserve de droite n'existe que lorsque la croix d'effacement est
         // la, c'est-a-dire quand le champ est rempli : la garder a vide
         // tronquait « Recherche une commande » sur un ecran de 360 px.

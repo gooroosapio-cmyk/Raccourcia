@@ -24,6 +24,8 @@ export function CollectionTile({
   tile,
   famille,
   href,
+  montrerLeCompte = true,
+  format = 'large',
 }: {
   tile: Tile;
   famille: string;
@@ -32,11 +34,28 @@ export function CollectionTile({
    * Bibliotheque s'en sert pour pointer une famille, qui a la meme forme.
    */
   href?: string;
+  /**
+   * Afficher « 72 commandes » sous le nom.
+   *
+   * Vrai en bibliotheque, ou l'on compare des rayons avant d'y entrer. Faux
+   * sur l'Accueil : un nombre n'y aide personne a choisir, il classe les
+   * categories par taille et pousse vers la plus grosse.
+   */
+  montrerLeCompte?: boolean;
+  /**
+   * `compact` pour une tuile de rangee horizontale : plus haute que large,
+   * elle laisse voir la suivante sur un ecran de 360 px.
+   */
+  format?: 'large' | 'compact';
 }) {
+  const compact = format === 'compact';
+
   return (
     <Link
       href={href ?? `/app/bibliotheque/${tile.slug}`}
-      className="group relative flex aspect-[16/10] w-full items-end overflow-hidden rounded-[color:var(--radius-card)] bg-[color:var(--color-sky)]"
+      className={`group relative flex w-full items-end overflow-hidden rounded-[color:var(--radius-card)] bg-[color:var(--color-sky)] ${
+        compact ? 'aspect-[4/3]' : 'aspect-[16/10]'
+      }`}
     >
       {tile.imageUrl ? (
         <>
@@ -45,7 +64,7 @@ export function CollectionTile({
             alt=""
             fill
             unoptimized
-            sizes="(max-width: 640px) 50vw, 240px"
+            sizes={compact ? '160px' : '(max-width: 640px) 50vw, 240px'}
             className="object-cover"
           />
           <span
@@ -57,21 +76,23 @@ export function CollectionTile({
         <span aria-hidden="true" className={`absolute inset-0 ${teinte(tile.name)}`} />
       )}
 
-      <span className="relative flex w-full flex-col gap-0.5 p-3">
+      <span className={`relative flex w-full flex-col gap-0.5 ${compact ? 'p-2.5' : 'p-3'}`}>
         <span
-          className={`line-clamp-2 text-[15px] font-bold leading-tight ${
+          className={`line-clamp-2 font-bold leading-tight ${compact ? 'text-[13px]' : 'text-[15px]'} ${
             tile.imageUrl ? 'text-white [text-shadow:0_1px_3px_rgb(0_0_0/45%)]' : 'text-white'
           }`}
         >
           {tile.name}
         </span>
-        <span
-          className={`text-[length:var(--texte-meta)] font-medium ${
-            tile.imageUrl ? 'text-white/85' : 'text-white/80'
-          }`}
-        >
-          {tile.count} commande{tile.count > 1 ? 's' : ''}
-        </span>
+        {montrerLeCompte ? (
+          <span
+            className={`text-[length:var(--texte-meta)] font-medium ${
+              tile.imageUrl ? 'text-white/85' : 'text-white/80'
+            }`}
+          >
+            {tile.count} commande{tile.count > 1 ? 's' : ''}
+          </span>
+        ) : null}
       </span>
 
       {/* Pour un lecteur d'ecran, la famille situe la collection : « Beaute »
