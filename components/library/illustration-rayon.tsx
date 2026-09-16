@@ -15,7 +15,14 @@ import { illustrationDuRayon } from '@/lib/ui/illustrations';
  * Rendu au serveur. Les cinquante dessins ne traversent jamais le reseau
  * vers le navigateur : seuls ceux que l'ecran montre voyagent.
  */
-export function IllustrationDeRayon({ slug, nom }: { slug: string; nom: string }) {
+export function IllustrationDeRayon({
+  slug,
+  nom,
+}: {
+  slug: string;
+  /** Sert a l'initiale du repli, quand le kit ne connait pas le rayon. */
+  nom: string;
+}) {
   const dessin = illustrationDuRayon(slug);
 
   if (!dessin) {
@@ -35,11 +42,16 @@ export function IllustrationDeRayon({ slug, nom }: { slug: string; nom: string }
     );
   }
 
+  /*
+   * Muette pour la lecture vocale. La charte veut qu'une illustration qui
+   * nomme un rayon en porte le libelle ; ici le nom est ecrit juste en
+   * dessous, en toutes lettres. L'etiqueter le ferait entendre deux fois,
+   * et le lecteur d'ecran annonce deja « image » avant de le repeter.
+   */
   return (
     <span
+      aria-hidden="true"
       className="svg-kit block aspect-[8/5] w-full overflow-hidden rounded-t-[color:var(--radius-card)]"
-      role="img"
-      aria-label={nom}
       dangerouslySetInnerHTML={{ __html: dessin }}
     />
   );

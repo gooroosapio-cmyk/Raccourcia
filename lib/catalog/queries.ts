@@ -249,6 +249,7 @@ export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
           id: collection.id,
           slug: collection.slug,
           name: collection.name,
+          description: collection.short_description?.trim() ?? '',
           count: comptes.get(collection.id) ?? 0,
           apercus: reserver(prisesParLesCollections, visuels.get(collection.id) ?? []),
         }));

@@ -1,9 +1,11 @@
 import { getBibliotheque } from '@/lib/catalog/queries';
-import { RayonsDepliables } from '@/components/library/rayons-depliables';
+import { CollectionTile } from '@/components/library/collection-tile';
+import { RayonsDepliables, type RayonDepliable } from '@/components/library/rayons-depliables';
 import { FaconsDUtiliser } from '@/components/library/facons-d-utiliser';
 import { NetworkError } from '@/components/ui/network-error';
 import { EmptyState } from '@/components/ui/states';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
+import { iconeDeLaFamille } from '@/lib/ui/icones';
 import {
   FAMILLE_MODES_IA,
   FAMILLE_PARCOURS,
@@ -16,10 +18,10 @@ export const metadata = { title: 'Bibliothèque' };
 /**
  * La Bibliotheque : les deux facons de se servir de l'outil, puis les rayons.
  *
- * Les rayons sont deplies : on vient voir ce qu'il y a, pas ouvrir huit
- * tiroirs. Chacun se replie et se souvient d'avoir ete replie — quarante-
- * trois collections font une page longue, et qui connait son rayon veut
- * pouvoir ranger le reste.
+ * Les tuiles sont rendues ici, au serveur, et passees deja faites au
+ * composant qui les deplie. Leurs dessins viennent du kit et pesent ensemble
+ * cinquante kilo-octets : les faire resoudre par le navigateur reviendrait a
+ * lui envoyer les cinquante pour en afficher six.
  *
  * Les familles viennent de la base, jamais d'une liste ecrite ici : en
  * ajouter une en administration la fait apparaitre sans redeploiement.
@@ -41,9 +43,18 @@ export default async function BibliothequePage() {
     throw error;
   }
 
-  const rayons = famillesDeRayon(familles);
   const modesIa = familleSpeciale(familles, FAMILLE_MODES_IA);
   const parcours = familleSpeciale(familles, FAMILLE_PARCOURS);
+
+  const rayons: RayonDepliable[] = famillesDeRayon(familles).map((famille) => ({
+    id: famille.id,
+    slug: famille.slug,
+    nom: famille.name,
+    icone: iconeDeLaFamille(famille.slug),
+    tuiles: famille.collections.map((collection) => (
+      <CollectionTile key={collection.id} tile={collection} famille={famille.name} />
+    )),
+  }));
 
   return (
     <div className="space-y-5 pt-1">
@@ -57,7 +68,7 @@ export default async function BibliothequePage() {
           body="Aucune collection n’est ouverte pour le moment."
         />
       ) : (
-        <RayonsDepliables familles={rayons} />
+        <RayonsDepliables rayons={rayons} />
       )}
     </div>
   );

@@ -44,6 +44,19 @@
    * Elles ne servent qu'aux dessins de rayon, jamais a l'interface : c'est
    * ce qui les garde discretes derriere un titre et une description.
    */
+  /*
+   * Les deux genres qui ne sont pas une image.
+   *
+   * La lavande designe un Mode IA, le bleu tres pale un Parcours. Deux
+   * teintes proches et non deux couleurs franches : ce sont des variantes
+   * d'une meme famille, pas deux univers — et un aplat sature ici volerait
+   * l'attention au bleu des actions.
+   */
+  --color-mode-fond: #eef0ff;
+  --color-mode-bord: #d9ddf5;
+  --color-parcours-fond: #edf4ff;
+  --color-parcours-bord: #d3e2fb;
+
   --illus-trait: var(--color-brand);
   --illus-fond: var(--color-sky);
   --illus-forme: var(--color-brand-soft);

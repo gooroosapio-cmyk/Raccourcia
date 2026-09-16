@@ -58,6 +58,14 @@ export default async function FamillePage({ params }: { params: Promise<{ famill
         <h1 className="mt-1 text-[length:var(--texte-page)] font-bold leading-tight text-[color:var(--color-night)]">
           {famille.name}
         </h1>
+
+        {/* Ce que la famille contient, dit une fois en haut plutot que devine
+            en lisant les noms de ses rayons. */}
+        {famille.description ? (
+          <p className="mt-1 text-[length:var(--texte-carte)] leading-[1.45] text-[color:var(--color-muted)]">
+            {famille.description}
+          </p>
+        ) : null}
       </div>
 
       <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 min-[400px]:gap-[var(--gouttiere-carte)]">

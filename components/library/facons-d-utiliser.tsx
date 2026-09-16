@@ -1,19 +1,20 @@
 import Link from 'next/link';
+import { Icone } from '@/components/ui/icone';
+import { iconeDuRole } from '@/lib/ui/icones';
 import type { LibraryFamily } from '@/lib/catalog/types';
 
 /**
  * Les deux facons de se servir de RaccourcIA, en tete de Bibliotheque.
  *
- * Un Mode IA conditionne une conversation ; un Parcours guide livre une
- * serie de visuels. Ce ne sont pas des sujets ranges a cote des portraits :
- * on ne les cherche pas de la meme facon et on ne les lance pas du meme
- * geste. Melanges aux rayons, ils passaient pour deux categories de plus et
- * personne ne les trouvait.
+ * Un Mode IA conditionne une conversation ; un Parcours guide livre une serie
+ * de fichiers. Ce ne sont pas des sujets ranges a cote des portraits : on ne
+ * les cherche pas de la meme facon et on ne les lance pas du meme geste.
+ * Melanges aux rayons, ils passaient pour deux categories de plus.
  *
- * Meme gabarit que les tuiles d'en dessous — la page garde son rythme — mais
- * sans couverture : ces deux-la ne se choisissent pas sur une image. Une
- * icone et une phrase disent ce qu'une photographie ne saurait pas dire
- * d'une conversation.
+ * Deux raccourcis et non deux tuiles pleines. Au gabarit des rayons ils
+ * occupaient un tiers du premier ecran, ce qui repoussait le catalogue sous
+ * la ligne de flottaison et leur donnait l'importance d'une famille entiere.
+ * Une ligne suffit a dire ce qu'ils sont ; la fiche dira le reste.
  */
 export function FaconsDUtiliser({
   modesIa,
@@ -28,84 +29,67 @@ export function FaconsDUtiliser({
     <section className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 min-[400px]:gap-[var(--gouttiere-carte)]">
       {modesIa ? (
         <Facon
-          slug={modesIa.slug}
+          href={`/app/bibliotheque/famille/${modesIa.slug}`}
           titre="Modes IA"
-          promesse="Donnez un rôle à votre IA"
-          icone={<IconeConversation />}
+          promesse="Réfléchir, écrire, s’entraîner"
+          svg={iconeDuRole('mode')}
+          ton="mode"
         />
       ) : null}
       {parcours ? (
         <Facon
-          slug={parcours.slug}
+          href={`/app/bibliotheque/famille/${parcours.slug}`}
           titre="Parcours guidés"
-          promesse="Un objectif, plusieurs étapes"
-          icone={<IconeEtapes />}
+          promesse="Un objectif, plusieurs livrables"
+          svg={iconeDuRole('journey')}
+          ton="parcours"
         />
       ) : null}
     </section>
   );
 }
 
+/**
+ * Deux teintes proches mais distinctes.
+ *
+ * La lavande designe les modes partout dans l'application ; le bleu tres pale
+ * designe les parcours. Les poser cote a cote ici apprend la convention a
+ * l'endroit ou on la rencontre pour la premiere fois.
+ */
+const TONS = {
+  mode: 'border-[color:var(--color-mode-bord)] bg-[color:var(--color-mode-fond)]',
+  parcours: 'border-[color:var(--color-parcours-bord)] bg-[color:var(--color-parcours-fond)]',
+} as const;
+
 function Facon({
-  slug,
+  href,
   titre,
   promesse,
-  icone,
+  svg,
+  ton,
 }: {
-  slug: string;
+  href: string;
   titre: string;
   promesse: string;
-  icone: React.ReactNode;
+  svg: string;
+  ton: keyof typeof TONS;
 }) {
   return (
     <Link
-      href={`/app/bibliotheque/famille/${slug}`}
-      className="flex aspect-[16/11] w-full flex-col justify-end gap-1 rounded-[color:var(--radius-card)] border border-[color:var(--color-brand)]/25 bg-[color:var(--color-brand-soft)] p-3 transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
+      href={href}
+      className={`flex min-h-[88px] w-full items-center gap-3 rounded-[color:var(--radius-card)] border px-3 py-2.5 transition-transform duration-[var(--duration-fast)] active:scale-[0.985] ${TONS[ton]}`}
     >
-      <span className="mb-auto flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--color-brand)] text-white">
-        {icone}
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-surface)] text-[color:var(--color-brand)]">
+        <Icone svg={svg} taille={22} />
       </span>
-      <span className="text-[15px] font-bold leading-tight text-[color:var(--color-brand-strong)]">
-        {titre}
-      </span>
-      <span className="text-[length:var(--texte-meta)] leading-tight text-[color:var(--color-night)]/70">
-        {promesse}
+      <span className="flex min-w-0 flex-col gap-0.5">
+        <span className="text-[length:var(--texte-titre-carte)] font-bold leading-tight text-[color:var(--color-night)]">
+          {titre}
+        </span>
+        <span className="text-[length:var(--texte-meta)] leading-[1.3] text-[color:var(--color-muted)]">
+          {promesse}
+        </span>
       </span>
     </Link>
-  );
-}
-
-/** Deux bulles : on parle avec un mode, on ne le regarde pas. */
-function IconeConversation() {
-  return (
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M4 6.5A2.5 2.5 0 0 1 6.5 4h7A2.5 2.5 0 0 1 16 6.5v3A2.5 2.5 0 0 1 13.5 12H9l-3.5 2.5v-2.7A2.5 2.5 0 0 1 4 9.5v-3Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M18 9.5h.5A2.5 2.5 0 0 1 21 12v3a2.5 2.5 0 0 1-1.5 2.3V20L16 17.5h-3"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/** Des paliers : un parcours avance et rend plusieurs choses en chemin. */
-function IconeEtapes() {
-  return (
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M3 19h4v-4H3v4ZM10 19h4V10h-4v9ZM17 19h4V5h-4v14Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

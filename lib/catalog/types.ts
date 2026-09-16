@@ -139,6 +139,15 @@ export type CollectionTile = {
   id: string;
   slug: string;
   name: string;
+  /**
+   * Ce qu'on trouve dans le rayon, en une phrase.
+   *
+   * Elle remplace le compteur sous la tuile. « 16 commandes » ne fait pas
+   * choisir : le chiffre ne dit pas si ce qu'on cherche est derriere. Vide
+   * pour un rayon que le catalogue n'a pas encore decrit — la tuile montre
+   * alors son nom seul plutot qu'une phrase inventee.
+   */
+  description: string;
   /** Combien de commandes publiees s'y trouvent. */
   count: number;
   /**
