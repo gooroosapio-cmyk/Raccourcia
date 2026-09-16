@@ -34,8 +34,8 @@ export function ResultThumbnail({
   mission?: boolean;
   /** Vrai pour les premieres vignettes seulement. */
   priority?: boolean;
-  /** Position du rayon, pour la teinte du cadre en attente d'apercu. */
-  rayon?: number;
+  /** Le rayon d'ou vient la carte, pour la teinte du cadre en attente. */
+  rayon?: string | null;
 }) {
   if (!url) return <ThumbnailPlaceholder libelle={libelle} mission={mission} rayon={rayon} />;
 
@@ -83,8 +83,15 @@ export function ThumbnailPlaceholder({
 }: {
   libelle: string;
   mission?: boolean;
-  /** Position du rayon : c'est elle qui donne la teinte. */
-  rayon?: number;
+  /**
+   * Le slug du rayon : c'est lui qui donne la teinte.
+   *
+   * Le slug et non la position dans le catalogue. La position changeait de
+   * teinte des qu'on reordonnait les familles en administration : le meme
+   * rayon revenait le lendemain dans une autre couleur, sans que rien n'ait
+   * change de son contenu.
+   */
+  rayon?: string | null;
 }) {
   const teintes = [
     'from-[#eaf1ff] to-[#d5e3ff]',
@@ -94,7 +101,11 @@ export function ThumbnailPlaceholder({
     'from-[#e8f0fe] to-[#d8e5fb]',
     'from-[#edf1f8] to-[#dbe3f2]',
   ];
-  const teinte = teintes[(rayon ?? 0) % teintes.length];
+  // Tiree du slug, donc stable : le meme rayon garde sa teinte d'un ecran a
+  // l'autre et d'un chargement au suivant.
+  let somme = 0;
+  for (const caractere of rayon ?? '') somme = (somme + caractere.charCodeAt(0)) % 997;
+  const teinte = teintes[somme % teintes.length];
 
   return (
     <VisualSlot ton="texte" mission={mission}>

@@ -1,0 +1,777 @@
+{
+  "meta": {
+    "name": "RaccourcIA taxonomy asset manifest",
+    "version": "1.0.0",
+    "source": "RaccourcIA_Catalogue_V2_Migration.xlsx",
+    "generated": "2026-09-16",
+    "notes": "Conserver les clés de taxonomie. Les sous-familles de parcours restent disponibles dans les données mais la vue Parcours affiche directement tous les parcours.",
+    "summary": {
+      "categories": 8,
+      "image_categories": 6,
+      "collections": 50,
+      "image_collections": 41,
+      "mode_families": 7,
+      "journey_families": 2,
+      "ui_and_taxonomy_icons": 72
+    }
+  },
+  "ui_icons": [
+    {
+      "role": "search",
+      "icon_id": "search",
+      "lucide_source": "Search",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "favorite",
+      "icon_id": "favorite",
+      "lucide_source": "Heart",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "copy",
+      "icon_id": "copy",
+      "lucide_source": "Copy",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "filters",
+      "icon_id": "filters",
+      "lucide_source": "SlidersHorizontal",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "home",
+      "icon_id": "home",
+      "lucide_source": "House",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "library",
+      "icon_id": "library",
+      "lucide_source": "LibraryBig",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "profile",
+      "icon_id": "profile",
+      "lucide_source": "User",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "back",
+      "icon_id": "back",
+      "lucide_source": "ChevronLeft",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "chevron",
+      "icon_id": "chevron",
+      "lucide_source": "ChevronDown",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "close",
+      "icon_id": "close",
+      "lucide_source": "X",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "check",
+      "icon_id": "check",
+      "lucide_source": "Check",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "sparkles",
+      "icon_id": "sparkles",
+      "lucide_source": "Sparkles",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "mode",
+      "icon_id": "mode",
+      "lucide_source": "BotMessageSquare",
+      "sprite": "05_ICONS_SPRITE.svg"
+    },
+    {
+      "role": "journey",
+      "icon_id": "journey",
+      "lucide_source": "Route",
+      "sprite": "05_ICONS_SPRITE.svg"
+    }
+  ],
+  "categories": [
+    {
+      "name": "Portraits et souvenirs",
+      "key": "portraits-et-souvenirs",
+      "icon_id": "cat-portraits-et-souvenirs",
+      "lucide_source": "Users",
+      "sprite": "05_ICONS_SPRITE.svg",
+      "description": "Personnes, relations, célébrations, cultures et voyages."
+    },
+    {
+      "name": "Style et identité",
+      "key": "style-et-identite",
+      "icon_id": "cat-style-et-identite",
+      "lucide_source": "Palette",
+      "sprite": "05_ICONS_SPRITE.svg",
+      "description": "Beauté, essayage, portraits professionnels et retouche."
+    },
+    {
+      "name": "Créations et VFX",
+      "key": "creations-et-vfx",
+      "icon_id": "cat-creations-et-vfx",
+      "lucide_source": "Sparkles",
+      "sprite": "05_ICONS_SPRITE.svg",
+      "description": "Univers artistiques, cinéma, humour et effets visuels."
+    },
+    {
+      "name": "Produit et e-commerce",
+      "key": "produit-et-e-commerce",
+      "icon_id": "cat-produit-et-e-commerce",
+      "lucide_source": "Package",
+      "sprite": "05_ICONS_SPRITE.svg",
+      "description": "Photos produit, usages, préparation et restauration."
+    },
+    {
+      "name": "Publicité et marque",
+      "key": "publicite-et-marque",
+      "icon_id": "cat-publicite-et-marque",
+      "lucide_source": "Tags",
+      "sprite": "05_ICONS_SPRITE.svg",
+      "description": "Commerce, campagnes, offres, créateurs et packaging."
+    },
+    {
+      "name": "Design et technique",
+      "key": "design-et-technique",
+      "icon_id": "cat-design-et-technique",
+      "lucide_source": "DraftingCompass",
+      "sprite": "05_ICONS_SPRITE.svg",
+      "description": "Pédagogie, concepts, documentation, matières et espaces."
+    },
+    {
+      "name": "Modes IA",
+      "key": "modes-ia",
+      "icon_id": "cat-modes-ia",
+      "lucide_source": "BotMessageSquare",
+      "sprite": "05_ICONS_SPRITE.svg",
+      "description": "Rôles interactifs pour réfléchir, créer et s’entraîner."
+    },
+    {
+      "name": "Parcours guidés",
+      "key": "parcours-guides",
+      "icon_id": "cat-parcours-guides",
+      "lucide_source": "Route",
+      "sprite": "05_ICONS_SPRITE.svg",
+      "description": "Objectifs structurés qui mènent à plusieurs livrables."
+    }
+  ],
+  "collections": [
+    {
+      "order": 1,
+      "category": "Portraits et souvenirs",
+      "category_key": "portraits-et-souvenirs",
+      "collection": "Époques",
+      "collection_key": "epoques",
+      "description": "Voyagez entre souvenirs et futurs imaginés.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-epoques",
+      "illustration_id": "illus-epoques",
+      "source_card_count": 23
+    },
+    {
+      "order": 2,
+      "category": "Portraits et souvenirs",
+      "category_key": "portraits-et-souvenirs",
+      "collection": "Relations",
+      "collection_key": "relations",
+      "description": "Créez des souvenirs avec les personnes qui comptent.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-relations",
+      "illustration_id": "illus-relations",
+      "source_card_count": 13
+    },
+    {
+      "order": 3,
+      "category": "Portraits et souvenirs",
+      "category_key": "portraits-et-souvenirs",
+      "collection": "Célébrations",
+      "collection_key": "celebrations",
+      "description": "Portraits et supports pour marquer les grands moments.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-celebrations",
+      "illustration_id": "illus-celebrations",
+      "source_card_count": 7
+    },
+    {
+      "order": 4,
+      "category": "Portraits et souvenirs",
+      "category_key": "portraits-et-souvenirs",
+      "collection": "Cultures",
+      "collection_key": "cultures",
+      "description": "Des portraits ancrés dans des références choisies.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-cultures",
+      "illustration_id": "illus-cultures",
+      "source_card_count": 26
+    },
+    {
+      "order": 5,
+      "category": "Portraits et souvenirs",
+      "category_key": "portraits-et-souvenirs",
+      "collection": "Voyages",
+      "collection_key": "voyages",
+      "description": "Placez vos souvenirs dans des destinations inspirantes.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-voyages",
+      "illustration_id": "illus-voyages",
+      "source_card_count": 3
+    },
+    {
+      "order": 6,
+      "category": "Style et identité",
+      "category_key": "style-et-identite",
+      "collection": "Beauté",
+      "collection_key": "beaute",
+      "description": "Coiffures, maquillage et essais beauté.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-beaute",
+      "illustration_id": "illus-beaute",
+      "source_card_count": 11
+    },
+    {
+      "order": 7,
+      "category": "Style et identité",
+      "category_key": "style-et-identite",
+      "collection": "Essayage",
+      "collection_key": "essayage",
+      "description": "Explorez des tenues et des accessoires.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-essayage",
+      "illustration_id": "illus-essayage",
+      "source_card_count": 16
+    },
+    {
+      "order": 8,
+      "category": "Style et identité",
+      "category_key": "style-et-identite",
+      "collection": "Portrait pro",
+      "collection_key": "portrait-pro",
+      "description": "Des portraits adaptés à votre activité.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-portrait-pro",
+      "illustration_id": "illus-portrait-pro",
+      "source_card_count": 36
+    },
+    {
+      "order": 9,
+      "category": "Style et identité",
+      "category_key": "style-et-identite",
+      "collection": "Retouche",
+      "collection_key": "retouche",
+      "description": "Nettoyez, restaurez et recadrez vos photos.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-retouche",
+      "illustration_id": "illus-retouche",
+      "source_card_count": 6
+    },
+    {
+      "order": 10,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Humour",
+      "collection_key": "humour",
+      "description": "Transformez le quotidien en scène amusante.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-humour",
+      "illustration_id": "illus-humour",
+      "source_card_count": 11
+    },
+    {
+      "order": 11,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Jeux visuels",
+      "collection_key": "jeux-visuels",
+      "description": "Vos choix deviennent une création originale.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-jeux-visuels",
+      "illustration_id": "illus-jeux-visuels",
+      "source_card_count": 16
+    },
+    {
+      "order": 12,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Cinéma - Action et espionnage",
+      "collection_key": "cinema-action-et-espionnage",
+      "description": "Affiches d’action et missions cinématographiques.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-cinema-action-et-espionnage",
+      "illustration_id": "illus-cinema-action-et-espionnage",
+      "source_card_count": 2
+    },
+    {
+      "order": 13,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Éditorial - Mode et beauté",
+      "collection_key": "editorial-mode-et-beaute",
+      "description": "Couvertures mode et portraits éditoriaux.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-editorial-mode-et-beaute",
+      "illustration_id": "illus-editorial-mode-et-beaute",
+      "source_card_count": 2
+    },
+    {
+      "order": 14,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Cinéma - personnages et scènes",
+      "collection_key": "cinema-personnages-et-scenes",
+      "description": "Personnages et univers de cinéma originaux.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-cinema-personnages-et-scenes",
+      "illustration_id": "illus-cinema-personnages-et-scenes",
+      "source_card_count": 18
+    },
+    {
+      "order": 15,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Éditorial - Business et parcours",
+      "collection_key": "editorial-business-et-parcours",
+      "description": "Mettez en scène votre parcours professionnel.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-editorial-business-et-parcours",
+      "illustration_id": "illus-editorial-business-et-parcours",
+      "source_card_count": 2
+    },
+    {
+      "order": 16,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Éditorial - Sport et performance",
+      "collection_key": "editorial-sport-et-performance",
+      "description": "Valorisez le mouvement et la performance.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-editorial-sport-et-performance",
+      "illustration_id": "illus-editorial-sport-et-performance",
+      "source_card_count": 3
+    },
+    {
+      "order": 17,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Peintres et signatures picturales",
+      "collection_key": "peintres-et-signatures-picturales",
+      "description": "Réinterprétez vos images par les grands langages picturaux.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-peintres-et-signatures-picturales",
+      "illustration_id": "illus-peintres-et-signatures-picturales",
+      "source_card_count": 10
+    },
+    {
+      "order": 18,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Illustration et mouvements artistiques",
+      "collection_key": "illustration-et-mouvements-artistiques",
+      "description": "Explorez illustrations, estampes et mouvements graphiques.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-illustration-et-mouvements-artistiques",
+      "illustration_id": "illus-illustration-et-mouvements-artistiques",
+      "source_card_count": 41
+    },
+    {
+      "order": 19,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Matières, jouets et métamorphoses",
+      "collection_key": "matieres-jouets-et-metamorphoses",
+      "description": "Transformez le sujet en matière, figurine ou sculpture.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-matieres-jouets-et-metamorphoses",
+      "illustration_id": "illus-matieres-jouets-et-metamorphoses",
+      "source_card_count": 38
+    },
+    {
+      "order": 20,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "VFX - effets de scène",
+      "collection_key": "vfx-effets-de-scene",
+      "description": "Ajoutez des effets spectaculaires à une scène.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-vfx-effets-de-scene",
+      "illustration_id": "illus-vfx-effets-de-scene",
+      "source_card_count": 24
+    },
+    {
+      "order": 21,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "VFX - espace et gravité",
+      "collection_key": "vfx-espace-et-gravite",
+      "description": "Pliez l’espace, l’échelle et la gravité.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-vfx-espace-et-gravite",
+      "illustration_id": "illus-vfx-espace-et-gravite",
+      "source_card_count": 10
+    },
+    {
+      "order": 22,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "VFX - lumière et optique",
+      "collection_key": "vfx-lumiere-et-optique",
+      "description": "Créez avec halos, prismes et lumières.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-vfx-lumiere-et-optique",
+      "illustration_id": "illus-vfx-lumiere-et-optique",
+      "source_card_count": 10
+    },
+    {
+      "order": 23,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "VFX - particules et métamorphoses",
+      "collection_key": "vfx-particules-et-metamorphoses",
+      "description": "Faites évoluer le sujet en fleurs, fumée ou particules.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-vfx-particules-et-metamorphoses",
+      "illustration_id": "illus-vfx-particules-et-metamorphoses",
+      "source_card_count": 10
+    },
+    {
+      "order": 24,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Montages originaux",
+      "collection_key": "montages-originaux",
+      "description": "Assemblez images, papiers et doubles expositions.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-montages-originaux",
+      "illustration_id": "illus-montages-originaux",
+      "source_card_count": 12
+    },
+    {
+      "order": 25,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Humour et scènes atypiques",
+      "collection_key": "humour-et-scenes-atypiques",
+      "description": "Inventez des situations visuelles inattendues.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-humour-et-scenes-atypiques",
+      "illustration_id": "illus-humour-et-scenes-atypiques",
+      "source_card_count": 7
+    },
+    {
+      "order": 26,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Dessins et manuscrits",
+      "collection_key": "dessins-et-manuscrits",
+      "description": "Transformez vos images en dessins et carnets.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-dessins-et-manuscrits",
+      "illustration_id": "illus-dessins-et-manuscrits",
+      "source_card_count": 16
+    },
+    {
+      "order": 27,
+      "category": "Créations et VFX",
+      "category_key": "creations-et-vfx",
+      "collection": "Éditorial - Musique et pop culture",
+      "collection_key": "editorial-musique-et-pop-culture",
+      "description": "Créez pochettes et couvertures musicales.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-editorial-musique-et-pop-culture",
+      "illustration_id": "illus-editorial-musique-et-pop-culture",
+      "source_card_count": 2
+    },
+    {
+      "order": 28,
+      "category": "Produit et e-commerce",
+      "category_key": "produit-et-e-commerce",
+      "collection": "Photo produit",
+      "collection_key": "photo-produit",
+      "description": "Des mises en lumière pour vos produits.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-photo-produit",
+      "illustration_id": "illus-photo-produit",
+      "source_card_count": 44
+    },
+    {
+      "order": 29,
+      "category": "Produit et e-commerce",
+      "category_key": "produit-et-e-commerce",
+      "collection": "Usage",
+      "collection_key": "usage",
+      "description": "Montrez le produit dans son contexte réel.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-usage",
+      "illustration_id": "illus-usage",
+      "source_card_count": 24
+    },
+    {
+      "order": 30,
+      "category": "Produit et e-commerce",
+      "category_key": "produit-et-e-commerce",
+      "collection": "Préparation",
+      "collection_key": "preparation",
+      "description": "Préparez des fichiers propres pour la vente.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-preparation",
+      "illustration_id": "illus-preparation",
+      "source_card_count": 8
+    },
+    {
+      "order": 31,
+      "category": "Produit et e-commerce",
+      "category_key": "produit-et-e-commerce",
+      "collection": "Restauration",
+      "collection_key": "restauration",
+      "description": "Valorisez ce qui est réellement servi.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-restauration",
+      "illustration_id": "illus-restauration",
+      "source_card_count": 1
+    },
+    {
+      "order": 32,
+      "category": "Publicité et marque",
+      "category_key": "publicite-et-marque",
+      "collection": "Commerce local",
+      "collection_key": "commerce-local",
+      "description": "Créez les supports visuels d’une activité de proximité.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-commerce-local",
+      "illustration_id": "illus-commerce-local",
+      "source_card_count": 12
+    },
+    {
+      "order": 33,
+      "category": "Publicité et marque",
+      "category_key": "publicite-et-marque",
+      "collection": "Créateurs",
+      "collection_key": "createurs",
+      "description": "Présentez un projet créatif ou musical.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-createurs",
+      "illustration_id": "illus-createurs",
+      "source_card_count": 4
+    },
+    {
+      "order": 34,
+      "category": "Publicité et marque",
+      "category_key": "publicite-et-marque",
+      "collection": "Publicités",
+      "collection_key": "publicites",
+      "description": "Construisez une campagne autour d’un bénéfice réel.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-publicites",
+      "illustration_id": "illus-publicites",
+      "source_card_count": 20
+    },
+    {
+      "order": 35,
+      "category": "Publicité et marque",
+      "category_key": "publicite-et-marque",
+      "collection": "Offres",
+      "collection_key": "offres",
+      "description": "Rendez prix, lots et comparaisons plus lisibles.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-offres",
+      "illustration_id": "illus-offres",
+      "source_card_count": 9
+    },
+    {
+      "order": 36,
+      "category": "Publicité et marque",
+      "category_key": "publicite-et-marque",
+      "collection": "Packaging",
+      "collection_key": "packaging",
+      "description": "Visualisez vos emballages et leurs déclinaisons.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-packaging",
+      "illustration_id": "illus-packaging",
+      "source_card_count": 22
+    },
+    {
+      "order": 37,
+      "category": "Design et technique",
+      "category_key": "design-et-technique",
+      "collection": "Pédagogie",
+      "collection_key": "pedagogie",
+      "description": "Expliquez clairement une notion ou un mouvement.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-pedagogie",
+      "illustration_id": "illus-pedagogie",
+      "source_card_count": 7
+    },
+    {
+      "order": 38,
+      "category": "Design et technique",
+      "category_key": "design-et-technique",
+      "collection": "Concepts",
+      "collection_key": "concepts",
+      "description": "Projetez un objet dans un univers créatif.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-concepts",
+      "illustration_id": "illus-concepts",
+      "source_card_count": 4
+    },
+    {
+      "order": 39,
+      "category": "Design et technique",
+      "category_key": "design-et-technique",
+      "collection": "Documentation",
+      "collection_key": "documentation",
+      "description": "Expliquez formes, pièces et fonctionnement.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-documentation",
+      "illustration_id": "illus-documentation",
+      "source_card_count": 29
+    },
+    {
+      "order": 40,
+      "category": "Design et technique",
+      "category_key": "design-et-technique",
+      "collection": "Matières",
+      "collection_key": "matieres",
+      "description": "Testez couleurs, textures et finitions.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-matieres",
+      "illustration_id": "illus-matieres",
+      "source_card_count": 20
+    },
+    {
+      "order": 41,
+      "category": "Design et technique",
+      "category_key": "design-et-technique",
+      "collection": "Espaces",
+      "collection_key": "espaces",
+      "description": "Projetez un aménagement sans masquer l’existant.",
+      "entity_type": "commande_image",
+      "icon_id": "icon-espaces",
+      "illustration_id": "illus-espaces",
+      "source_card_count": 3
+    },
+    {
+      "order": 42,
+      "category": "Modes IA",
+      "category_key": "modes-ia",
+      "collection": "Professionnels et vente",
+      "collection_key": "professionnels-et-vente",
+      "description": "Préparez vos messages et vos échanges.",
+      "entity_type": "mode_ia",
+      "icon_id": "icon-professionnels-et-vente",
+      "illustration_id": "illus-professionnels-et-vente",
+      "source_card_count": 18
+    },
+    {
+      "order": 43,
+      "category": "Modes IA",
+      "category_key": "modes-ia",
+      "collection": "Critiques et roasts",
+      "collection_key": "critiques-et-roasts",
+      "description": "Mettez vos idées à l’épreuve.",
+      "entity_type": "mode_ia",
+      "icon_id": "icon-critiques-et-roasts",
+      "illustration_id": "illus-critiques-et-roasts",
+      "source_card_count": 10
+    },
+    {
+      "order": 44,
+      "category": "Modes IA",
+      "category_key": "modes-ia",
+      "collection": "Clarté et modèles mentaux",
+      "collection_key": "clarte-et-modeles-mentaux",
+      "description": "Comprenez, structurez et décidez.",
+      "entity_type": "mode_ia",
+      "icon_id": "icon-clarte-et-modeles-mentaux",
+      "illustration_id": "illus-clarte-et-modeles-mentaux",
+      "source_card_count": 19
+    },
+    {
+      "order": 45,
+      "category": "Modes IA",
+      "category_key": "modes-ia",
+      "collection": "Personnages immersifs",
+      "collection_key": "personnages-immersifs",
+      "description": "Explorez une conversation jouée.",
+      "entity_type": "mode_ia",
+      "icon_id": "icon-personnages-immersifs",
+      "illustration_id": "illus-personnages-immersifs",
+      "source_card_count": 7
+    },
+    {
+      "order": 46,
+      "category": "Modes IA",
+      "category_key": "modes-ia",
+      "collection": "Jeux, énigmes et simulations",
+      "collection_key": "jeux-enigmes-et-simulations",
+      "description": "Jouez, enquêtez et entraînez-vous.",
+      "entity_type": "mode_ia",
+      "icon_id": "icon-jeux-enigmes-et-simulations",
+      "illustration_id": "illus-jeux-enigmes-et-simulations",
+      "source_card_count": 14
+    },
+    {
+      "order": 47,
+      "category": "Modes IA",
+      "category_key": "modes-ia",
+      "collection": "Créativité et angles inattendus",
+      "collection_key": "creativite-et-angles-inattendus",
+      "description": "Faites émerger des pistes nouvelles.",
+      "entity_type": "mode_ia",
+      "icon_id": "icon-creativite-et-angles-inattendus",
+      "illustration_id": "illus-creativite-et-angles-inattendus",
+      "source_card_count": 9
+    },
+    {
+      "order": 48,
+      "category": "Modes IA",
+      "category_key": "modes-ia",
+      "collection": "Style et conseil personnel",
+      "collection_key": "style-et-conseil-personnel",
+      "description": "Composez des choix qui vous conviennent.",
+      "entity_type": "mode_ia",
+      "icon_id": "icon-style-et-conseil-personnel",
+      "illustration_id": "illus-style-et-conseil-personnel",
+      "source_card_count": 5
+    },
+    {
+      "order": 49,
+      "category": "Parcours guidés",
+      "category_key": "parcours-guides",
+      "collection": "Parcours visuels",
+      "collection_key": "parcours-visuels",
+      "description": "Produisez une série de visuels cohérents.",
+      "entity_type": "parcours",
+      "icon_id": "icon-parcours-visuels",
+      "illustration_id": "illus-parcours-visuels",
+      "source_card_count": 20
+    },
+    {
+      "order": 50,
+      "category": "Parcours guidés",
+      "category_key": "parcours-guides",
+      "collection": "Parcours mixtes et modes",
+      "collection_key": "parcours-mixtes-et-modes",
+      "description": "Avancez du cadrage aux livrables.",
+      "entity_type": "parcours",
+      "icon_id": "icon-parcours-mixtes-et-modes",
+      "illustration_id": "illus-parcours-mixtes-et-modes",
+      "source_card_count": 8
+    }
+  ],
+  "usage": {
+    "icon": "<svg aria-hidden=\"true\"><use href=\"/assets/05_ICONS_SPRITE.svg#icon-beaute\"/></svg>",
+    "illustration": "<svg role=\"img\" aria-label=\"Coiffures et essais beauté\"><use href=\"/assets/07_ILLUSTRATIONS_MENUS.svg#illus-beaute\"/></svg>",
+    "rule": "Utiliser illustration_id pour les tuiles de collection et icon_id pour listes, filtres et navigation."
+  }
+}

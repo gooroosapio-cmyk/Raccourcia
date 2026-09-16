@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - kit-ui
           - moteur-v3
           - catalogue-v2
           - fermer-tables-sauvegarde
@@ -115,7 +116,8 @@ jobs:
           inputs.dossier != 'refonte-image-v6' &&
           inputs.dossier != 'fermer-tables-sauvegarde' &&
           inputs.dossier != 'catalogue-v2' &&
-          inputs.dossier != 'moteur-v3'
+          inputs.dossier != 'moteur-v3' &&
+          inputs.dossier != 'kit-ui'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -321,6 +323,29 @@ jobs:
           psql "$PGURL" -At -c "
             select '    ' || count(*) || ' payloads courants du moteur V3'
             from public.prompt_versions where version_label = 'moteur-v3' and is_current;"
+
+      # Les descriptions des rayons, generees depuis le kit UI.
+      #
+      # Le lot n'est fait que d'affectations : aucune ligne creee, aucune
+      # supprimee, aucune carte touchee. Un rayon absent de la base ne fait
+      # rien. Il est donc rejouable sans precaution, et ne demande pas le mot
+      # « basculer » — ce que les membres peuvent copier ne change pas, seule
+      # la phrase sous la tuile change.
+      - name: Appliquer les descriptions des rayons (kit UI)
+        if: inputs.dossier == 'kit-ui'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          for fichier in supabase/seed/kit-ui/*.sql; do
+            echo "  $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Etat des rayons :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) filter (where coalesce(short_description, '') <> '') ||
+                   ' rayons decrits sur ' || count(*) || ' ouverts'
+            from public.categories where is_visible and external_ref like 'V2-%';"
 
       - name: Moteur V3 demande sans confirmation
         if: inputs.dossier == 'moteur-v3' && inputs.bascule != 'basculer'

@@ -4,7 +4,7 @@ import { FAMILLE_MODES_IA } from '@/lib/catalog/familles-speciales';
 import type { CollectionTile, LibraryFamily } from '@/lib/catalog/types';
 
 function collection(slug: string, count: number, apercus: string[] = ['a.jpg']): CollectionTile {
-  return { id: slug, slug, name: slug, count, apercus };
+  return { id: slug, slug, name: slug, description: '', count, apercus };
 }
 
 function famille(slug: string, collections: CollectionTile[]): LibraryFamily {

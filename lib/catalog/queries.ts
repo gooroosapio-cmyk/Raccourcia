@@ -15,6 +15,7 @@ import {
 import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import { clesDeTri } from '@/lib/catalog/tri';
 import { modesLisibles } from '@/lib/catalog/modes';
+import { lireLeMoteur } from '@/lib/catalog/moteur';
 import { normaliserRecherche, portesDeRecherche } from '@/lib/catalog/recherche';
 import type {
   BeforeAfter,
@@ -248,6 +249,7 @@ export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
           id: collection.id,
           slug: collection.slug,
           name: collection.name,
+          description: collection.short_description?.trim() ?? '',
           count: comptes.get(collection.id) ?? 0,
           apercus: reserver(prisesParLesCollections, visuels.get(collection.id) ?? []),
         }));
@@ -309,6 +311,7 @@ const CARD_COLUMNS = `
   level, max_questions,
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
+  contexte, specification, livrables, questions_cadrage, criteres_reussite, erreurs, regle_sortie,
   categories(slug, name),
   prompt_variants(compatibility, status, ai_providers(key, name, is_active)),
   prompt_media(kind, storage_path, alt, sort_order),
@@ -346,6 +349,13 @@ type CardRow = {
   expected_input: string | null;
   limitations: string | null;
   required_variables: string[];
+  contexte: string | null;
+  specification: string | null;
+  livrables: string | null;
+  questions_cadrage: string | null;
+  criteres_reussite: string | null;
+  erreurs: string | null;
+  regle_sortie: string | null;
   prompt_variants: {
     compatibility: Enums<'compatibility_level'>;
     status: Enums<'content_status'>;
@@ -394,6 +404,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
 
   const thumbnail = parType('after') ?? parType('thumbnail');
   const comparaison = toBeforeAfter(row.prompt_media);
+  const genre = (row.entity_type as PromptCard['entityType']) ?? null;
 
   return {
     id: row.id,
@@ -411,7 +422,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     useCases: row.use_cases ?? [],
     tags: row.tags ?? [],
     showImageCard: row.show_image_card,
-    entityType: (row.entity_type as PromptCard['entityType']) ?? null,
+    entityType: genre,
     witnessType: row.witness_type ?? null,
     collectionSlug: row.categories?.slug ?? null,
     collectionName: row.categories?.name ?? null,
@@ -440,6 +451,10 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     expectedInput: row.expected_input,
     limitations: row.limitations,
     requiredVariables: row.required_variables ?? [],
+    // Seuls les Modes IA et les Parcours emportent leur moteur : eux seuls
+    // l'affichent, et une galerie de vingt-quatre commandes image le
+    // transporterait pour rien.
+    moteur: genre === 'mode_ia' || genre === 'parcours' ? lireLeMoteur(row) : null,
   };
 }
 
@@ -501,6 +516,10 @@ function masquerCommande(card: PromptCard): PromptCard {
     // Les modes ne s'affichent que sur la fiche, et une carte masquee
     // n'ouvre pas de fiche : ils n'ont rien a faire dans la page.
     modes: [],
+    // Le moteur ne se lit que dans la fiche, et une carte masquee n'en ouvre
+    // aucune. Ses sept champs citent la commande dans leurs phrases : les
+    // laisser voyager reviendrait a publier le nom qu'on vient de retirer.
+    moteur: null,
     shortDescription: nettoyer(card.shortDescription),
     resultSummary: nettoyer(card.resultSummary),
     useCases: card.useCases.map(nettoyer),
@@ -915,53 +934,70 @@ export async function getRangeeAccueil(
 }
 
 /**
- * Le vivier du feed de l'Accueil.
+ * Le vivier de la galerie de l'Accueil.
  *
- * La requete ne fait qu'une chose, mais elle la fait bien : elle ecarte tout
- * ce qui n'a rien a faire dans un espace editorial. Ce qui sort d'ici est
- * publie, range dans un rayon visible, et **porte un visuel**. Une carte
- * « Visuel a venir » dans un feed de decouverte donne l'impression d'un
- * catalogue en chantier — elle reste accessible en bibliotheque, ou son
- * absence d'image se comprend.
+ * Deux lectures, et c'est voulu.
  *
- * `media_ready` est tenue par la base : elle vaut vrai des qu'une commande
- * image porte un visuel de resultat. C'est le meme critere que la vignette
- * des cartes, donc le feed ne peut pas afficher un cadre vide.
+ * La premiere prend les transformations d'image et exige un visuel : une
+ * carte image sans image ne montre rien de ce qu'elle produit.
  *
- * L'ordre sort d'ici grossierement trie — mise en avant, poids editorial du
- * classeur, ordre du catalogue. C'est `ordonnerLeFeed` qui l'alterne
- * ensuite : une base sait trier par un score, pas dire « pas deux portraits
- * de suite ».
+ * La seconde prend les Modes IA et les Parcours guides, **sans** exiger de
+ * visuel. Un mode conditionne une conversation : il n'a pas de resultat a
+ * montrer et n'en aura jamais. L'exiger revenait a ne jamais en proposer —
+ * et c'est exactement ce qui se passait : la galerie n'a longtemps contenu
+ * que des images, si bien que la regle qui devait y glisser un mode toutes
+ * les quatre cartes n'avait jamais rien a glisser.
+ *
+ * Une seule requete avec un `or` aurait melange les deux exigences : soit
+ * elle imposait le visuel aux modes, soit elle l'abandonnait pour les images.
+ *
+ * L'ordre commun place devant ce qui est utilisable. Une commande sans texte
+ * a copier se regarde mais ne se lance pas. Devant, et non seule : le
+ * catalogue arrive par vagues, et les exclure viderait l'Accueil — ce qui est
+ * pire qu'une carte qui dit franchement « Bientot ».
  */
 export async function getVivierDuFeed(limite = 60): Promise<PromptCard[]> {
   const supabase = await createClient();
   const favorites = await getFavoriteIds();
 
-  const { data, error } = await supabase
-    .from('prompts')
-    .select(CARD_COLUMNS)
-    .eq('status', 'published')
-    .eq('media_ready', true)
-    // Ce qui est utilisable passe devant. Une commande sans texte a copier se
-    // regarde mais ne se lance pas : la laisser ouvrir la galerie revient a
-    // mettre en vitrine ce qu'on ne peut pas encore vendre.
-    //
-    // Devant, et non seule : le catalogue arrive par vagues et la plupart des
-    // textes manquent encore. Les exclure viderait l'Accueil, ce qui est pire
-    // qu'une carte qui dit franchement « Bientôt ». Elles restent donc
-    // atteignables, mais apres.
-    .order('payload_ready', { ascending: false })
-    .order('is_featured', { ascending: false })
-    .order('priority_score', { ascending: false, nullsFirst: false })
-    .order('sort_order', { ascending: true })
-    // Derniere cle unique : sans elle, deux ex aequo s'echangent d'un
-    // chargement a l'autre et le feed semble bouger seul.
-    .order('command', { ascending: true })
-    .limit(limite);
+  const [imagesReponse, experiencesReponse] = await Promise.all([
+    supabase
+      .from('prompts')
+      .select(CARD_COLUMNS)
+      .eq('status', 'published')
+      .eq('media_ready', true)
+      .neq('entity_type', 'mode_ia')
+      .neq('entity_type', 'parcours')
+      .order('payload_ready', { ascending: false })
+      .order('is_featured', { ascending: false })
+      .order('priority_score', { ascending: false, nullsFirst: false })
+      .order('sort_order', { ascending: true })
+      // Derniere cle unique : sans elle, deux ex aequo s'echangent d'un
+      // chargement a l'autre et la galerie semble bouger seule.
+      .order('command', { ascending: true })
+      .limit(limite),
+    supabase
+      .from('prompts')
+      .select(CARD_COLUMNS)
+      .eq('status', 'published')
+      .in('entity_type', ['mode_ia', 'parcours'])
+      .order('payload_ready', { ascending: false })
+      .order('is_featured', { ascending: false })
+      .order('priority_score', { ascending: false, nullsFirst: false })
+      .order('sort_order', { ascending: true })
+      .order('command', { ascending: true })
+      .limit(limite),
+  ]);
 
-  if (error) throw new CatalogUnavailableError(error);
+  if (imagesReponse.error) throw new CatalogUnavailableError(imagesReponse.error);
+  if (experiencesReponse.error) throw new CatalogUnavailableError(experiencesReponse.error);
 
-  return ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
+  const lignes = [
+    ...((imagesReponse.data ?? []) as unknown as CardRow[]),
+    ...((experiencesReponse.data ?? []) as unknown as CardRow[]),
+  ];
+
+  return lignes.map((row) => toCard(row, favorites));
 }
 
 /** Vue Recents : les raccourcis copies priment sur les simples consultations. */
@@ -1039,60 +1075,4 @@ export async function getDernieresCopies(limite = 3): Promise<PromptCard[]> {
   return ordre
     .map((id) => cartes.find((carte) => carte.id === id))
     .filter((carte) => carte !== undefined);
-}
-
-/**
- * Le vivier du carrousel « A decouvrir ».
- *
- * Deux lectures, et c'est voulu.
- *
- * La premiere prend les transformations d'image, tous rayons confondus, et
- * exige un visuel : une vitrine sans image ne presente rien. Laisser un seul
- * rayon la remplir donnerait l'impression d'un catalogue de portraits — c'est
- * `composerLaVitrine` qui tourne ensuite d'un rayon a l'autre.
- *
- * La seconde prend les modes IA et les parcours guides, **sans** exiger de
- * visuel : un mode conditionne une conversation, il n'a pas de resultat a
- * montrer et n'en aura jamais. L'exiger reviendrait a ne jamais en proposer.
- *
- * Une seule requete avec un `or` aurait melange les deux exigences : soit
- * elle imposait le visuel aux modes, soit elle l'abandonnait pour les images.
- */
-export async function getVivierDuCarrousel(limite = 60): Promise<PromptCard[]> {
-  const supabase = await createClient();
-  const favorites = await getFavoriteIds();
-
-  const [imagesReponse, experiencesReponse] = await Promise.all([
-    supabase
-      .from('prompts')
-      .select(CARD_COLUMNS)
-      .eq('status', 'published')
-      .eq('media_ready', true)
-      .eq('entity_type', 'commande_image')
-      .order('payload_ready', { ascending: false })
-      .order('is_featured', { ascending: false })
-      .order('priority_score', { ascending: false, nullsFirst: false })
-      .order('command', { ascending: true })
-      .limit(limite),
-    supabase
-      .from('prompts')
-      .select(CARD_COLUMNS)
-      .eq('status', 'published')
-      .in('entity_type', ['mode_ia', 'parcours'])
-      .order('payload_ready', { ascending: false })
-      .order('is_featured', { ascending: false })
-      .order('priority_score', { ascending: false, nullsFirst: false })
-      .order('command', { ascending: true })
-      .limit(limite),
-  ]);
-
-  if (imagesReponse.error) throw new CatalogUnavailableError(imagesReponse.error);
-  if (experiencesReponse.error) throw new CatalogUnavailableError(experiencesReponse.error);
-
-  const lignes = [
-    ...((imagesReponse.data ?? []) as unknown as CardRow[]),
-    ...((experiencesReponse.data ?? []) as unknown as CardRow[]),
-  ];
-
-  return lignes.map((row) => toCard(row, favorites));
 }

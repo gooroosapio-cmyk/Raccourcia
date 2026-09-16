@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getBibliotheque, getCatalogPage } from '@/lib/catalog/queries';
 import { PromptGrid } from '@/components/cards/prompt-grid';
@@ -8,6 +8,7 @@ import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
 import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE, MODES, type Mode } from '@/lib/constants';
 import { VoirPlus } from '@/components/discovery/voir-plus';
+import { estUneFamilleSpeciale } from '@/lib/catalog/familles-speciales';
 
 /**
  * Une collection, et les commandes qu'elle contient.
@@ -54,6 +55,17 @@ export default async function CollectionPage({
   const famille = familles.find((f) => f.collections.some((c) => c.slug === collection));
   const tuile = famille?.collections.find((c) => c.slug === collection);
   if (!famille || !tuile) notFound();
+
+  // Les sous-familles de Modes IA et de Parcours ne sont plus une etape de
+  // navigation : leur liste se filtre au-dessus des cartes. Une adresse
+  // partagee avant ce changement mene donc a la liste, avec sa famille deja
+  // retenue — plutot qu'a une page qui montrerait la meme chose autrement.
+  //
+  // Redirection simple et non permanente : c'est une decision de presentation,
+  // pas un changement d'adresse definitif, et la collection existe toujours.
+  if (estUneFamilleSpeciale(famille.slug)) {
+    redirect(`/app/bibliotheque/famille/${famille.slug}?rayon=${encodeURIComponent(collection)}`);
+  }
 
   const [acces, page] = await Promise.all([
     getAccessState(),

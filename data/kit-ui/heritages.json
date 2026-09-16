@@ -1,0 +1,27 @@
+{
+  "commentaire": [
+    "Les clefs du kit viennent du classeur V2, c'est-a-dire de la taxonomie",
+    "d'avant le rangement des rayons. Neuf rayons vivants portent aujourd'hui",
+    "un autre slug. Cette table dit lequel herite de quel asset, et pourquoi.",
+    "",
+    "Sept sont de simples renommages : la description du kit reste exacte et",
+    "n'est pas retouchee. Deux sont des fusions — « Cinema » et « Editorial »",
+    "reunissent plusieurs anciens rayons — et la description du kit, ecrite",
+    "pour un seul d'entre eux, serait trop etroite : elle est reecrite.",
+    "",
+    "Les anciens rayons non repris ici sont fermes (zero carte publiee) et",
+    "n'apparaissent nulle part : leur illustration reste inutilisee, ce qui",
+    "garantit qu'aucune illustration ne sert deux fois."
+  ],
+  "heritages": [
+    { "slug": "cinema", "kit": "cinema-personnages-et-scenes", "motif": "fusion", "description": "Personnages, affiches et scènes de cinéma originaux." },
+    { "slug": "editorial", "kit": "editorial-mode-et-beaute", "motif": "fusion", "description": "Couvertures et portraits de magazine, de la mode au parcours professionnel." },
+    { "slug": "signatures-picturales", "kit": "peintres-et-signatures-picturales", "motif": "renommage" },
+    { "slug": "mouvements-artistiques", "kit": "illustration-et-mouvements-artistiques", "motif": "renommage" },
+    { "slug": "matieres-et-metamorphoses", "kit": "matieres-jouets-et-metamorphoses", "motif": "renommage" },
+    { "slug": "effets-de-scene", "kit": "vfx-effets-de-scene", "motif": "renommage" },
+    { "slug": "espace-et-gravite", "kit": "vfx-espace-et-gravite", "motif": "renommage" },
+    { "slug": "lumiere-et-optique", "kit": "vfx-lumiere-et-optique", "motif": "renommage" },
+    { "slug": "particules-et-metamorphoses", "kit": "vfx-particules-et-metamorphoses", "motif": "renommage" }
+  ]
+}

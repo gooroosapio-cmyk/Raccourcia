@@ -34,6 +34,34 @@
   --color-danger: #c92a2a;
   --color-danger-soft: #fdecec;
 
+  /*
+   * Les quatre teintes des illustrations de rayon.
+   *
+   * Le kit UI les livre ecrites en dur, dont son propre bleu. Une
+   * illustration qui garderait le sien jurerait a deux centimetres d'un
+   * bouton : elles passent donc par des jetons, et suivent la marque.
+   *
+   * Elles ne servent qu'aux dessins de rayon, jamais a l'interface : c'est
+   * ce qui les garde discretes derriere un titre et une description.
+   */
+  /*
+   * Les deux genres qui ne sont pas une image.
+   *
+   * La lavande designe un Mode IA, le bleu tres pale un Parcours. Deux
+   * teintes proches et non deux couleurs franches : ce sont des variantes
+   * d'une meme famille, pas deux univers — et un aplat sature ici volerait
+   * l'attention au bleu des actions.
+   */
+  --color-mode-fond: #eef0ff;
+  --color-mode-bord: #d9ddf5;
+  --color-parcours-fond: #edf4ff;
+  --color-parcours-bord: #d3e2fb;
+
+  --illus-trait: var(--color-brand);
+  --illus-fond: var(--color-sky);
+  --illus-forme: var(--color-brand-soft);
+  --illus-vague: #dde8ff;
+
   /* Rayons : 12px petits composants, 16px cartes, 22px sheets. */
   --radius-control: 12px;
   --radius-card: 16px;
@@ -318,4 +346,15 @@ body {
     animation: none;
     opacity: 0.12;
   }
+}
+
+/*
+ * Les SVG du kit sont injectes tels quels : ils portent un `viewBox` et
+ * aucune dimension. C'est le cadre qui les dimensionne, ce qui evite de
+ * reecrire chaque dessin pour changer une taille.
+ */
+.svg-kit > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

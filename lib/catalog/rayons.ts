@@ -1,25 +1,34 @@
 import { famillesDeRayon } from '@/lib/catalog/familles-speciales';
+import { iconeDeLaFamille } from '@/lib/ui/icones';
 import type { LibraryFamily } from '@/lib/catalog/types';
 
 /**
- * A quel rayon appartient chaque collection, par sa position.
+ * Le trait de la famille de chaque collection, par slug.
  *
- * Une carte connait sa collection, jamais sa famille : la requete du
- * catalogue s'arrete a un niveau. Plutot que d'ajouter une jointure a deux
- * etages a chaque lecture de carte pour un seul glyphe, l'Accueil — qui
- * charge deja la bibliotheque entiere — construit la correspondance une fois
- * et la passe a la galerie.
+ * Meme raison que ci-dessus : une carte connait sa collection, jamais sa
+ * famille, et l'ecran qui charge deja la bibliotheque etablit la
+ * correspondance une fois.
  *
- * La valeur est une position, pas un nom : c'est elle qui choisit l'icone, et
- * renommer un rayon en administration ne change donc rien au dessin.
+ * Le dessin arrive tout fait plutot que d'etre resolu par la carte. Les
+ * soixante-douze traits du kit vivent dans un seul objet : y toucher depuis
+ * une carte — qui est un composant client — les ferait tous entrer dans le
+ * navigateur, une trentaine de kilo-octets pour en dessiner six.
+ *
+ * Il se resout par le slug de la famille, non plus par sa position. La
+ * position marchait tant qu'un seul ecran s'en servait ; des que le rail de
+ * l'Accueil est passe aux traits du kit, le meme rayon pouvait porter deux
+ * dessins differents a deux endroits de la meme page — et reordonner le
+ * catalogue en administration les rebattait tous.
  */
-export function indexDesRayons(familles: LibraryFamily[]): Record<string, number> {
-  const index: Record<string, number> = {};
+export function traitsDesRayons(familles: LibraryFamily[]): Record<string, string> {
+  const traits: Record<string, string> = {};
 
-  famillesDeRayon(familles).forEach((famille, position) => {
-    index[famille.slug] = position;
-    for (const collection of famille.collections) index[collection.slug] = position;
-  });
+  for (const famille of famillesDeRayon(familles)) {
+    const trait = iconeDeLaFamille(famille.slug);
+    if (!trait) continue;
+    traits[famille.slug] = trait;
+    for (const collection of famille.collections) traits[collection.slug] = trait;
+  }
 
-  return index;
+  return traits;
 }

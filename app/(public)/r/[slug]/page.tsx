@@ -7,8 +7,11 @@ import { AccessBadge } from '@/components/cards/access-badge';
 import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
 import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
+import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
+import { GenreDeFiche } from '@/components/detail/genre-fiche';
 import { InputExampleList } from '@/components/detail/input-example-list';
 import { ModesCommande } from '@/components/detail/modes-commande';
+import { Section } from '@/components/detail/section-fiche';
 import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { OutputFormatList } from '@/components/detail/output-format-list';
 import { NetworkError } from '@/components/ui/network-error';
@@ -109,6 +112,7 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
           s'annonce « /seoaudit » ne dit rien a qui le recoit. */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
+          <GenreDeFiche entityType={prompt.entityType} />
           <h1 className="text-[26px] font-semibold leading-tight text-[color:var(--color-night)]">
             {prompt.name}
           </h1>
@@ -149,20 +153,34 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
         </div>
       ) : null}
 
-      {prompt.inputExamples.length > 0 ? (
-        <Section titre="Exemples d’entrées">
-          <InputExampleList inputs={prompt.inputExamples} />
-        </Section>
-      ) : null}
+      {/* Le meme corps de fiche que dans l'application, et pour la meme
+          raison : un lien partage vers un Parcours n'annoncait ni le nombre
+          de livrables ni l'ordre dans lequel ils arrivent, alors que c'est
+          tout ce qu'il y avait a montrer. Les titres montent d'un rang — ici
+          la commande tient le `h1` de la page, la ou la fiche est une
+          couche posee sur une page qui a deja le sien. */}
+      {prompt.entityType === 'mode_ia' ? (
+        <CorpsMode prompt={prompt} niveau={2} />
+      ) : prompt.entityType === 'parcours' ? (
+        <CorpsParcours prompt={prompt} niveau={2} />
+      ) : (
+        <>
+          {prompt.inputExamples.length > 0 ? (
+            <Section titre="Exemples d’entrées" niveau={2}>
+              <InputExampleList inputs={prompt.inputExamples} />
+            </Section>
+          ) : null}
 
-      {prompt.outputFormats.length > 0 ? (
-        <Section titre="Résultat">
-          <OutputFormatList formats={prompt.outputFormats} />
-        </Section>
-      ) : null}
+          {prompt.outputFormats.length > 0 ? (
+            <Section titre="Résultat" niveau={2}>
+              <OutputFormatList formats={prompt.outputFormats} />
+            </Section>
+          ) : null}
+        </>
+      )}
 
       {prompt.modes.length > 0 ? (
-        <Section titre="Elle sait aussi faire">
+        <Section titre="Elle sait aussi faire" niveau={2}>
           <ModesCommande modes={prompt.modes} />
         </Section>
       ) : null}
@@ -239,16 +257,5 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
 
       <AvertissementResultats className="mt-4 border-t border-[color:var(--color-line)] pt-3" />
     </article>
-  );
-}
-
-function Section({ titre, children }: { titre: string; children: React.ReactNode }) {
-  return (
-    <section className="mt-6">
-      <h2 className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">
-        {titre}
-      </h2>
-      {children}
-    </section>
   );
 }

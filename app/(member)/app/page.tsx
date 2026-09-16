@@ -5,11 +5,9 @@ import {
   getCatalogPage,
   getCategories,
   getDernieresCopies,
-  getVivierDuCarrousel,
   getVivierDuFeed,
 } from '@/lib/catalog/queries';
-import { composerLaVitrine, ordonnerLeFeed } from '@/lib/catalog/feed';
-import { indexDesRayons } from '@/lib/catalog/rayons';
+import { ordonnerLeFeed } from '@/lib/catalog/feed';
 import type { PromptCard } from '@/lib/catalog/types';
 import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
 import { porteeDeRecherche } from '@/lib/catalog/recherche';
@@ -26,15 +24,6 @@ import type { FiltresAvances } from '@/components/discovery/filter-sheet';
 import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE, type Mode } from '@/lib/constants';
 
 export const metadata = { title: 'Découvrir' };
-
-/**
- * Combien d'idees passent dans la vitrine de tete.
- *
- * Vingt : a deux cartes et demie par ecran, cela fait huit poussees avant
- * d'arriver au bout. Une rangee qu'on epuise en deux gestes n'invite pas a la
- * parcourir, et c'est elle qui doit donner envie de descendre.
- */
-const CARTES_DU_CARROUSEL = 20;
 
 /**
  * Bibliotheque des commandes. Rendue cote serveur : le client ne recoit que
@@ -148,7 +137,6 @@ export default async function DiscoverPage({
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
   let accueil: {
     feed: PromptCard[];
-    carrousel: PromptCard[];
     reprendre: Awaited<ReturnType<typeof getDernieresCopies>>;
     familles: Awaited<ReturnType<typeof getBibliotheque>>;
   } | null = null;
@@ -157,31 +145,26 @@ export default async function DiscoverPage({
     if (editorial) {
       // L'historique n'existe que pour un compte : le demander a un visiteur
       // revient a interroger une table qui lui est fermee.
-      const [vivier, familles, reprendre, vitrine] = await Promise.all([
+      const [vivier, familles, reprendre] = await Promise.all([
         getVivierDuFeed(),
         getBibliotheque(),
         acces.isMember ? getDernieresCopies() : Promise.resolve([]),
-        getVivierDuCarrousel(),
       ]);
 
-      // La vitrine tourne d'un rayon a l'autre. Les modes IA et les parcours
-      // comptent chacun pour un rayon : ainsi ils sont rencontres au troisieme
-      // ou quatrieme geste, et non relegues en fin de rangee ou personne ne
-      // pousse. Le rayon vient de la bibliotheque, par sa position — aucun
-      // n'est nomme ici.
-      const rayonsParCollection = indexDesRayons(familles);
-      const rayonDeLaCarte = (carte: PromptCard) => {
-        if (carte.entityType === 'mode_ia') return 'modes';
-        if (carte.entityType === 'parcours') return 'parcours';
-        const position = carte.collectionSlug
-          ? rayonsParCollection[carte.collectionSlug]
-          : undefined;
-        return position === undefined ? 'autre' : `rayon-${position}`;
-      };
-
       accueil = {
+        // Une seule galerie, et non une vitrine puis une galerie.
+        //
+        // L'Accueil montrait un carrousel « A decouvrir » de vingt cartes,
+        // puis une galerie qui en retirait ces vingt-la. Les deux montraient
+        // les memes cartes sous deux formes, a deux ecrans d'intervalle : on
+        // parcourait la premiere sans savoir qu'on parcourrait la seconde, et
+        // le catalogue paraissait plus court qu'il n'est.
+        //
+        // La selection occupe donc la tete de la galerie. C'est `ordonnerLeFeed`
+        // qui s'en charge : il alterne deja les rayons et glisse un mode ou un
+        // parcours toutes les quatre cartes — ce que la vitrine faisait de son
+        // cote, en double.
         feed: ordonnerLeFeed(vivier),
-        carrousel: composerLaVitrine(vitrine, rayonDeLaCarte, CARTES_DU_CARROUSEL),
         familles,
         // Trois, et ce sont des copies : ouvrir une fiche ne veut rien dire,
         // on en ouvre dix pour en retenir une. Au-dela de trois, ce n'est
@@ -247,11 +230,11 @@ export default async function DiscoverPage({
           repere qui dise ou l'on se trouve. */}
       {editorial ? (
         <div>
-          <h1 className="text-[22px] font-bold leading-tight text-[color:var(--color-night)]">
-            Quelle sera votre prochaine création&nbsp;?
+          <h1 className="text-[26px] font-bold leading-tight text-[color:var(--color-night)]">
+            Que voulez-vous créer&nbsp;?
           </h1>
           <p className="mt-1 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-muted)]">
-            Explorez des commandes prêtes à utiliser pour créer, apprendre et avancer avec votre IA.
+            Une idée, une commande, à vous de jouer.
           </p>
         </div>
       ) : (
@@ -269,7 +252,7 @@ export default async function DiscoverPage({
         categorySlug={query.categorySlug}
         transverse={portee === 'catalogue'}
         simple={editorial}
-        placeholder={editorial ? 'Quel résultat souhaitez-vous obtenir ?' : undefined}
+        placeholder={editorial ? 'Rechercher une idée, un style…' : undefined}
         search={query.search}
         filtres={filtres}
         resultCount={page.total}
@@ -278,7 +261,6 @@ export default async function DiscoverPage({
       {accueil ? (
         <AccueilEditorial
           feed={accueil.feed}
-          carrousel={accueil.carrousel}
           reprendre={accueil.reprendre}
           familles={accueil.familles}
           locked={!acces.hasFullAccess}

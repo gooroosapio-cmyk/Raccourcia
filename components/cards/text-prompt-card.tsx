@@ -6,8 +6,8 @@ import { FavoriteButton } from '@/components/cards/favorite-button';
 import { VisualSlot } from '@/components/cards/visual-slot';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
-import { nomDuGenre } from '@/lib/catalog/experience';
-import { IconeRayon } from '@/components/discovery/icone-rayon';
+import { nomDuGenre, repereDuMoteur } from '@/lib/catalog/experience';
+import { Icone } from '@/components/ui/icone';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
@@ -42,8 +42,14 @@ export function TextPromptCard({
   free: boolean;
   /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
   visiteur?: boolean;
-  /** Position du rayon d'ou vient la carte, quand l'ecran la connait. */
-  rayon?: number;
+  /**
+   * Le trait du rayon d'ou vient la carte, quand l'ecran le connait.
+   *
+   * Le dessin et non sa position : une carte est un composant client, et les
+   * soixante-douze traits du kit vivent dans un seul objet — les resoudre ici
+   * les ferait tous entrer dans le navigateur.
+   */
+  rayon?: string;
   /**
    * Vrai quand la carte occupe les deux colonnes.
    *
@@ -64,6 +70,10 @@ export function TextPromptCard({
   const apercu = prompt.intention?.trim() || description;
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
   const genre = nomDuGenre(prompt);
+  // Le nombre de livrables d'un parcours, et seulement sur la carte pleine
+  // largeur : dans le carrousel, la carte fait une demi-colonne et la ligne
+  // supplementaire repousserait le bouton hors du cadre.
+  const repere = pleineLargeur ? repereDuMoteur(prompt) : null;
 
   return (
     <article className="anim-apparition relative flex h-full flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
@@ -104,19 +114,26 @@ export function TextPromptCard({
             pleineLargeur ? 'px-3 pb-2 pt-3' : 'px-2.5 pb-1.5 pt-2'
           }`}
         >
-          {rayon !== undefined ? (
+          {rayon ? (
             <span
               aria-hidden="true"
               className="mt-[1px] shrink-0 text-[color:var(--color-brand)]/70"
             >
-              <IconeRayon index={rayon} taille={15} />
+              <Icone svg={rayon} taille={15} />
             </span>
           ) : null}
-          {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
-              convention des raccourcis. Deux lignes reservees, toujours, sinon
-              la galerie part en escalier. */}
-          <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
-            {prompt.name}
+          <span className="flex min-w-0 flex-col">
+            {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
+                convention des raccourcis. Deux lignes reservees, toujours,
+                sinon la galerie part en escalier. */}
+            <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+              {prompt.name}
+            </span>
+            {repere ? (
+              <span className="mt-0.5 text-[length:var(--texte-meta)] font-semibold text-[color:var(--color-brand-strong)]">
+                {repere}
+              </span>
+            ) : null}
           </span>
         </span>
       </button>
@@ -149,7 +166,7 @@ export function TextPromptCard({
             pret={prompt.payloadReady}
             locked={locked}
             compact
-            estUnMode={prompt.entityType === 'mode_ia'}
+            genre={prompt.entityType}
             onLockedClick={ouvrirOffre}
           />
         </span>

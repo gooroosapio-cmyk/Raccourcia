@@ -3,48 +3,41 @@ import { CarteEditoriale } from '@/components/feed/carte-editoriale';
 import { FeedDecouverte, type Intercalaire } from '@/components/feed/feed-decouverte';
 import { PromptGrid } from '@/components/cards/prompt-grid';
 import { collectionsAProposer } from '@/lib/catalog/suggestions';
-import { indexDesRayons } from '@/lib/catalog/rayons';
+import { traitsDesRayons } from '@/lib/catalog/rayons';
 import type { LibraryFamily, PromptCard } from '@/lib/catalog/types';
 
 /**
  * L'Accueil quand rien n'est encore cherche.
  *
- * Quatre etages, dans l'ordre ou l'on s'en sert : par ou entrer, ce qu'on a
- * copie en dernier, une vitrine qui defile, puis la galerie.
+ * Trois etages, dans l'ordre ou l'on s'en sert : par ou entrer, ce qu'on a
+ * copie en dernier, puis la galerie.
  *
- * Le carrousel et la galerie ne font pas double emploi. Le premier se
- * parcourt d'un pouce, horizontalement, sans quitter le haut de l'ecran :
- * c'est une vitrine. La seconde se descend et ne s'arrete pas : c'est le
- * rayon. Les deux ne montrent jamais les memes cartes : la galerie retire ce
- * que la vitrine a pris, plutot que de couper au meme rang — la vitrine
- * puise ailleurs, elle n'est pas le debut de la galerie.
+ * Il y en avait quatre. Un carrousel « A decouvrir » de vingt cartes
+ * s'intercalait avant la galerie, qui retirait ensuite ces vingt-la. Les deux
+ * montraient les memes cartes sous deux formes, a deux ecrans d'intervalle :
+ * on parcourait la premiere sans savoir qu'on parcourrait la seconde, et le
+ * catalogue paraissait plus court qu'il n'est. La selection occupe desormais
+ * la tete de la galerie — c'est la meme chose, en un seul geste.
  */
 export function AccueilEditorial({
   feed,
-  carrousel,
   reprendre,
   familles,
   locked,
   visiteur,
 }: {
   feed: PromptCard[];
-  /** La vitrine : trois premiers rayons et des modes, deja melangee. */
-  carrousel: PromptCard[];
   reprendre: PromptCard[];
   familles: LibraryFamily[];
   locked: boolean;
   visiteur: boolean;
 }) {
-  // La galerie ne reprend jamais une carte de la vitrine : les voir deux fois
-  // a deux ecrans d'intervalle donne l'impression d'un catalogue plus court
-  // qu'il n'est.
-  const dansLaVitrine = new Set(carrousel.map((carte) => carte.id));
-  const galerie = feed.filter((carte) => !dansLaVitrine.has(carte.id));
-
   // Une carte connait sa collection, jamais sa famille. L'Accueil charge deja
-  // la bibliotheque entiere : il construit la correspondance une fois et la
-  // passe aux galeries, plutot qu'une jointure a deux etages par lecture.
-  const rayons = indexDesRayons(familles);
+  // la bibliotheque entiere : il resout le trait de chaque rayon une fois et
+  // le passe aux galeries, plutot qu'une jointure a deux etages par lecture —
+  // et plutot que de faire entrer les soixante-douze traits du kit dans le
+  // navigateur pour en dessiner six.
+  const rayons = traitsDesRayons(familles);
 
   // Deux invitations au plus, posees loin l'une de l'autre. Interrompre plus
   // souvent une galerie qu'on parcourt au pouce revient a la decouper en
@@ -69,13 +62,18 @@ export function AccueilEditorial({
 
       {reprendre.length > 0 ? (
         <section className="space-y-1.5">
+          {/* « Copiees recemment », et non « Reprendre ».
+              Rien n'est repris : l'application ne sait pas ou en est la
+              conversation qu'on a menee ailleurs, et un titre qui le laisse
+              croire promet une continuite qui n'existe pas. Ce qu'elle sait,
+              c'est ce qu'on a copie — et c'est deja ce qu'on revient chercher. */}
           <h2 className="text-[length:var(--texte-carte)] font-semibold text-[color:var(--color-muted)]">
-            Reprendre
+            Copiées récemment
           </h2>
           {/* Les trois dernieres commandes copiees, et non ouvertes : on ouvre
               dix fiches pour en retenir une, mais on ne copie que ce dont on
-              s'est servi. En carrousel, comme le reste — trois cartes en
-              colonne pousseraient la galerie hors de l'ecran. */}
+              s'est servi. En carrousel — trois cartes en colonne pousseraient
+              la galerie hors de l'ecran. */}
           <PromptGrid
             prompts={reprendre}
             locked={locked}
@@ -88,29 +86,13 @@ export function AccueilEditorial({
         </section>
       ) : null}
 
-      {carrousel.length > 0 ? (
-        <section className="space-y-2">
-          <h2 className="text-[length:var(--texte-section)] font-bold leading-tight text-[color:var(--color-night)]">
-            À découvrir
-          </h2>
-          <PromptGrid
-            prompts={carrousel}
-            locked={locked}
-            visiteur={visiteur}
-            disposition="rangee"
-            rayons={rayons}
-            emptyState={null}
-          />
-        </section>
-      ) : null}
-
-      {galerie.length > 0 ? (
+      {feed.length > 0 ? (
         <section className="space-y-2">
           <h2 className="text-[length:var(--texte-section)] font-bold leading-tight text-[color:var(--color-night)]">
             À vous de créer
           </h2>
           <FeedDecouverte
-            prompts={galerie}
+            prompts={feed}
             locked={locked}
             visiteur={visiteur}
             intercalaires={intercalaires}

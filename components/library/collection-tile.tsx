@@ -1,180 +1,70 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { IllustrationDeRayon } from '@/components/library/illustration-rayon';
 import type { CollectionTile as Tile } from '@/lib/catalog/types';
 
 /**
- * Couverture d'un rayon : une composition d'apercus, un nom pose dessus.
+ * La tuile d'un rayon : un dessin, un nom, ce qu'on y trouve.
  *
- * C'est la forme que prend une bibliotheque qu'on parcourt du pouce. Le nom
- * est en blanc sur un voile sombre plutot que sous les images : deux colonnes
- * sur un ecran de 360 px ne laissent pas la place a une legende, et une
- * grille ou chaque tuile a la meme hauteur ne saute pas au chargement.
+ * Elle montrait jusqu'ici une composition d'apercus — de vrais resultats du
+ * rayon — surmontee du nom en blanc et d'un compteur. Deux choses n'allaient
+ * pas, et aucune n'etait une question de gout.
  *
- * La composition vient de la collection elle-meme : un grand apercu a gauche,
- * deux petits a droite quand ils existent. Une image unique ne disait rien de
- * ce qu'il y avait derriere, et deux rayons voisins tombaient sur la meme —
- * « Produit et e-commerce » et « Publicité et marque » partageaient leur
- * couverture. Ce sont de vrais resultats du rayon, jamais une illustration
- * choisie ailleurs.
+ * Un resultat de commande en tete d'une tuile de menu se lit comme un exemple
+ * de ce qu'on obtiendra. Un rayon de creativite coiffe d'une chaussure
+ * annoncait donc litteralement autre chose que ce qu'il contient. Le dessin
+ * qui le remplace est abstrait : il nomme le rayon sans rien promettre. Les
+ * photographies restent sur les cartes de commande, la ou elles montrent bien
+ * un resultat.
  *
- * Sans apercu, la tuile ne montre pas un cadre vide. Le catalogue V2 arrive
- * sans images et la plupart des collections n'en auront pas avant longtemps :
- * une tuile typographique, dans les bleus de la marque, dit la meme chose
- * sans avoir l'air cassee. La teinte suit le nom, donc elle ne bouge pas d'un
- * chargement a l'autre.
+ * Et « 16 commandes » ne fait choisir personne : le chiffre ne dit pas si ce
+ * qu'on cherche est derriere, il classe les rayons par taille et pousse vers
+ * le plus gros. Une phrase le dit. Elle vient de la base, donc elle se corrige
+ * sans redeploiement.
+ *
+ * La hauteur vient du contenu et non d'un rapport impose : deux lignes de
+ * description sous un dessin en 8:5, ce qui donne des tuiles egales tant que
+ * les phrases tiennent en deux lignes — et la reserve de deux lignes fait le
+ * reste.
  */
 export function CollectionTile({
   tile,
   famille,
   href,
-  montrerLeCompte = true,
-  format = 'large',
-  priority = false,
 }: {
   tile: Tile;
   famille: string;
   /**
-   * Ou mene la tuile. Par defaut la collection ; le premier palier de la
+   * Ou mene la tuile. Par defaut le rayon ; le premier palier de la
    * Bibliotheque s'en sert pour pointer une famille, qui a la meme forme.
    */
   href?: string;
-  /**
-   * Afficher « 72 commandes » sous le nom.
-   *
-   * Vrai en bibliotheque, ou l'on compare des rayons avant d'y entrer. Faux
-   * sur l'Accueil : un nombre n'y aide personne a choisir, il classe les
-   * rayons par taille et pousse vers le plus gros.
-   */
-  montrerLeCompte?: boolean;
-  /**
-   * `compact` pour une tuile de ruban horizontal : elle laisse voir la
-   * suivante sur un ecran de 360 px.
-   */
-  format?: 'large' | 'compact';
-  /** Vrai pour les tuiles de la premiere rangee seulement. */
-  priority?: boolean;
 }) {
-  const compact = format === 'compact';
-  const apercus = tile.apercus.slice(0, 3);
-
   return (
     <Link
       href={href ?? `/app/bibliotheque/${tile.slug}`}
-      className={`group relative flex w-full items-end overflow-hidden rounded-[color:var(--radius-card)] bg-[color:var(--color-sky)] transition-transform duration-[var(--duration-fast)] active:scale-[0.985] ${
-        compact ? 'aspect-[4/3]' : 'aspect-[16/11]'
-      }`}
+      className="group flex w-full flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
     >
-      {apercus.length > 0 ? (
-        <>
-          <Composition apercus={apercus} priority={priority} />
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"
-          />
-        </>
-      ) : (
-        <span aria-hidden="true" className={`absolute inset-0 ${teinte(tile.name)}`} />
-      )}
+      <IllustrationDeRayon slug={tile.slug} nom={tile.name} />
 
-      <span className={`relative flex w-full flex-col gap-0.5 ${compact ? 'p-2.5' : 'p-3'}`}>
-        <span
-          className={`line-clamp-2 font-bold leading-tight text-white ${
-            compact ? 'text-[13px]' : 'text-[15px]'
-          } ${apercus.length > 0 ? '[text-shadow:0_1px_3px_rgb(0_0_0/45%)]' : ''}`}
-        >
+      <span className="flex flex-1 flex-col gap-0.5 px-3 pb-3 pt-2.5">
+        <span className="line-clamp-2 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
           {tile.name}
         </span>
-        {montrerLeCompte ? (
-          <span className="text-[length:var(--texte-meta)] font-medium text-white/85">
-            {tile.count} commande{tile.count > 1 ? 's' : ''}
+        {tile.description ? (
+          /* Deux lignes reservees, toujours : sans cela une phrase courte et
+             une phrase longue mettent leurs deux tuiles a des hauteurs
+             differentes, et la grille part en escalier. */
+          <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-meta)] leading-[1.3] text-[color:var(--color-muted)]">
+            {tile.description}
           </span>
         ) : null}
       </span>
 
-      {/* Pour un lecteur d'ecran, la famille situe la collection : « Beaute »
-          seul ne dit pas dans quel rayon on entre. */}
+      {/* Pour un lecteur d'ecran, la famille situe le rayon : « Beaute » seul
+          ne dit pas dans quel ensemble on entre. */}
       <span className="sr-only">
         {famille} — {tile.name}
       </span>
     </Link>
   );
-}
-
-/**
- * Un, deux ou trois apercus dans un seul cadre.
- *
- * La composition suit ce qu'il y a, et non l'inverse : un apercu occupe tout
- * le cadre, deux se partagent la largeur, trois donnent un grand a gauche et
- * deux empiles a droite. Rien n'est etire ni complete par un remplissage —
- * une couverture doit montrer des resultats, pas des trous.
- */
-function Composition({ apercus, priority }: { apercus: string[]; priority: boolean }) {
-  if (apercus.length === 1) {
-    return <Apercu url={apercus[0]!} sizes="(max-width: 640px) 50vw, 260px" priority={priority} />;
-  }
-
-  if (apercus.length === 2) {
-    return (
-      <span aria-hidden="true" className="absolute inset-0 grid grid-cols-2 gap-px">
-        {apercus.map((url) => (
-          <span key={url} className="relative overflow-hidden">
-            <Apercu url={url} sizes="(max-width: 640px) 25vw, 130px" priority={priority} />
-          </span>
-        ))}
-      </span>
-    );
-  }
-
-  return (
-    <span aria-hidden="true" className="absolute inset-0 grid grid-cols-[1.6fr_1fr] gap-px">
-      <span className="relative overflow-hidden">
-        <Apercu url={apercus[0]!} sizes="(max-width: 640px) 32vw, 160px" priority={priority} />
-      </span>
-      <span className="grid grid-rows-2 gap-px">
-        {apercus.slice(1, 3).map((url) => (
-          <span key={url} className="relative overflow-hidden">
-            <Apercu url={url} sizes="(max-width: 640px) 20vw, 100px" priority={false} />
-          </span>
-        ))}
-      </span>
-    </span>
-  );
-}
-
-function Apercu({ url, sizes, priority }: { url: string; sizes: string; priority: boolean }) {
-  return (
-    <Image
-      src={url}
-      alt=""
-      fill
-      // Le stockage a deja rendu la vignette a la bonne largeur. L'optimiseur
-      // de l'hebergeur, lui, a un quota mensuel : epuise, il repond « Payment
-      // Required » et la couverture disparait.
-      unoptimized
-      sizes={sizes}
-      priority={priority}
-      loading={priority ? undefined : 'lazy'}
-      className="object-cover"
-    />
-  );
-}
-
-/**
- * Une teinte stable pour un rayon sans apercu.
- *
- * Tiree du nom et non d'un hasard : le meme rayon garde la meme couleur d'un
- * ecran a l'autre, et la grille ne clignote pas au rechargement. Quatre
- * degrades, tous dans les bleus de la marque — une tuile sans image reste une
- * tuile de RaccourcIA, pas un trou colore.
- */
-function teinte(nom: string): string {
-  const degrades = [
-    'bg-gradient-to-br from-[#1463ff] to-[#0b163f]',
-    'bg-gradient-to-br from-[#4f8cff] to-[#1463ff]',
-    'bg-gradient-to-br from-[#0f4fd8] to-[#0b163f]',
-    'bg-gradient-to-br from-[#2b7cff] to-[#123a8f]',
-  ];
-  let somme = 0;
-  for (const caractere of nom) somme = (somme + caractere.charCodeAt(0)) % 997;
-  return degrades[somme % degrades.length]!;
 }

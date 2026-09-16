@@ -97,5 +97,21 @@ begin
     raise exception 'Moteur V3 : % droits de lecture client sur prompt_versions.', v_n;
   end if;
 
+  -- Les sept champs de la fiche, eux, doivent etre lisibles : la fiche d'un
+  -- Mode IA et celle d'un Parcours n'affichent plus rien d'autre. Le droit
+  -- porte sur ces colonnes seulement, jamais sur la table entiere -- c'est
+  -- ce qui separe la description du raccourci de son contenu.
+  select count(*) into v_n
+  from information_schema.column_privileges
+  where table_schema = 'public' and table_name = 'prompts'
+    and grantee = 'anon' and privilege_type = 'SELECT'
+    and column_name in (
+      'contexte', 'specification', 'livrables', 'questions_cadrage',
+      'criteres_reussite', 'erreurs', 'regle_sortie'
+    );
+  if v_n <> 7 then
+    raise exception 'Moteur V3 : % colonnes de fiche lisibles sur 7 attendues.', v_n;
+  end if;
+
   raise notice 'Moteur V3 : verifie.';
 end $moteur$;
