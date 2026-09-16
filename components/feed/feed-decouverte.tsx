@@ -56,7 +56,7 @@ export function FeedDecouverte({
   initialProvider?: string;
   intercalaires?: Intercalaire[];
   /** A quel rayon appartient chaque collection, par position. */
-  rayons?: Record<string, number>;
+  rayons?: Record<string, string>;
   /**
    * Propose de restreindre la galerie : format, sujet, acces.
    *
@@ -171,7 +171,7 @@ function Blocs({
   locked: boolean;
   visiteur: boolean;
   provider: string;
-  rayons?: Record<string, number>;
+  rayons?: Record<string, string>;
   ouvrir: (prompt: PromptCard) => void;
 }) {
   const blocs = useMemo(() => decouperLeFeed(cartes), [cartes]);

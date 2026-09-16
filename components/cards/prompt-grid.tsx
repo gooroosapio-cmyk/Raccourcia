@@ -72,7 +72,7 @@ export function PromptGrid({
    * jointure a deux etages sur chaque lecture du catalogue, l'ecran qui
    * charge deja la bibliotheque passe la correspondance.
    */
-  rayons?: Record<string, number>;
+  rayons?: Record<string, string>;
 }) {
   const [selection, setSelection] = useState<PromptCardData | null>(null);
   const [provider, changeProvider] = usePreferredProvider(initialProvider);

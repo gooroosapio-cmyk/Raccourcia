@@ -86,56 +86,6 @@ function seRessemblent(a: string, b: string): boolean {
 }
 
 /**
- * La vitrine de tete : une rotation entre rayons, pas un tirage.
- *
- * Elle prenait les cartes dans l'ordre du catalogue, ce qui laissait le rayon
- * le plus fourni occuper presque toute la rangee : on croyait decouvrir un
- * catalogue de portraits. Elle tourne maintenant d'un rayon a l'autre —
- * portraits, puis produits, puis effets, puis publicite — et revient au
- * premier quand elle a fait le tour.
- *
- * Les modes IA et les parcours guides sont des rayons comme les autres dans
- * cette rotation. Ils ne sont pas relegues en fin de rangee, ou personne ne
- * pousse : on les rencontre au troisieme ou quatrieme geste.
- *
- * Un rayon epuise sort de la rotation sans laisser de trou. Si un seul reste,
- * la vitrine se remplit avec lui plutot que de s'arreter court — mieux vaut
- * une rangee homogene qu'une rangee de quatre cartes.
- */
-export function composerLaVitrine(
-  cartes: PromptCard[],
-  rayonDeLaCarte: (carte: PromptCard) => string,
-  total: number,
-): PromptCard[] {
-  // Un seau par rayon, dans l'ordre ou les rayons se presentent : la rotation
-  // suit l'ordre du catalogue et ne depend d'aucun hasard, donc la vitrine ne
-  // bouge pas d'un chargement a l'autre.
-  const seaux = new Map<string, PromptCard[]>();
-  for (const carte of cartes) {
-    const cle = rayonDeLaCarte(carte);
-    const seau = seaux.get(cle);
-    if (seau) seau.push(carte);
-    else seaux.set(cle, [carte]);
-  }
-
-  const vitrine: PromptCard[] = [];
-  const cles = [...seaux.keys()];
-  let tour = 0;
-
-  while (vitrine.length < total) {
-    const disponibles = cles.filter((cle) => (seaux.get(cle)?.length ?? 0) > 0);
-    if (disponibles.length === 0) break;
-
-    const cle = disponibles[tour % disponibles.length]!;
-    const carte = seaux.get(cle)!.shift();
-    if (carte) vitrine.push(carte);
-    tour += 1;
-  }
-
-  return vitrine;
-}
-
-/**
  * Un bloc du feed : une grille d'images, ou un module pleine largeur.
  *
  * `cle` sert au rendu ; elle est stable pour une liste donnee, ce qui evite

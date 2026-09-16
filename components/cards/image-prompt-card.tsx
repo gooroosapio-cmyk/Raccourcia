@@ -4,7 +4,7 @@ import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { ResultThumbnail } from '@/components/cards/result-thumbnail';
-import { IconeRayon } from '@/components/discovery/icone-rayon';
+import { Icone } from '@/components/ui/icone';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
 import { nomDuGenre } from '@/lib/catalog/experience';
@@ -58,8 +58,14 @@ export function ImagePromptCard({
   /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
   visiteur?: boolean;
   priority: boolean;
-  /** Position du rayon d'ou vient la carte, quand l'ecran la connait. */
-  rayon?: number;
+  /**
+   * Le trait du rayon d'ou vient la carte, quand l'ecran le connait.
+   *
+   * Le dessin et non sa position : une carte est un composant client, et les
+   * soixante-douze traits du kit vivent dans un seul objet — les resoudre ici
+   * les ferait tous entrer dans le navigateur.
+   */
+  rayon?: string;
   onOpen: (prompt: PromptCardData) => void;
 }) {
   const { open: ouvrirOffre } = usePaywall();
@@ -94,7 +100,10 @@ export function ImagePromptCard({
               libelle={prompt.name}
               mission={niveau?.mission ?? false}
               priority={priority}
-              rayon={rayon}
+              // La teinte du cadre suit le rayon lui-meme, pas son dessin :
+              // deux rayons voisins ont deux teintes, et elles ne bougent pas
+              // quand on reordonne le catalogue.
+              rayon={prompt.collectionSlug}
             />
           </span>
           {locked ? (
@@ -103,12 +112,12 @@ export function ImagePromptCard({
         </span>
 
         <span className="flex items-start gap-1.5 px-2.5 pb-1.5 pt-2">
-          {rayon !== undefined ? (
+          {rayon ? (
             <span
               aria-hidden="true"
               className="mt-[1px] shrink-0 text-[color:var(--color-brand)]/70"
             >
-              <IconeRayon index={rayon} taille={15} />
+              <Icone svg={rayon} taille={15} />
             </span>
           ) : null}
           {/* Deux lignes, toujours : `min-h` reserve la seconde meme quand le

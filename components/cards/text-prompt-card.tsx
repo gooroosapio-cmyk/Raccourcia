@@ -7,7 +7,7 @@ import { VisualSlot } from '@/components/cards/visual-slot';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
 import { nomDuGenre, repereDuMoteur } from '@/lib/catalog/experience';
-import { IconeRayon } from '@/components/discovery/icone-rayon';
+import { Icone } from '@/components/ui/icone';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
@@ -42,8 +42,14 @@ export function TextPromptCard({
   free: boolean;
   /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
   visiteur?: boolean;
-  /** Position du rayon d'ou vient la carte, quand l'ecran la connait. */
-  rayon?: number;
+  /**
+   * Le trait du rayon d'ou vient la carte, quand l'ecran le connait.
+   *
+   * Le dessin et non sa position : une carte est un composant client, et les
+   * soixante-douze traits du kit vivent dans un seul objet — les resoudre ici
+   * les ferait tous entrer dans le navigateur.
+   */
+  rayon?: string;
   /**
    * Vrai quand la carte occupe les deux colonnes.
    *
@@ -108,12 +114,12 @@ export function TextPromptCard({
             pleineLargeur ? 'px-3 pb-2 pt-3' : 'px-2.5 pb-1.5 pt-2'
           }`}
         >
-          {rayon !== undefined ? (
+          {rayon ? (
             <span
               aria-hidden="true"
               className="mt-[1px] shrink-0 text-[color:var(--color-brand)]/70"
             >
-              <IconeRayon index={rayon} taille={15} />
+              <Icone svg={rayon} taille={15} />
             </span>
           ) : null}
           <span className="flex min-w-0 flex-col">

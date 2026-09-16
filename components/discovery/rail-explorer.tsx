@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { IconeRayon } from '@/components/discovery/icone-rayon';
+import { Icone } from '@/components/ui/icone';
+import { iconeDeLaFamille } from '@/lib/ui/icones';
 import { famillesDeRayon } from '@/lib/catalog/familles-speciales';
 import type { LibraryFamily } from '@/lib/catalog/types';
 
@@ -11,16 +12,22 @@ import type { LibraryFamily } from '@/lib/catalog/types';
  * choisit parmi ce qu'on voit. Les pastilles se resserrent donc jusqu'a ce
  * que les six tiennent sur un ecran de 360 px, gouttieres comprises.
  *
- * Elles sont pleines, en bleu nuit, texte et dessin en clair. En aplat pale
- * elles se confondaient avec le fond de la page ; le rayon est une
- * destination, il doit se lire comme un bouton.
+ * Elles etaient pleines, en bleu nuit. Six disques sombres en haut de page
+ * pesaient plus lourd que le contenu qu'ils annoncent, et le bleu d'action
+ * n'y voulait plus rien dire — il servait aux boutons *et* aux disques. Le
+ * trait passe en bleu sur un aplat pale : le rayon reste une destination
+ * lisible, sans voler l'attention aux cartes.
+ *
+ * Ce sont des liens vers une page, pas des filtres de la galerie qui suit :
+ * dupliquer les deux jeux de commandes ferait hesiter entre deux facons de
+ * restreindre la meme liste.
  *
  * Aucun nombre : un compte classe les rayons par taille et pousse vers le
  * plus gros, il n'aide personne a choisir un sujet.
  *
  * Les rayons viennent de la base, dans l'ordre du catalogue. Aucun n'est
- * nomme ici : en ajouter un en administration le fait apparaitre sans
- * redeploiement, avec l'icone qui suit sa position.
+ * nomme ici, et son trait se resout par son slug — non plus par sa position,
+ * qui changeait de dessin des qu'on reordonnait le catalogue.
  */
 export function RailExplorer({ familles }: { familles: LibraryFamily[] }) {
   const rayons = famillesDeRayon(familles).slice(0, 6);
@@ -32,21 +39,25 @@ export function RailExplorer({ familles }: { familles: LibraryFamily[] }) {
       {/* Six colonnes egales plutot qu'une rangee qui defile : la largeur
           disponible se partage, et rien ne depasse. */}
       <ul className="grid grid-cols-6 gap-1.5">
-        {rayons.map((famille, index) => (
-          <li key={famille.id}>
-            <Link
-              href={`/app/bibliotheque/famille/${famille.slug}`}
-              className="flex flex-col items-center gap-1 transition-transform duration-[var(--duration-fast)] active:scale-95"
-            >
-              <span className="flex aspect-square w-full max-w-[46px] items-center justify-center rounded-full bg-[color:var(--color-night)] text-white">
-                <IconeRayon index={index} taille={20} />
-              </span>
-              <span className="line-clamp-2 text-center text-[11px] font-medium leading-[1.2] text-[color:var(--color-night)]">
-                {nomCourt(famille.name)}
-              </span>
-            </Link>
-          </li>
-        ))}
+        {rayons.map((famille) => {
+          const trait = iconeDeLaFamille(famille.slug);
+
+          return (
+            <li key={famille.id}>
+              <Link
+                href={`/app/bibliotheque/famille/${famille.slug}`}
+                className="flex flex-col items-center gap-1 transition-transform duration-[var(--duration-fast)] active:scale-95"
+              >
+                <span className="flex aspect-square w-full max-w-[46px] items-center justify-center rounded-full bg-[color:var(--color-brand-soft)] text-[color:var(--color-brand)]">
+                  {trait ? <Icone svg={trait} taille={22} /> : null}
+                </span>
+                <span className="line-clamp-2 text-center text-[11px] font-medium leading-[1.2] text-[color:var(--color-night)]">
+                  {nomCourt(famille.name)}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );
