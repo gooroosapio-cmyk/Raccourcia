@@ -19,6 +19,7 @@ export function ResultThumbnail({
   libelle,
   mission = false,
   priority = false,
+  rayon,
 }: {
   url: string | null;
   alt: string | null;
@@ -33,8 +34,10 @@ export function ResultThumbnail({
   mission?: boolean;
   /** Vrai pour les premieres vignettes seulement. */
   priority?: boolean;
+  /** Position du rayon, pour la teinte du cadre en attente d'apercu. */
+  rayon?: number;
 }) {
-  if (!url) return <ThumbnailPlaceholder libelle={libelle} mission={mission} />;
+  if (!url) return <ThumbnailPlaceholder libelle={libelle} mission={mission} rayon={rayon} />;
 
   return (
     <VisualSlot mission={mission}>
@@ -58,47 +61,82 @@ export function ResultThumbnail({
 }
 
 /**
- * Repli quand le visuel de resultat manque.
+ * Le cadre d'une commande dont l'apercu n'est pas encore depose.
  *
- * On n'y met jamais l'image Avant : elle annoncerait une transformation que
- * la carte ne montre pas. Le cadre dit simplement que le visuel viendra.
+ * Les visuels arrivent par vagues : cinq cent dix-sept commandes publiees
+ * attendent encore le leur. Un cadre gris avec une icone d'image barree
+ * donnait l'impression d'un chargement qui a echoue — on regarde un produit
+ * casse, pas un catalogue en cours.
+ *
+ * A la place, une composition : la teinte du rayon, deux arcs discrets, et le
+ * mot qui dit la verite — l'apercu viendra. Rien n'y ressemble a une
+ * photographie, donc rien ne promet un resultat que la commande ne rendrait
+ * pas. Le titre n'y est pas repete : la carte le porte deja juste en dessous.
+ *
+ * Le cadre garde le ratio du futur media. Le jour ou l'image est deposee,
+ * elle prend exactement sa place et la grille ne bouge pas d'un pixel.
  */
 export function ThumbnailPlaceholder({
   libelle,
   mission = false,
+  rayon,
 }: {
   libelle: string;
   mission?: boolean;
+  /** Position du rayon : c'est elle qui donne la teinte. */
+  rayon?: number;
 }) {
+  const teintes = [
+    'from-[#eaf1ff] to-[#d5e3ff]',
+    'from-[#eef0ff] to-[#dcdffb]',
+    'from-[#e9f2fb] to-[#d3e6f7]',
+    'from-[#eef3ff] to-[#dde7ff]',
+    'from-[#e8f0fe] to-[#d8e5fb]',
+    'from-[#edf1f8] to-[#dbe3f2]',
+  ];
+  const teinte = teintes[(rayon ?? 0) % teintes.length];
+
   return (
     <VisualSlot ton="texte" mission={mission}>
-      <span className="flex h-full w-full flex-col items-center justify-center gap-1.5 px-2">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect
-            x="3"
-            y="5"
-            width="18"
-            height="14"
-            rx="2.5"
-            stroke="var(--color-brand)"
-            strokeWidth="1.6"
-            opacity="0.55"
-          />
-          <circle cx="8.5" cy="10" r="1.6" fill="var(--color-brand)" opacity="0.55" />
-          <path
-            d="m4.5 17 4.6-4.3 3.4 3.1 3-2.6 4 3.8"
-            stroke="var(--color-brand)"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity="0.55"
-          />
-        </svg>
-        <span className="text-[var(--texte-meta)] font-medium text-[color:var(--color-brand)]/75">
-          Visuel à venir
+      <span className={`absolute inset-0 bg-gradient-to-br ${teinte}`} aria-hidden="true" />
+
+      {/* Deux arcs, poses hors centre : ils donnent une composition sans
+          imiter quoi que ce soit. Un motif centre aurait fait logo. */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 100 125"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full text-[color:var(--color-brand)]"
+      >
+        <circle
+          cx="78"
+          cy="30"
+          r="34"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="0.8"
+          opacity="0.28"
+        />
+        <circle
+          cx="22"
+          cy="96"
+          r="26"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="0.8"
+          opacity="0.2"
+        />
+      </svg>
+
+      <span
+        className={`absolute inset-x-0 flex justify-center ${mission ? 'bottom-8' : 'bottom-3'}`}
+      >
+        <span className="rounded-full bg-white/70 px-2.5 py-1 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-brand-strong)] backdrop-blur-[2px]">
+          Aperçu bientôt disponible
         </span>
-        <span className="sr-only">{libelle}</span>
       </span>
+
+      <span className="sr-only">{libelle}</span>
     </VisualSlot>
   );
 }

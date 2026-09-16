@@ -60,7 +60,7 @@ export default async function FamillePage({ params }: { params: Promise<{ famill
         </h1>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
+      <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 min-[400px]:gap-[var(--gouttiere-carte)]">
         {montrees.map((collection) => (
           <CollectionTile key={collection.id} tile={collection} famille={famille.name} />
         ))}

@@ -39,7 +39,7 @@ export default async function MemberLayout({ children }: { children: React.React
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col lg:max-w-[46rem]">
-      <header className="sticky top-0 z-30 flex items-center justify-between bg-[color:var(--color-canvas)]/95 px-5 py-3 backdrop-blur">
+      <header className="sticky top-0 z-30 flex items-center justify-between bg-[color:var(--color-canvas)]/95 px-4 py-3 backdrop-blur min-[360px]:px-5">
         <Logo className="text-lg" />
 
         {/* Un visiteur doit pouvoir entrer sans passer par la page Compte :
@@ -54,7 +54,10 @@ export default async function MemberLayout({ children }: { children: React.React
         ) : null}
       </header>
 
-      <main className="flex-1 px-5 pb-24">{children}</main>
+      {/* Seize pixels de marge sous 360 px au lieu de vingt : sur un ecran
+          de 320 px, les huit pixels rendus a la grille font la difference
+          entre deux colonnes lisibles et deux colonnes etroites. */}
+      <main className="flex-1 px-4 pb-24 min-[360px]:px-5">{children}</main>
 
       <BottomNav />
 

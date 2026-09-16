@@ -80,6 +80,7 @@ export function CopyCommandButton({
   pret = true,
   compact = false,
   forme = 'bouton',
+  estUnMode = false,
   onLockedClick,
   proposerOuverture = false,
 }: {
@@ -107,6 +108,14 @@ export function CopyCommandButton({
    * pastille, a cote du favori, avec sa cible de 44 px.
    */
   forme?: 'bouton' | 'icone';
+  /**
+   * Vrai pour un Mode IA.
+   *
+   * Un mode ne se colle pas comme une commande : on le pose en tete de
+   * conversation, puis on decrit son objectif. Le message de confirmation le
+   * dit, sinon rien n'apprend le geste a faire ensuite.
+   */
+  estUnMode?: boolean;
   onLockedClick?: () => void;
   /**
    * Propose d'ouvrir l'IA choisie une fois la commande copiee.
@@ -145,7 +154,11 @@ export function CopyCommandButton({
     Promise.all([ecrireDansLePressePapier(texte), texte]).then(
       () => {
         setEtat('copie');
-        show('Prompt copié. Collez-le dans votre IA.');
+        show(
+          estUnMode
+            ? 'Mode copié. Collez-le dans votre IA, puis décrivez votre objectif.'
+            : 'Prompt copié.',
+        );
         setOuvertureProposee(proposerOuverture);
         navigator.vibrate?.(10);
         // La coche est une confirmation breve : le bouton doit redevenir
@@ -168,7 +181,17 @@ export function CopyCommandButton({
         }
       },
     );
-  }, [locked, onLockedClick, pret, promptId, proposerOuverture, provider, show, surface]);
+  }, [
+    estUnMode,
+    locked,
+    onLockedClick,
+    pret,
+    promptId,
+    proposerOuverture,
+    provider,
+    show,
+    surface,
+  ]);
 
   const cle = provider as ProviderKey;
   const nomIA = PROVIDER_LABELS[cle];
@@ -188,9 +211,11 @@ export function CopyCommandButton({
         ? 'Copie'
         : compact
           ? 'Copier'
-          : nomIA
-            ? `Copier le prompt pour ${nomIA}`
-            : 'Copier le prompt';
+          : estUnMode
+            ? 'Copier le mode'
+            : nomIA
+              ? `Copier le prompt pour ${nomIA}`
+              : 'Copier le prompt';
 
   const ton = locked
     ? 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'

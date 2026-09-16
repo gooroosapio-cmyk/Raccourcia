@@ -362,6 +362,7 @@ export function PromptDetailSheet({
             providers={compatibles}
             surface="detail"
             locked={locked}
+            estUnMode={prompt.entityType === 'mode_ia'}
             selected={actif?.key}
             onSelect={onProviderChange}
             onLockedClick={ouvrirOffre}
@@ -432,11 +433,11 @@ function GenreDeFiche({ entityType }: { entityType: PromptCard['entityType'] }) 
   const genres = {
     mode_ia: {
       nom: 'Mode IA',
-      promesse: 'Conditionne la conversation qui suit',
+      promesse: 'Donnez un rôle à votre IA',
     },
     parcours: {
       nom: 'Parcours guidé',
-      promesse: 'Plusieurs livrables, l’un après l’autre',
+      promesse: 'Un objectif, plusieurs étapes pour y arriver',
     },
   } as const;
 

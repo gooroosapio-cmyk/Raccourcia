@@ -1046,56 +1046,39 @@ export async function getDernieresCopies(limite = 3): Promise<PromptCard[]> {
  *
  * Deux lectures, et c'est voulu.
  *
- * La premiere prend les transformations d'image des trois premiers rayons —
- * portraits, styles, art — et exige un visuel : une vitrine sans image ne
- * presente rien. Les rayons viennent de la bibliotheque, par leur position ;
- * aucun n'est nomme ici, en changer l'ordre en administration change la
- * vitrine.
+ * La premiere prend les transformations d'image, tous rayons confondus, et
+ * exige un visuel : une vitrine sans image ne presente rien. Laisser un seul
+ * rayon la remplir donnerait l'impression d'un catalogue de portraits — c'est
+ * `composerLaVitrine` qui tourne ensuite d'un rayon a l'autre.
  *
- * La seconde prend des modes IA, **sans** exiger de visuel : un mode
- * conditionne une conversation, il n'a pas de resultat a montrer et n'en
- * aura jamais. L'exiger reviendrait a ne jamais en proposer.
+ * La seconde prend les modes IA et les parcours guides, **sans** exiger de
+ * visuel : un mode conditionne une conversation, il n'a pas de resultat a
+ * montrer et n'en aura jamais. L'exiger reviendrait a ne jamais en proposer.
  *
  * Une seule requete avec un `or` aurait melange les deux exigences : soit
  * elle imposait le visuel aux modes, soit elle l'abandonnait pour les images.
  */
-export async function getVivierDuCarrousel(
-  collections: string[],
-  limite = 20,
-): Promise<{ images: PromptCard[]; modes: PromptCard[] }> {
+export async function getVivierDuCarrousel(limite = 60): Promise<PromptCard[]> {
   const supabase = await createClient();
   const favorites = await getFavoriteIds();
 
-  const rayons =
-    collections.length > 0
-      ? await supabase
-          .from('categories')
-          .select('id')
-          .in('slug', collections)
-          .eq('is_visible', true)
-      : { data: [] };
-
-  const identifiants = (rayons.data ?? []).map((ligne) => ligne.id);
-
-  const [imagesReponse, modesReponse] = await Promise.all([
-    identifiants.length > 0
-      ? supabase
-          .from('prompts')
-          .select(CARD_COLUMNS)
-          .eq('status', 'published')
-          .eq('media_ready', true)
-          .in('category_id', identifiants)
-          .order('payload_ready', { ascending: false })
-          .order('is_featured', { ascending: false })
-          .order('priority_score', { ascending: false, nullsFirst: false })
-          .order('command', { ascending: true })
-          .limit(limite)
-      : Promise.resolve({ data: [], error: null }),
+  const [imagesReponse, experiencesReponse] = await Promise.all([
     supabase
       .from('prompts')
       .select(CARD_COLUMNS)
       .eq('status', 'published')
-      .eq('entity_type', 'mode_ia')
+      .eq('media_ready', true)
+      .eq('entity_type', 'commande_image')
+      .order('payload_ready', { ascending: false })
+      .order('is_featured', { ascending: false })
+      .order('priority_score', { ascending: false, nullsFirst: false })
+      .order('command', { ascending: true })
+      .limit(limite),
+    supabase
+      .from('prompts')
+      .select(CARD_COLUMNS)
+      .eq('status', 'published')
+      .in('entity_type', ['mode_ia', 'parcours'])
       .order('payload_ready', { ascending: false })
       .order('is_featured', { ascending: false })
       .order('priority_score', { ascending: false, nullsFirst: false })
@@ -1104,12 +1087,12 @@ export async function getVivierDuCarrousel(
   ]);
 
   if (imagesReponse.error) throw new CatalogUnavailableError(imagesReponse.error);
-  if (modesReponse.error) throw new CatalogUnavailableError(modesReponse.error);
+  if (experiencesReponse.error) throw new CatalogUnavailableError(experiencesReponse.error);
 
-  return {
-    images: ((imagesReponse.data ?? []) as unknown as CardRow[]).map((row) =>
-      toCard(row, favorites),
-    ),
-    modes: ((modesReponse.data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites)),
-  };
+  const lignes = [
+    ...((imagesReponse.data ?? []) as unknown as CardRow[]),
+    ...((experiencesReponse.data ?? []) as unknown as CardRow[]),
+  ];
+
+  return lignes.map((row) => toCard(row, favorites));
 }

@@ -25,12 +25,12 @@ export function FaconsDUtiliser({
   if (!modesIa && !parcours) return null;
 
   return (
-    <section className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
+    <section className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 min-[400px]:gap-[var(--gouttiere-carte)]">
       {modesIa ? (
         <Facon
           slug={modesIa.slug}
           titre="Modes IA"
-          promesse="Conditionnez la conversation"
+          promesse="Donnez un rôle à votre IA"
           icone={<IconeConversation />}
         />
       ) : null}
@@ -38,7 +38,7 @@ export function FaconsDUtiliser({
         <Facon
           slug={parcours.slug}
           titre="Parcours guidés"
-          promesse="Plusieurs livrables d’affilée"
+          promesse="Un objectif, plusieurs étapes"
           icone={<IconeEtapes />}
         />
       ) : null}

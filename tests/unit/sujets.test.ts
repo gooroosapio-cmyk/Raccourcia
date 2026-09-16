@@ -1,53 +1,70 @@
 import { describe, expect, it } from 'vitest';
-import { filtrerParSujet, sujetDeLaCarte } from '@/lib/catalog/sujets';
+import { appliquerLesFiltres, nombreDeFiltresActifs, sujetDeLaCarte } from '@/lib/catalog/sujets';
 import type { PromptCard } from '@/lib/catalog/types';
 
 function carte(partiel: Partial<PromptCard>): PromptCard {
   return {
     entityType: 'commande_image',
     witnessType: null,
+    isFree: false,
     ...partiel,
   } as PromptCard;
 }
 
-describe('genre de sujet', () => {
-  it('reconnait une personne a ce qu’on doit fournir', () => {
+describe('sujet d’une carte', () => {
+  it('le lit dans ce qu’il faut fournir', () => {
     expect(sujetDeLaCarte(carte({ witnessType: 'Une photo nette de la personne' }))).toBe(
       'personnes',
     );
-    expect(sujetDeLaCarte(carte({ witnessType: 'Photos des personnes concernées' }))).toBe(
-      'personnes',
-    );
-  });
-
-  it('reconnait un objet', () => {
     expect(sujetDeLaCarte(carte({ witnessType: 'Une photo du produit ou de l’objet' }))).toBe(
       'objets',
     );
   });
 
-  it('range un mode IA quel que soit son temoin', () => {
-    expect(sujetDeLaCarte(carte({ entityType: 'mode_ia', witnessType: 'Un brief' }))).toBe('modes');
-  });
-
-  it('ne force pas ce qui n’entre dans aucun genre', () => {
+  it('ne force pas ce qui n’entre dans aucun sujet', () => {
     expect(
       sujetDeLaCarte(carte({ witnessType: 'Photo, plan ou dossier de référence' })),
     ).toBeNull();
-    expect(sujetDeLaCarte(carte({ witnessType: null }))).toBeNull();
   });
 
-  it('sans genre demande, ne retire rien', () => {
-    const cartes = [carte({ witnessType: null }), carte({ witnessType: 'la personne' })];
-    expect(filtrerParSujet(cartes, null)).toHaveLength(2);
+  it('ne confond plus le format avec le sujet', () => {
+    // Un mode IA porte un sujet quand son temoin le dit ; il n'en devient pas
+    // un lui-meme.
+    const mode = carte({ entityType: 'mode_ia', witnessType: 'Une photo nette de la personne' });
+    expect(sujetDeLaCarte(mode)).toBe('personnes');
+  });
+});
+
+describe('filtres de galerie', () => {
+  const cartes = [
+    carte({ entityType: 'commande_image', witnessType: 'la personne', isFree: true }),
+    carte({ entityType: 'commande_image', witnessType: 'du produit ou de l’objet' }),
+    carte({ entityType: 'mode_ia', witnessType: 'Texte, brief ou document' }),
+    carte({ entityType: 'parcours', witnessType: null }),
+  ];
+
+  it('croise un format et un sujet', () => {
+    expect(appliquerLesFiltres(cartes, { format: 'commande_image', sujet: 'objets' })).toHaveLength(
+      1,
+    );
   });
 
-  it('avec un genre, ne garde que lui', () => {
-    const cartes = [
-      carte({ witnessType: 'Une photo nette de la personne' }),
-      carte({ witnessType: 'Une photo du produit ou de l’objet' }),
-      carte({ witnessType: null }),
-    ];
-    expect(filtrerParSujet(cartes, 'objets')).toHaveLength(1);
+  it('ne retire rien quand rien n’est demande', () => {
+    expect(appliquerLesFiltres(cartes, {})).toHaveLength(4);
+  });
+
+  it('separe gratuit et membre', () => {
+    expect(appliquerLesFiltres(cartes, { acces: 'gratuit' })).toHaveLength(1);
+    expect(appliquerLesFiltres(cartes, { acces: 'membre' })).toHaveLength(3);
+  });
+
+  it('compte les filtres actifs', () => {
+    expect(nombreDeFiltresActifs({})).toBe(0);
+    expect(nombreDeFiltresActifs({ format: 'mode_ia', acces: 'gratuit' })).toBe(2);
+  });
+
+  it('traite une carte sans format declare comme une commande', () => {
+    const ancienne = carte({ entityType: null });
+    expect(appliquerLesFiltres([ancienne], { format: 'commande_image' })).toHaveLength(1);
   });
 });
