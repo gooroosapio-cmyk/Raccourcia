@@ -7,7 +7,8 @@ import { PromptDetailSheet } from '@/components/detail/prompt-detail';
 import { openPaywall } from '@/components/paywall/paywall-provider';
 import { trackPromptView } from '@/lib/actions/catalog';
 import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
-import { SUJETS, SUJET_LABELS, filtrerParSujet, type Sujet } from '@/lib/catalog/sujets';
+import { FiltresDeGalerie } from '@/components/feed/filtres-galerie';
+import { appliquerLesFiltres, type FiltresGalerie } from '@/lib/catalog/sujets';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -56,9 +57,9 @@ export function FeedDecouverte({
   /** A quel rayon appartient chaque collection, par position. */
   rayons?: Record<string, number>;
   /**
-   * Propose de ne garder qu'un genre de sujet : personnes, objets, modes.
+   * Propose de restreindre la galerie : format, sujet, acces.
    *
-   * Un menu deroulant et non des puces : trois choix plus « Tout » feraient
+   * Des menus deroulants et non des puces : chaque groupe ferait trois ou
    * quatre pastilles en travers de l'ecran, au-dessus d'une galerie qui a
    * besoin de sa hauteur. Le menu natif ouvre la liste du systeme, que le
    * pouce connait deja.
@@ -66,7 +67,7 @@ export function FeedDecouverte({
   filtrable?: boolean;
 }) {
   const [selection, setSelection] = useState<PromptCard | null>(null);
-  const [sujet, setSujet] = useState<Sujet | null>(null);
+  const [filtres, setFiltres] = useState<FiltresGalerie>({});
   const [montrees, setMontrees] = useState(PALIER);
   const [provider, changeProvider] = usePreferredProvider(initialProvider);
 
@@ -84,38 +85,27 @@ export function FeedDecouverte({
 
   if (prompts.length === 0) return null;
 
-  const retenues = filtrerParSujet(prompts, sujet);
+  const retenues = appliquerLesFiltres(prompts, filtres);
   const visibles = retenues.slice(0, montrees);
 
   return (
     <>
       {filtrable ? (
-        <label className="mb-2 flex items-center gap-2">
-          <span className="sr-only">Filtrer par sujet</span>
-          <select
-            value={sujet ?? ''}
-            onChange={(evenement) => {
-              setSujet((evenement.target.value || null) as Sujet | null);
-              // Le palier revient au debut : rester au quatrieme palier d'une
-              // liste qui n'est plus la meme laisse devant des cartes qu'on
-              // n'a pas fait defiler.
-              setMontrees(PALIER);
-            }}
-            className="touch-target w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[length:var(--texte-carte)] font-medium text-[color:var(--color-night)]"
-          >
-            <option value="">Tous les sujets</option>
-            {SUJETS.map((valeur) => (
-              <option key={valeur} value={valeur}>
-                {SUJET_LABELS[valeur]}
-              </option>
-            ))}
-          </select>
-        </label>
+        <FiltresDeGalerie
+          valeurs={filtres}
+          onChange={(valeurs) => {
+            setFiltres(valeurs);
+            // Le palier revient au debut : rester au quatrieme palier d'une
+            // liste qui n'est plus la meme laisse devant des cartes qu'on n'a
+            // pas fait defiler.
+            setMontrees(PALIER);
+          }}
+        />
       ) : null}
 
       {retenues.length === 0 ? (
         <p className="py-6 text-center text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
-          Aucune idée de ce genre parmi celles-ci.
+          Aucun résultat. Essayez un autre mot ou retirez un filtre.
         </p>
       ) : null}
 

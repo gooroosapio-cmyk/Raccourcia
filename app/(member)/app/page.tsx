@@ -8,8 +8,8 @@ import {
   getVivierDuCarrousel,
   getVivierDuFeed,
 } from '@/lib/catalog/queries';
-import { melangerLeCarrousel, ordonnerLeFeed } from '@/lib/catalog/feed';
-import { famillesDeRayon } from '@/lib/catalog/familles-speciales';
+import { composerLaVitrine, ordonnerLeFeed } from '@/lib/catalog/feed';
+import { indexDesRayons } from '@/lib/catalog/rayons';
 import type { PromptCard } from '@/lib/catalog/types';
 import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
 import { porteeDeRecherche } from '@/lib/catalog/recherche';
@@ -157,24 +157,31 @@ export default async function DiscoverPage({
     if (editorial) {
       // L'historique n'existe que pour un compte : le demander a un visiteur
       // revient a interroger une table qui lui est fermee.
-      const [vivier, familles, reprendre] = await Promise.all([
+      const [vivier, familles, reprendre, vitrine] = await Promise.all([
         getVivierDuFeed(),
         getBibliotheque(),
         acces.isMember ? getDernieresCopies() : Promise.resolve([]),
+        getVivierDuCarrousel(),
       ]);
 
-      // La vitrine tire des trois premiers rayons — portraits, styles, art —
-      // et des modes IA. Les rayons viennent de la bibliotheque, par leur
-      // position : aucun n'est nomme ici, en changer l'ordre en
-      // administration change la vitrine.
-      const vitrine = famillesDeRayon(familles).slice(0, 3);
-      const { images, modes } = await getVivierDuCarrousel(
-        vitrine.flatMap((rayon) => rayon.collections.map((collection) => collection.slug)),
-      );
+      // La vitrine tourne d'un rayon a l'autre. Les modes IA et les parcours
+      // comptent chacun pour un rayon : ainsi ils sont rencontres au troisieme
+      // ou quatrieme geste, et non relegues en fin de rangee ou personne ne
+      // pousse. Le rayon vient de la bibliotheque, par sa position — aucun
+      // n'est nomme ici.
+      const rayonsParCollection = indexDesRayons(familles);
+      const rayonDeLaCarte = (carte: PromptCard) => {
+        if (carte.entityType === 'mode_ia') return 'modes';
+        if (carte.entityType === 'parcours') return 'parcours';
+        const position = carte.collectionSlug
+          ? rayonsParCollection[carte.collectionSlug]
+          : undefined;
+        return position === undefined ? 'autre' : `rayon-${position}`;
+      };
 
       accueil = {
         feed: ordonnerLeFeed(vivier),
-        carrousel: melangerLeCarrousel(images, modes, CARTES_DU_CARROUSEL),
+        carrousel: composerLaVitrine(vitrine, rayonDeLaCarte, CARTES_DU_CARROUSEL),
         familles,
         // Trois, et ce sont des copies : ouvrir une fiche ne veut rien dire,
         // on en ouvre dix pour en retenir une. Au-dela de trois, ce n'est
@@ -239,9 +246,14 @@ export default async function DiscoverPage({
           lit d'un coup d'oeil, mais un lecteur d'ecran a besoin d'un premier
           repere qui dise ou l'on se trouve. */}
       {editorial ? (
-        <h1 className="text-[22px] font-bold leading-tight text-[color:var(--color-night)]">
-          Quelle sera votre prochaine création&nbsp;?
-        </h1>
+        <div>
+          <h1 className="text-[22px] font-bold leading-tight text-[color:var(--color-night)]">
+            Quelle sera votre prochaine création&nbsp;?
+          </h1>
+          <p className="mt-1 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-muted)]">
+            Explorez des commandes prêtes à utiliser pour créer, apprendre et avancer avec votre IA.
+          </p>
+        </div>
       ) : (
         <h1 className="sr-only">Bibliothèque de commandes RaccourcIA</h1>
       )}
@@ -257,7 +269,7 @@ export default async function DiscoverPage({
         categorySlug={query.categorySlug}
         transverse={portee === 'catalogue'}
         simple={editorial}
-        placeholder={editorial ? 'Rechercher une idée, un style, un personnage…' : undefined}
+        placeholder={editorial ? 'Quel résultat souhaitez-vous obtenir ?' : undefined}
         search={query.search}
         filtres={filtres}
         resultCount={page.total}

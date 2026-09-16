@@ -30,7 +30,7 @@ export function FaconsDUtiliser({
         <Facon
           slug={modesIa.slug}
           titre="Modes IA"
-          promesse="Conditionnez la conversation"
+          promesse="Donnez un rôle à votre IA"
           icone={<IconeConversation />}
         />
       ) : null}
@@ -38,7 +38,7 @@ export function FaconsDUtiliser({
         <Facon
           slug={parcours.slug}
           titre="Parcours guidés"
-          promesse="Plusieurs livrables d’affilée"
+          promesse="Un objectif, plusieurs étapes"
           icone={<IconeEtapes />}
         />
       ) : null}

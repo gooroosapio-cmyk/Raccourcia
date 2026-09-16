@@ -25,6 +25,7 @@ export function ChoixMoteur({
   providers,
   surface,
   locked,
+  estUnMode = false,
   selected,
   onSelect,
   onLockedClick,
@@ -36,6 +37,8 @@ export function ChoixMoteur({
   providers: Provider[];
   surface: 'carte' | 'detail' | 'page-publique';
   locked: boolean;
+  /** Vrai pour un Mode IA : le message apres copie change. */
+  estUnMode?: boolean;
   /**
    * Choix pilote par le parent, quand il doit survivre a la fermeture de la
    * fiche. Sans lui, le bloc garde son propre choix — c'est le cas d'une page
@@ -89,6 +92,7 @@ export function ChoixMoteur({
       ) : null}
 
       <CopyCommandButton
+        estUnMode={estUnMode}
         promptId={promptId}
         provider={actif?.key ?? 'chatgpt'}
         surface={surface}

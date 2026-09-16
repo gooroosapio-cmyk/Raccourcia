@@ -133,6 +133,7 @@ export function TextPromptCard({
             pret={prompt.payloadReady}
             locked={locked}
             compact
+            estUnMode={prompt.entityType === 'mode_ia'}
             onLockedClick={ouvrirOffre}
           />
         </span>

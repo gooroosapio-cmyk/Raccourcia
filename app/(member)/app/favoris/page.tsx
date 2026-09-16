@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getFavorites } from '@/lib/catalog/queries';
-import { PromptGrid } from '@/components/cards/prompt-grid';
+import { FeedDecouverte } from '@/components/feed/feed-decouverte';
 import { EmptyState } from '@/components/ui/states';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
@@ -36,13 +36,16 @@ export default async function FavoritesPage() {
       <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Favoris</h1>
       {favorites.length === 0 ? (
         <EmptyState
-          title="Aucun favori pour le moment"
-          body="Enregistrez les commandes qui vous intéressent pour les retrouver ici."
+          title="Vos prochaines idées commencent ici."
+          body="Enregistrez les commandes, modes et parcours que vous souhaitez retrouver rapidement."
           actionLabel="Parcourir la bibliothèque"
           actionHref="/app/bibliotheque"
         />
       ) : (
-        <PromptGrid prompts={favorites} locked={!hasFullAccess} emptyState={null} />
+        // Les memes filtres que la galerie : un favori se retrouve par son
+        // format autant que par son nom, et une liste qui grossit sans moyen
+        // de la trier redevient une liste qu'on fait defiler.
+        <FeedDecouverte prompts={favorites} locked={!hasFullAccess} filtrable />
       )}
     </div>
   );

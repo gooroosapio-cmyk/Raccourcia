@@ -94,6 +94,7 @@ export function ImagePromptCard({
               libelle={prompt.name}
               mission={niveau?.mission ?? false}
               priority={priority}
+              rayon={rayon}
             />
           </span>
           {locked ? (
@@ -147,6 +148,7 @@ export function ImagePromptCard({
             pret={prompt.payloadReady}
             locked={locked}
             compact
+            estUnMode={prompt.entityType === 'mode_ia'}
             onLockedClick={ouvrirOffre}
           />
         </span>
