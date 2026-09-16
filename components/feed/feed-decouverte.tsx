@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useCallback, useState, type ReactNode } from 'react';
+import { Fragment, useCallback, useMemo, useState, type ReactNode } from 'react';
 import { ImagePromptCard } from '@/components/cards/image-prompt-card';
 import { TextPromptCard } from '@/components/cards/text-prompt-card';
 import { PromptDetailSheet } from '@/components/detail/prompt-detail';
@@ -9,6 +9,7 @@ import { trackPromptView } from '@/lib/actions/catalog';
 import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import { FiltresDeGalerie } from '@/components/feed/filtres-galerie';
 import { appliquerLesFiltres, type FiltresGalerie } from '@/lib/catalog/sujets';
+import { decouperLeFeed } from '@/lib/catalog/feed';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -109,55 +110,15 @@ export function FeedDecouverte({
         </p>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 min-[400px]:gap-[var(--gouttiere-carte)]">
-        {visibles.map((prompt, index) => {
-          const verrouille = locked && !prompt.isFree;
-          const apres = intercalaires.filter((element) => element.apres === index + 1);
-          const commun = {
-            prompt,
-            provider,
-            locked: verrouille,
-            free: locked && prompt.isFree,
-            masque: visiteur && verrouille,
-            visiteur,
-            rayon: prompt.collectionSlug ? rayons?.[prompt.collectionSlug] : undefined,
-            onOpen: ouvrir,
-          };
-
-          // Un mode et un parcours demandent plus d'explication qu'une image :
-          // leur promesse se lit, elle ne se devine pas. Ils prennent la
-          // rangee entiere plutot que de voir leur apercu coupe au troisieme
-          // mot sur une demi-largeur.
-          const explique = prompt.entityType === 'mode_ia' || prompt.entityType === 'parcours';
-
-          return (
-            <Fragment key={prompt.id}>
-              {prompt.showImageCard ? (
-                <ImagePromptCard
-                  {...commun}
-                  // Les quatre premieres vignettes seulement : sur deux
-                  // colonnes, un telephone en montre deux rangees avant le
-                  // premier defilement.
-                  priority={index < 4}
-                />
-              ) : (
-                <div className={explique ? 'min-[360px]:col-span-2' : ''}>
-                  <TextPromptCard {...commun} pleineLargeur={explique} />
-                </div>
-              )}
-
-              {/* Un intercalaire traverse les deux colonnes : pose dans une
-                  seule, il decalerait toute la suite de la galerie d'un cran
-                  et casserait l'alternance des rayons. */}
-              {apres.map((element) => (
-                <div key={element.cle} className="col-span-2">
-                  {element.noeud}
-                </div>
-              ))}
-            </Fragment>
-          );
-        })}
-      </div>
+      <Blocs
+        cartes={visibles}
+        intercalaires={intercalaires}
+        locked={locked}
+        visiteur={visiteur}
+        provider={provider}
+        rayons={rayons}
+        ouvrir={ouvrir}
+      />
 
       {montrees < retenues.length ? (
         <button
@@ -181,5 +142,103 @@ export function FeedDecouverte({
         />
       ) : null}
     </>
+  );
+}
+
+/**
+ * Le feed, rendu bloc par bloc.
+ *
+ * Les modes et les parcours prenaient la rangee entiere a l'interieur de la
+ * grille a deux colonnes. Une carte large au milieu d'une grille decale toute
+ * la suite d'un cran : une colonne orpheline a gauche, puis a droite, et un
+ * trou a chaque module. L'ordre visuel cessait aussi de suivre l'ordre du
+ * document, donc la tabulation sautait d'un bord a l'autre de l'ecran.
+ *
+ * Chaque bloc est desormais sa propre grille, et un module sa propre ligne.
+ * Rien ne se decale, et le clavier suit l'oeil.
+ */
+function Blocs({
+  cartes,
+  intercalaires,
+  locked,
+  visiteur,
+  provider,
+  rayons,
+  ouvrir,
+}: {
+  cartes: PromptCard[];
+  intercalaires: Intercalaire[];
+  locked: boolean;
+  visiteur: boolean;
+  provider: string;
+  rayons?: Record<string, number>;
+  ouvrir: (prompt: PromptCard) => void;
+}) {
+  const blocs = useMemo(() => decouperLeFeed(cartes), [cartes]);
+
+  return (
+    <div className="flex flex-col gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
+      {blocs.map((bloc) => {
+        // Les invitations se posent d'apres le rang des cartes reellement
+        // affichees, que chaque bloc porte : compter les elements de la liste
+        // ferait glisser chaque invitation d'un cran a chaque module.
+        const apres = intercalaires.filter(
+          (element) => element.apres > bloc.debut && element.apres <= bloc.fin,
+        );
+
+        if (bloc.genre === 'module') {
+          return (
+            <Fragment key={bloc.cle}>
+              <TextPromptCard
+                prompt={bloc.carte}
+                provider={provider}
+                locked={locked && !bloc.carte.isFree}
+                free={locked && bloc.carte.isFree}
+                visiteur={visiteur}
+                rayon={bloc.carte.collectionSlug ? rayons?.[bloc.carte.collectionSlug] : undefined}
+                onOpen={ouvrir}
+                pleineLargeur
+              />
+              {apres.map((element) => (
+                <Fragment key={element.cle}>{element.noeud}</Fragment>
+              ))}
+            </Fragment>
+          );
+        }
+
+        return (
+          <Fragment key={bloc.cle}>
+            <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 min-[400px]:gap-[var(--gouttiere-carte)]">
+              {bloc.cartes.map((prompt, rang) => {
+                const verrouille = locked && !prompt.isFree;
+                return (
+                  <ImagePromptCard
+                    key={prompt.id}
+                    prompt={prompt}
+                    provider={provider}
+                    locked={verrouille}
+                    free={locked && prompt.isFree}
+                    masque={visiteur && verrouille}
+                    visiteur={visiteur}
+                    rayon={prompt.collectionSlug ? rayons?.[prompt.collectionSlug] : undefined}
+                    onOpen={ouvrir}
+                    // Les quatre premieres vignettes seulement : sur deux
+                    // colonnes, un telephone en montre deux rangees avant le
+                    // premier defilement.
+                    priority={bloc.debut + rang < 4}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Une invitation ferme un bloc, elle ne s'y glisse pas : posee
+                dans la grille, elle en decalerait la derniere rangee. */}
+            {apres.map((element) => (
+              <Fragment key={element.cle}>{element.noeud}</Fragment>
+            ))}
+          </Fragment>
+        );
+      })}
+    </div>
   );
 }

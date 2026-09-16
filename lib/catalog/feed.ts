@@ -134,3 +134,95 @@ export function composerLaVitrine(
 
   return vitrine;
 }
+
+/**
+ * Un bloc du feed : une grille d'images, ou un module pleine largeur.
+ *
+ * `cle` sert au rendu ; elle est stable pour une liste donnee, ce qui evite
+ * de remonter les blocs a chaque frappe dans un filtre.
+ */
+export type BlocDuFeed = { cle: string; debut: number; fin: number } & (
+  { genre: 'images'; cartes: PromptCard[] } | { genre: 'module'; carte: PromptCard }
+);
+
+/** Deux colonnes, deux rangees : un bloc d'images se ferme sur une rangee pleine. */
+const PAR_BLOC = 4;
+
+/**
+ * Le feed, decoupe en blocs autonomes.
+ *
+ * Les modes et les parcours etaient poses dans la meme grille que les images,
+ * mais en pleine largeur. Une carte large au milieu d'une grille a deux
+ * colonnes decale toute la suite d'un cran : on se retrouvait avec une
+ * colonne orpheline a gauche, puis a droite, et des trous a chaque module.
+ * Pire, l'ordre visuel cessait de suivre l'ordre du document, donc la
+ * tabulation sautait d'un bord a l'autre.
+ *
+ * Chaque bloc est donc autonome : une grille d'images se ferme sur une
+ * rangee pleine, puis un module occupe sa propre ligne, puis une nouvelle
+ * grille commence. Rien ne se decale, et l'ordre au clavier suit l'ordre a
+ * l'oeil.
+ *
+ * Les modules alternent mode et parcours. Ce sont les deux experiences qu'on
+ * ne rencontre jamais en cherchant une image : les laisser dans la masse
+ * revenait a ne pas les publier. En alternant, on ne prend pas non plus le
+ * visiteur en otage d'un genre.
+ *
+ * Quand il n'y a plus de module a poser, la grille suivante s'enchaine sans
+ * laisser de place reservee : un emplacement vide se lit comme une panne.
+ * Et le dernier bloc peut compter moins de quatre cartes — il vaut mieux une
+ * rangee incomplete qu'une commande repetee pour boucher le trou.
+ *
+ * Chaque bloc porte le rang des cartes qu'il pose, de `debut` a `fin`. C'est
+ * ce qui permet a l'ecran de placer une invitation apres la huitieme carte
+ * reellement affichee, et non apres le huitieme element d'une liste ou les
+ * modules comptent aussi — sans quoi chaque invitation glisserait d'un cran
+ * a chaque module intercale.
+ */
+export function decouperLeFeed(cartes: PromptCard[]): BlocDuFeed[] {
+  const images = cartes.filter((carte) => !estUneAutreExperience(carte));
+  const modes = cartes.filter((carte) => carte.entityType === 'mode_ia');
+  const parcours = cartes.filter((carte) => carte.entityType === 'parcours');
+
+  const blocs: BlocDuFeed[] = [];
+  let rangImage = 0;
+  let rangModule = 0;
+  // Combien de cartes ont deja ete posees, modules compris.
+  let poses = 0;
+
+  while (rangImage < images.length) {
+    const tranche = images.slice(rangImage, rangImage + PAR_BLOC);
+    blocs.push({
+      genre: 'images',
+      cle: `images-${rangImage}`,
+      cartes: tranche,
+      debut: poses,
+      fin: poses + tranche.length,
+    });
+    poses += tranche.length;
+    rangImage += tranche.length;
+
+    // Aucun module apres le dernier bloc : il fermerait la galerie sur autre
+    // chose que ce qu'on etait venu voir.
+    if (rangImage >= images.length) break;
+
+    // Un mode, puis un parcours, puis un mode : la source qui s'epuise cede
+    // son tour plutot que d'interrompre l'alternance.
+    const dabord = rangModule % 2 === 0 ? modes : parcours;
+    const sinon = rangModule % 2 === 0 ? parcours : modes;
+    const carte = dabord.shift() ?? sinon.shift();
+    if (carte) {
+      blocs.push({
+        genre: 'module',
+        cle: `module-${carte.id}`,
+        carte,
+        debut: poses,
+        fin: poses + 1,
+      });
+      poses += 1;
+      rangModule += 1;
+    }
+  }
+
+  return blocs;
+}
