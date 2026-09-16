@@ -791,11 +791,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-friendshipportrait', 'img-friendshipportrait', '/friendshipportrait', 'Amitié', 'friendshipportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Crée un portrait complice adapté à un souvenir ou une publication.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['amitie', 'relations', 'portraits et souvenirs']::text[], 'Amitié | RaccourcIA', 'Crée un portrait complice adapté à un souvenir ou une publication.', 76, 24, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-friendshipportrait', 'img-friendshipportrait', '/friendshipportrait', 'Portrait d’amitié', 'friendshipportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Crée un portrait complice adapté à un souvenir ou une publication.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['amitie', 'relations', 'portraits et souvenirs']::text[], 'Amitié | RaccourcIA', 'Crée un portrait complice adapté à un souvenir ou une publication.', 76, 24, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-friendshipportrait',
   command = '/friendshipportrait',
-  name = 'Amitié',
+  name = 'Portrait d’amitié',
   slug = 'friendshipportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -859,11 +859,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-engagementportrait', 'img-engagementportrait', '/engagementportrait', 'Fiançailles', 'engagementportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Met en scène une demande ou célébration de fiançailles crédible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['fiancailles', 'relations', 'portraits et souvenirs']::text[], 'Fiançailles | RaccourcIA', 'Met en scène une demande ou célébration de fiançailles crédible.', 76, 26, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-engagementportrait', 'img-engagementportrait', '/engagementportrait', 'Portrait de fiançailles', 'engagementportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Met en scène une demande ou célébration de fiançailles crédible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['fiancailles', 'relations', 'portraits et souvenirs']::text[], 'Fiançailles | RaccourcIA', 'Met en scène une demande ou célébration de fiançailles crédible.', 76, 26, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-engagementportrait',
   command = '/engagementportrait',
-  name = 'Fiançailles',
+  name = 'Portrait de fiançailles',
   slug = 'engagementportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -893,11 +893,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-siblingportrait', 'img-siblingportrait', '/siblingportrait', 'Fratrie', 'siblingportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Compose frères et sœurs avec proximité naturelle et poses non figées.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['fratrie', 'relations', 'portraits et souvenirs']::text[], 'Fratrie | RaccourcIA', 'Compose frères et sœurs avec proximité naturelle et poses non figées.', 76, 27, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-siblingportrait', 'img-siblingportrait', '/siblingportrait', 'Portrait de fratrie', 'siblingportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Compose frères et sœurs avec proximité naturelle et poses non figées.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['fratrie', 'relations', 'portraits et souvenirs']::text[], 'Fratrie | RaccourcIA', 'Compose frères et sœurs avec proximité naturelle et poses non figées.', 76, 27, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-siblingportrait',
   command = '/siblingportrait',
-  name = 'Fratrie',
+  name = 'Portrait de fratrie',
   slug = 'siblingportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -1199,11 +1199,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-reunionportrait', 'img-reunionportrait', '/reunionportrait', 'Retrouvailles', 'reunionportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Réunit visuellement des proches à partir de références séparées clairement signalées.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['retrouvailles', 'relations', 'portraits et souvenirs']::text[], 'Retrouvailles | RaccourcIA', 'Réunit visuellement des proches à partir de références séparées clairement signalées.', 76, 36, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-reunionportrait', 'img-reunionportrait', '/reunionportrait', 'Portrait de retrouvailles', 'reunionportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Réunit visuellement des proches à partir de références séparées clairement signalées.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['retrouvailles', 'relations', 'portraits et souvenirs']::text[], 'Retrouvailles | RaccourcIA', 'Réunit visuellement des proches à partir de références séparées clairement signalées.', 76, 36, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-reunionportrait',
   command = '/reunionportrait',
-  name = 'Retrouvailles',
+  name = 'Portrait de retrouvailles',
   slug = 'reunionportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',

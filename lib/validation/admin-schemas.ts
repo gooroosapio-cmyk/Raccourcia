@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import {
   CONTENT_STATUS,
+  ENTITY_TYPES,
   INPUT_EXAMPLE_KINDS,
   MEDIA_KINDS,
   MODES,
@@ -64,6 +65,15 @@ export const promptIdentityInput = z.object({
   isFree: z.coerce.boolean().default(false),
   isFeatured: z.coerce.boolean().default(false),
   isNew: z.coerce.boolean().default(false),
+  // Le genre d'experience. Il decide du verbe des boutons et du rangement
+  // dans la galerie : une liste fermee, jamais une saisie libre.
+  entityType: z.enum(ENTITY_TYPES).optional(),
+  // Le personnage ou l'univers vise, quand il y en a un. Sert a retrouver la
+  // commande par ce nom ; il ne revendique aucun partenariat.
+  univers: optionalText,
+  // Ce qu'on tape quand on ne connait pas le titre : anciens noms, variantes
+  // d'orthographe, mots du langage courant.
+  searchKeywords: list,
 });
 
 export type PromptIdentityInput = z.infer<typeof promptIdentityInput>;

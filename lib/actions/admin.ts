@@ -158,6 +158,9 @@ export async function updatePromptIdentity(
     isFree: checked(formData, 'isFree'),
     isFeatured: checked(formData, 'isFeatured'),
     isNew: checked(formData, 'isNew'),
+    entityType: formData.get('entityType') || undefined,
+    univers: formData.get('univers') ?? undefined,
+    searchKeywords: formData.get('searchKeywords') ?? undefined,
   });
 
   if (!parsed.success) {
@@ -186,6 +189,9 @@ export async function updatePromptIdentity(
       is_free: parsed.data.isFree,
       is_featured: parsed.data.isFeatured,
       is_new: parsed.data.isNew,
+      entity_type: parsed.data.entityType ?? null,
+      univers: parsed.data.univers ?? null,
+      search_keywords: parsed.data.searchKeywords,
     })
     .eq('id', promptId);
 

@@ -940,6 +940,15 @@ export async function getVivierDuFeed(limite = 60): Promise<PromptCard[]> {
     .select(CARD_COLUMNS)
     .eq('status', 'published')
     .eq('media_ready', true)
+    // Ce qui est utilisable passe devant. Une commande sans texte a copier se
+    // regarde mais ne se lance pas : la laisser ouvrir la galerie revient a
+    // mettre en vitrine ce qu'on ne peut pas encore vendre.
+    //
+    // Devant, et non seule : le catalogue arrive par vagues et la plupart des
+    // textes manquent encore. Les exclure viderait l'Accueil, ce qui est pire
+    // qu'une carte qui dit franchement « Bientôt ». Elles restent donc
+    // atteignables, mais apres.
+    .order('payload_ready', { ascending: false })
     .order('is_featured', { ascending: false })
     .order('priority_score', { ascending: false, nullsFirst: false })
     .order('sort_order', { ascending: true })

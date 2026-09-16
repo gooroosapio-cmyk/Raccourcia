@@ -1199,11 +1199,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-hologramportrait', 'img-hologramportrait', '/hologramportrait', 'Hologramme', 'hologramportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Convertit le portrait en projection lumineuse irisée et futuriste.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['hologramme', 'vfx effets de scene', 'creations et vfx']::text[], 'Hologramme | RaccourcIA', 'Convertit le portrait en projection lumineuse irisée et futuriste.', 80, 286, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-hologramportrait', 'img-hologramportrait', '/hologramportrait', 'Portrait hologramme', 'hologramportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Convertit le portrait en projection lumineuse irisée et futuriste.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['hologramme', 'vfx effets de scene', 'creations et vfx']::text[], 'Hologramme | RaccourcIA', 'Convertit le portrait en projection lumineuse irisée et futuriste.', 80, 286, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-hologramportrait',
   command = '/hologramportrait',
-  name = 'Hologramme',
+  name = 'Portrait hologramme',
   slug = 'hologramportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',

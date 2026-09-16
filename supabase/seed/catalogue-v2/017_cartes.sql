@@ -1131,11 +1131,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fisheyeproduct', 'img-fisheyeproduct', '/fisheyeproduct', 'Fisheye', 'fisheyeproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Déforme volontairement la perspective pour une publicité énergique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['fisheye', 'photo produit', 'produit et e commerce']::text[], 'Fisheye | RaccourcIA', 'Déforme volontairement la perspective pour une publicité énergique.', 88, 384, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-fisheyeproduct', 'img-fisheyeproduct', '/fisheyeproduct', 'Photo produit fisheye', 'fisheyeproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Déforme volontairement la perspective pour une publicité énergique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['fisheye', 'photo produit', 'produit et e commerce']::text[], 'Fisheye | RaccourcIA', 'Déforme volontairement la perspective pour une publicité énergique.', 88, 384, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fisheyeproduct',
   command = '/fisheyeproduct',
-  name = 'Fisheye',
+  name = 'Photo produit fisheye',
   slug = 'fisheyeproduct',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -1165,11 +1165,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-flatlay', 'img-flatlay', '/flatlay', 'Flat lay', 'flatlay', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Organise produit et accessoires sur un plan horizontal narratif.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['flat lay', 'photo produit', 'produit et e commerce']::text[], 'Flat lay | RaccourcIA', 'Organise produit et accessoires sur un plan horizontal narratif.', 88, 385, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-flatlay', 'img-flatlay', '/flatlay', 'Vue à plat', 'flatlay', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Organise produit et accessoires sur un plan horizontal narratif.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['flat lay', 'photo produit', 'produit et e commerce']::text[], 'Flat lay | RaccourcIA', 'Organise produit et accessoires sur un plan horizontal narratif.', 88, 385, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-flatlay',
   command = '/flatlay',
-  name = 'Flat lay',
+  name = 'Vue à plat',
   slug = 'flatlay',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',

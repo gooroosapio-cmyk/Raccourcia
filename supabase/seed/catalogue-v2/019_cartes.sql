@@ -213,11 +213,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-shelfmockup', 'img-shelfmockup', '/shelfmockup', 'Mockup rayon', 'shelfmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'commerce-local'), 'Place le produit dans un rayon crédible face à ses concurrents génériques.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['commerce-local', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['mockup rayon', 'commerce local', 'publicite et marque']::text[], 'Mockup rayon | RaccourcIA', 'Place le produit dans un rayon crédible face à ses concurrents génériques.', 86, 457, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-shelfmockup', 'img-shelfmockup', '/shelfmockup', 'Produit en rayon', 'shelfmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'commerce-local'), 'Place le produit dans un rayon crédible face à ses concurrents génériques.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['commerce-local', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['mockup rayon', 'commerce local', 'publicite et marque']::text[], 'Mockup rayon | RaccourcIA', 'Place le produit dans un rayon crédible face à ses concurrents génériques.', 86, 457, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-shelfmockup',
   command = '/shelfmockup',
-  name = 'Mockup rayon',
+  name = 'Produit en rayon',
   slug = 'shelfmockup',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -1029,11 +1029,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-problemsolution', 'img-problemsolution', '/problemsolution', 'Problème-solution', 'problemsolution', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'publicites'), 'Montre visuellement le problème réel et la réponse apportée.', 'Brief de marque et visuel source', '1 image HD', 'Créer ce visuel', 0, 6, 'Brief de marque et visuel source', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['publicites', 'publicite-et-marque', 'commande-image']::text[], array['probleme solution', 'publicites', 'publicite et marque']::text[], 'Problème-solution | RaccourcIA', 'Montre visuellement le problème réel et la réponse apportée.', 86, 481, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-problemsolution', 'img-problemsolution', '/problemsolution', 'Visuel problème-solution', 'problemsolution', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'publicites'), 'Montre visuellement le problème réel et la réponse apportée.', 'Brief de marque et visuel source', '1 image HD', 'Créer ce visuel', 0, 6, 'Brief de marque et visuel source', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['publicites', 'publicite-et-marque', 'commande-image']::text[], array['probleme solution', 'publicites', 'publicite et marque']::text[], 'Problème-solution | RaccourcIA', 'Montre visuellement le problème réel et la réponse apportée.', 86, 481, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-problemsolution',
   command = '/problemsolution',
-  name = 'Problème-solution',
+  name = 'Visuel problème-solution',
   slug = 'problemsolution',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -1641,11 +1641,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-canmockup', 'img-canmockup', '/canmockup', 'Canette', 'canmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Transforme un design plat en canette publicitaire réaliste.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['canette', 'packaging', 'publicite et marque']::text[], 'Canette | RaccourcIA', 'Transforme un design plat en canette publicitaire réaliste.', 86, 499, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-canmockup', 'img-canmockup', '/canmockup', 'Canette publicitaire', 'canmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Transforme un design plat en canette publicitaire réaliste.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['canette', 'packaging', 'publicite et marque']::text[], 'Canette | RaccourcIA', 'Transforme un design plat en canette publicitaire réaliste.', 86, 499, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-canmockup',
   command = '/canmockup',
-  name = 'Canette',
+  name = 'Canette publicitaire',
   slug = 'canmockup',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
