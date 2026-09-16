@@ -39,30 +39,46 @@ begin
     raise exception 'Rangement : la collection fourre-tout existe encore.';
   end if;
 
-  -- Une vedette de musique n'est pas un personnage de cinema.
+  -- Une vedette de musique n'est pas un personnage de cinema : elle est
+  -- editoriale, et le regroupement ne l'a pas renvoyee au cinema.
   select c.slug into v_collection
   from public.prompts p
   join public.categories c on c.id = p.category_id
   where p.command = '/afrobeatsstar';
-  if v_collection is distinct from 'musique-et-pop-culture' then
+  if v_collection is distinct from 'editorial' then
     raise exception 'Rangement : /afrobeatsstar est range dans %.', coalesce(v_collection, 'nulle part');
   end if;
 
-  -- Les affiches sont ensemble, et separees des personnages.
+  -- Le cinema tient dans un seul rayon : affiches, personnages, ambiances et
+  -- espionnage, qui separes donnaient des collections de trois cartes.
   select count(*) into v_n
   from public.prompts p
   join public.categories c on c.id = p.category_id
-  where c.slug = 'affiches-de-cinema' and p.status = 'published';
-  if v_n <> 6 then
-    raise exception 'Rangement : % affiches de cinema au lieu de 6.', v_n;
+  where c.slug = 'cinema' and p.status = 'published';
+  if v_n <> 19 then
+    raise exception 'Rangement : % cartes de cinema au lieu de 19.', v_n;
   end if;
 
   select count(*) into v_n
   from public.prompts p
   join public.categories c on c.id = p.category_id
-  where c.slug = 'personnages-cultes' and p.status = 'published';
-  if v_n <> 7 then
-    raise exception 'Rangement : % personnages cultes au lieu de 7.', v_n;
+  where c.slug = 'editorial' and p.status = 'published';
+  if v_n <> 10 then
+    raise exception 'Rangement : % cartes editoriales au lieu de 10.', v_n;
+  end if;
+
+  -- Une collection vidée par le regroupement se referme au lieu de rester
+  -- ouverte sur un rayon sans rien dedans.
+  select count(*) into v_n
+  from public.categories c
+  where c.external_ref like 'V2-COL-%'
+    and c.status = 'published'
+    and not exists (
+      select 1 from public.prompts p
+      where p.category_id = c.id and p.status = 'published'
+    );
+  if v_n <> 0 then
+    raise exception 'Rangement : % collections ouvertes et vides.', v_n;
   end if;
 
   -- Un titre annonce un resultat, jamais un jargon de studio.

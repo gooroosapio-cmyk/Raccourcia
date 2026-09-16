@@ -216,14 +216,9 @@ export default async function DiscoverPage({
           lit d'un coup d'oeil, mais un lecteur d'ecran a besoin d'un premier
           repere qui dise ou l'on se trouve. */}
       {editorial ? (
-        <div>
-          <h1 className="text-[22px] font-bold leading-tight text-[color:var(--color-night)]">
-            Quelle sera votre prochaine création&nbsp;?
-          </h1>
-          <p className="mt-0.5 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-muted)]">
-            Choisissez une idée. Copiez le prompt. Créez avec votre IA.
-          </p>
-        </div>
+        <h1 className="text-[22px] font-bold leading-tight text-[color:var(--color-night)]">
+          Quelle sera votre prochaine création&nbsp;?
+        </h1>
       ) : (
         <h1 className="sr-only">Bibliothèque de commandes RaccourcIA</h1>
       )}

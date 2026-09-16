@@ -24,8 +24,12 @@ import type { PromptCard } from '@/lib/catalog/types';
  * La galerie s'allonge par paliers plutot que d'arriver entiere : soixante
  * vignettes chargees d'un coup sur un reseau mobile reviennent a ne rien
  * afficher pendant plusieurs secondes.
+ *
+ * Vingt-quatre, soit douze rangees de deux : le bouton arrivait deux fois
+ * trop tot. On le rencontrait avant d'avoir eu le temps de regarder, et une
+ * galerie qu'on interrompt tous les six gestes n'est plus une galerie.
  */
-const PALIER = 12;
+const PALIER = 24;
 
 /**
  * Ce qui s'intercale entre deux cartes : une reprise, une invitation a ouvrir

@@ -621,7 +621,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-movieposter', 'img-movieposter', '/movieposter', 'Affiche d’aventure originale', 'movieposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'action-et-espionnage'), 'Une affiche d’aventure personnelle ; trois choix de rôle, énergie et titre orientent la posture, la lumière et la composition.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-action-et-espionnage', 'creations-et-vfx', 'commande-image']::text[], array['affiche daventure originale', 'cinema action et espionnage', 'creations et vfx']::text[], 'Affiche d’aventure originale | RaccourcIA', 'Une affiche d’aventure personnelle ; trois choix de rôle, énergie et titre orientent la posture, la lumière et la composition.', 100, 169, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-movieposter', 'img-movieposter', '/movieposter', 'Affiche d’aventure originale', 'movieposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Une affiche d’aventure personnelle ; trois choix de rôle, énergie et titre orientent la posture, la lumière et la composition.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-action-et-espionnage', 'creations-et-vfx', 'commande-image']::text[], array['affiche daventure originale', 'cinema action et espionnage', 'creations et vfx']::text[], 'Affiche d’aventure originale | RaccourcIA', 'Une affiche d’aventure personnelle ; trois choix de rôle, énergie et titre orientent la posture, la lumière et la composition.', 100, 169, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-movieposter',
   command = '/movieposter',
@@ -629,7 +629,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'movieposter',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'action-et-espionnage'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Une affiche d’aventure personnelle ; trois choix de rôle, énergie et titre orientent la posture, la lumière et la composition.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -655,7 +655,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-affiche-mission', 'img-affiche-mission', '/affiche-mission', 'Mission imprévue', 'affiche-mission', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'action-et-espionnage'), 'Diagonales urbaines, tension visuelle et contraste rouge-froid. Référence : Mission: Impossible. Un mini-QCM adapte rôle, énergie et titre du personnage.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-action-et-espionnage', 'creations-et-vfx', 'commande-image', 'qcm']::text[], array['mission imprevue', 'cinema action et espionnage', 'creations et vfx']::text[], 'Mission imprévue | RaccourcIA', 'Diagonales urbaines, tension visuelle et contraste rouge-froid. Référence : Mission: Impossible. Un mini-QCM adapte rôle, énergie et titre du personnage.', 74, 170, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-affiche-mission', 'img-affiche-mission', '/affiche-mission', 'Mission imprévue', 'affiche-mission', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Diagonales urbaines, tension visuelle et contraste rouge-froid. Référence : Mission: Impossible. Un mini-QCM adapte rôle, énergie et titre du personnage.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-action-et-espionnage', 'creations-et-vfx', 'commande-image', 'qcm']::text[], array['mission imprevue', 'cinema action et espionnage', 'creations et vfx']::text[], 'Mission imprévue | RaccourcIA', 'Diagonales urbaines, tension visuelle et contraste rouge-froid. Référence : Mission: Impossible. Un mini-QCM adapte rôle, énergie et titre du personnage.', 74, 170, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-affiche-mission',
   command = '/affiche-mission',
@@ -663,7 +663,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'affiche-mission',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'action-et-espionnage'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Diagonales urbaines, tension visuelle et contraste rouge-froid. Référence : Mission: Impossible. Un mini-QCM adapte rôle, énergie et titre du personnage.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -689,7 +689,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-magazinecover', 'img-magazinecover', '/magazinecover', 'Lifestyle - référence ELLE', 'magazinecover', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mode-et-beaute'), 'Une couverture lumineuse et spontanée inspirée des codes d’ELLE, avec thème et accroche personnelle facultative.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-mode-et-beaute', 'creations-et-vfx', 'commande-image']::text[], array['lifestyle reference elle', 'editorial mode et beaute', 'creations et vfx']::text[], 'Lifestyle - référence ELLE | RaccourcIA', 'Une couverture lumineuse et spontanée inspirée des codes d’ELLE, avec thème et accroche personnelle facultative.', 100, 171, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-magazinecover', 'img-magazinecover', '/magazinecover', 'Lifestyle - référence ELLE', 'magazinecover', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Une couverture lumineuse et spontanée inspirée des codes d’ELLE, avec thème et accroche personnelle facultative.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-mode-et-beaute', 'creations-et-vfx', 'commande-image']::text[], array['lifestyle reference elle', 'editorial mode et beaute', 'creations et vfx']::text[], 'Lifestyle - référence ELLE | RaccourcIA', 'Une couverture lumineuse et spontanée inspirée des codes d’ELLE, avec thème et accroche personnelle facultative.', 100, 171, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-magazinecover',
   command = '/magazinecover',
@@ -697,7 +697,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'magazinecover',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'mode-et-beaute'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Une couverture lumineuse et spontanée inspirée des codes d’ELLE, avec thème et accroche personnelle facultative.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -723,7 +723,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fashionmagazine', 'img-fashionmagazine', '/fashionmagazine', 'Mode - référence Vogue', 'fashionmagazine', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mode-et-beaute'), 'Un portrait couture, une manchette élégante et une composition aérée inspirée des codes de Vogue ; titre personnel ou publication fictive.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-mode-et-beaute', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['mode reference vogue', 'editorial mode et beaute', 'creations et vfx']::text[], 'Mode - référence Vogue | RaccourcIA', 'Un portrait couture, une manchette élégante et une composition aérée inspirée des codes de Vogue ; titre personnel ou publication fictive.', 100, 172, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-fashionmagazine', 'img-fashionmagazine', '/fashionmagazine', 'Mode - référence Vogue', 'fashionmagazine', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Un portrait couture, une manchette élégante et une composition aérée inspirée des codes de Vogue ; titre personnel ou publication fictive.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-mode-et-beaute', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['mode reference vogue', 'editorial mode et beaute', 'creations et vfx']::text[], 'Mode - référence Vogue | RaccourcIA', 'Un portrait couture, une manchette élégante et une composition aérée inspirée des codes de Vogue ; titre personnel ou publication fictive.', 100, 172, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fashionmagazine',
   command = '/fashionmagazine',
@@ -731,7 +731,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'fashionmagazine',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'mode-et-beaute'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Un portrait couture, une manchette élégante et une composition aérée inspirée des codes de Vogue ; titre personnel ou publication fictive.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -757,7 +757,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-biopicposter', 'img-biopicposter', '/biopicposter', 'Affiche de biopic', 'biopicposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'affiches-de-cinema'), 'Transforme une histoire vraie fournie en affiche de biopic sobre sans inventer d’événement.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['affiche de biopic', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Affiche de biopic | RaccourcIA', 'Transforme une histoire vraie fournie en affiche de biopic sobre sans inventer d’événement.', 100, 173, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-biopicposter', 'img-biopicposter', '/biopicposter', 'Affiche de biopic', 'biopicposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Transforme une histoire vraie fournie en affiche de biopic sobre sans inventer d’événement.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['affiche de biopic', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Affiche de biopic | RaccourcIA', 'Transforme une histoire vraie fournie en affiche de biopic sobre sans inventer d’événement.', 100, 173, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-biopicposter',
   command = '/biopicposter',
@@ -765,7 +765,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'biopicposter',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'affiches-de-cinema'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Transforme une histoire vraie fournie en affiche de biopic sobre sans inventer d’événement.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -791,7 +791,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-romcomposter', 'img-romcomposter', '/romcomposter', 'Affiche de comédie romantique', 'romcomposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'affiches-de-cinema'), 'Crée une affiche lumineuse et originale autour d’un duo, d’un malentendu et d’un titre personnalisés.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['affiche de comedie romantique', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Affiche de comédie romantique | RaccourcIA', 'Crée une affiche lumineuse et originale autour d’un duo, d’un malentendu et d’un titre personnalisés.', 100, 174, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-romcomposter', 'img-romcomposter', '/romcomposter', 'Affiche de comédie romantique', 'romcomposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Crée une affiche lumineuse et originale autour d’un duo, d’un malentendu et d’un titre personnalisés.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['affiche de comedie romantique', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Affiche de comédie romantique | RaccourcIA', 'Crée une affiche lumineuse et originale autour d’un duo, d’un malentendu et d’un titre personnalisés.', 100, 174, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-romcomposter',
   command = '/romcomposter',
@@ -799,7 +799,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'romcomposter',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'affiches-de-cinema'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Crée une affiche lumineuse et originale autour d’un duo, d’un malentendu et d’un titre personnalisés.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -825,7 +825,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-horrorposter', 'img-horrorposter', '/horrorposter', 'Affiche d’horreur', 'horrorposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'affiches-de-cinema'), 'Compose une affiche inquiétante centrée sur la personne, avec menace suggérée et univers original.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['affiche dhorreur', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Affiche d’horreur | RaccourcIA', 'Compose une affiche inquiétante centrée sur la personne, avec menace suggérée et univers original.', 100, 175, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-horrorposter', 'img-horrorposter', '/horrorposter', 'Affiche d’horreur', 'horrorposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Compose une affiche inquiétante centrée sur la personne, avec menace suggérée et univers original.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['affiche dhorreur', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Affiche d’horreur | RaccourcIA', 'Compose une affiche inquiétante centrée sur la personne, avec menace suggérée et univers original.', 100, 175, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-horrorposter',
   command = '/horrorposter',
@@ -833,7 +833,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'horrorposter',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'affiches-de-cinema'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Compose une affiche inquiétante centrée sur la personne, avec menace suggérée et univers original.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -859,7 +859,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-sportsposter', 'img-sportsposter', '/sportsposter', 'Affiche sportive', 'sportsposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'affiches-de-cinema'), 'Met en valeur discipline, mouvement et énergie compétitive.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['affiche sportive', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Affiche sportive | RaccourcIA', 'Met en valeur discipline, mouvement et énergie compétitive.', 100, 176, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-sportsposter', 'img-sportsposter', '/sportsposter', 'Affiche sportive', 'sportsposter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Met en valeur discipline, mouvement et énergie compétitive.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['affiche sportive', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Affiche sportive | RaccourcIA', 'Met en valeur discipline, mouvement et énergie compétitive.', 100, 176, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-sportsposter',
   command = '/sportsposter',
@@ -867,7 +867,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'sportsposter',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'affiches-de-cinema'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Met en valeur discipline, mouvement et énergie compétitive.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -893,7 +893,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-originalvillain', 'img-originalvillain', '/originalvillain', 'Antagoniste original', 'originalvillain', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'personnages-cultes'), 'Crée un méchant fictif charismatique avec langage visuel personnel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['antagoniste original', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Antagoniste original | RaccourcIA', 'Crée un méchant fictif charismatique avec langage visuel personnel.', 87, 177, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-originalvillain', 'img-originalvillain', '/originalvillain', 'Antagoniste original', 'originalvillain', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Crée un méchant fictif charismatique avec langage visuel personnel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['antagoniste original', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Antagoniste original | RaccourcIA', 'Crée un méchant fictif charismatique avec langage visuel personnel.', 87, 177, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-originalvillain',
   command = '/originalvillain',
@@ -901,7 +901,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'originalvillain',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'personnages-cultes'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Crée un méchant fictif charismatique avec langage visuel personnel.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -927,7 +927,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-comiccover', 'img-comiccover', '/comiccover', 'Couverture de comics', 'comiccover', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'affiches-de-cinema'), 'Crée une couverture dynamique dessinée sans personnage sous licence.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['couverture de comics', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Couverture de comics | RaccourcIA', 'Crée une couverture dynamique dessinée sans personnage sous licence.', 100, 178, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-comiccover', 'img-comiccover', '/comiccover', 'Couverture de comics', 'comiccover', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Crée une couverture dynamique dessinée sans personnage sous licence.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['couverture de comics', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Couverture de comics | RaccourcIA', 'Crée une couverture dynamique dessinée sans personnage sous licence.', 100, 178, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-comiccover',
   command = '/comiccover',
@@ -935,7 +935,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'comiccover',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'affiches-de-cinema'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Crée une couverture dynamique dessinée sans personnage sous licence.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -961,7 +961,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-spythriller', 'img-spythriller', '/spythriller', 'Thriller d’espionnage', 'spythriller', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'action-et-espionnage'), 'Produit une composition élégante de thriller avec indices graphiques subtils.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['espionnage', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Espionnage | RaccourcIA', 'Produit une composition élégante de thriller avec indices graphiques subtils.', 100, 179, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-spythriller', 'img-spythriller', '/spythriller', 'Thriller d’espionnage', 'spythriller', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Produit une composition élégante de thriller avec indices graphiques subtils.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['espionnage', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Espionnage | RaccourcIA', 'Produit une composition élégante de thriller avec indices graphiques subtils.', 100, 179, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-spythriller',
   command = '/spythriller',
@@ -969,7 +969,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'spythriller',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'action-et-espionnage'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Produit une composition élégante de thriller avec indices graphiques subtils.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -995,7 +995,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-scifiexplorer', 'img-scifiexplorer', '/scifiexplorer', 'Explorateur spatial', 'scifiexplorer', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'personnages-cultes'), 'Transforme la personne en protagoniste de science-fiction originale.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['explorateur spatial', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Explorateur spatial | RaccourcIA', 'Transforme la personne en protagoniste de science-fiction originale.', 100, 180, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-scifiexplorer', 'img-scifiexplorer', '/scifiexplorer', 'Explorateur spatial', 'scifiexplorer', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Transforme la personne en protagoniste de science-fiction originale.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['explorateur spatial', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Explorateur spatial | RaccourcIA', 'Transforme la personne en protagoniste de science-fiction originale.', 100, 180, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-scifiexplorer',
   command = '/scifiexplorer',
@@ -1003,7 +1003,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'scifiexplorer',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'personnages-cultes'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Transforme la personne en protagoniste de science-fiction originale.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1029,7 +1029,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-noirportrait', 'img-noirportrait', '/noirportrait', 'Film noir', 'noirportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'ambiances-de-cinema'), 'Crée ombres tranchées, fumée et tension d’un polar classique.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['film noir', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Film noir | RaccourcIA', 'Crée ombres tranchées, fumée et tension d’un polar classique.', 83, 181, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-noirportrait', 'img-noirportrait', '/noirportrait', 'Film noir', 'noirportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Crée ombres tranchées, fumée et tension d’un polar classique.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['film noir', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Film noir | RaccourcIA', 'Crée ombres tranchées, fumée et tension d’un polar classique.', 83, 181, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-noirportrait',
   command = '/noirportrait',
@@ -1037,7 +1037,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'noirportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'ambiances-de-cinema'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Crée ombres tranchées, fumée et tension d’un polar classique.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1063,7 +1063,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-actionhero', 'img-actionhero', '/actionhero', 'Héros d’action', 'actionhero', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'personnages-cultes'), 'Met la personne en scène dans une affiche dynamique totalement fictive.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['heros daction', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Héros d’action | RaccourcIA', 'Met la personne en scène dans une affiche dynamique totalement fictive.', 100, 182, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-actionhero', 'img-actionhero', '/actionhero', 'Héros d’action', 'actionhero', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Met la personne en scène dans une affiche dynamique totalement fictive.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['heros daction', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Héros d’action | RaccourcIA', 'Met la personne en scène dans une affiche dynamique totalement fictive.', 100, 182, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-actionhero',
   command = '/actionhero',
@@ -1071,7 +1071,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'actionhero',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'personnages-cultes'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Met la personne en scène dans une affiche dynamique totalement fictive.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1097,7 +1097,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-cyberpunkcharacter', 'img-cyberpunkcharacter', '/cyberpunkcharacter', 'Personnage cyberpunk', 'cyberpunkcharacter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'personnages-cultes'), 'Ajoute technologie, néons et ville dense sans perdre l’identité.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['personnage cyberpunk', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Personnage cyberpunk | RaccourcIA', 'Ajoute technologie, néons et ville dense sans perdre l’identité.', 83, 183, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-cyberpunkcharacter', 'img-cyberpunkcharacter', '/cyberpunkcharacter', 'Personnage cyberpunk', 'cyberpunkcharacter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Ajoute technologie, néons et ville dense sans perdre l’identité.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['personnage cyberpunk', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Personnage cyberpunk | RaccourcIA', 'Ajoute technologie, néons et ville dense sans perdre l’identité.', 83, 183, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-cyberpunkcharacter',
   command = '/cyberpunkcharacter',
@@ -1105,7 +1105,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'cyberpunkcharacter',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'personnages-cultes'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Ajoute technologie, néons et ville dense sans perdre l’identité.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1131,7 +1131,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-gamecharacter', 'img-gamecharacter', '/gamecharacter', 'Personnage de jeu', 'gamecharacter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'personnages-cultes'), 'Transforme la personne en avatar original avec classe et univers définis.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['personnage de jeu', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Personnage de jeu | RaccourcIA', 'Transforme la personne en avatar original avec classe et univers définis.', 86, 184, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-gamecharacter', 'img-gamecharacter', '/gamecharacter', 'Personnage de jeu', 'gamecharacter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Transforme la personne en avatar original avec classe et univers définis.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['personnage de jeu', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Personnage de jeu | RaccourcIA', 'Transforme la personne en avatar original avec classe et univers définis.', 86, 184, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-gamecharacter',
   command = '/gamecharacter',
@@ -1139,7 +1139,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'gamecharacter',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'personnages-cultes'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Transforme la personne en avatar original avec classe et univers définis.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1165,7 +1165,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-portraitcinema', 'img-portraitcinema', '/portraitcinema', 'Portrait de cinéma', 'portraitcinema', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'ambiances-de-cinema'), 'Transforme une photo en image cinématographique avec lumière narrative.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait cinema', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Portrait cinéma | RaccourcIA', 'Transforme une photo en image cinématographique avec lumière narrative.', 100, 185, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-portraitcinema', 'img-portraitcinema', '/portraitcinema', 'Portrait de cinéma', 'portraitcinema', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Transforme une photo en image cinématographique avec lumière narrative.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait cinema', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Portrait cinéma | RaccourcIA', 'Transforme une photo en image cinématographique avec lumière narrative.', 100, 185, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-portraitcinema',
   command = '/portraitcinema',
@@ -1173,7 +1173,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'portraitcinema',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'ambiances-de-cinema'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Transforme une photo en image cinématographique avec lumière narrative.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1199,7 +1199,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-documentaryportrait', 'img-documentaryportrait', '/documentaryportrait', 'Portrait documentaire', 'documentaryportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'ambiances-de-cinema'), 'Crée une image sobre, contextuelle et authentique autour d’une histoire réelle.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait documentaire', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Portrait documentaire | RaccourcIA', 'Crée une image sobre, contextuelle et authentique autour d’une histoire réelle.', 86, 186, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-documentaryportrait', 'img-documentaryportrait', '/documentaryportrait', 'Portrait documentaire', 'documentaryportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Crée une image sobre, contextuelle et authentique autour d’une histoire réelle.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait documentaire', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Portrait documentaire | RaccourcIA', 'Crée une image sobre, contextuelle et authentique autour d’une histoire réelle.', 86, 186, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-documentaryportrait',
   command = '/documentaryportrait',
@@ -1207,7 +1207,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'documentaryportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'ambiances-de-cinema'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Crée une image sobre, contextuelle et authentique autour d’une histoire réelle.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1233,7 +1233,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fantasyroyalty', 'img-fantasyroyalty', '/fantasyroyalty', 'Royauté fantastique', 'fantasyroyalty', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'personnages-cultes'), 'Crée une figure royale imaginaire avec costume et décor cohérents.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['royaute fantastique', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Royauté fantastique | RaccourcIA', 'Crée une figure royale imaginaire avec costume et décor cohérents.', 83, 187, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-fantasyroyalty', 'img-fantasyroyalty', '/fantasyroyalty', 'Royauté fantastique', 'fantasyroyalty', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Crée une figure royale imaginaire avec costume et décor cohérents.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['royaute fantastique', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Royauté fantastique | RaccourcIA', 'Crée une figure royale imaginaire avec costume et décor cohérents.', 83, 187, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fantasyroyalty',
   command = '/fantasyroyalty',
@@ -1241,7 +1241,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'fantasyroyalty',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'personnages-cultes'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Crée une figure royale imaginaire avec costume et décor cohérents.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1267,7 +1267,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-originalhero', 'img-originalhero', '/originalhero', 'Super-héros original', 'originalhero', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'personnages-cultes'), 'Invente un héros inédit sans reprendre costume, logo ou personnage protégé.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['super heros original', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Super-héros original | RaccourcIA', 'Invente un héros inédit sans reprendre costume, logo ou personnage protégé.', 83, 188, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-originalhero', 'img-originalhero', '/originalhero', 'Super-héros original', 'originalhero', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Invente un héros inédit sans reprendre costume, logo ou personnage protégé.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['super heros original', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Super-héros original | RaccourcIA', 'Invente un héros inédit sans reprendre costume, logo ou personnage protégé.', 83, 188, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-originalhero',
   command = '/originalhero',
@@ -1275,7 +1275,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'originalhero',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'personnages-cultes'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Invente un héros inédit sans reprendre costume, logo ou personnage protégé.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1301,7 +1301,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-afrobeatsstar', 'img-afrobeatsstar', '/afrobeatsstar', 'Star Afrobeats', 'afrobeatsstar', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'musique-et-pop-culture'), 'Transforme la personne en tête d’affiche musicale africaine contemporaine.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['vedette afrobeats', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Vedette Afrobeats | RaccourcIA', 'Transforme la personne en tête d’affiche musicale africaine contemporaine.', 100, 189, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-afrobeatsstar', 'img-afrobeatsstar', '/afrobeatsstar', 'Star Afrobeats', 'afrobeatsstar', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Transforme la personne en tête d’affiche musicale africaine contemporaine.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['vedette afrobeats', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Vedette Afrobeats | RaccourcIA', 'Transforme la personne en tête d’affiche musicale africaine contemporaine.', 100, 189, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-afrobeatsstar',
   command = '/afrobeatsstar',
@@ -1309,7 +1309,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'afrobeatsstar',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'musique-et-pop-culture'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Transforme la personne en tête d’affiche musicale africaine contemporaine.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1335,7 +1335,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-serieskeyart', 'img-serieskeyart', '/serieskeyart', 'Affiche de série', 'serieskeyart', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'affiches-de-cinema'), 'Imagine l’affiche principale d’une série originale centrée sur la personne.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['visuel de serie', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Visuel de série | RaccourcIA', 'Imagine l’affiche principale d’une série originale centrée sur la personne.', 100, 190, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-serieskeyart', 'img-serieskeyart', '/serieskeyart', 'Affiche de série', 'serieskeyart', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cinema'), 'Imagine l’affiche principale d’une série originale centrée sur la personne.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cinema-personnages-et-scenes', 'creations-et-vfx', 'commande-image']::text[], array['visuel de serie', 'cinema personnages et scenes', 'creations et vfx']::text[], 'Visuel de série | RaccourcIA', 'Imagine l’affiche principale d’une série originale centrée sur la personne.', 100, 190, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-serieskeyart',
   command = '/serieskeyart',
@@ -1343,7 +1343,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'serieskeyart',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'affiches-de-cinema'),
+  category_id = (select id from public.categories where slug = 'cinema'),
   short_description = 'Imagine l’affiche principale d’une série originale centrée sur la personne.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1369,7 +1369,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-businesscover', 'img-businesscover', '/businesscover', 'Business - référence Forbes', 'businesscover', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'business-et-leadership'), 'Un portrait de fondateur ou dirigeant, avec hiérarchie sobre inspirée de Forbes et angle éditorial choisi, sans fausse distinction.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-business-et-parcours', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['business reference forbes', 'editorial business et parcours', 'creations et vfx']::text[], 'Business - référence Forbes | RaccourcIA', 'Un portrait de fondateur ou dirigeant, avec hiérarchie sobre inspirée de Forbes et angle éditorial choisi, sans fausse distinction.', 100, 191, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-businesscover', 'img-businesscover', '/businesscover', 'Business - référence Forbes', 'businesscover', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Un portrait de fondateur ou dirigeant, avec hiérarchie sobre inspirée de Forbes et angle éditorial choisi, sans fausse distinction.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-business-et-parcours', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['business reference forbes', 'editorial business et parcours', 'creations et vfx']::text[], 'Business - référence Forbes | RaccourcIA', 'Un portrait de fondateur ou dirigeant, avec hiérarchie sobre inspirée de Forbes et angle éditorial choisi, sans fausse distinction.', 100, 191, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-businesscover',
   command = '/businesscover',
@@ -1377,7 +1377,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'businesscover',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'business-et-leadership'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Un portrait de fondateur ou dirigeant, avec hiérarchie sobre inspirée de Forbes et angle éditorial choisi, sans fausse distinction.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1403,7 +1403,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-newsmagazine', 'img-newsmagazine', '/newsmagazine', 'Couverture actualité', 'newsmagazine', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'business-et-leadership'), 'Une une d’actualité personnelle fictive, inspirée des codes de TIME, avec sujet et titre confirmés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-business-et-parcours', 'creations-et-vfx', 'commande-image']::text[], array['couverture actualite', 'editorial business et parcours', 'creations et vfx']::text[], 'Couverture actualité | RaccourcIA', 'Une une d’actualité personnelle fictive, inspirée des codes de TIME, avec sujet et titre confirmés.', 100, 192, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-newsmagazine', 'img-newsmagazine', '/newsmagazine', 'Couverture actualité', 'newsmagazine', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Une une d’actualité personnelle fictive, inspirée des codes de TIME, avec sujet et titre confirmés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-business-et-parcours', 'creations-et-vfx', 'commande-image']::text[], array['couverture actualite', 'editorial business et parcours', 'creations et vfx']::text[], 'Couverture actualité | RaccourcIA', 'Une une d’actualité personnelle fictive, inspirée des codes de TIME, avec sujet et titre confirmés.', 100, 192, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-newsmagazine',
   command = '/newsmagazine',
@@ -1411,7 +1411,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'newsmagazine',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'business-et-leadership'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Une une d’actualité personnelle fictive, inspirée des codes de TIME, avec sujet et titre confirmés.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1437,7 +1437,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-cover-football', 'img-cover-football', '/cover-football', 'Couverture football', 'cover-football', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'sport-et-performance'), 'Un portrait de joueur ou une action de jeu compose une une sportive, avec poste et maillot choisis.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-sport-et-performance', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['couverture football', 'editorial sport et performance', 'creations et vfx']::text[], 'Couverture football | RaccourcIA', 'Un portrait de joueur ou une action de jeu compose une une sportive, avec poste et maillot choisis.', 100, 193, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-cover-football', 'img-cover-football', '/cover-football', 'Couverture football', 'cover-football', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Un portrait de joueur ou une action de jeu compose une une sportive, avec poste et maillot choisis.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-sport-et-performance', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['couverture football', 'editorial sport et performance', 'creations et vfx']::text[], 'Couverture football | RaccourcIA', 'Un portrait de joueur ou une action de jeu compose une une sportive, avec poste et maillot choisis.', 100, 193, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-cover-football',
   command = '/cover-football',
@@ -1445,7 +1445,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'cover-football',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'sport-et-performance'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Un portrait de joueur ou une action de jeu compose une une sportive, avec poste et maillot choisis.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1471,7 +1471,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-cover-running', 'img-cover-running', '/cover-running', 'Couverture running', 'cover-running', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'sport-et-performance'), 'Un coureur en mouvement, une route profonde et une composition éditoriale dédiée à la course, sans performance inventée.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-sport-et-performance', 'creations-et-vfx', 'commande-image']::text[], array['couverture running', 'editorial sport et performance', 'creations et vfx']::text[], 'Couverture running | RaccourcIA', 'Un coureur en mouvement, une route profonde et une composition éditoriale dédiée à la course, sans performance inventée.', 100, 194, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-cover-running', 'img-cover-running', '/cover-running', 'Couverture running', 'cover-running', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Un coureur en mouvement, une route profonde et une composition éditoriale dédiée à la course, sans performance inventée.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-sport-et-performance', 'creations-et-vfx', 'commande-image']::text[], array['couverture running', 'editorial sport et performance', 'creations et vfx']::text[], 'Couverture running | RaccourcIA', 'Un coureur en mouvement, une route profonde et une composition éditoriale dédiée à la course, sans performance inventée.', 100, 194, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-cover-running',
   command = '/cover-running',
@@ -1479,7 +1479,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'cover-running',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'sport-et-performance'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Un coureur en mouvement, une route profonde et une composition éditoriale dédiée à la course, sans performance inventée.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1505,7 +1505,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-sportmagazine', 'img-sportmagazine', '/sportmagazine', 'Sport - référence Sports Illustrated', 'sportmagazine', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'sport-et-performance'), 'Une couverture sportive énergique avec discipline et équipement précisés, inspirée des codes de Sports Illustrated.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-sport-et-performance', 'creations-et-vfx', 'commande-image']::text[], array['sport reference sports illustrated', 'editorial sport et performance', 'creations et vfx']::text[], 'Sport - référence Sports Illustrated | RaccourcIA', 'Une couverture sportive énergique avec discipline et équipement précisés, inspirée des codes de Sports Illustrated.', 100, 195, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-sportmagazine', 'img-sportmagazine', '/sportmagazine', 'Sport - référence Sports Illustrated', 'sportmagazine', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Une couverture sportive énergique avec discipline et équipement précisés, inspirée des codes de Sports Illustrated.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-sport-et-performance', 'creations-et-vfx', 'commande-image']::text[], array['sport reference sports illustrated', 'editorial sport et performance', 'creations et vfx']::text[], 'Sport - référence Sports Illustrated | RaccourcIA', 'Une couverture sportive énergique avec discipline et équipement précisés, inspirée des codes de Sports Illustrated.', 100, 195, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-sportmagazine',
   command = '/sportmagazine',
@@ -1513,7 +1513,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'sportmagazine',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'sport-et-performance'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Une couverture sportive énergique avec discipline et équipement précisés, inspirée des codes de Sports Illustrated.',
   expected_input = 'Photos des personnes concernées',
   expected_output = '1 image HD',

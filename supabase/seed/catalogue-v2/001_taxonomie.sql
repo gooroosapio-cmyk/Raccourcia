@@ -80,9 +80,9 @@ select 'V2-COL-03-03', (select id from public.categories where external_ref = 'V
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-03');
 update public.categories set slug = 'action-et-espionnage', name = 'Action & espionnage', sort_order = 3, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/action-et-espionnage.webp' where external_ref = 'V2-COL-03-03';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-04', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'mode-et-beaute', 'Mode & beauté', 4, 'draft'::public.content_status, false, 'prompt-media/families/image/mode-et-beaute.webp'
+select 'V2-COL-03-04', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'editorial', 'Éditorial', 4, 'draft'::public.content_status, false, 'prompt-media/families/image/editorial.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-04');
-update public.categories set slug = 'mode-et-beaute', name = 'Mode & beauté', sort_order = 4, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/mode-et-beaute.webp' where external_ref = 'V2-COL-03-04';
+update public.categories set slug = 'editorial', name = 'Éditorial', sort_order = 4, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/editorial.webp' where external_ref = 'V2-COL-03-04';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
 select 'V2-COL-03-05', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'personnages-cultes', 'Personnages cultes', 5, 'draft'::public.content_status, false, 'prompt-media/families/image/personnages-cultes.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-05');
@@ -140,9 +140,9 @@ select 'V2-COL-03-18', (select id from public.categories where external_ref = 'V
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-18');
 update public.categories set slug = 'musique-et-pop-culture', name = 'Musique & pop culture', sort_order = 18, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/musique-et-pop-culture.webp' where external_ref = 'V2-COL-03-18';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-19', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'affiches-de-cinema', 'Affiches de cinéma', 19, 'draft'::public.content_status, false, 'prompt-media/families/image/affiches-de-cinema.webp'
+select 'V2-COL-03-19', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'cinema', 'Cinéma', 19, 'draft'::public.content_status, false, 'prompt-media/families/image/cinema.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-19');
-update public.categories set slug = 'affiches-de-cinema', name = 'Affiches de cinéma', sort_order = 19, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/affiches-de-cinema.webp' where external_ref = 'V2-COL-03-19';
+update public.categories set slug = 'cinema', name = 'Cinéma', sort_order = 19, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/cinema.webp' where external_ref = 'V2-COL-03-19';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
 select 'V2-COL-03-20', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'ambiances-de-cinema', 'Ambiances de cinéma', 20, 'draft'::public.content_status, false, 'prompt-media/families/image/ambiances-de-cinema.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-20');

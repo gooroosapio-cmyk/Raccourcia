@@ -355,6 +355,20 @@ where c.external_ref like 'V2-COL-%'
     where p.category_id = c.id and p.status = 'published'
   );
 
+-- Et se referme si elle s'est videe. Un regroupement deplace des cartes
+-- d'une collection vers une autre : celle qui se vide restait ouverte sur
+-- un rayon sans rien dedans, parce que l'ouverture ne savait que publier.
+-- Fermee, pas supprimee — sa ligne demeure, et lui rendre une carte la
+-- rouvre.
+update public.categories c
+set status = 'draft'::public.content_status
+where c.external_ref like 'V2-COL-%'
+  and c.status = 'published'
+  and not exists (
+    select 1 from public.prompts p
+    where p.category_id = c.id and p.status = 'published'
+  );
+
 update public.categories c
 set status = 'published'::public.content_status
 where c.external_ref like 'V2-CAT-%'

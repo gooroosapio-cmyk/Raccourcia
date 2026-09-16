@@ -13,20 +13,25 @@
  * ne reviendra pas.
  */
 export const COLLECTIONS_RENOMMEES: Record<string, string> = {
-  'cinema-personnages-et-scenes': 'personnages-cultes',
-  'cinema-action-et-espionnage': 'action-et-espionnage',
-  'cinema-sf-et-exploration': 'affiches-de-cinema',
-  'cinema-romance-et-comedie': 'ambiances-de-cinema',
-  'cinema-fantastique-et-mystere': 'fantastique-et-mystere',
-  'editorial-mode-et-beaute': 'mode-et-beaute',
-  'editorial-business-et-parcours': 'business-et-leadership',
-  'editorial-sport-et-performance': 'sport-et-performance',
-  'editorial-musique-et-pop-culture': 'musique-et-pop-culture',
+  // Les cinq rayons de cinema n'en font plus qu'un : six affiches, huit
+  // personnages et trois ambiances separes donnaient des rayons de trois
+  // cartes, qu'on ouvre et dont on ressort aussitot.
+  'cinema-personnages-et-scenes': 'cinema',
+  'cinema-action-et-espionnage': 'cinema',
+  'cinema-sf-et-exploration': 'cinema',
+  'cinema-romance-et-comedie': 'cinema',
+  'cinema-fantastique-et-mystere': 'cinema',
+  // Les quatre rayons editoriaux non plus.
+  'editorial-mode-et-beaute': 'editorial',
+  'editorial-business-et-parcours': 'editorial',
+  'editorial-sport-et-performance': 'editorial',
+  'editorial-musique-et-pop-culture': 'editorial',
+  'humour-et-scenes-atypiques': 'humour',
+  // Les autres n'ont change que de nom.
   'vfx-effets-de-scene': 'effets-de-scene',
   'vfx-espace-et-gravite': 'espace-et-gravite',
   'vfx-lumiere-et-optique': 'lumiere-et-optique',
   'vfx-particules-et-metamorphoses': 'particules-et-metamorphoses',
-  'humour-et-scenes-atypiques': 'scenes-atypiques',
   'peintres-et-signatures-picturales': 'signatures-picturales',
   'illustration-et-mouvements-artistiques': 'mouvements-artistiques',
   'matieres-jouets-et-metamorphoses': 'matieres-et-metamorphoses',
