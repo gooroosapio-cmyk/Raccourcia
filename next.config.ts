@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { COLLECTIONS_RENOMMEES } from './lib/catalog/collections-renommees';
 
 /**
  * En-tetes de securite appliques a toutes les reponses.
@@ -37,6 +38,16 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
+  },
+  // Le rangement des rayons a renomme des collections, donc leurs adresses.
+  // Un lien partage avant la refonte continue de mener au bon endroit plutot
+  // que sur un « introuvable » que personne ne saurait interpreter.
+  async redirects() {
+    return Object.entries(COLLECTIONS_RENOMMEES).map(([avant, apres]) => ({
+      source: `/app/bibliotheque/${avant}`,
+      destination: `/app/bibliotheque/${apres}`,
+      permanent: true,
+    }));
   },
 };
 

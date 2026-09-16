@@ -9,7 +9,7 @@
 -- =====================================================================
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-marque-page', 'img-marque-page', '/marque-page', 'Moi dans le livre', 'marque-page', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour-et-scenes-atypiques'), 'Une personne miniature s’assoit au bord d’un livre ouvert, les jambes dépassant de la page.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['moi dans le livre', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Moi dans le livre | RaccourcIA', 'Une personne miniature s’assoit au bord d’un livre ouvert, les jambes dépassant de la page.', 61, 351, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-marque-page', 'img-marque-page', '/marque-page', 'Moi dans le livre', 'marque-page', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Une personne miniature s’assoit au bord d’un livre ouvert, les jambes dépassant de la page.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['moi dans le livre', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Moi dans le livre | RaccourcIA', 'Une personne miniature s’assoit au bord d’un livre ouvert, les jambes dépassant de la page.', 61, 351, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-marque-page',
   command = '/marque-page',
@@ -17,7 +17,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'marque-page',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'humour-et-scenes-atypiques'),
+  category_id = (select id from public.categories where slug = 'humour'),
   short_description = 'Une personne miniature s’assoit au bord d’un livre ouvert, les jambes dépassant de la page.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -43,7 +43,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-animal-astronaute', 'img-animal-astronaute', '/animal-astronaute', 'Animal astronaute', 'animal-astronaute', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour-et-scenes-atypiques'), 'Un animal reconnaissable porte une combinaison spatiale stylisée dans un décor planétaire imaginaire.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['animal astronaute', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Animal astronaute | RaccourcIA', 'Un animal reconnaissable porte une combinaison spatiale stylisée dans un décor planétaire imaginaire.', 58, 352, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-animal-astronaute', 'img-animal-astronaute', '/animal-astronaute', 'Animal astronaute', 'animal-astronaute', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Un animal reconnaissable porte une combinaison spatiale stylisée dans un décor planétaire imaginaire.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['animal astronaute', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Animal astronaute | RaccourcIA', 'Un animal reconnaissable porte une combinaison spatiale stylisée dans un décor planétaire imaginaire.', 58, 352, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-animal-astronaute',
   command = '/animal-astronaute',
@@ -51,7 +51,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'animal-astronaute',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'humour-et-scenes-atypiques'),
+  category_id = (select id from public.categories where slug = 'humour'),
   short_description = 'Un animal reconnaissable porte une combinaison spatiale stylisée dans un décor planétaire imaginaire.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -77,7 +77,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-cafe-meteorite', 'img-cafe-meteorite', '/cafe-meteorite', 'Café météorite', 'cafe-meteorite', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour-et-scenes-atypiques'), 'Une tasse semble atterrir comme un petit objet céleste, avec poussière de cacao et éclairage spectaculaire.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['cafe meteorite', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Café météorite | RaccourcIA', 'Une tasse semble atterrir comme un petit objet céleste, avec poussière de cacao et éclairage spectaculaire.', 55, 353, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-cafe-meteorite', 'img-cafe-meteorite', '/cafe-meteorite', 'Café météorite', 'cafe-meteorite', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Une tasse semble atterrir comme un petit objet céleste, avec poussière de cacao et éclairage spectaculaire.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['cafe meteorite', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Café météorite | RaccourcIA', 'Une tasse semble atterrir comme un petit objet céleste, avec poussière de cacao et éclairage spectaculaire.', 55, 353, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-cafe-meteorite',
   command = '/cafe-meteorite',
@@ -85,7 +85,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'cafe-meteorite',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'humour-et-scenes-atypiques'),
+  category_id = (select id from public.categories where slug = 'humour'),
   short_description = 'Une tasse semble atterrir comme un petit objet céleste, avec poussière de cacao et éclairage spectaculaire.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -111,7 +111,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-kaiju-bureau', 'img-kaiju-bureau', '/kaiju-bureau', 'Géant de bureau', 'kaiju-bureau', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour-et-scenes-atypiques'), 'Le sujet domine une ville miniature construite avec des dossiers, des stylos et du ruban adhésif.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['geant de bureau', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Géant de bureau | RaccourcIA', 'Le sujet domine une ville miniature construite avec des dossiers, des stylos et du ruban adhésif.', 58, 354, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-kaiju-bureau', 'img-kaiju-bureau', '/kaiju-bureau', 'Géant de bureau', 'kaiju-bureau', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Le sujet domine une ville miniature construite avec des dossiers, des stylos et du ruban adhésif.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['geant de bureau', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Géant de bureau | RaccourcIA', 'Le sujet domine une ville miniature construite avec des dossiers, des stylos et du ruban adhésif.', 58, 354, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-kaiju-bureau',
   command = '/kaiju-bureau',
@@ -119,7 +119,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'kaiju-bureau',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'humour-et-scenes-atypiques'),
+  category_id = (select id from public.categories where slug = 'humour'),
   short_description = 'Le sujet domine une ville miniature construite avec des dossiers, des stylos et du ruban adhésif.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -145,7 +145,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-tribunal-chaussettes', 'img-tribunal-chaussettes', '/tribunal-chaussettes', 'Le procès des chaussettes', 'tribunal-chaussettes', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour-et-scenes-atypiques'), 'Des chaussettes personnifiées tiennent une audience absurde autour d’une chaussette dépareillée.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['le proces des chaussettes', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Le procès des chaussettes | RaccourcIA', 'Des chaussettes personnifiées tiennent une audience absurde autour d’une chaussette dépareillée.', 41, 355, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-tribunal-chaussettes', 'img-tribunal-chaussettes', '/tribunal-chaussettes', 'Le procès des chaussettes', 'tribunal-chaussettes', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Des chaussettes personnifiées tiennent une audience absurde autour d’une chaussette dépareillée.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['le proces des chaussettes', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Le procès des chaussettes | RaccourcIA', 'Des chaussettes personnifiées tiennent une audience absurde autour d’une chaussette dépareillée.', 41, 355, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-tribunal-chaussettes',
   command = '/tribunal-chaussettes',
@@ -153,7 +153,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'tribunal-chaussettes',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'humour-et-scenes-atypiques'),
+  category_id = (select id from public.categories where slug = 'humour'),
   short_description = 'Des chaussettes personnifiées tiennent une audience absurde autour d’une chaussette dépareillée.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -179,7 +179,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-mini-barista', 'img-mini-barista', '/mini-barista', 'Mini barista', 'mini-barista', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour-et-scenes-atypiques'), 'Une version miniature du sujet prépare un café à côté d’une tasse devenue gigantesque.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['mini barista', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Mini barista | RaccourcIA', 'Une version miniature du sujet prépare un café à côté d’une tasse devenue gigantesque.', 58, 356, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-mini-barista', 'img-mini-barista', '/mini-barista', 'Mini barista', 'mini-barista', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Une version miniature du sujet prépare un café à côté d’une tasse devenue gigantesque.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['mini barista', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Mini barista | RaccourcIA', 'Une version miniature du sujet prépare un café à côté d’une tasse devenue gigantesque.', 58, 356, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-mini-barista',
   command = '/mini-barista',
@@ -187,7 +187,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'mini-barista',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'humour-et-scenes-atypiques'),
+  category_id = (select id from public.categories where slug = 'humour'),
   short_description = 'Une version miniature du sujet prépare un café à côté d’une tasse devenue gigantesque.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -213,7 +213,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-musee-frigo', 'img-musee-frigo', '/musee-frigo', 'Musée du frigo', 'musee-frigo', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour-et-scenes-atypiques'), 'Les aliments photographiés deviennent des pièces de musée éclairées sur de petits socles, sans cartel inutile.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['musee du frigo', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Musée du frigo | RaccourcIA', 'Les aliments photographiés deviennent des pièces de musée éclairées sur de petits socles, sans cartel inutile.', 41, 357, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-musee-frigo', 'img-musee-frigo', '/musee-frigo', 'Musée du frigo', 'musee-frigo', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Les aliments photographiés deviennent des pièces de musée éclairées sur de petits socles, sans cartel inutile.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour-et-scenes-atypiques', 'creations-et-vfx', 'commande-image']::text[], array['musee du frigo', 'humour et scenes atypiques', 'creations et vfx']::text[], 'Musée du frigo | RaccourcIA', 'Les aliments photographiés deviennent des pièces de musée éclairées sur de petits socles, sans cartel inutile.', 41, 357, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-musee-frigo',
   command = '/musee-frigo',
@@ -221,7 +221,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'musee-frigo',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'humour-et-scenes-atypiques'),
+  category_id = (select id from public.categories where slug = 'humour'),
   short_description = 'Les aliments photographiés deviennent des pièces de musée éclairées sur de petits socles, sans cartel inutile.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -791,7 +791,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-poster-music-tv', 'img-poster-music-tv', '/poster-music-tv', 'Affiche musicale - référence MTV', 'poster-music-tv', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial-musique-et-pop-culture'), 'Une affiche promotionnelle pop, typographie expressive et collage dynamique inspirés du langage visuel de MTV ; projet fictif ou personnel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-musique-et-pop-culture', 'creations-et-vfx', 'commande-image']::text[], array['affiche musicale reference mtv', 'editorial musique et pop culture', 'creations et vfx']::text[], 'Affiche musicale - référence MTV | RaccourcIA', 'Une affiche promotionnelle pop, typographie expressive et collage dynamique inspirés du langage visuel de MTV ; projet fictif ou personnel.', 100, 374, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-poster-music-tv', 'img-poster-music-tv', '/poster-music-tv', 'Affiche musicale - référence MTV', 'poster-music-tv', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Une affiche promotionnelle pop, typographie expressive et collage dynamique inspirés du langage visuel de MTV ; projet fictif ou personnel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-musique-et-pop-culture', 'creations-et-vfx', 'commande-image']::text[], array['affiche musicale reference mtv', 'editorial musique et pop culture', 'creations et vfx']::text[], 'Affiche musicale - référence MTV | RaccourcIA', 'Une affiche promotionnelle pop, typographie expressive et collage dynamique inspirés du langage visuel de MTV ; projet fictif ou personnel.', 100, 374, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-poster-music-tv',
   command = '/poster-music-tv',
@@ -799,7 +799,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'poster-music-tv',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'editorial-musique-et-pop-culture'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Une affiche promotionnelle pop, typographie expressive et collage dynamique inspirés du langage visuel de MTV ; projet fictif ou personnel.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -825,7 +825,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-cover-musique', 'img-cover-musique', '/cover-musique', 'Couverture - référence Rolling Stone', 'cover-musique', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial-musique-et-pop-culture'), 'Un portrait musical expressif et une hiérarchie de couverture inspirée de Rolling Stone, avec nom de scène et projet confirmés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-musique-et-pop-culture', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['couverture reference rolling stone', 'editorial musique et pop culture', 'creations et vfx']::text[], 'Couverture - référence Rolling Stone | RaccourcIA', 'Un portrait musical expressif et une hiérarchie de couverture inspirée de Rolling Stone, avec nom de scène et projet confirmés.', 100, 375, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-cover-musique', 'img-cover-musique', '/cover-musique', 'Couverture - référence Rolling Stone', 'cover-musique', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'editorial'), 'Un portrait musical expressif et une hiérarchie de couverture inspirée de Rolling Stone, avec nom de scène et projet confirmés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['editorial-musique-et-pop-culture', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['couverture reference rolling stone', 'editorial musique et pop culture', 'creations et vfx']::text[], 'Couverture - référence Rolling Stone | RaccourcIA', 'Un portrait musical expressif et une hiérarchie de couverture inspirée de Rolling Stone, avec nom de scène et projet confirmés.', 100, 375, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-cover-musique',
   command = '/cover-musique',
@@ -833,7 +833,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'cover-musique',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'editorial-musique-et-pop-culture'),
+  category_id = (select id from public.categories where slug = 'editorial'),
   short_description = 'Un portrait musical expressif et une hiérarchie de couverture inspirée de Rolling Stone, avec nom de scène et projet confirmés.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1131,11 +1131,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fisheyeproduct', 'img-fisheyeproduct', '/fisheyeproduct', 'Fisheye', 'fisheyeproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Déforme volontairement la perspective pour une publicité énergique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['fisheye', 'photo produit', 'produit et e commerce']::text[], 'Fisheye | RaccourcIA', 'Déforme volontairement la perspective pour une publicité énergique.', 88, 384, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-fisheyeproduct', 'img-fisheyeproduct', '/fisheyeproduct', 'Photo produit fisheye', 'fisheyeproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Déforme volontairement la perspective pour une publicité énergique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['fisheye', 'photo produit', 'produit et e commerce']::text[], 'Fisheye | RaccourcIA', 'Déforme volontairement la perspective pour une publicité énergique.', 88, 384, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fisheyeproduct',
   command = '/fisheyeproduct',
-  name = 'Fisheye',
+  name = 'Photo produit fisheye',
   slug = 'fisheyeproduct',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -1165,11 +1165,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-flatlay', 'img-flatlay', '/flatlay', 'Flat lay', 'flatlay', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Organise produit et accessoires sur un plan horizontal narratif.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['flat lay', 'photo produit', 'produit et e commerce']::text[], 'Flat lay | RaccourcIA', 'Organise produit et accessoires sur un plan horizontal narratif.', 88, 385, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-flatlay', 'img-flatlay', '/flatlay', 'Vue à plat', 'flatlay', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Organise produit et accessoires sur un plan horizontal narratif.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['flat lay', 'photo produit', 'produit et e commerce']::text[], 'Flat lay | RaccourcIA', 'Organise produit et accessoires sur un plan horizontal narratif.', 88, 385, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-flatlay',
   command = '/flatlay',
-  name = 'Flat lay',
+  name = 'Vue à plat',
   slug = 'flatlay',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -1471,11 +1471,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-packshot', 'img-packshot', '/packshot', 'Packshot studio', 'packshot', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Transforme une photo simple en visuel studio net et commercial.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['packshot studio', 'photo produit', 'produit et e commerce']::text[], 'Packshot studio | RaccourcIA', 'Transforme une photo simple en visuel studio net et commercial.', 88, 394, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-packshot', 'img-packshot', '/packshot', 'Photo produit studio', 'packshot', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Transforme une photo simple en visuel studio net et commercial.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['packshot studio', 'photo produit', 'produit et e commerce']::text[], 'Packshot studio | RaccourcIA', 'Transforme une photo simple en visuel studio net et commercial.', 88, 394, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-packshot',
   command = '/packshot',
-  name = 'Packshot studio',
+  name = 'Photo produit studio',
   slug = 'packshot',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',

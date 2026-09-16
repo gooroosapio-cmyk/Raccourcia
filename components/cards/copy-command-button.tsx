@@ -79,6 +79,7 @@ export function CopyCommandButton({
   locked = false,
   pret = true,
   compact = false,
+  forme = 'bouton',
   onLockedClick,
   proposerOuverture = false,
 }: {
@@ -96,6 +97,16 @@ export function CopyCommandButton({
   pret?: boolean;
   /** Variante des cartes : le libelle se reduit a "Copier". */
   compact?: boolean;
+  /**
+   * `icone` pour une pastille ronde posee sur la vignette.
+   *
+   * La carte de galerie n'a plus de bandeau d'action : un bouton large sous
+   * chaque vignette repoussait le titre suivant hors de l'ecran et repetait
+   * six fois le meme mot dans une grille. La copie reste pourtant sur la
+   * miniature — c'est le geste le plus frequent — mais sous la forme d'une
+   * pastille, a cote du favori, avec sa cible de 44 px.
+   */
+  forme?: 'bouton' | 'icone';
   onLockedClick?: () => void;
   /**
    * Propose d'ouvrir l'IA choisie une fois la commande copiee.
@@ -134,7 +145,7 @@ export function CopyCommandButton({
     Promise.all([ecrireDansLePressePapier(texte), texte]).then(
       () => {
         setEtat('copie');
-        show('Commande copiée');
+        show('Prompt copié. Collez-le dans votre IA.');
         setOuvertureProposee(proposerOuverture);
         navigator.vibrate?.(10);
         // La coche est une confirmation breve : le bouton doit redevenir
@@ -178,8 +189,8 @@ export function CopyCommandButton({
         : compact
           ? 'Copier'
           : nomIA
-            ? `Copier pour ${nomIA}`
-            : 'Copier la commande';
+            ? `Copier le prompt pour ${nomIA}`
+            : 'Copier le prompt';
 
   const ton = locked
     ? 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'
@@ -191,6 +202,35 @@ export function CopyCommandButton({
 
   const adresse = PROVIDER_URLS[cle];
 
+  const intitule = locked
+    ? 'Débloquer RaccourcIA pour copier ce prompt'
+    : !pret
+      ? 'Le texte de ce prompt n’est pas encore disponible'
+      : nomIA
+        ? `Copier le prompt pour ${nomIA}`
+        : 'Copier le prompt';
+
+  // Pastille ronde sur la vignette : pas de libelle, donc pas de fond colore
+  // non plus. Un rond bleu vif sur chaque carte d'une grille de vingt tirerait
+  // l'oeil vers l'action la plus repetee au lieu des resultats.
+  if (forme === 'icone') {
+    return (
+      <button
+        type="button"
+        onClick={copier}
+        disabled={!pret && !locked}
+        aria-busy={etat === 'chargement'}
+        aria-label={intitule}
+        title={intitule}
+        className="touch-target flex h-11 w-11 items-center justify-center rounded-full text-white transition-transform duration-[var(--duration-fast)] active:scale-90 disabled:cursor-not-allowed disabled:opacity-45"
+      >
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--color-night)]/55 backdrop-blur-[2px]">
+          {locked ? <LockIcon /> : etat === 'copie' ? <CheckIcon /> : <CopyIcon />}
+        </span>
+      </button>
+    );
+  }
+
   return (
     <>
       <button
@@ -200,15 +240,7 @@ export function CopyCommandButton({
         // Jamais desactive pendant le chargement : la largeur resterait la meme
         // mais le bouton paraitrait casse. On garde l'etat visible a la place.
         aria-busy={etat === 'chargement'}
-        aria-label={
-          locked
-            ? 'Débloquer RaccourcIA pour copier cette commande'
-            : !pret
-              ? 'Le texte de cette commande n’est pas encore disponible'
-              : nomIA
-                ? `Copier la commande pour ${nomIA}`
-                : 'Copier la commande'
-        }
+        aria-label={intitule}
         className={`touch-target inline-flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] font-semibold transition-[background-color,transform] duration-[var(--duration-fast)] active:scale-[0.98] ${
           compact ? 'h-11 px-3 text-[13px]' : 'h-13 px-4 text-[15px]'
         } ${ton} disabled:cursor-not-allowed`}

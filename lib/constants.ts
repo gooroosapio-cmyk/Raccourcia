@@ -29,6 +29,23 @@ export const MODE_LABELS: Record<StoredMode, string> = {
 };
 
 /**
+ * Le genre d'experience qu'une commande propose.
+ *
+ * Il decide du verbe des boutons — on active un mode, on commence un
+ * parcours, on utilise un prompt — et du repere que porte la carte. Une
+ * liste fermee : ces trois genres sont des regles produit, pas des
+ * etiquettes libres qu'on ajouterait au fil des imports.
+ */
+export const ENTITY_TYPES = ['commande_image', 'mode_ia', 'parcours'] as const;
+export type EntityType = (typeof ENTITY_TYPES)[number];
+
+export const ENTITY_TYPE_LABELS: Record<EntityType, string> = {
+  commande_image: 'Commande image',
+  mode_ia: 'Mode IA',
+  parcours: 'Parcours guidé',
+};
+
+/**
  * Niveau d'execution d'un raccourci, de A a E.
  *
  * Ce n'est pas une etiquette de difficulte : c'est ce qui decide combien une

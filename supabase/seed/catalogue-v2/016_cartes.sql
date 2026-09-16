@@ -9,7 +9,7 @@
 -- =====================================================================
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-liminalself', 'img-liminalself', '/liminalself', 'Pause dans un lieu étrange', 'liminalself', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Placez votre portrait dans un décor calme et irréel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['pause dans un lieu etrange', 'vfx effets de scene', 'creations et vfx']::text[], 'Pause dans un lieu étrange | RaccourcIA', 'Placez votre portrait dans un décor calme et irréel.', 40, 301, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-liminalself', 'img-liminalself', '/liminalself', 'Pause dans un lieu étrange', 'liminalself', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Placez votre portrait dans un décor calme et irréel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['pause dans un lieu etrange', 'vfx effets de scene', 'creations et vfx']::text[], 'Pause dans un lieu étrange | RaccourcIA', 'Placez votre portrait dans un décor calme et irréel.', 40, 301, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-liminalself',
   command = '/liminalself',
@@ -17,7 +17,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'liminalself',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Placez votre portrait dans un décor calme et irréel.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -43,7 +43,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-dreamroom', 'img-dreamroom', '/dreamroom', 'Pièce impossible', 'dreamroom', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Transformez une pièce en décor de rêve.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['piece impossible', 'vfx effets de scene', 'creations et vfx']::text[], 'Pièce impossible | RaccourcIA', 'Transformez une pièce en décor de rêve.', 54, 302, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-dreamroom', 'img-dreamroom', '/dreamroom', 'Pièce impossible', 'dreamroom', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Transformez une pièce en décor de rêve.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['piece impossible', 'vfx effets de scene', 'creations et vfx']::text[], 'Pièce impossible | RaccourcIA', 'Transformez une pièce en décor de rêve.', 54, 302, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-dreamroom',
   command = '/dreamroom',
@@ -51,7 +51,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'dreamroom',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Transformez une pièce en décor de rêve.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -77,7 +77,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-shadowonly', 'img-shadowonly', '/shadowonly', 'Portrait d’objet par son ombre', 'shadowonly', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Fait exister l’objet principalement par une ombre sculptée tout en gardant sa silhouette identifiable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait dobjet par son ombre', 'vfx effets de scene', 'creations et vfx']::text[], 'Portrait d’objet par son ombre | RaccourcIA', 'Fait exister l’objet principalement par une ombre sculptée tout en gardant sa silhouette identifiable.', 42, 303, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-shadowonly', 'img-shadowonly', '/shadowonly', 'Portrait d’objet par son ombre', 'shadowonly', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Fait exister l’objet principalement par une ombre sculptée tout en gardant sa silhouette identifiable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait dobjet par son ombre', 'vfx effets de scene', 'creations et vfx']::text[], 'Portrait d’objet par son ombre | RaccourcIA', 'Fait exister l’objet principalement par une ombre sculptée tout en gardant sa silhouette identifiable.', 42, 303, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-shadowonly',
   command = '/shadowonly',
@@ -85,7 +85,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'shadowonly',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Fait exister l’objet principalement par une ombre sculptée tout en gardant sa silhouette identifiable.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -111,7 +111,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-underwaterproduct', 'img-underwaterproduct', '/underwaterproduct', 'Produit sous l’eau', 'underwaterproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Met l’objet dans une scène sous-marine crédible avec lumière filtrée, bulles et comportement matériel cohérent.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['produit sous leau', 'vfx effets de scene', 'creations et vfx']::text[], 'Produit sous l’eau | RaccourcIA', 'Met l’objet dans une scène sous-marine crédible avec lumière filtrée, bulles et comportement matériel cohérent.', 60, 304, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-underwaterproduct', 'img-underwaterproduct', '/underwaterproduct', 'Produit sous l’eau', 'underwaterproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Met l’objet dans une scène sous-marine crédible avec lumière filtrée, bulles et comportement matériel cohérent.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['produit sous leau', 'vfx effets de scene', 'creations et vfx']::text[], 'Produit sous l’eau | RaccourcIA', 'Met l’objet dans une scène sous-marine crédible avec lumière filtrée, bulles et comportement matériel cohérent.', 60, 304, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-underwaterproduct',
   command = '/underwaterproduct',
@@ -119,7 +119,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'underwaterproduct',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Met l’objet dans une scène sous-marine crédible avec lumière filtrée, bulles et comportement matériel cohérent.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -145,7 +145,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-hauntedmirror', 'img-hauntedmirror', '/hauntedmirror', 'Reflet hanté', 'hauntedmirror', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Montre la personne normale devant un miroir dont le reflet révèle une version fantastique inquiétante.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['reflet hante', 'vfx effets de scene', 'creations et vfx']::text[], 'Reflet hanté | RaccourcIA', 'Montre la personne normale devant un miroir dont le reflet révèle une version fantastique inquiétante.', 40, 305, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-hauntedmirror', 'img-hauntedmirror', '/hauntedmirror', 'Reflet hanté', 'hauntedmirror', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Montre la personne normale devant un miroir dont le reflet révèle une version fantastique inquiétante.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['reflet hante', 'vfx effets de scene', 'creations et vfx']::text[], 'Reflet hanté | RaccourcIA', 'Montre la personne normale devant un miroir dont le reflet révèle une version fantastique inquiétante.', 40, 305, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-hauntedmirror',
   command = '/hauntedmirror',
@@ -153,7 +153,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'hauntedmirror',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Montre la personne normale devant un miroir dont le reflet révèle une version fantastique inquiétante.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -179,7 +179,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-smokesilhouette', 'img-smokesilhouette', '/smokesilhouette', 'Silhouette de fumée', 'smokesilhouette', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Dissout le corps en volutes de fumée tout en gardant le visage lisible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['silhouette de fumee', 'vfx effets de scene', 'creations et vfx']::text[], 'Silhouette de fumée | RaccourcIA', 'Dissout le corps en volutes de fumée tout en gardant le visage lisible.', 59, 306, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-smokesilhouette', 'img-smokesilhouette', '/smokesilhouette', 'Silhouette de fumée', 'smokesilhouette', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Dissout le corps en volutes de fumée tout en gardant le visage lisible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['silhouette de fumee', 'vfx effets de scene', 'creations et vfx']::text[], 'Silhouette de fumée | RaccourcIA', 'Dissout le corps en volutes de fumée tout en gardant le visage lisible.', 59, 306, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-smokesilhouette',
   command = '/smokesilhouette',
@@ -187,7 +187,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'smokesilhouette',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Dissout le corps en volutes de fumée tout en gardant le visage lisible.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -213,7 +213,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-freezeecho', 'img-freezeecho', '/freezeecho', 'Trois instants, une image', 'freezeecho', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Montrez un mouvement en trois poses figées.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['trois instants une image', 'vfx effets de scene', 'creations et vfx']::text[], 'Trois instants, une image | RaccourcIA', 'Montrez un mouvement en trois poses figées.', 60, 307, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-freezeecho', 'img-freezeecho', '/freezeecho', 'Trois instants, une image', 'freezeecho', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Montrez un mouvement en trois poses figées.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['trois instants une image', 'vfx effets de scene', 'creations et vfx']::text[], 'Trois instants, une image | RaccourcIA', 'Montrez un mouvement en trois poses figées.', 60, 307, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-freezeecho',
   command = '/freezeecho',
@@ -221,7 +221,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'freezeecho',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Montrez un mouvement en trois poses figées.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -247,7 +247,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-particleecho', 'img-particleecho', '/particleecho', 'Écho de particules', 'particleecho', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Décomposez un mouvement en une traînée lumineuse.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['echo de particules', 'vfx effets de scene', 'creations et vfx']::text[], 'Écho de particules | RaccourcIA', 'Décomposez un mouvement en une traînée lumineuse.', 59, 308, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-particleecho', 'img-particleecho', '/particleecho', 'Écho de particules', 'particleecho', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Décomposez un mouvement en une traînée lumineuse.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['echo de particules', 'vfx effets de scene', 'creations et vfx']::text[], 'Écho de particules | RaccourcIA', 'Décomposez un mouvement en une traînée lumineuse.', 59, 308, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-particleecho',
   command = '/particleecho',
@@ -255,7 +255,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'particleecho',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Décomposez un mouvement en une traînée lumineuse.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -281,7 +281,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-escaliers-infinis', 'img-escaliers-infinis', '/escaliers-infinis', 'Escaliers impossibles', 'escaliers-infinis', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'Le sujet traverse une architecture d’escaliers aux directions contradictoires, dans une composition géométrique lisible.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['escaliers impossibles', 'vfx espace et gravite', 'creations et vfx']::text[], 'Escaliers impossibles | RaccourcIA', 'Le sujet traverse une architecture d’escaliers aux directions contradictoires, dans une composition géométrique lisible.', 34, 309, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-escaliers-infinis', 'img-escaliers-infinis', '/escaliers-infinis', 'Escaliers impossibles', 'escaliers-infinis', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'Le sujet traverse une architecture d’escaliers aux directions contradictoires, dans une composition géométrique lisible.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['escaliers impossibles', 'vfx espace et gravite', 'creations et vfx']::text[], 'Escaliers impossibles | RaccourcIA', 'Le sujet traverse une architecture d’escaliers aux directions contradictoires, dans une composition géométrique lisible.', 34, 309, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-escaliers-infinis',
   command = '/escaliers-infinis',
@@ -289,7 +289,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'escaliers-infinis',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'Le sujet traverse une architecture d’escaliers aux directions contradictoires, dans une composition géométrique lisible.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -315,7 +315,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-faille-temporelle', 'img-faille-temporelle', '/faille-temporelle', 'Faille temporelle', 'faille-temporelle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'Une fissure lumineuse sépare deux époques dans le même décor, avec un sujet central reconnaissable.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['faille temporelle', 'vfx espace et gravite', 'creations et vfx']::text[], 'Faille temporelle | RaccourcIA', 'Une fissure lumineuse sépare deux époques dans le même décor, avec un sujet central reconnaissable.', 56, 310, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-faille-temporelle', 'img-faille-temporelle', '/faille-temporelle', 'Faille temporelle', 'faille-temporelle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'Une fissure lumineuse sépare deux époques dans le même décor, avec un sujet central reconnaissable.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['faille temporelle', 'vfx espace et gravite', 'creations et vfx']::text[], 'Faille temporelle | RaccourcIA', 'Une fissure lumineuse sépare deux époques dans le même décor, avec un sujet central reconnaissable.', 56, 310, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-faille-temporelle',
   command = '/faille-temporelle',
@@ -323,7 +323,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'faille-temporelle',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'Une fissure lumineuse sépare deux époques dans le même décor, avec un sujet central reconnaissable.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -349,7 +349,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-ville-pliee', 'img-ville-pliee', '/ville-pliee', 'La ville se replie', 'ville-pliee', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'Une rue se courbe au-dessus du sujet dans une perspective impossible, avec raccords et lumière cohérents.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['la ville se replie', 'vfx espace et gravite', 'creations et vfx']::text[], 'La ville se replie | RaccourcIA', 'Une rue se courbe au-dessus du sujet dans une perspective impossible, avec raccords et lumière cohérents.', 51, 311, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-ville-pliee', 'img-ville-pliee', '/ville-pliee', 'La ville se replie', 'ville-pliee', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'Une rue se courbe au-dessus du sujet dans une perspective impossible, avec raccords et lumière cohérents.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['la ville se replie', 'vfx espace et gravite', 'creations et vfx']::text[], 'La ville se replie | RaccourcIA', 'Une rue se courbe au-dessus du sujet dans une perspective impossible, avec raccords et lumière cohérents.', 51, 311, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-ville-pliee',
   command = '/ville-pliee',
@@ -357,7 +357,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'ville-pliee',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'Une rue se courbe au-dessus du sujet dans une perspective impossible, avec raccords et lumière cohérents.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -383,7 +383,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-perspective-geante', 'img-perspective-geante', '/perspective-geante', 'Objet géant dans la rue', 'perspective-geante', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'Un objet du quotidien prend une échelle monumentale au milieu d’une rue, sans destruction.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['objet geant dans la rue', 'vfx espace et gravite', 'creations et vfx']::text[], 'Objet géant dans la rue | RaccourcIA', 'Un objet du quotidien prend une échelle monumentale au milieu d’une rue, sans destruction.', 53, 312, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-perspective-geante', 'img-perspective-geante', '/perspective-geante', 'Objet géant dans la rue', 'perspective-geante', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'Un objet du quotidien prend une échelle monumentale au milieu d’une rue, sans destruction.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['objet geant dans la rue', 'vfx espace et gravite', 'creations et vfx']::text[], 'Objet géant dans la rue | RaccourcIA', 'Un objet du quotidien prend une échelle monumentale au milieu d’une rue, sans destruction.', 53, 312, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-perspective-geante',
   command = '/perspective-geante',
@@ -391,7 +391,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'perspective-geante',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'Un objet du quotidien prend une échelle monumentale au milieu d’une rue, sans destruction.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -417,7 +417,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-orbite-lunaire', 'img-orbite-lunaire', '/orbite-lunaire', 'Orbite lunaire', 'orbite-lunaire', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'De petites lunes et des fragments rocheux gravitent autour du sujet, dans une scène cosmique fixe.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['orbite lunaire', 'vfx espace et gravite', 'creations et vfx']::text[], 'Orbite lunaire | RaccourcIA', 'De petites lunes et des fragments rocheux gravitent autour du sujet, dans une scène cosmique fixe.', 56, 313, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-orbite-lunaire', 'img-orbite-lunaire', '/orbite-lunaire', 'Orbite lunaire', 'orbite-lunaire', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'De petites lunes et des fragments rocheux gravitent autour du sujet, dans une scène cosmique fixe.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['orbite lunaire', 'vfx espace et gravite', 'creations et vfx']::text[], 'Orbite lunaire | RaccourcIA', 'De petites lunes et des fragments rocheux gravitent autour du sujet, dans une scène cosmique fixe.', 56, 313, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-orbite-lunaire',
   command = '/orbite-lunaire',
@@ -425,7 +425,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'orbite-lunaire',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'De petites lunes et des fragments rocheux gravitent autour du sujet, dans une scène cosmique fixe.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -451,7 +451,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-piece-sous-marine', 'img-piece-sous-marine', '/piece-sous-marine', 'Pièce sous-marine', 'piece-sous-marine', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'Un intérieur semble immergé, parcouru de rayons filtrés et de bulles ; le rendu est une fiction visuelle.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['piece sous marine', 'vfx espace et gravite', 'creations et vfx']::text[], 'Pièce sous-marine | RaccourcIA', 'Un intérieur semble immergé, parcouru de rayons filtrés et de bulles ; le rendu est une fiction visuelle.', 56, 314, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-piece-sous-marine', 'img-piece-sous-marine', '/piece-sous-marine', 'Pièce sous-marine', 'piece-sous-marine', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'Un intérieur semble immergé, parcouru de rayons filtrés et de bulles ; le rendu est une fiction visuelle.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['piece sous marine', 'vfx espace et gravite', 'creations et vfx']::text[], 'Pièce sous-marine | RaccourcIA', 'Un intérieur semble immergé, parcouru de rayons filtrés et de bulles ; le rendu est une fiction visuelle.', 56, 314, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-piece-sous-marine',
   command = '/piece-sous-marine',
@@ -459,7 +459,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'piece-sous-marine',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'Un intérieur semble immergé, parcouru de rayons filtrés et de bulles ; le rendu est une fiction visuelle.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -485,7 +485,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-pluie-inversee', 'img-pluie-inversee', '/pluie-inversee', 'Pluie inversée', 'pluie-inversee', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'Des gouttes remontent autour d’un sujet immobile, comme un instant suspendu dans une scène nocturne.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['pluie inversee', 'vfx espace et gravite', 'creations et vfx']::text[], 'Pluie inversée | RaccourcIA', 'Des gouttes remontent autour d’un sujet immobile, comme un instant suspendu dans une scène nocturne.', 34, 315, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-pluie-inversee', 'img-pluie-inversee', '/pluie-inversee', 'Pluie inversée', 'pluie-inversee', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'Des gouttes remontent autour d’un sujet immobile, comme un instant suspendu dans une scène nocturne.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['pluie inversee', 'vfx espace et gravite', 'creations et vfx']::text[], 'Pluie inversée | RaccourcIA', 'Des gouttes remontent autour d’un sujet immobile, comme un instant suspendu dans une scène nocturne.', 34, 315, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-pluie-inversee',
   command = '/pluie-inversee',
@@ -493,7 +493,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'pluie-inversee',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'Des gouttes remontent autour d’un sujet immobile, comme un instant suspendu dans une scène nocturne.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -519,7 +519,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-portal-jungle', 'img-portal-jungle', '/portal-jungle', 'Portail vers la jungle', 'portal-jungle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'Une ouverture dans un intérieur révèle une jungle humide ; les lumières des deux mondes se croisent au seuil.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['portail vers la jungle', 'vfx espace et gravite', 'creations et vfx']::text[], 'Portail vers la jungle | RaccourcIA', 'Une ouverture dans un intérieur révèle une jungle humide ; les lumières des deux mondes se croisent au seuil.', 56, 316, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-portal-jungle', 'img-portal-jungle', '/portal-jungle', 'Portail vers la jungle', 'portal-jungle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'Une ouverture dans un intérieur révèle une jungle humide ; les lumières des deux mondes se croisent au seuil.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['portail vers la jungle', 'vfx espace et gravite', 'creations et vfx']::text[], 'Portail vers la jungle | RaccourcIA', 'Une ouverture dans un intérieur révèle une jungle humide ; les lumières des deux mondes se croisent au seuil.', 56, 316, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-portal-jungle',
   command = '/portal-jungle',
@@ -527,7 +527,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'portal-jungle',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'Une ouverture dans un intérieur révèle une jungle humide ; les lumières des deux mondes se croisent au seuil.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -553,7 +553,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-portal-cosmos', 'img-portal-cosmos', '/portal-cosmos', 'Portail vers le cosmos', 'portal-cosmos', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'Une porte ordinaire ouvre sur une station spatiale imaginaire, avec profondeur et perspective continues.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['portail vers le cosmos', 'vfx espace et gravite', 'creations et vfx']::text[], 'Portail vers le cosmos | RaccourcIA', 'Une porte ordinaire ouvre sur une station spatiale imaginaire, avec profondeur et perspective continues.', 56, 317, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-portal-cosmos', 'img-portal-cosmos', '/portal-cosmos', 'Portail vers le cosmos', 'portal-cosmos', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'Une porte ordinaire ouvre sur une station spatiale imaginaire, avec profondeur et perspective continues.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['portail vers le cosmos', 'vfx espace et gravite', 'creations et vfx']::text[], 'Portail vers le cosmos | RaccourcIA', 'Une porte ordinaire ouvre sur une station spatiale imaginaire, avec profondeur et perspective continues.', 56, 317, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-portal-cosmos',
   command = '/portal-cosmos',
@@ -561,7 +561,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'portal-cosmos',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'Une porte ordinaire ouvre sur une station spatiale imaginaire, avec profondeur et perspective continues.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -587,7 +587,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-sol-liquide', 'img-sol-liquide', '/sol-liquide', 'Sol liquide', 'sol-liquide', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-espace-et-gravite'), 'Le sol devient une surface réfléchissante ondulée sous les pieds ; la personne conserve son apparence.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['sol liquide', 'vfx espace et gravite', 'creations et vfx']::text[], 'Sol liquide | RaccourcIA', 'Le sol devient une surface réfléchissante ondulée sous les pieds ; la personne conserve son apparence.', 42, 318, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-sol-liquide', 'img-sol-liquide', '/sol-liquide', 'Sol liquide', 'sol-liquide', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'espace-et-gravite'), 'Le sol devient une surface réfléchissante ondulée sous les pieds ; la personne conserve son apparence.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-espace-et-gravite', 'creations-et-vfx', 'commande-image']::text[], array['sol liquide', 'vfx espace et gravite', 'creations et vfx']::text[], 'Sol liquide | RaccourcIA', 'Le sol devient une surface réfléchissante ondulée sous les pieds ; la personne conserve son apparence.', 42, 318, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-sol-liquide',
   command = '/sol-liquide',
@@ -595,7 +595,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'sol-liquide',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-espace-et-gravite'),
+  category_id = (select id from public.categories where slug = 'espace-et-gravite'),
   short_description = 'Le sol devient une surface réfléchissante ondulée sous les pieds ; la personne conserve son apparence.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -621,7 +621,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-aurore', 'img-aurore', '/aurore', 'Voile d’aurore', 'aurore', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Des rubans verts et violets occupent le ciel et produisent une lumière nocturne douce autour du sujet.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['voile daurore', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Voile d’aurore | RaccourcIA', 'Des rubans verts et violets occupent le ciel et produisent une lumière nocturne douce autour du sujet.', 52, 319, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-aurore', 'img-aurore', '/aurore', 'Voile d’aurore', 'aurore', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Des rubans verts et violets occupent le ciel et produisent une lumière nocturne douce autour du sujet.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['voile daurore', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Voile d’aurore | RaccourcIA', 'Des rubans verts et violets occupent le ciel et produisent une lumière nocturne douce autour du sujet.', 52, 319, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-aurore',
   command = '/aurore',
@@ -629,7 +629,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'aurore',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Des rubans verts et violets occupent le ciel et produisent une lumière nocturne douce autour du sujet.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -655,7 +655,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-anaglyphe', 'img-anaglyphe', '/anaglyphe', 'Décalage anaglyphe', 'anaglyphe', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Les contours rouges et cyan se décalent autour du sujet pour un effet graphique rétro en image fixe.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['decalage anaglyphe', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Décalage anaglyphe | RaccourcIA', 'Les contours rouges et cyan se décalent autour du sujet pour un effet graphique rétro en image fixe.', 35, 320, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-anaglyphe', 'img-anaglyphe', '/anaglyphe', 'Décalage anaglyphe', 'anaglyphe', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Les contours rouges et cyan se décalent autour du sujet pour un effet graphique rétro en image fixe.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['decalage anaglyphe', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Décalage anaglyphe | RaccourcIA', 'Les contours rouges et cyan se décalent autour du sujet pour un effet graphique rétro en image fixe.', 35, 320, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-anaglyphe',
   command = '/anaglyphe',
@@ -663,7 +663,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'anaglyphe',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Les contours rouges et cyan se décalent autour du sujet pour un effet graphique rétro en image fixe.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -689,7 +689,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-thermalview', 'img-thermalview', '/thermalview', 'Effet caméra thermique', 'thermalview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Un rendu en fausses couleurs évoque une caméra thermique ; aucune température réelle n’en est déduite.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['effet camera thermique', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Effet caméra thermique | RaccourcIA', 'Un rendu en fausses couleurs évoque une caméra thermique ; aucune température réelle n’en est déduite.', 35, 321, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-thermalview', 'img-thermalview', '/thermalview', 'Effet caméra thermique', 'thermalview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Un rendu en fausses couleurs évoque une caméra thermique ; aucune température réelle n’en est déduite.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['effet camera thermique', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Effet caméra thermique | RaccourcIA', 'Un rendu en fausses couleurs évoque une caméra thermique ; aucune température réelle n’en est déduite.', 35, 321, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-thermalview',
   command = '/thermalview',
@@ -697,7 +697,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'thermalview',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Un rendu en fausses couleurs évoque une caméra thermique ; aucune température réelle n’en est déduite.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -723,7 +723,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-laser-grid', 'img-laser-grid', '/laser-grid', 'Grille laser', 'laser-grid', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Des faisceaux fins traversent un espace brumeux autour du sujet avec une profondeur et des occlusions cohérentes.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['grille laser', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Grille laser | RaccourcIA', 'Des faisceaux fins traversent un espace brumeux autour du sujet avec une profondeur et des occlusions cohérentes.', 35, 322, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-laser-grid', 'img-laser-grid', '/laser-grid', 'Grille laser', 'laser-grid', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Des faisceaux fins traversent un espace brumeux autour du sujet avec une profondeur et des occlusions cohérentes.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['grille laser', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Grille laser | RaccourcIA', 'Des faisceaux fins traversent un espace brumeux autour du sujet avec une profondeur et des occlusions cohérentes.', 35, 322, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-laser-grid',
   command = '/laser-grid',
@@ -731,7 +731,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'laser-grid',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Des faisceaux fins traversent un espace brumeux autour du sujet avec une profondeur et des occlusions cohérentes.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -757,7 +757,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-halo-electrique', 'img-halo-electrique', '/halo-electrique', 'Halo électrique', 'halo-electrique', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Des arcs bleus dessinent une couronne derrière le sujet et éclairent ses contours sans masquer son visage.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['halo electrique', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Halo électrique | RaccourcIA', 'Des arcs bleus dessinent une couronne derrière le sujet et éclairent ses contours sans masquer son visage.', 52, 323, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-halo-electrique', 'img-halo-electrique', '/halo-electrique', 'Halo électrique', 'halo-electrique', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Des arcs bleus dessinent une couronne derrière le sujet et éclairent ses contours sans masquer son visage.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['halo electrique', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Halo électrique | RaccourcIA', 'Des arcs bleus dessinent une couronne derrière le sujet et éclairent ses contours sans masquer son visage.', 52, 323, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-halo-electrique',
   command = '/halo-electrique',
@@ -765,7 +765,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'halo-electrique',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Des arcs bleus dessinent une couronne derrière le sujet et éclairent ses contours sans masquer son visage.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -791,7 +791,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-caustiques', 'img-caustiques', '/caustiques', 'Lumière d’eau', 'caustiques', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Des motifs lumineux évoquant les reflets d’une piscine parcourent la peau et le fond.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['lumiere deau', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Lumière d’eau | RaccourcIA', 'Des motifs lumineux évoquant les reflets d’une piscine parcourent la peau et le fond.', 52, 324, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-caustiques', 'img-caustiques', '/caustiques', 'Lumière d’eau', 'caustiques', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Des motifs lumineux évoquant les reflets d’une piscine parcourent la peau et le fond.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['lumiere deau', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Lumière d’eau | RaccourcIA', 'Des motifs lumineux évoquant les reflets d’une piscine parcourent la peau et le fond.', 52, 324, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-caustiques',
   command = '/caustiques',
@@ -799,7 +799,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'caustiques',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Des motifs lumineux évoquant les reflets d’une piscine parcourent la peau et le fond.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -825,7 +825,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-prisme', 'img-prisme', '/prisme', 'Prisme chromatique', 'prisme', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Un prisme disperse la lumière en bandes colorées sur une partie du portrait, avec un visage principal net.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['prisme chromatique', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Prisme chromatique | RaccourcIA', 'Un prisme disperse la lumière en bandes colorées sur une partie du portrait, avec un visage principal net.', 55, 325, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-prisme', 'img-prisme', '/prisme', 'Prisme chromatique', 'prisme', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Un prisme disperse la lumière en bandes colorées sur une partie du portrait, avec un visage principal net.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['prisme chromatique', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Prisme chromatique | RaccourcIA', 'Un prisme disperse la lumière en bandes colorées sur une partie du portrait, avec un visage principal net.', 55, 325, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-prisme',
   command = '/prisme',
@@ -833,7 +833,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'prisme',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Un prisme disperse la lumière en bandes colorées sur une partie du portrait, avec un visage principal net.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -859,7 +859,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-scan-neon', 'img-scan-neon', '/scan-neon', 'Scan néon', 'scan-neon', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Une ligne lumineuse traverse le sujet et révèle une silhouette technique imaginaire, sans prétention de mesure.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['scan neon', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Scan néon | RaccourcIA', 'Une ligne lumineuse traverse le sujet et révèle une silhouette technique imaginaire, sans prétention de mesure.', 52, 326, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-scan-neon', 'img-scan-neon', '/scan-neon', 'Scan néon', 'scan-neon', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Une ligne lumineuse traverse le sujet et révèle une silhouette technique imaginaire, sans prétention de mesure.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['scan neon', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Scan néon | RaccourcIA', 'Une ligne lumineuse traverse le sujet et révèle une silhouette technique imaginaire, sans prétention de mesure.', 52, 326, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-scan-neon',
   command = '/scan-neon',
@@ -867,7 +867,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'scan-neon',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Une ligne lumineuse traverse le sujet et révèle une silhouette technique imaginaire, sans prétention de mesure.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -893,7 +893,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-verre-suspendu', 'img-verre-suspendu', '/verre-suspendu', 'Verre suspendu', 'verre-suspendu', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Des fragments de verre flottent autour d’un portrait avec reflets cohérents, sans contact avec le corps.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['verre suspendu', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Verre suspendu | RaccourcIA', 'Des fragments de verre flottent autour d’un portrait avec reflets cohérents, sans contact avec le corps.', 38, 327, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-verre-suspendu', 'img-verre-suspendu', '/verre-suspendu', 'Verre suspendu', 'verre-suspendu', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Des fragments de verre flottent autour d’un portrait avec reflets cohérents, sans contact avec le corps.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['verre suspendu', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Verre suspendu | RaccourcIA', 'Des fragments de verre flottent autour d’un portrait avec reflets cohérents, sans contact avec le corps.', 38, 327, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-verre-suspendu',
   command = '/verre-suspendu',
@@ -901,7 +901,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'verre-suspendu',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Des fragments de verre flottent autour d’un portrait avec reflets cohérents, sans contact avec le corps.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -927,7 +927,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-vision-nocturne', 'img-vision-nocturne', '/vision-nocturne', 'Vision nocturne', 'vision-nocturne', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-lumiere-et-optique'), 'Une image prend les codes verts, granuleux et contrastés d’une vision nocturne simulée.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['vision nocturne', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Vision nocturne | RaccourcIA', 'Une image prend les codes verts, granuleux et contrastés d’une vision nocturne simulée.', 35, 328, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-vision-nocturne', 'img-vision-nocturne', '/vision-nocturne', 'Vision nocturne', 'vision-nocturne', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'lumiere-et-optique'), 'Une image prend les codes verts, granuleux et contrastés d’une vision nocturne simulée.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-lumiere-et-optique', 'creations-et-vfx', 'commande-image']::text[], array['vision nocturne', 'vfx lumiere et optique', 'creations et vfx']::text[], 'Vision nocturne | RaccourcIA', 'Une image prend les codes verts, granuleux et contrastés d’une vision nocturne simulée.', 35, 328, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-vision-nocturne',
   command = '/vision-nocturne',
@@ -935,7 +935,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'vision-nocturne',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-lumiere-et-optique'),
+  category_id = (select id from public.categories where slug = 'lumiere-et-optique'),
   short_description = 'Une image prend les codes verts, granuleux et contrastés d’une vision nocturne simulée.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -961,7 +961,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-chrome-ailes', 'img-chrome-ailes', '/chrome-ailes', 'Ailes de chrome', 'chrome-ailes', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'Deux ailes sculpturales réfléchissantes prolongent la silhouette, avec les reflets du même décor.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['ailes de chrome', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Ailes de chrome | RaccourcIA', 'Deux ailes sculpturales réfléchissantes prolongent la silhouette, avec les reflets du même décor.', 51, 329, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-chrome-ailes', 'img-chrome-ailes', '/chrome-ailes', 'Ailes de chrome', 'chrome-ailes', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'Deux ailes sculpturales réfléchissantes prolongent la silhouette, avec les reflets du même décor.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['ailes de chrome', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Ailes de chrome | RaccourcIA', 'Deux ailes sculpturales réfléchissantes prolongent la silhouette, avec les reflets du même décor.', 51, 329, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-chrome-ailes',
   command = '/chrome-ailes',
@@ -969,7 +969,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'chrome-ailes',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'Deux ailes sculpturales réfléchissantes prolongent la silhouette, avec les reflets du même décor.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -995,7 +995,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-magnetisme', 'img-magnetisme', '/magnetisme', 'Champ magnétique', 'magnetisme', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'De petites pièces métalliques forment deux orbites elliptiques autour du sujet.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['champ magnetique', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Champ magnétique | RaccourcIA', 'De petites pièces métalliques forment deux orbites elliptiques autour du sujet.', 34, 330, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-magnetisme', 'img-magnetisme', '/magnetisme', 'Champ magnétique', 'magnetisme', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'De petites pièces métalliques forment deux orbites elliptiques autour du sujet.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['champ magnetique', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Champ magnétique | RaccourcIA', 'De petites pièces métalliques forment deux orbites elliptiques autour du sujet.', 34, 330, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-magnetisme',
   command = '/magnetisme',
@@ -1003,7 +1003,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'magnetisme',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'De petites pièces métalliques forment deux orbites elliptiques autour du sujet.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1029,7 +1029,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-sable-dissipation', 'img-sable-dissipation', '/sable-dissipation', 'Dissipation en sable', 'sable-dissipation', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'Le bord d’un vêtement ou d’un objet se disperse en grains dorés portés dans une même direction.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['dissipation en sable', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Dissipation en sable | RaccourcIA', 'Le bord d’un vêtement ou d’un objet se disperse en grains dorés portés dans une même direction.', 48, 331, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-sable-dissipation', 'img-sable-dissipation', '/sable-dissipation', 'Dissipation en sable', 'sable-dissipation', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'Le bord d’un vêtement ou d’un objet se disperse en grains dorés portés dans une même direction.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['dissipation en sable', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Dissipation en sable | RaccourcIA', 'Le bord d’un vêtement ou d’un objet se disperse en grains dorés portés dans une même direction.', 48, 331, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-sable-dissipation',
   command = '/sable-dissipation',
@@ -1037,7 +1037,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'sable-dissipation',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'Le bord d’un vêtement ou d’un objet se disperse en grains dorés portés dans une même direction.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1063,7 +1063,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-pixel-spill', 'img-pixel-spill', '/pixel-spill', 'Débordement de pixels', 'pixel-spill', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'Une bordure du sujet se transforme progressivement en cubes lumineux, du détail réaliste au voxel.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['debordement de pixels', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Débordement de pixels | RaccourcIA', 'Une bordure du sujet se transforme progressivement en cubes lumineux, du détail réaliste au voxel.', 51, 332, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-pixel-spill', 'img-pixel-spill', '/pixel-spill', 'Débordement de pixels', 'pixel-spill', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'Une bordure du sujet se transforme progressivement en cubes lumineux, du détail réaliste au voxel.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['debordement de pixels', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Débordement de pixels | RaccourcIA', 'Une bordure du sujet se transforme progressivement en cubes lumineux, du détail réaliste au voxel.', 51, 332, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-pixel-spill',
   command = '/pixel-spill',
@@ -1071,7 +1071,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'pixel-spill',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'Une bordure du sujet se transforme progressivement en cubes lumineux, du détail réaliste au voxel.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1097,7 +1097,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-mousse-pop', 'img-mousse-pop', '/mousse-pop', 'Explosion de mousse', 'mousse-pop', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'Une mousse pastel aux grosses bulles est figée derrière le sujet dans un éclairage de studio.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['explosion de mousse', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Explosion de mousse | RaccourcIA', 'Une mousse pastel aux grosses bulles est figée derrière le sujet dans un éclairage de studio.', 34, 333, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-mousse-pop', 'img-mousse-pop', '/mousse-pop', 'Explosion de mousse', 'mousse-pop', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'Une mousse pastel aux grosses bulles est figée derrière le sujet dans un éclairage de studio.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['explosion de mousse', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Explosion de mousse | RaccourcIA', 'Une mousse pastel aux grosses bulles est figée derrière le sujet dans un éclairage de studio.', 34, 333, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-mousse-pop',
   command = '/mousse-pop',
@@ -1105,7 +1105,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'mousse-pop',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'Une mousse pastel aux grosses bulles est figée derrière le sujet dans un éclairage de studio.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1131,7 +1131,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-floraison', 'img-floraison', '/floraison', 'Floraison instantanée', 'floraison', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'Des fleurs émergent d’un vêtement ou d’un accessoire, sans altération du visage ni du corps.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['floraison instantanee', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Floraison instantanée | RaccourcIA', 'Des fleurs émergent d’un vêtement ou d’un accessoire, sans altération du visage ni du corps.', 51, 334, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-floraison', 'img-floraison', '/floraison', 'Floraison instantanée', 'floraison', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'Des fleurs émergent d’un vêtement ou d’un accessoire, sans altération du visage ni du corps.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['floraison instantanee', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Floraison instantanée | RaccourcIA', 'Des fleurs émergent d’un vêtement ou d’un accessoire, sans altération du visage ni du corps.', 51, 334, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-floraison',
   command = '/floraison',
@@ -1139,7 +1139,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'floraison',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'Des fleurs émergent d’un vêtement ou d’un accessoire, sans altération du visage ni du corps.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1165,7 +1165,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fumee-coloree', 'img-fumee-coloree', '/fumee-coloree', 'Fumée sculptée', 'fumee-coloree', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'Deux volutes colorées encadrent la silhouette sur un fond sobre ; le point focal reste dégagé.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['fumee sculptee', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Fumée sculptée | RaccourcIA', 'Deux volutes colorées encadrent la silhouette sur un fond sobre ; le point focal reste dégagé.', 51, 335, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-fumee-coloree', 'img-fumee-coloree', '/fumee-coloree', 'Fumée sculptée', 'fumee-coloree', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'Deux volutes colorées encadrent la silhouette sur un fond sobre ; le point focal reste dégagé.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['fumee sculptee', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Fumée sculptée | RaccourcIA', 'Deux volutes colorées encadrent la silhouette sur un fond sobre ; le point focal reste dégagé.', 51, 335, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fumee-coloree',
   command = '/fumee-coloree',
@@ -1173,7 +1173,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'fumee-coloree',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'Deux volutes colorées encadrent la silhouette sur un fond sobre ; le point focal reste dégagé.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1199,7 +1199,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-inkcloud', 'img-inkcloud', '/inkcloud', 'Nuage d’encre', 'inkcloud', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'Un produit est entouré de volutes cyan et magenta évoquant l’encre dans l’eau ; sa silhouette reste lisible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['nuage dencre', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Nuage d’encre | RaccourcIA', 'Un produit est entouré de volutes cyan et magenta évoquant l’encre dans l’eau ; sa silhouette reste lisible.', 37, 336, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-inkcloud', 'img-inkcloud', '/inkcloud', 'Nuage d’encre', 'inkcloud', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'Un produit est entouré de volutes cyan et magenta évoquant l’encre dans l’eau ; sa silhouette reste lisible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['nuage dencre', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Nuage d’encre | RaccourcIA', 'Un produit est entouré de volutes cyan et magenta évoquant l’encre dans l’eau ; sa silhouette reste lisible.', 37, 336, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-inkcloud',
   command = '/inkcloud',
@@ -1207,7 +1207,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'inkcloud',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'Un produit est entouré de volutes cyan et magenta évoquant l’encre dans l’eau ; sa silhouette reste lisible.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1233,7 +1233,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-papillons-lumiere', 'img-papillons-lumiere', '/papillons-lumiere', 'Papillons lumineux', 'papillons-lumiere', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'Un essaim de papillons translucides et lumineux accompagne le sujet dans une scène onirique.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['papillons lumineux', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Papillons lumineux | RaccourcIA', 'Un essaim de papillons translucides et lumineux accompagne le sujet dans une scène onirique.', 51, 337, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-papillons-lumiere', 'img-papillons-lumiere', '/papillons-lumiere', 'Papillons lumineux', 'papillons-lumiere', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'Un essaim de papillons translucides et lumineux accompagne le sujet dans une scène onirique.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['papillons lumineux', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Papillons lumineux | RaccourcIA', 'Un essaim de papillons translucides et lumineux accompagne le sujet dans une scène onirique.', 51, 337, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-papillons-lumiere',
   command = '/papillons-lumiere',
@@ -1241,7 +1241,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'papillons-lumiere',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'Un essaim de papillons translucides et lumineux accompagne le sujet dans une scène onirique.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1267,7 +1267,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-rubans-satin', 'img-rubans-satin', '/rubans-satin', 'Tempête de satin', 'rubans-satin', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'), 'Des rubans brillants s’enroulent dans l’espace autour du sujet avec plis, profondeur et reflets doux.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['tempete de satin', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Tempête de satin | RaccourcIA', 'Des rubans brillants s’enroulent dans l’espace autour du sujet avec plis, profondeur et reflets doux.', 34, 338, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-rubans-satin', 'img-rubans-satin', '/rubans-satin', 'Tempête de satin', 'rubans-satin', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'particules-et-metamorphoses'), 'Des rubans brillants s’enroulent dans l’espace autour du sujet avec plis, profondeur et reflets doux.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-particules-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['tempete de satin', 'vfx particules et metamorphoses', 'creations et vfx']::text[], 'Tempête de satin | RaccourcIA', 'Des rubans brillants s’enroulent dans l’espace autour du sujet avec plis, profondeur et reflets doux.', 34, 338, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-rubans-satin',
   command = '/rubans-satin',
@@ -1275,7 +1275,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'rubans-satin',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-particules-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'particules-et-metamorphoses'),
   short_description = 'Des rubans brillants s’enroulent dans l’espace autour du sujet avec plis, profondeur et reflets doux.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',

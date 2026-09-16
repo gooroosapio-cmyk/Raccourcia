@@ -2,6 +2,7 @@ import 'server-only';
 
 import { createClient } from '@/lib/supabase/server';
 import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
+import type { EntityType } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 /**
@@ -189,6 +190,12 @@ export type AdminPromptDetail = {
   externalRef: string | null;
   command: string;
   name: string;
+  /** Le genre d'experience. `null` pour un import anterieur au catalogue V2. */
+  entityType: EntityType | null;
+  /** Le personnage ou l'univers vise, quand la commande en vise un. */
+  univers: string | null;
+  /** Ce qu'on tape quand on ne connait pas le titre. */
+  searchKeywords: string[];
   slug: string;
   mode: Enums<'app_mode'>;
   status: Enums<'content_status'>;
@@ -226,6 +233,7 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
     .from('prompts')
     .select(
       `id, external_ref, command, name, slug, mode, status, category_id, short_description,
+       entity_type, univers, search_keywords,
        intention, use_cases, tags, show_image_card, is_free, is_featured, is_new,
        expected_input, limitations, admin_notes,
        result_summary, input_examples, output_formats,
@@ -251,6 +259,9 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
     status: Enums<'content_status'>;
     category_id: string | null;
     short_description: string;
+    entity_type: 'commande_image' | 'mode_ia' | 'parcours' | null;
+    univers: string | null;
+    search_keywords: string[] | null;
     intention: string | null;
     use_cases: string[];
     tags: string[];
@@ -283,6 +294,9 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
     status: row.status,
     categoryId: row.category_id,
     shortDescription: row.short_description,
+    entityType: row.entity_type,
+    univers: row.univers,
+    searchKeywords: row.search_keywords ?? [],
     intention: row.intention,
     useCases: row.use_cases ?? [],
     tags: row.tags ?? [],

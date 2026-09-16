@@ -213,11 +213,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-catalogset', 'img-catalogset', '/catalogset', 'Série packshot', 'catalogset', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Décline plusieurs produits avec cadrage et direction lumière identiques.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['serie packshot', 'photo produit', 'produit et e commerce']::text[], 'Série packshot | RaccourcIA', 'Décline plusieurs produits avec cadrage et direction lumière identiques.', 88, 407, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-catalogset', 'img-catalogset', '/catalogset', 'Série photo produit', 'catalogset', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Décline plusieurs produits avec cadrage et direction lumière identiques.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['serie packshot', 'photo produit', 'produit et e commerce']::text[], 'Série packshot | RaccourcIA', 'Décline plusieurs produits avec cadrage et direction lumière identiques.', 88, 407, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-catalogset',
   command = '/catalogset',
-  name = 'Série packshot',
+  name = 'Série photo produit',
   slug = 'catalogset',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -655,11 +655,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-workshopscene', 'img-workshopscene', '/workshopscene', 'Atelier', 'workshopscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Replace outil ou création dans un espace artisanal documenté.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['atelier', 'usage', 'produit et e commerce']::text[], 'Atelier | RaccourcIA', 'Replace outil ou création dans un espace artisanal documenté.', 88, 420, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-workshopscene', 'img-workshopscene', '/workshopscene', 'Scène d’atelier', 'workshopscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Replace outil ou création dans un espace artisanal documenté.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['atelier', 'usage', 'produit et e commerce']::text[], 'Atelier | RaccourcIA', 'Replace outil ou création dans un espace artisanal documenté.', 88, 420, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-workshopscene',
   command = '/workshopscene',
-  name = 'Atelier',
+  name = 'Scène d’atelier',
   slug = 'workshopscene',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -723,11 +723,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-giftscene', 'img-giftscene', '/giftscene', 'Cadeau', 'giftscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Transforme le produit en présent avec ruban, carte et décor adaptés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['cadeau', 'usage', 'produit et e commerce']::text[], 'Cadeau | RaccourcIA', 'Transforme le produit en présent avec ruban, carte et décor adaptés.', 88, 422, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-giftscene', 'img-giftscene', '/giftscene', 'Produit en cadeau', 'giftscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Transforme le produit en présent avec ruban, carte et décor adaptés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['cadeau', 'usage', 'produit et e commerce']::text[], 'Cadeau | RaccourcIA', 'Transforme le produit en présent avec ruban, carte et décor adaptés.', 88, 422, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-giftscene',
   command = '/giftscene',
-  name = 'Cadeau',
+  name = 'Produit en cadeau',
   slug = 'giftscene',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -757,11 +757,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-unboxingmoment', 'img-unboxingmoment', '/unboxingmoment', 'Déballage', 'unboxingmoment', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Montre emballage ouvert, contenu et accessoires dans un instant de découverte.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['deballage', 'usage', 'produit et e commerce']::text[], 'Déballage | RaccourcIA', 'Montre emballage ouvert, contenu et accessoires dans un instant de découverte.', 88, 423, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-unboxingmoment', 'img-unboxingmoment', '/unboxingmoment', 'Scène de déballage', 'unboxingmoment', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Montre emballage ouvert, contenu et accessoires dans un instant de découverte.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['deballage', 'usage', 'produit et e commerce']::text[], 'Déballage | RaccourcIA', 'Montre emballage ouvert, contenu et accessoires dans un instant de découverte.', 88, 423, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-unboxingmoment',
   command = '/unboxingmoment',
-  name = 'Déballage',
+  name = 'Scène de déballage',
   slug = 'unboxingmoment',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -927,11 +927,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-picnicscene', 'img-picnicscene', '/picnicscene', 'Pique-nique', 'picnicscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Met en scène aliments ou accessoires dans une composition conviviale.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['pique nique', 'usage', 'produit et e commerce']::text[], 'Pique-nique | RaccourcIA', 'Met en scène aliments ou accessoires dans une composition conviviale.', 88, 428, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-picnicscene', 'img-picnicscene', '/picnicscene', 'Scène de pique-nique', 'picnicscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Met en scène aliments ou accessoires dans une composition conviviale.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['pique nique', 'usage', 'produit et e commerce']::text[], 'Pique-nique | RaccourcIA', 'Met en scène aliments ou accessoires dans une composition conviviale.', 88, 428, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-picnicscene',
   command = '/picnicscene',
-  name = 'Pique-nique',
+  name = 'Scène de pique-nique',
   slug = 'picnicscene',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',

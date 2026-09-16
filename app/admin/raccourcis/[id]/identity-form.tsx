@@ -12,6 +12,8 @@ import {
   AdminToggle,
 } from '@/components/ui/admin-form';
 import {
+  ENTITY_TYPES,
+  ENTITY_TYPE_LABELS,
   INPUT_EXAMPLE_KINDS,
   INPUT_EXAMPLE_LABELS,
   MODES,
@@ -53,8 +55,23 @@ export function PromptIdentityForm({
     <form action={action} className="space-y-4">
       <input type="hidden" name="promptId" value={prompt.id} />
 
-      <AdminField label="Commande" name="command" defaultValue={prompt.command} />
-      <AdminField label="Titre" name="name" defaultValue={prompt.name} />
+      {/* L'alias technique et le titre public sont deux choses : le premier
+          se tape dans une IA et ne bouge plus une fois partage, le second se
+          lit dans la galerie et se reecrit quand il ne nomme pas le
+          resultat. Les confondre obligerait a casser des liens pour
+          corriger un mot. */}
+      <AdminField
+        label="Alias technique"
+        name="command"
+        defaultValue={prompt.command}
+        hint="Ce qui se tape et se partage. Le changer casse les liens déjà diffusés."
+      />
+      <AdminField
+        label="Titre public"
+        name="name"
+        defaultValue={prompt.name}
+        hint="Deux à cinq mots qui nomment le résultat. Se réécrit librement."
+      />
       <AdminTextarea
         label="Description courte"
         name="shortDescription"
@@ -62,6 +79,26 @@ export function PromptIdentityForm({
         rows={2}
         hint="Une phrase orientee résultat, visible sur la carte."
       />
+
+      {/* Le genre decide du verbe des boutons et du repere de la carte : on
+          active un mode, on commence un parcours, on utilise un prompt. */}
+      <label className="block">
+        <span className="text-[13px] font-medium text-[color:var(--color-night)]">
+          Type de contenu
+        </span>
+        <select
+          name="entityType"
+          defaultValue={prompt.entityType ?? ''}
+          className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
+        >
+          <option value="">Non précisé</option>
+          {ENTITY_TYPES.map((type) => (
+            <option key={type} value={type}>
+              {ENTITY_TYPE_LABELS[type]}
+            </option>
+          ))}
+        </select>
+      </label>
 
       <label className="block">
         <span className="text-[13px] font-medium text-[color:var(--color-night)]">Mode</span>
@@ -140,6 +177,25 @@ export function PromptIdentityForm({
         defaultValue={prompt.tags.join('; ')}
         rows={2}
         hint="Separes par un point-virgule."
+      />
+      {/* Ce qu'on tape quand on ne connait pas le titre : ancien nom,
+          orthographe approchante, mot du langage courant. La recherche les
+          lit depuis la refonte — avant, ils etaient ecrits et ignores. */}
+      <AdminTextarea
+        label="Synonymes de recherche"
+        name="searchKeywords"
+        defaultValue={prompt.searchKeywords.join('; ')}
+        rows={2}
+        hint="Séparés par un point-virgule. Anciens noms, variantes d’orthographe, mots courants."
+      />
+      {/* Le personnage ou l'univers vise, quand la commande en vise un.
+          Il rend la commande trouvable par ce nom ; il ne revendique aucun
+          partenariat, et le texte de la commande ne doit pas en suggerer un. */}
+      <AdminField
+        label="Personnage ou univers"
+        name="univers"
+        defaultValue={prompt.univers ?? ''}
+        hint="Laisser vide si la commande ne vise personne en particulier."
       />
       <AdminTextarea
         label="Conseil d’utilisation"

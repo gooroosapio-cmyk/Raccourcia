@@ -466,6 +466,7 @@ export type Database = {
           thumbnail_spec: string | null;
           updated_at: string;
           updated_by: string | null;
+          univers: string | null;
           use_cases: string[];
           witness_type: string | null;
         };
@@ -477,6 +478,7 @@ export type Database = {
           cta_label?: string | null;
           default_ratio?: string | null;
           entity_type?: string | null;
+          univers?: string | null;
           identity_policy?: string | null;
           images_max?: number | null;
           images_min?: number | null;
@@ -522,6 +524,7 @@ export type Database = {
           short_description: string;
           intention: string | null;
           text_in_image_policy?: string | null;
+          univers: string | null;
           use_cases: string[];
           tags: string[];
           category_id: string | null;

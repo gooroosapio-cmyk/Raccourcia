@@ -1,7 +1,8 @@
 'use client';
 
 import { Fragment, useCallback, useState, type ReactNode } from 'react';
-import { CarteFeed } from '@/components/feed/carte-feed';
+import { ImagePromptCard } from '@/components/cards/image-prompt-card';
+import { TextPromptCard } from '@/components/cards/text-prompt-card';
 import { PromptDetailSheet } from '@/components/detail/prompt-detail';
 import { openPaywall } from '@/components/paywall/paywall-provider';
 import { trackPromptView } from '@/lib/actions/catalog';
@@ -9,21 +10,30 @@ import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
- * Le feed de decouverte, et la fiche qu'il ouvre.
+ * La galerie de decouverte, et la fiche qu'elle ouvre.
+ *
+ * Deux colonnes, et la meme carte que partout ailleurs. Le feed montrait une
+ * carte pleine largeur par idee : visuel, sur-titre, titre, description sur
+ * deux lignes, trois reperes et un bouton — soit un ecran entier pour une
+ * seule proposition. On ne decouvrait rien, on faisait defiler.
  *
  * Meme mecanique que la grille : l'etat de la fiche vit ici, donc l'ouvrir
- * puis la fermer ne retouche jamais le feed — le defilement reste ou il
+ * puis la fermer ne retouche jamais la galerie — le defilement reste ou il
  * etait, ce qui compte d'autant plus dans une liste qu'on parcourt longtemps.
  *
- * Le feed s'allonge par paliers plutot que d'arriver entier. Soixante cartes
- * pleine largeur, ce sont soixante images : les charger d'un coup sur un
- * reseau lent revient a ne rien afficher pendant plusieurs secondes.
+ * La galerie s'allonge par paliers plutot que d'arriver entiere : soixante
+ * vignettes chargees d'un coup sur un reseau mobile reviennent a ne rien
+ * afficher pendant plusieurs secondes.
+ *
+ * Vingt-quatre, soit douze rangees de deux : le bouton arrivait deux fois
+ * trop tot. On le rencontrait avant d'avoir eu le temps de regarder, et une
+ * galerie qu'on interrompt tous les six gestes n'est plus une galerie.
  */
-const PALIER = 8;
+const PALIER = 24;
 
 /**
- * Ce qui s'intercale entre deux cartes : une reprise, une invitation a
- * ouvrir un mode IA. `apres` compte les cartes reellement affichees, donc un
+ * Ce qui s'intercale entre deux cartes : une reprise, une invitation a ouvrir
+ * un rayon. `apres` compte les cartes reellement affichees, donc un
  * intercalaire pose trop loin attend le palier suivant plutot que de remonter.
  */
 export type Intercalaire = { cle: string; apres: number; noeud: ReactNode };
@@ -63,24 +73,41 @@ export function FeedDecouverte({
 
   return (
     <>
-      <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-2 items-start gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
         {visibles.map((prompt, index) => {
           const verrouille = locked && !prompt.isFree;
           const apres = intercalaires.filter((element) => element.apres === index + 1);
+          const commun = {
+            prompt,
+            provider,
+            locked: verrouille,
+            free: locked && prompt.isFree,
+            masque: visiteur && verrouille,
+            visiteur,
+            onOpen: ouvrir,
+          };
+
           return (
             <Fragment key={prompt.id}>
-              <CarteFeed
-                prompt={prompt}
-                locked={verrouille}
-                free={locked && prompt.isFree}
-                visiteur={visiteur}
-                // Seule la premiere carte est prioritaire : c'est la seule
-                // certaine d'etre a l'ecran au chargement.
-                priority={index === 0}
-                onOpen={ouvrir}
-              />
+              {prompt.showImageCard ? (
+                <ImagePromptCard
+                  {...commun}
+                  // Les quatre premieres vignettes seulement : sur deux
+                  // colonnes, un telephone en montre deux rangees avant le
+                  // premier defilement.
+                  priority={index < 4}
+                />
+              ) : (
+                <TextPromptCard {...commun} />
+              )}
+
+              {/* Un intercalaire traverse les deux colonnes : pose dans une
+                  seule, il decalerait toute la suite de la galerie d'un cran
+                  et casserait l'alternance des rayons. */}
               {apres.map((element) => (
-                <div key={element.cle}>{element.noeud}</div>
+                <div key={element.cle} className="col-span-2">
+                  {element.noeud}
+                </div>
               ))}
             </Fragment>
           );

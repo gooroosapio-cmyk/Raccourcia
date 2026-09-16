@@ -12,13 +12,13 @@ import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 /**
  * Liste des commandes et couche de detail.
  *
- * Deux colonnes sur mobile, trois sur tablette, quatre au maximum sur
- * ordinateur : la version large prolonge la version mobile, elle n'en invente
- * pas une autre.
- *
- * Deux colonnes des le telephone, parce qu'une seule ne montrait qu'une
- * commande par ecran sur un catalogue de trois cents. La gouttiere se resserre
+ * Deux colonnes, du telephone a l'ordinateur : la version large prolonge la
+ * version mobile, elle n'en invente pas une autre. La gouttiere se resserre
  * sur les ecrans les plus etroits plutot que de sacrifier une colonne.
+ *
+ * `items-start` plutot que des rangees etirees : une carte texte et une carte
+ * image n'ont pas toujours la meme hauteur, et etirer la plus courte laissait
+ * une bande vide sous son contenu.
  *
  * L'etat de la fiche vit ici : l'ouvrir puis la fermer ne retouche jamais la
  * liste, donc le defilement et les filtres restent exactement en place.
@@ -94,7 +94,12 @@ export function PromptGrid({
               // moitie. Les marges negatives font affleurer la rangee aux bords
               // de l'ecran, et le padding lui rend sa gouttiere.
               'rail -mx-5 flex snap-x snap-mandatory gap-2 px-5 pb-1 [&>*]:w-[42%] [&>*]:shrink-0 [&>*]:snap-start sm:[&>*]:w-[30%] lg:[&>*]:w-[22%]'
-            : 'grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)] sm:grid-cols-3 lg:grid-cols-4'
+            : // Deux colonnes partout, y compris sur ordinateur. Trois puis
+              // quatre colonnes reduisaient chaque resultat a une vignette de
+              // 200 px sur un grand ecran : la galerie devenait une planche
+              // contact. La largeur de lecture de la coquille borne la taille
+              // des cartes, elles ne deviennent pas des affiches pour autant.
+              'grid grid-cols-2 items-start gap-2 min-[400px]:gap-[var(--gouttiere-carte)]'
         }
       >
         {prompts.map((prompt, index) => {

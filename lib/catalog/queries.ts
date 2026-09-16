@@ -152,6 +152,15 @@ export const getCategories = cache(async (mode: Enums<'app_mode'>): Promise<Cate
  * dans l'ordre du catalogue qui en porte un. Le catalogue V2 arrive sans
  * images : la plupart des tuiles n'en auront pas, et l'ecran le prevoit.
  */
+/**
+ * Combien d'apercus composent une couverture.
+ *
+ * Trois : un grand a gauche, deux petits a droite. Au-dela, chaque vignette
+ * devient trop petite pour qu'on y reconnaisse quoi que ce soit sur un ecran
+ * de 360 px, ou une tuile fait 170 px de large.
+ */
+const APERCUS_PAR_COUVERTURE = 3;
+
 export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
   const supabase = await createClient();
 
@@ -179,34 +188,69 @@ export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
 
   const lignes = rayons ?? [];
 
-  // Ce que chaque rayon contient, et la premiere image qu'on y trouve.
+  // Ce que chaque rayon contient, et les premieres images qu'on y trouve.
+  //
+  // Trois et non une : une couverture faite d'un seul visuel ne dit rien de
+  // ce qu'il y a derriere, et deux rayons voisins peuvent tomber sur la meme.
+  // Trois apercus reellement tires de la collection en montrent la variete —
+  // et rendent la collision beaucoup moins probable.
   const comptes = new Map<string, number>();
-  const visuels = new Map<string, string>();
+  const visuels = new Map<string, string[]>();
   for (const commande of (commandes ?? []) as unknown as LigneVisuel[]) {
     if (!commande.category_id) continue;
     comptes.set(commande.category_id, (comptes.get(commande.category_id) ?? 0) + 1);
-    if (visuels.has(commande.category_id)) continue;
+    const deja = visuels.get(commande.category_id) ?? [];
+    if (deja.length >= APERCUS_PAR_COUVERTURE) continue;
     const media = (commande.prompt_media ?? [])
       .filter((m) => m.kind === 'after' || m.kind === 'thumbnail')
       .sort((a, b) => a.sort_order - b.sort_order)[0];
-    if (media) {
-      visuels.set(commande.category_id, urlVisuel(media.storage_path, LARGEURS_VISUEL.vignette));
-    }
+    if (!media) continue;
+    const url = urlVisuel(media.storage_path, LARGEURS_VISUEL.vignette);
+    if (deja.includes(url)) continue;
+    visuels.set(commande.category_id, [...deja, url]);
   }
+
+  // Ce qu'une couverture a deja pris, par grille.
+  //
+  // Deux familles qui montrent la meme image se lisent comme un doublon, meme
+  // quand leurs contenus n'ont rien a voir : c'etait le cas de « Produit et
+  // e-commerce » et de « Publicité et marque ». Le premier rayon dans l'ordre
+  // du catalogue garde l'image, le suivant descend a l'apercu d'apres.
+  //
+  // Une reserve par grille et non une seule : une famille et l'une de ses
+  // collections ne se regardent jamais cote a cote — la tuile de famille est
+  // en bibliotheque, ses collections a l'etage d'en dessous. Leur interdire
+  // la meme image priverait de couverture les collections d'une famille qui
+  // n'a qu'un seul visuel.
+  const reserver = (prises: Set<string>, candidates: string[]): string[] => {
+    const retenues = candidates.filter((url) => !prises.has(url)).slice(0, APERCUS_PAR_COUVERTURE);
+    // Plutot rien qu'une image deja vue a cote : la tuile typographique est un
+    // parti pris, un doublon est une erreur.
+    for (const url of retenues) prises.add(url);
+    return retenues;
+  };
+
+  const prisesParLesFamilles = new Set<string>();
 
   return (
     lignes
       .filter((rayon) => rayon.parent_id === null)
       .map((famille) => {
-        const collections = lignes
-          .filter((rayon) => rayon.parent_id === famille.id)
-          .map((collection) => ({
-            id: collection.id,
-            slug: collection.slug,
-            name: collection.name,
-            count: comptes.get(collection.id) ?? 0,
-            imageUrl: visuels.get(collection.id) ?? null,
-          }));
+        const enfants = lignes.filter((rayon) => rayon.parent_id === famille.id);
+
+        const apercusFamille = reserver(prisesParLesFamilles, [
+          ...(visuels.get(famille.id) ?? []),
+          ...enfants.flatMap((collection) => visuels.get(collection.id) ?? []),
+        ]);
+
+        const prisesParLesCollections = new Set<string>();
+        const collections = enfants.map((collection) => ({
+          id: collection.id,
+          slug: collection.slug,
+          name: collection.name,
+          count: comptes.get(collection.id) ?? 0,
+          apercus: reserver(prisesParLesCollections, visuels.get(collection.id) ?? []),
+        }));
 
         return {
           id: famille.id,
@@ -218,6 +262,7 @@ export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
           // toutes les taxonomies n'ont pas deux niveaux.
           count:
             (comptes.get(famille.id) ?? 0) + collections.reduce((total, c) => total + c.count, 0),
+          apercus: apercusFamille,
           collections,
         };
       })
@@ -229,11 +274,21 @@ export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
 /**
  * Colonnes du comptage.
  *
- * Rien que l'identifiant, plus les jointures sur lesquelles les filtres
- * portent. Une imbrication ne multiplie pas les lignes du niveau superieur :
- * `count=exact` compte bien les raccourcis, pas les variantes.
+ * Rien que l'identifiant, plus la jointure quand un filtre porte dessus. Une
+ * imbrication ne multiplie pas les lignes du niveau superieur : `count=exact`
+ * compte bien les raccourcis, pas les variantes.
+ *
+ * La jointure est **conditionnelle**, et c'est tout l'enjeu. Ecrite en dur,
+ * elle ne comptait que les commandes rattachees a un fournisseur : le
+ * catalogue V2 arrive sans variantes, la liste en montrait dix-huit et le
+ * total en annoncait deux. La lecture, elle, etait passee en jointure
+ * externe lors de la refonte — les deux requetes ne parlaient plus du meme
+ * catalogue. Une jointure sert un filtre ; sans le filtre, elle n'a rien a
+ * faire la.
  */
-const COUNT_COLUMNS = 'id, prompt_variants!inner(ai_providers!inner(key))';
+function colonnesDuComptage(filtreFournisseur: boolean): string {
+  return filtreFournisseur ? 'id, prompt_variants!inner(ai_providers!inner(key))' : 'id';
+}
 
 /** Colonnes publiques d'un raccourci. `payload` n'y figure jamais. */
 /**
@@ -590,11 +645,11 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   // annonce ne peut pas s'ecarter de la liste montree.
   const [lecture, comptage] = await Promise.all([
     request.range(from, from + pageSize),
-    // La jointure doit figurer aussi dans le comptage : le filtre porte sur
-    // `prompt_variants.ai_providers.key`, et sans l'imbrication PostgREST
-    // rejette la requete. L'erreur passait inapercue et le total retombait
-    // sur le nombre de cartes chargees — « 20 » quel que soit le catalogue.
-    construire(COUNT_COLUMNS, true),
+    // La jointure doit figurer dans le comptage quand — et seulement quand —
+    // le filtre porte sur `prompt_variants.ai_providers.key` : sans elle
+    // PostgREST rejette la requete, avec elle sans filtre le total oublie
+    // toutes les commandes sans variante.
+    construire(colonnesDuComptage(Boolean(query.provider)), true),
   ]);
 
   if (lecture.error) throw new CatalogUnavailableError(lecture.error);
@@ -885,6 +940,15 @@ export async function getVivierDuFeed(limite = 60): Promise<PromptCard[]> {
     .select(CARD_COLUMNS)
     .eq('status', 'published')
     .eq('media_ready', true)
+    // Ce qui est utilisable passe devant. Une commande sans texte a copier se
+    // regarde mais ne se lance pas : la laisser ouvrir la galerie revient a
+    // mettre en vitrine ce qu'on ne peut pas encore vendre.
+    //
+    // Devant, et non seule : le catalogue arrive par vagues et la plupart des
+    // textes manquent encore. Les exclure viderait l'Accueil, ce qui est pire
+    // qu'une carte qui dit franchement « Bientôt ». Elles restent donc
+    // atteignables, mais apres.
+    .order('payload_ready', { ascending: false })
     .order('is_featured', { ascending: false })
     .order('priority_score', { ascending: false, nullsFirst: false })
     .order('sort_order', { ascending: true })

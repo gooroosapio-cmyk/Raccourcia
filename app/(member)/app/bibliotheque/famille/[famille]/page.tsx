@@ -73,13 +73,9 @@ export default async function FamillePage({
         <h1 className="mt-1 text-[length:var(--texte-page)] font-bold leading-tight text-[color:var(--color-night)]">
           {famille.name}
         </h1>
-        <p className="mt-0.5 text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
-          {peuplees.length} collection{peuplees.length > 1 ? 's' : ''} · {famille.count} commande
-          {famille.count > 1 ? 's' : ''}
-        </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)] sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
         {montrees.map((collection) => (
           <CollectionTile key={collection.id} tile={collection} famille={famille.name} />
         ))}

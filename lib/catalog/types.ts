@@ -123,13 +123,16 @@ export type CollectionTile = {
   /** Combien de commandes publiees s'y trouvent. */
   count: number;
   /**
-   * Le visuel d'une commande de la collection, quand il y en a un.
+   * Un a trois apercus reellement tires de la collection, dans l'ordre du
+   * catalogue. Vide quand aucune de ses commandes n'a encore de visuel.
    *
-   * Le catalogue V2 arrive sans images : la plupart des tuiles n'en auront
-   * pas avant longtemps. L'ecran ne montre alors pas un cadre vide mais une
-   * tuile typographique — un parti pris, pas une panne.
+   * Plusieurs et non un seul : une couverture faite d'une image unique ne dit
+   * rien de ce qu'il y a derriere, et deux rayons voisins finissaient par
+   * montrer la meme. Le catalogue V2 arrive sans images, donc beaucoup de
+   * tuiles restent vides : l'ecran montre alors une tuile typographique — un
+   * parti pris, pas une panne.
    */
-  imageUrl: string | null;
+  apercus: string[];
 };
 
 /** Une famille de la Bibliotheque et ses collections. */
@@ -141,5 +144,7 @@ export type LibraryFamily = {
   mode: Enums<'app_mode'>;
   /** Total des commandes publiees de la famille, collections comprises. */
   count: number;
+  /** Les apercus de sa propre couverture, distincts de ceux des autres familles. */
+  apercus: string[];
   collections: CollectionTile[];
 };

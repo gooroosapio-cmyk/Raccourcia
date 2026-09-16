@@ -111,11 +111,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-packagingmockup', 'img-packagingmockup', '/packagingmockup', 'Mockup packaging', 'packagingmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Applique une identité graphique sur un emballage adapté au produit.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['mockup packaging', 'packaging', 'publicite et marque']::text[], 'Mockup packaging | RaccourcIA', 'Applique une identité graphique sur un emballage adapté au produit.', 86, 504, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-packagingmockup', 'img-packagingmockup', '/packagingmockup', 'Identité sur emballage', 'packagingmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Applique une identité graphique sur un emballage adapté au produit.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['mockup packaging', 'packaging', 'publicite et marque']::text[], 'Mockup packaging | RaccourcIA', 'Applique une identité graphique sur un emballage adapté au produit.', 86, 504, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-packagingmockup',
   command = '/packagingmockup',
-  name = 'Mockup packaging',
+  name = 'Identité sur emballage',
   slug = 'packagingmockup',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
@@ -145,11 +145,11 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-labelmockup', 'img-labelmockup', '/labelmockup', 'Mockup étiquette', 'labelmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Place une étiquette fournie en respectant courbure, matière et reflets.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['mockup etiquette', 'packaging', 'publicite et marque']::text[], 'Mockup étiquette | RaccourcIA', 'Place une étiquette fournie en respectant courbure, matière et reflets.', 86, 505, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-labelmockup', 'img-labelmockup', '/labelmockup', 'Étiquette sur produit', 'labelmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Place une étiquette fournie en respectant courbure, matière et reflets.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['mockup etiquette', 'packaging', 'publicite et marque']::text[], 'Mockup étiquette | RaccourcIA', 'Place une étiquette fournie en respectant courbure, matière et reflets.', 86, 505, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-labelmockup',
   command = '/labelmockup',
-  name = 'Mockup étiquette',
+  name = 'Étiquette sur produit',
   slug = 'labelmockup',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',

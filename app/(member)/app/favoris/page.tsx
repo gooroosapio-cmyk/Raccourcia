@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getFavorites } from '@/lib/catalog/queries';
-import { ListeCompacte } from '@/components/cards/liste-compacte';
+import { PromptGrid } from '@/components/cards/prompt-grid';
 import { EmptyState } from '@/components/ui/states';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
@@ -42,7 +42,7 @@ export default async function FavoritesPage() {
           actionHref="/app/bibliotheque"
         />
       ) : (
-        <ListeCompacte prompts={favorites} locked={!hasFullAccess} />
+        <PromptGrid prompts={favorites} locked={!hasFullAccess} emptyState={null} />
       )}
     </div>
   );
