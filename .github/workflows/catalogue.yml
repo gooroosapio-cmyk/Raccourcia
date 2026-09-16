@@ -100,6 +100,11 @@ jobs:
                    ' publies=' || count(*) filter (where status = 'published')
             from public.prompts;"
 
+      # Ce pas applique un dossier de lots tel quel. Les options qui ne sont
+      # pas des chemins — « catalogue-v2 », « moteur-v3 », les bascules — ont
+      # leur propre pas et doivent etre exclues ici, sinon `ls` cherche un
+      # dossier qui n'existe pas et le job meurt avant d'atteindre le leur.
+      #
       # Rejouer les 66 lots du catalogue V5 represente cinq megaoctets de SQL
       # pour un resultat qui, la deuxieme fois, ne change rien. « bascule-seule »
       # saute cette etape : la bascule est une dizaine d'instructions, elle n'a
@@ -109,7 +114,8 @@ jobs:
           inputs.dossier != 'bascule-seule' &&
           inputs.dossier != 'refonte-image-v6' &&
           inputs.dossier != 'fermer-tables-sauvegarde' &&
-          inputs.dossier != 'catalogue-v2'
+          inputs.dossier != 'catalogue-v2' &&
+          inputs.dossier != 'moteur-v3'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
