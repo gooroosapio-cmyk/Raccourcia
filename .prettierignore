@@ -3,3 +3,4 @@ node_modules
 package-lock.json
 data/source
 supabase/seed
+data/catalogue-v3

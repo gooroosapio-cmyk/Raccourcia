@@ -277,6 +277,23 @@ if compgen -G "$ROOT/supabase/seed/catalogue-v2/*.sql" > /dev/null; then
     from public.categories;"
 fi
 
+# Moteur V3 : les variantes, les payloads, puis les champs.
+#
+# Applique deux fois : un lot qu'on ne peut pas rejouer est un lot qu'on
+# n'ose plus lancer. La seconde passe ne doit creer aucune version de plus.
+if compgen -G "$ROOT/supabase/seed/moteur-v3/*.sql" > /dev/null; then
+  echo "==> Moteur V3 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/moteur-v3/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) filter (where payload_ready) || ' cartes avec un texte a copier, ' ||
+           (select count(*) from public.prompt_versions where is_current) || ' versions courantes'
+    from public.prompts where catalog_v2;"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do
