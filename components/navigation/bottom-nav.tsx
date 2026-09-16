@@ -7,13 +7,15 @@ import { usePathname } from 'next/navigation';
  * Barre basse : quatre destinations, libelles toujours visibles
  * (Spec UX/UI, 5). Les actions recurrentes restent a portee de pouce.
  *
- * Decouvrir mene a l'editorial, Bibliotheque a la totalite du catalogue par
- * familles. Recents quitte la barre et revient dans Decouvrir sous
+ * Accueil porte la recherche, les acces rapides, la reprise et le feed ;
+ * Bibliotheque la totalite du catalogue par familles. Le premier onglet
+ * s'appelait « Decouvrir » et portait une loupe : deux facons de dire
+ * « cherche ici », alors que c'est la page d'arrivee. Recents quitte la barre et revient dans Decouvrir sous
  * « Reprendre » : c'est une liste qu'on relit, pas une destination qu'on
  * vise, et la Bibliotheque avait besoin de sa place.
  */
 const ITEMS = [
-  { href: '/app', label: 'Découvrir', icon: DiscoverIcon },
+  { href: '/app', label: 'Accueil', icon: HomeIcon },
   { href: '/app/bibliotheque', label: 'Bibliothèque', icon: LibraryIcon },
   { href: '/app/favoris', label: 'Favoris', icon: HeartIcon },
   { href: '/compte', label: 'Profil', icon: AccountIcon },
@@ -52,11 +54,15 @@ export function BottomNav() {
   );
 }
 
-function DiscoverIcon() {
+function HomeIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-      <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5.5H9V20H5a1 1 0 0 1-1-1Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

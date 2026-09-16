@@ -8,14 +8,15 @@
 -- Le statut n'est jamais reecrit ici : la bascule seule ouvre un rayon.
 -- =====================================================================
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-calabashpack', 'img-calabashpack', '/calabashpack', 'Coffret calebasse', 'calabashpack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Transforme une calebasse ou sa logique de forme en coffret conceptuel pour un produit compatible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['coffret calebasse', 'packaging', 'publicite et marque']::text[], 'Coffret calebasse | RaccourcIA', 'Transforme une calebasse ou sa logique de forme en coffret conceptuel pour un produit compatible.', 86, 501, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-calabashpack', 'img-calabashpack', '/calabashpack', 'Coffret calebasse', 'calabashpack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Transforme une calebasse ou sa logique de forme en coffret conceptuel pour un produit compatible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['coffret calebasse', 'packaging', 'publicite et marque']::text[], 'Coffret calebasse | RaccourcIA', 'Transforme une calebasse ou sa logique de forme en coffret conceptuel pour un produit compatible.', 86, 501, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-calabashpack',
   command = '/calabashpack',
   name = 'Coffret calebasse',
   slug = 'calabashpack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Transforme une calebasse ou sa logique de forme en coffret conceptuel pour un produit compatible.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -41,14 +42,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-cocoaheritagepack', 'img-cocoaheritagepack', '/cocoaheritagepack', 'Coffret héritage cacao', 'cocoaheritagepack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Raconte une origine cacao réelle par matières, carte, producteur et informations traçables.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['coffret heritage cacao', 'packaging', 'publicite et marque']::text[], 'Coffret héritage cacao | RaccourcIA', 'Raconte une origine cacao réelle par matières, carte, producteur et informations traçables.', 86, 502, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-cocoaheritagepack', 'img-cocoaheritagepack', '/cocoaheritagepack', 'Coffret héritage cacao', 'cocoaheritagepack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Raconte une origine cacao réelle par matières, carte, producteur et informations traçables.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['coffret heritage cacao', 'packaging', 'publicite et marque']::text[], 'Coffret héritage cacao | RaccourcIA', 'Raconte une origine cacao réelle par matières, carte, producteur et informations traçables.', 86, 502, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-cocoaheritagepack',
   command = '/cocoaheritagepack',
   name = 'Coffret héritage cacao',
   slug = 'cocoaheritagepack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Raconte une origine cacao réelle par matières, carte, producteur et informations traçables.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -74,14 +76,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-shippingbox', 'img-shippingbox', '/shippingbox', 'Colis de livraison', 'shippingbox', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Applique la marque sur carton, adhésif et expérience d’ouverture.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['colis de livraison', 'packaging', 'publicite et marque']::text[], 'Colis de livraison | RaccourcIA', 'Applique la marque sur carton, adhésif et expérience d’ouverture.', 86, 503, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-shippingbox', 'img-shippingbox', '/shippingbox', 'Colis de livraison', 'shippingbox', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Applique la marque sur carton, adhésif et expérience d’ouverture.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['colis de livraison', 'packaging', 'publicite et marque']::text[], 'Colis de livraison | RaccourcIA', 'Applique la marque sur carton, adhésif et expérience d’ouverture.', 86, 503, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-shippingbox',
   command = '/shippingbox',
   name = 'Colis de livraison',
   slug = 'shippingbox',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Applique la marque sur carton, adhésif et expérience d’ouverture.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -107,14 +110,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-packagingmockup', 'img-packagingmockup', '/packagingmockup', 'Mockup packaging', 'packagingmockup', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Applique une identité graphique sur un emballage adapté au produit.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['mockup packaging', 'packaging', 'publicite et marque']::text[], 'Mockup packaging | RaccourcIA', 'Applique une identité graphique sur un emballage adapté au produit.', 86, 504, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-packagingmockup', 'img-packagingmockup', '/packagingmockup', 'Mockup packaging', 'packagingmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Applique une identité graphique sur un emballage adapté au produit.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['mockup packaging', 'packaging', 'publicite et marque']::text[], 'Mockup packaging | RaccourcIA', 'Applique une identité graphique sur un emballage adapté au produit.', 86, 504, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-packagingmockup',
   command = '/packagingmockup',
   name = 'Mockup packaging',
   slug = 'packagingmockup',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Applique une identité graphique sur un emballage adapté au produit.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -140,14 +144,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-labelmockup', 'img-labelmockup', '/labelmockup', 'Mockup étiquette', 'labelmockup', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Place une étiquette fournie en respectant courbure, matière et reflets.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['mockup etiquette', 'packaging', 'publicite et marque']::text[], 'Mockup étiquette | RaccourcIA', 'Place une étiquette fournie en respectant courbure, matière et reflets.', 86, 505, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-labelmockup', 'img-labelmockup', '/labelmockup', 'Mockup étiquette', 'labelmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Place une étiquette fournie en respectant courbure, matière et reflets.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['mockup etiquette', 'packaging', 'publicite et marque']::text[], 'Mockup étiquette | RaccourcIA', 'Place une étiquette fournie en respectant courbure, matière et reflets.', 86, 505, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-labelmockup',
   command = '/labelmockup',
   name = 'Mockup étiquette',
   slug = 'labelmockup',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Place une étiquette fournie en respectant courbure, matière et reflets.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -173,14 +178,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-adinkrapack', 'img-adinkrapack', '/adinkrapack', 'Packaging adinkra', 'adinkrapack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Décline des symboles adinkra précisément choisis et expliqués sur un emballage contemporain.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging adinkra', 'packaging', 'publicite et marque']::text[], 'Packaging adinkra | RaccourcIA', 'Décline des symboles adinkra précisément choisis et expliqués sur un emballage contemporain.', 86, 506, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-adinkrapack', 'img-adinkrapack', '/adinkrapack', 'Packaging adinkra', 'adinkrapack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Décline des symboles adinkra précisément choisis et expliqués sur un emballage contemporain.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging adinkra', 'packaging', 'publicite et marque']::text[], 'Packaging adinkra | RaccourcIA', 'Décline des symboles adinkra précisément choisis et expliqués sur un emballage contemporain.', 86, 506, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-adinkrapack',
   command = '/adinkrapack',
   name = 'Packaging adinkra',
   slug = 'adinkrapack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Décline des symboles adinkra précisément choisis et expliqués sur un emballage contemporain.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -206,14 +212,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-bogolanpack', 'img-bogolanpack', '/bogolanpack', 'Packaging bogolan', 'bogolanpack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Crée une piste d’emballage inspirée de bogolan documenté, avec origine et motifs validés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging bogolan', 'packaging', 'publicite et marque']::text[], 'Packaging bogolan | RaccourcIA', 'Crée une piste d’emballage inspirée de bogolan documenté, avec origine et motifs validés.', 86, 507, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-bogolanpack', 'img-bogolanpack', '/bogolanpack', 'Packaging bogolan', 'bogolanpack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Crée une piste d’emballage inspirée de bogolan documenté, avec origine et motifs validés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging bogolan', 'packaging', 'publicite et marque']::text[], 'Packaging bogolan | RaccourcIA', 'Crée une piste d’emballage inspirée de bogolan documenté, avec origine et motifs validés.', 86, 507, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-bogolanpack',
   command = '/bogolanpack',
   name = 'Packaging bogolan',
   slug = 'bogolanpack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Crée une piste d’emballage inspirée de bogolan documenté, avec origine et motifs validés.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -239,14 +246,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-sheaoriginpack', 'img-sheaoriginpack', '/sheaoriginpack', 'Packaging origine karité', 'sheaoriginpack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Valorise une filière karité documentée avec informations d’origine et coopérative fournies.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging origine karite', 'packaging', 'publicite et marque']::text[], 'Packaging origine karité | RaccourcIA', 'Valorise une filière karité documentée avec informations d’origine et coopérative fournies.', 86, 508, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-sheaoriginpack', 'img-sheaoriginpack', '/sheaoriginpack', 'Packaging origine karité', 'sheaoriginpack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Valorise une filière karité documentée avec informations d’origine et coopérative fournies.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging origine karite', 'packaging', 'publicite et marque']::text[], 'Packaging origine karité | RaccourcIA', 'Valorise une filière karité documentée avec informations d’origine et coopérative fournies.', 86, 508, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-sheaoriginpack',
   command = '/sheaoriginpack',
   name = 'Packaging origine karité',
   slug = 'sheaoriginpack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Valorise une filière karité documentée avec informations d’origine et coopérative fournies.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -272,14 +280,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-spiceoriginpack', 'img-spiceoriginpack', '/spiceoriginpack', 'Packaging origine épices', 'spiceoriginpack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Compose un emballage qui situe terroir, épice et usage sans inventer d’allégation d’origine.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging origine epices', 'packaging', 'publicite et marque']::text[], 'Packaging origine épices | RaccourcIA', 'Compose un emballage qui situe terroir, épice et usage sans inventer d’allégation d’origine.', 86, 509, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-spiceoriginpack', 'img-spiceoriginpack', '/spiceoriginpack', 'Packaging origine épices', 'spiceoriginpack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Compose un emballage qui situe terroir, épice et usage sans inventer d’allégation d’origine.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging origine epices', 'packaging', 'publicite et marque']::text[], 'Packaging origine épices | RaccourcIA', 'Compose un emballage qui situe terroir, épice et usage sans inventer d’allégation d’origine.', 86, 509, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-spiceoriginpack',
   command = '/spiceoriginpack',
   name = 'Packaging origine épices',
   slug = 'spiceoriginpack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Compose un emballage qui situe terroir, épice et usage sans inventer d’allégation d’origine.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -305,14 +314,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-sahelianpack', 'img-sahelianpack', '/sahelianpack', 'Packaging sahélien', 'sahelianpack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Crée un emballage inspiré de matières et géométries sahéliennes précisément référencées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging sahelien', 'packaging', 'publicite et marque']::text[], 'Packaging sahélien | RaccourcIA', 'Crée un emballage inspiré de matières et géométries sahéliennes précisément référencées.', 86, 510, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-sahelianpack', 'img-sahelianpack', '/sahelianpack', 'Packaging sahélien', 'sahelianpack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Crée un emballage inspiré de matières et géométries sahéliennes précisément référencées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging sahelien', 'packaging', 'publicite et marque']::text[], 'Packaging sahélien | RaccourcIA', 'Crée un emballage inspiré de matières et géométries sahéliennes précisément référencées.', 86, 510, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-sahelianpack',
   command = '/sahelianpack',
   name = 'Packaging sahélien',
   slug = 'sahelianpack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Crée un emballage inspiré de matières et géométries sahéliennes précisément référencées.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -338,14 +348,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-basketrypack', 'img-basketrypack', '/basketrypack', 'Packaging vannerie', 'basketrypack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Imagine un coffret utilisant une technique de vannerie régionale précisée et des contraintes réalistes.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging vannerie', 'packaging', 'publicite et marque']::text[], 'Packaging vannerie | RaccourcIA', 'Imagine un coffret utilisant une technique de vannerie régionale précisée et des contraintes réalistes.', 86, 511, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-basketrypack', 'img-basketrypack', '/basketrypack', 'Packaging vannerie', 'basketrypack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Imagine un coffret utilisant une technique de vannerie régionale précisée et des contraintes réalistes.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['packaging vannerie', 'packaging', 'publicite et marque']::text[], 'Packaging vannerie | RaccourcIA', 'Imagine un coffret utilisant une technique de vannerie régionale précisée et des contraintes réalistes.', 86, 511, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-basketrypack',
   command = '/basketrypack',
   name = 'Packaging vannerie',
   slug = 'basketrypack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Imagine un coffret utilisant une technique de vannerie régionale précisée et des contraintes réalistes.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -371,14 +382,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-jarlabel', 'img-jarlabel', '/jarlabel', 'Pot et bocal', 'jarlabel', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Présente étiquette, couvercle et contenu avec transparence cohérente.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['pot et bocal', 'packaging', 'publicite et marque']::text[], 'Pot et bocal | RaccourcIA', 'Présente étiquette, couvercle et contenu avec transparence cohérente.', 86, 512, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-jarlabel', 'img-jarlabel', '/jarlabel', 'Pot et bocal', 'jarlabel', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Présente étiquette, couvercle et contenu avec transparence cohérente.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['pot et bocal', 'packaging', 'publicite et marque']::text[], 'Pot et bocal | RaccourcIA', 'Présente étiquette, couvercle et contenu avec transparence cohérente.', 86, 512, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-jarlabel',
   command = '/jarlabel',
   name = 'Pot et bocal',
   slug = 'jarlabel',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Présente étiquette, couvercle et contenu avec transparence cohérente.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -404,14 +416,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-shoppingbag', 'img-shoppingbag', '/shoppingbag', 'Sac boutique', 'shoppingbag', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Décline la marque sur un sac papier ou textile photographique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['sac boutique', 'packaging', 'publicite et marque']::text[], 'Sac boutique | RaccourcIA', 'Décline la marque sur un sac papier ou textile photographique.', 86, 513, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-shoppingbag', 'img-shoppingbag', '/shoppingbag', 'Sac boutique', 'shoppingbag', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Décline la marque sur un sac papier ou textile photographique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['sac boutique', 'packaging', 'publicite et marque']::text[], 'Sac boutique | RaccourcIA', 'Décline la marque sur un sac papier ou textile photographique.', 86, 513, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-shoppingbag',
   command = '/shoppingbag',
   name = 'Sac boutique',
   slug = 'shoppingbag',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Décline la marque sur un sac papier ou textile photographique.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -437,14 +450,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-deliverybag', 'img-deliverybag', '/deliverybag', 'Sac de livraison', 'deliverybag', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Décline logo, couleurs et informations sur un sac de transport.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['sac de livraison', 'packaging', 'publicite et marque']::text[], 'Sac de livraison | RaccourcIA', 'Décline logo, couleurs et informations sur un sac de transport.', 86, 514, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-deliverybag', 'img-deliverybag', '/deliverybag', 'Sac de livraison', 'deliverybag', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Décline logo, couleurs et informations sur un sac de transport.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['sac de livraison', 'packaging', 'publicite et marque']::text[], 'Sac de livraison | RaccourcIA', 'Décline logo, couleurs et informations sur un sac de transport.', 86, 514, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-deliverybag',
   command = '/deliverybag',
   name = 'Sac de livraison',
   slug = 'deliverybag',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Décline logo, couleurs et informations sur un sac de transport.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -470,14 +484,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-sachetpack', 'img-sachetpack', '/sachetpack', 'Sachet individuel', 'sachetpack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Crée un petit emballage scellé adapté aux produits locaux ou alimentaires.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['sachet individuel', 'packaging', 'publicite et marque']::text[], 'Sachet individuel | RaccourcIA', 'Crée un petit emballage scellé adapté aux produits locaux ou alimentaires.', 86, 515, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-sachetpack', 'img-sachetpack', '/sachetpack', 'Sachet individuel', 'sachetpack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Crée un petit emballage scellé adapté aux produits locaux ou alimentaires.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['packaging', 'publicite-et-marque', 'commande-image', 'produit']::text[], array['sachet individuel', 'packaging', 'publicite et marque']::text[], 'Sachet individuel | RaccourcIA', 'Crée un petit emballage scellé adapté aux produits locaux ou alimentaires.', 86, 515, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-sachetpack',
   command = '/sachetpack',
   name = 'Sachet individuel',
   slug = 'sachetpack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Crée un petit emballage scellé adapté aux produits locaux ou alimentaires.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -503,14 +518,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-pouchmockup', 'img-pouchmockup', '/pouchmockup', 'Sachet souple', 'pouchmockup', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Applique un visuel sur doypack ou pochette avec plis crédibles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['sachet souple', 'packaging', 'publicite et marque']::text[], 'Sachet souple | RaccourcIA', 'Applique un visuel sur doypack ou pochette avec plis crédibles.', 86, 516, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-pouchmockup', 'img-pouchmockup', '/pouchmockup', 'Sachet souple', 'pouchmockup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Applique un visuel sur doypack ou pochette avec plis crédibles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['sachet souple', 'packaging', 'publicite et marque']::text[], 'Sachet souple | RaccourcIA', 'Applique un visuel sur doypack ou pochette avec plis crédibles.', 86, 516, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-pouchmockup',
   command = '/pouchmockup',
   name = 'Sachet souple',
   slug = 'pouchmockup',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Applique un visuel sur doypack ou pochette avec plis crédibles.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -536,14 +552,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-kenteedition', 'img-kenteedition', '/kenteedition', 'Édition kente', 'kenteedition', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Projette une édition limitée fondée sur une palette et un motif kente choisis avec contexte.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['edition kente', 'packaging', 'publicite et marque']::text[], 'Édition kente | RaccourcIA', 'Projette une édition limitée fondée sur une palette et un motif kente choisis avec contexte.', 86, 517, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-kenteedition', 'img-kenteedition', '/kenteedition', 'Édition kente', 'kenteedition', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Projette une édition limitée fondée sur une palette et un motif kente choisis avec contexte.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['edition kente', 'packaging', 'publicite et marque']::text[], 'Édition kente | RaccourcIA', 'Projette une édition limitée fondée sur une palette et un motif kente choisis avec contexte.', 86, 517, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-kenteedition',
   command = '/kenteedition',
   name = 'Édition kente',
   slug = 'kenteedition',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Projette une édition limitée fondée sur une palette et un motif kente choisis avec contexte.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -569,14 +586,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-waxlimitedpack', 'img-waxlimitedpack', '/waxlimitedpack', 'Édition wax contemporaine', 'waxlimitedpack', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Associe un motif wax fourni à une architecture d’emballage moderne sans mélange décoratif arbitraire.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['edition wax contemporaine', 'packaging', 'publicite et marque']::text[], 'Édition wax contemporaine | RaccourcIA', 'Associe un motif wax fourni à une architecture d’emballage moderne sans mélange décoratif arbitraire.', 86, 518, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-waxlimitedpack', 'img-waxlimitedpack', '/waxlimitedpack', 'Édition wax contemporaine', 'waxlimitedpack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Associe un motif wax fourni à une architecture d’emballage moderne sans mélange décoratif arbitraire.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['edition wax contemporaine', 'packaging', 'publicite et marque']::text[], 'Édition wax contemporaine | RaccourcIA', 'Associe un motif wax fourni à une architecture d’emballage moderne sans mélange décoratif arbitraire.', 86, 518, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-waxlimitedpack',
   command = '/waxlimitedpack',
   name = 'Édition wax contemporaine',
   slug = 'waxlimitedpack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Associe un motif wax fourni à une architecture d’emballage moderne sans mélange décoratif arbitraire.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -602,14 +620,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-bottlelabel', 'img-bottlelabel', '/bottlelabel', 'Étiquette bouteille', 'bottlelabel', 'image'::public.app_mode, (select id from public.categories where slug = 'packaging'), 'Enroule correctement un design autour d’une bouteille photographiée.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['etiquette bouteille', 'packaging', 'publicite et marque']::text[], 'Étiquette bouteille | RaccourcIA', 'Enroule correctement un design autour d’une bouteille photographiée.', 86, 519, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-bottlelabel', 'img-bottlelabel', '/bottlelabel', 'Étiquette bouteille', 'bottlelabel', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'packaging'), 'Enroule correctement un design autour d’une bouteille photographiée.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['packaging', 'publicite-et-marque', 'commande-image']::text[], array['etiquette bouteille', 'packaging', 'publicite et marque']::text[], 'Étiquette bouteille | RaccourcIA', 'Enroule correctement un design autour d’une bouteille photographiée.', 86, 519, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-bottlelabel',
   command = '/bottlelabel',
   name = 'Étiquette bouteille',
   slug = 'bottlelabel',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'packaging'),
   short_description = 'Enroule correctement un design autour d’une bouteille photographiée.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -635,14 +654,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-medicalanatomy', 'img-medicalanatomy', '/medicalanatomy', 'Anatomie corporelle pédagogique', 'medicalanatomy', 'image'::public.app_mode, (select id from public.categories where slug = 'pedagogie'), 'Superpose à la silhouette une vue anatomique schématique de la zone et du système choisis.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['anatomie corporelle pedagogique', 'pedagogie', 'design et technique']::text[], 'Anatomie corporelle pédagogique | RaccourcIA', 'Superpose à la silhouette une vue anatomique schématique de la zone et du système choisis.', 84, 520, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-medicalanatomy', 'img-medicalanatomy', '/medicalanatomy', 'Anatomie corporelle pédagogique', 'medicalanatomy', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'pedagogie'), 'Superpose à la silhouette une vue anatomique schématique de la zone et du système choisis.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['anatomie corporelle pedagogique', 'pedagogie', 'design et technique']::text[], 'Anatomie corporelle pédagogique | RaccourcIA', 'Superpose à la silhouette une vue anatomique schématique de la zone et du système choisis.', 84, 520, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-medicalanatomy',
   command = '/medicalanatomy',
   name = 'Anatomie corporelle pédagogique',
   slug = 'medicalanatomy',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'pedagogie'),
   short_description = 'Superpose à la silhouette une vue anatomique schématique de la zone et du système choisis.',
   expected_input = 'Une photo nette de la personne',
@@ -668,14 +688,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-posturemap', 'img-posturemap', '/posturemap', 'Carte de posture', 'posturemap', 'image'::public.app_mode, (select id from public.categories where slug = 'pedagogie'), 'Visualise axes, appuis et alignements d’une posture à partir de repères visibles et non diagnostiques.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['carte de posture', 'pedagogie', 'design et technique']::text[], 'Carte de posture | RaccourcIA', 'Visualise axes, appuis et alignements d’une posture à partir de repères visibles et non diagnostiques.', 84, 521, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-posturemap', 'img-posturemap', '/posturemap', 'Carte de posture', 'posturemap', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'pedagogie'), 'Visualise axes, appuis et alignements d’une posture à partir de repères visibles et non diagnostiques.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['carte de posture', 'pedagogie', 'design et technique']::text[], 'Carte de posture | RaccourcIA', 'Visualise axes, appuis et alignements d’une posture à partir de repères visibles et non diagnostiques.', 84, 521, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-posturemap',
   command = '/posturemap',
   name = 'Carte de posture',
   slug = 'posturemap',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'pedagogie'),
   short_description = 'Visualise axes, appuis et alignements d’une posture à partir de repères visibles et non diagnostiques.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -701,14 +722,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-musclemap', 'img-musclemap', '/musclemap', 'Carte musculaire', 'musclemap', 'image'::public.app_mode, (select id from public.categories where slug = 'pedagogie'), 'Montre les principaux groupes musculaires associés à une posture ou un mouvement fourni.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['carte musculaire', 'pedagogie', 'design et technique']::text[], 'Carte musculaire | RaccourcIA', 'Montre les principaux groupes musculaires associés à une posture ou un mouvement fourni.', 84, 522, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-musclemap', 'img-musclemap', '/musclemap', 'Carte musculaire', 'musclemap', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'pedagogie'), 'Montre les principaux groupes musculaires associés à une posture ou un mouvement fourni.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['carte musculaire', 'pedagogie', 'design et technique']::text[], 'Carte musculaire | RaccourcIA', 'Montre les principaux groupes musculaires associés à une posture ou un mouvement fourni.', 84, 522, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-musclemap',
   command = '/musclemap',
   name = 'Carte musculaire',
   slug = 'musclemap',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'pedagogie'),
   short_description = 'Montre les principaux groupes musculaires associés à une posture ou un mouvement fourni.',
   expected_input = 'Photos des personnes concernées',
@@ -734,14 +756,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-howitworks', 'img-howitworks', '/howitworks', 'Comment ça fonctionne', 'howitworks', 'image'::public.app_mode, (select id from public.categories where slug = 'pedagogie'), 'Expliquez une idée avec un schéma visuel lisible.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['comment ca fonctionne', 'pedagogie', 'design et technique']::text[], 'Comment ça fonctionne | RaccourcIA', 'Expliquez une idée avec un schéma visuel lisible.', 84, 523, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-howitworks', 'img-howitworks', '/howitworks', 'Comment ça fonctionne', 'howitworks', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'pedagogie'), 'Expliquez une idée avec un schéma visuel lisible.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['comment ca fonctionne', 'pedagogie', 'design et technique']::text[], 'Comment ça fonctionne | RaccourcIA', 'Expliquez une idée avec un schéma visuel lisible.', 84, 523, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-howitworks',
   command = '/howitworks',
   name = 'Comment ça fonctionne',
   slug = 'howitworks',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'pedagogie'),
   short_description = 'Expliquez une idée avec un schéma visuel lisible.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -767,14 +790,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-rehabmovement', 'img-rehabmovement', '/rehabmovement', 'Mouvement de rééducation', 'rehabmovement', 'image'::public.app_mode, (select id from public.categories where slug = 'pedagogie'), 'Décompose un mouvement validé en positions successives pour une explication visuelle claire.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['mouvement de reeducation', 'pedagogie', 'design et technique']::text[], 'Mouvement de rééducation | RaccourcIA', 'Décompose un mouvement validé en positions successives pour une explication visuelle claire.', 84, 524, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-rehabmovement', 'img-rehabmovement', '/rehabmovement', 'Mouvement de rééducation', 'rehabmovement', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'pedagogie'), 'Décompose un mouvement validé en positions successives pour une explication visuelle claire.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['mouvement de reeducation', 'pedagogie', 'design et technique']::text[], 'Mouvement de rééducation | RaccourcIA', 'Décompose un mouvement validé en positions successives pour une explication visuelle claire.', 84, 524, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-rehabmovement',
   command = '/rehabmovement',
   name = 'Mouvement de rééducation',
   slug = 'rehabmovement',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'pedagogie'),
   short_description = 'Décompose un mouvement validé en positions successives pour une explication visuelle claire.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -800,14 +824,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-organposition', 'img-organposition', '/organposition', 'Position des organes', 'organposition', 'image'::public.app_mode, (select id from public.categories where slug = 'pedagogie'), 'Situe schématiquement des organes ou systèmes dans le corps pour une explication pédagogique.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['position des organes', 'pedagogie', 'design et technique']::text[], 'Position des organes | RaccourcIA', 'Situe schématiquement des organes ou systèmes dans le corps pour une explication pédagogique.', 84, 525, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-organposition', 'img-organposition', '/organposition', 'Position des organes', 'organposition', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'pedagogie'), 'Situe schématiquement des organes ou systèmes dans le corps pour une explication pédagogique.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['position des organes', 'pedagogie', 'design et technique']::text[], 'Position des organes | RaccourcIA', 'Situe schématiquement des organes ou systèmes dans le corps pour une explication pédagogique.', 84, 525, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-organposition',
   command = '/organposition',
   name = 'Position des organes',
   slug = 'organposition',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'pedagogie'),
   short_description = 'Situe schématiquement des organes ou systèmes dans le corps pour une explication pédagogique.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -833,14 +858,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-skeletonview', 'img-skeletonview', '/skeletonview', 'Vue squelettique', 'skeletonview', 'image'::public.app_mode, (select id from public.categories where slug = 'pedagogie'), 'Crée une vue squelettique éducative alignée sur la pose, sans prétendre reproduire l’anatomie individuelle.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['vue squelettique', 'pedagogie', 'design et technique']::text[], 'Vue squelettique | RaccourcIA', 'Crée une vue squelettique éducative alignée sur la pose, sans prétendre reproduire l’anatomie individuelle.', 84, 526, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-skeletonview', 'img-skeletonview', '/skeletonview', 'Vue squelettique', 'skeletonview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'pedagogie'), 'Crée une vue squelettique éducative alignée sur la pose, sans prétendre reproduire l’anatomie individuelle.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['pedagogie', 'design-et-technique', 'commande-image']::text[], array['vue squelettique', 'pedagogie', 'design et technique']::text[], 'Vue squelettique | RaccourcIA', 'Crée une vue squelettique éducative alignée sur la pose, sans prétendre reproduire l’anatomie individuelle.', 84, 526, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-skeletonview',
   command = '/skeletonview',
   name = 'Vue squelettique',
   slug = 'skeletonview',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'pedagogie'),
   short_description = 'Crée une vue squelettique éducative alignée sur la pose, sans prétendre reproduire l’anatomie individuelle.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -866,14 +892,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-futurearchaeology', 'img-futurearchaeology', '/futurearchaeology', 'Archéologie du futur', 'futurearchaeology', 'image'::public.app_mode, (select id from public.categories where slug = 'concepts'), 'Imagine l’objet actuel retrouvé dans plusieurs siècles et interprété comme un artefact énigmatique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['concepts', 'design-et-technique', 'commande-image']::text[], array['archeologie du futur', 'concepts', 'design et technique']::text[], 'Archéologie du futur | RaccourcIA', 'Imagine l’objet actuel retrouvé dans plusieurs siècles et interprété comme un artefact énigmatique.', 84, 527, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-futurearchaeology', 'img-futurearchaeology', '/futurearchaeology', 'Archéologie du futur', 'futurearchaeology', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'concepts'), 'Imagine l’objet actuel retrouvé dans plusieurs siècles et interprété comme un artefact énigmatique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['concepts', 'design-et-technique', 'commande-image']::text[], array['archeologie du futur', 'concepts', 'design et technique']::text[], 'Archéologie du futur | RaccourcIA', 'Imagine l’objet actuel retrouvé dans plusieurs siècles et interprété comme un artefact énigmatique.', 84, 527, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-futurearchaeology',
   command = '/futurearchaeology',
   name = 'Archéologie du futur',
   slug = 'futurearchaeology',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'concepts'),
   short_description = 'Imagine l’objet actuel retrouvé dans plusieurs siècles et interprété comme un artefact énigmatique.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -899,14 +926,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-afrofuturistobject', 'img-afrofuturistobject', '/afrofuturistobject', 'Artefact afrofuturiste', 'afrofuturistobject', 'image'::public.app_mode, (select id from public.categories where slug = 'concepts'), 'Réinvente l’objet comme technologie future inspirée de références africaines choisies et contextualisées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['concepts', 'design-et-technique', 'commande-image']::text[], array['artefact afrofuturiste', 'concepts', 'design et technique']::text[], 'Artefact afrofuturiste | RaccourcIA', 'Réinvente l’objet comme technologie future inspirée de références africaines choisies et contextualisées.', 84, 528, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-afrofuturistobject', 'img-afrofuturistobject', '/afrofuturistobject', 'Artefact afrofuturiste', 'afrofuturistobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'concepts'), 'Réinvente l’objet comme technologie future inspirée de références africaines choisies et contextualisées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['concepts', 'design-et-technique', 'commande-image']::text[], array['artefact afrofuturiste', 'concepts', 'design et technique']::text[], 'Artefact afrofuturiste | RaccourcIA', 'Réinvente l’objet comme technologie future inspirée de références africaines choisies et contextualisées.', 84, 528, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-afrofuturistobject',
   command = '/afrofuturistobject',
   name = 'Artefact afrofuturiste',
   slug = 'afrofuturistobject',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'concepts'),
   short_description = 'Réinvente l’objet comme technologie future inspirée de références africaines choisies et contextualisées.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -932,14 +960,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-museumartifact', 'img-museumartifact', '/museumartifact', 'Objet exposé au musée', 'museumartifact', 'image'::public.app_mode, (select id from public.categories where slug = 'concepts'), 'Présente l’objet comme pièce de musée avec socle, éclairage et cartel dont les informations sont fournies.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['concepts', 'design-et-technique', 'commande-image']::text[], array['objet expose au musee', 'concepts', 'design et technique']::text[], 'Objet exposé au musée | RaccourcIA', 'Présente l’objet comme pièce de musée avec socle, éclairage et cartel dont les informations sont fournies.', 84, 529, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-museumartifact', 'img-museumartifact', '/museumartifact', 'Objet exposé au musée', 'museumartifact', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'concepts'), 'Présente l’objet comme pièce de musée avec socle, éclairage et cartel dont les informations sont fournies.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['concepts', 'design-et-technique', 'commande-image']::text[], array['objet expose au musee', 'concepts', 'design et technique']::text[], 'Objet exposé au musée | RaccourcIA', 'Présente l’objet comme pièce de musée avec socle, éclairage et cartel dont les informations sont fournies.', 84, 529, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-museumartifact',
   command = '/museumartifact',
   name = 'Objet exposé au musée',
   slug = 'museumartifact',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'concepts'),
   short_description = 'Présente l’objet comme pièce de musée avec socle, éclairage et cartel dont les informations sont fournies.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -965,14 +994,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-objectrestore', 'img-objectrestore', '/objectrestore', 'Objet restauré', 'objectrestore', 'image'::public.app_mode, (select id from public.categories where slug = 'concepts'), 'Visualise l’objet nettoyé ou restauré en distinguant clairement la simulation.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['concepts', 'design-et-technique', 'commande-image']::text[], array['objet restaure', 'concepts', 'design et technique']::text[], 'Objet restauré | RaccourcIA', 'Visualise l’objet nettoyé ou restauré en distinguant clairement la simulation.', 84, 530, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-objectrestore', 'img-objectrestore', '/objectrestore', 'Objet restauré', 'objectrestore', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'concepts'), 'Visualise l’objet nettoyé ou restauré en distinguant clairement la simulation.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['concepts', 'design-et-technique', 'commande-image']::text[], array['objet restaure', 'concepts', 'design et technique']::text[], 'Objet restauré | RaccourcIA', 'Visualise l’objet nettoyé ou restauré en distinguant clairement la simulation.', 84, 530, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-objectrestore',
   command = '/objectrestore',
   name = 'Objet restauré',
   slug = 'objectrestore',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'concepts'),
   short_description = 'Visualise l’objet nettoyé ou restauré en distinguant clairement la simulation.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -998,14 +1028,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-anatomyview', 'img-anatomyview', '/anatomyview', 'Anatomie d’objet', 'anatomyview', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Identifie les grandes zones fonctionnelles dans une vue pédagogique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['anatomie dobjet', 'documentation', 'design et technique']::text[], 'Anatomie d’objet | RaccourcIA', 'Identifie les grandes zones fonctionnelles dans une vue pédagogique.', 84, 531, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-anatomyview', 'img-anatomyview', '/anatomyview', 'Anatomie d’objet', 'anatomyview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Identifie les grandes zones fonctionnelles dans une vue pédagogique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['anatomie dobjet', 'documentation', 'design et technique']::text[], 'Anatomie d’objet | RaccourcIA', 'Identifie les grandes zones fonctionnelles dans une vue pédagogique.', 84, 531, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-anatomyview',
   command = '/anatomyview',
   name = 'Anatomie d’objet',
   slug = 'anatomyview',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Identifie les grandes zones fonctionnelles dans une vue pédagogique.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -1031,14 +1062,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-stressmap', 'img-stressmap', '/stressmap', 'Carte de contraintes', 'stressmap', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Visualise des contraintes uniquement à partir d’une simulation fournie.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['carte de contraintes', 'documentation', 'design et technique']::text[], 'Carte de contraintes | RaccourcIA', 'Visualise des contraintes uniquement à partir d’une simulation fournie.', 84, 532, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-stressmap', 'img-stressmap', '/stressmap', 'Carte de contraintes', 'stressmap', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Visualise des contraintes uniquement à partir d’une simulation fournie.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['carte de contraintes', 'documentation', 'design et technique']::text[], 'Carte de contraintes | RaccourcIA', 'Visualise des contraintes uniquement à partir d’une simulation fournie.', 84, 532, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-stressmap',
   command = '/stressmap',
   name = 'Carte de contraintes',
   slug = 'stressmap',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Visualise des contraintes uniquement à partir d’une simulation fournie.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1064,14 +1096,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-thermalmap', 'img-thermalmap', '/thermalmap', 'Carte thermique', 'thermalmap', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Une carte thermique fondée sur des mesures fournies, avec unité et échelle ; aucune température n’est inventée depuis une photo.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['carte thermique', 'documentation', 'design et technique']::text[], 'Carte thermique | RaccourcIA', 'Une carte thermique fondée sur des mesures fournies, avec unité et échelle ; aucune température n’est inventée depuis une photo.', 84, 533, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-thermalmap', 'img-thermalmap', '/thermalmap', 'Carte thermique', 'thermalmap', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Une carte thermique fondée sur des mesures fournies, avec unité et échelle ; aucune température n’est inventée depuis une photo.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['carte thermique', 'documentation', 'design et technique']::text[], 'Carte thermique | RaccourcIA', 'Une carte thermique fondée sur des mesures fournies, avec unité et échelle ; aucune température n’est inventée depuis une photo.', 84, 533, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-thermalmap',
   command = '/thermalmap',
   name = 'Carte thermique',
   slug = 'thermalmap',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Une carte thermique fondée sur des mesures fournies, avec unité et échelle ; aucune température n’est inventée depuis une photo.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1097,14 +1130,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fluidpath', 'img-fluidpath', '/fluidpath', 'Cheminement des fluides', 'fluidpath', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Visualise un parcours de liquide confirmé à travers tuyaux, chambres et sorties de l’objet.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['cheminement des fluides', 'documentation', 'design et technique']::text[], 'Cheminement des fluides | RaccourcIA', 'Visualise un parcours de liquide confirmé à travers tuyaux, chambres et sorties de l’objet.', 84, 534, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-fluidpath', 'img-fluidpath', '/fluidpath', 'Cheminement des fluides', 'fluidpath', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Visualise un parcours de liquide confirmé à travers tuyaux, chambres et sorties de l’objet.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['cheminement des fluides', 'documentation', 'design et technique']::text[], 'Cheminement des fluides | RaccourcIA', 'Visualise un parcours de liquide confirmé à travers tuyaux, chambres et sorties de l’objet.', 84, 534, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fluidpath',
   command = '/fluidpath',
   name = 'Cheminement des fluides',
   slug = 'fluidpath',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Visualise un parcours de liquide confirmé à travers tuyaux, chambres et sorties de l’objet.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -1130,14 +1164,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-airflowvisual', 'img-airflowvisual', '/airflowvisual', 'Circulation de l’air', 'airflowvisual', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Montre entrée, circulation et sortie d’air selon une documentation ou une hypothèse clairement signalée.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['circulation de lair', 'documentation', 'design et technique']::text[], 'Circulation de l’air | RaccourcIA', 'Montre entrée, circulation et sortie d’air selon une documentation ou une hypothèse clairement signalée.', 84, 535, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-airflowvisual', 'img-airflowvisual', '/airflowvisual', 'Circulation de l’air', 'airflowvisual', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Montre entrée, circulation et sortie d’air selon une documentation ou une hypothèse clairement signalée.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['circulation de lair', 'documentation', 'design et technique']::text[], 'Circulation de l’air | RaccourcIA', 'Montre entrée, circulation et sortie d’air selon une documentation ou une hypothèse clairement signalée.', 84, 535, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-airflowvisual',
   command = '/airflowvisual',
   name = 'Circulation de l’air',
   slug = 'airflowvisual',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Montre entrée, circulation et sortie d’air selon une documentation ou une hypothèse clairement signalée.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1163,14 +1198,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-comparisonvisual', 'img-comparisonvisual', '/comparisonvisual', 'Comparatif technique', 'comparisonvisual', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Compare plusieurs objets sur des critères fournis.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['comparatif technique', 'documentation', 'design et technique']::text[], 'Comparatif technique | RaccourcIA', 'Compare plusieurs objets sur des critères fournis.', 84, 536, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-comparisonvisual', 'img-comparisonvisual', '/comparisonvisual', 'Comparatif technique', 'comparisonvisual', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Compare plusieurs objets sur des critères fournis.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['comparatif technique', 'documentation', 'design et technique']::text[], 'Comparatif technique | RaccourcIA', 'Compare plusieurs objets sur des critères fournis.', 84, 536, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-comparisonvisual',
   command = '/comparisonvisual',
   name = 'Comparatif technique',
   slug = 'comparisonvisual',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Compare plusieurs objets sur des critères fournis.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -1196,14 +1232,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-compatibilityvisual', 'img-compatibilityvisual', '/compatibilityvisual', 'Compatibilité visuelle', 'compatibilityvisual', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Montre quels accessoires, formats ou connecteurs sont compatibles à partir d’une liste vérifiée.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['compatibilite visuelle', 'documentation', 'design et technique']::text[], 'Compatibilité visuelle | RaccourcIA', 'Montre quels accessoires, formats ou connecteurs sont compatibles à partir d’une liste vérifiée.', 84, 537, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-compatibilityvisual', 'img-compatibilityvisual', '/compatibilityvisual', 'Compatibilité visuelle', 'compatibilityvisual', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Montre quels accessoires, formats ou connecteurs sont compatibles à partir d’une liste vérifiée.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['compatibilite visuelle', 'documentation', 'design et technique']::text[], 'Compatibilité visuelle | RaccourcIA', 'Montre quels accessoires, formats ou connecteurs sont compatibles à partir d’une liste vérifiée.', 84, 537, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-compatibilityvisual',
   command = '/compatibilityvisual',
   name = 'Compatibilité visuelle',
   slug = 'compatibilityvisual',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Montre quels accessoires, formats ou connecteurs sont compatibles à partir d’une liste vérifiée.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1229,14 +1266,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-safetyvisual', 'img-safetyvisual', '/safetyvisual', 'Consignes de sécurité', 'safetyvisual', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Met en image des consignes validées sans en inventer.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['consignes de securite', 'documentation', 'design et technique']::text[], 'Consignes de sécurité | RaccourcIA', 'Met en image des consignes validées sans en inventer.', 84, 538, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-safetyvisual', 'img-safetyvisual', '/safetyvisual', 'Consignes de sécurité', 'safetyvisual', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Met en image des consignes validées sans en inventer.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['consignes de securite', 'documentation', 'design et technique']::text[], 'Consignes de sécurité | RaccourcIA', 'Met en image des consignes validées sans en inventer.', 84, 538, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-safetyvisual',
   command = '/safetyvisual',
   name = 'Consignes de sécurité',
   slug = 'safetyvisual',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Met en image des consignes validées sans en inventer.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1262,14 +1300,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-schematiccutaway', 'img-schematiccutaway', '/schematiccutaway', 'Coupe schématique', 'schematiccutaway', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Simplifie l’intérieur en couches colorées faciles à comprendre.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['coupe schematique', 'documentation', 'design et technique']::text[], 'Coupe schématique | RaccourcIA', 'Simplifie l’intérieur en couches colorées faciles à comprendre.', 84, 539, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-schematiccutaway', 'img-schematiccutaway', '/schematiccutaway', 'Coupe schématique', 'schematiccutaway', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Simplifie l’intérieur en couches colorées faciles à comprendre.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['coupe schematique', 'documentation', 'design et technique']::text[], 'Coupe schématique | RaccourcIA', 'Simplifie l’intérieur en couches colorées faciles à comprendre.', 84, 539, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-schematiccutaway',
   command = '/schematiccutaway',
   name = 'Coupe schématique',
   slug = 'schematiccutaway',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Simplifie l’intérieur en couches colorées faciles à comprendre.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1295,14 +1334,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-crosssection', 'img-crosssection', '/crosssection', 'Coupe transversale', 'crosssection', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Ouvre l’objet suivant un axe précisé pour révéler son intérieur.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['coupe transversale', 'documentation', 'design et technique']::text[], 'Coupe transversale | RaccourcIA', 'Ouvre l’objet suivant un axe précisé pour révéler son intérieur.', 84, 540, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-crosssection', 'img-crosssection', '/crosssection', 'Coupe transversale', 'crosssection', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Ouvre l’objet suivant un axe précisé pour révéler son intérieur.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['coupe transversale', 'documentation', 'design et technique']::text[], 'Coupe transversale | RaccourcIA', 'Ouvre l’objet suivant un axe précisé pour révéler son intérieur.', 84, 540, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-crosssection',
   command = '/crosssection',
   name = 'Coupe transversale',
   slug = 'crosssection',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Ouvre l’objet suivant un axe précisé pour révéler son intérieur.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -1328,14 +1368,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-patentdrawing', 'img-patentdrawing', '/patentdrawing', 'Dessin brevet', 'patentdrawing', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Produit une illustration monochrome numérotée, sans valeur juridique automatique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image', 'produit']::text[], array['dessin brevet', 'documentation', 'design et technique']::text[], 'Dessin brevet | RaccourcIA', 'Produit une illustration monochrome numérotée, sans valeur juridique automatique.', 84, 541, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-patentdrawing', 'img-patentdrawing', '/patentdrawing', 'Dessin brevet', 'patentdrawing', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Produit une illustration monochrome numérotée, sans valeur juridique automatique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image', 'produit']::text[], array['dessin brevet', 'documentation', 'design et technique']::text[], 'Dessin brevet | RaccourcIA', 'Produit une illustration monochrome numérotée, sans valeur juridique automatique.', 84, 541, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-patentdrawing',
   command = '/patentdrawing',
   name = 'Dessin brevet',
   slug = 'patentdrawing',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Produit une illustration monochrome numérotée, sans valeur juridique automatique.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -1361,14 +1402,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-layerstack', 'img-layerstack', '/layerstack', 'Empilement des couches', 'layerstack', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Sépare et nomme les couches d’un matériau ou produit selon une coupe pédagogique contrôlée.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image', 'produit']::text[], array['empilement des couches', 'documentation', 'design et technique']::text[], 'Empilement des couches | RaccourcIA', 'Sépare et nomme les couches d’un matériau ou produit selon une coupe pédagogique contrôlée.', 84, 542, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-layerstack', 'img-layerstack', '/layerstack', 'Empilement des couches', 'layerstack', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Sépare et nomme les couches d’un matériau ou produit selon une coupe pédagogique contrôlée.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image', 'produit']::text[], array['empilement des couches', 'documentation', 'design et technique']::text[], 'Empilement des couches | RaccourcIA', 'Sépare et nomme les couches d’un matériau ou produit selon une coupe pédagogique contrôlée.', 84, 542, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-layerstack',
   command = '/layerstack',
   name = 'Empilement des couches',
   slug = 'layerstack',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Sépare et nomme les couches d’un matériau ou produit selon une coupe pédagogique contrôlée.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -1394,14 +1436,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-maintenanceguide', 'img-maintenanceguide', '/maintenanceguide', 'Entretien illustré', 'maintenanceguide', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Présente les gestes d’entretien autour des zones concernées.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['entretien illustre', 'documentation', 'design et technique']::text[], 'Entretien illustré | RaccourcIA', 'Présente les gestes d’entretien autour des zones concernées.', 84, 543, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-maintenanceguide', 'img-maintenanceguide', '/maintenanceguide', 'Entretien illustré', 'maintenanceguide', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Présente les gestes d’entretien autour des zones concernées.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['entretien illustre', 'documentation', 'design et technique']::text[], 'Entretien illustré | RaccourcIA', 'Présente les gestes d’entretien autour des zones concernées.', 84, 543, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-maintenanceguide',
   command = '/maintenanceguide',
   name = 'Entretien illustré',
   slug = 'maintenanceguide',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Présente les gestes d’entretien autour des zones concernées.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1427,14 +1470,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-energyflow', 'img-energyflow', '/energyflow', 'Flux d’énergie', 'energyflow', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Représente source, conversion, stockage et consommation d’énergie dans un système documenté.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['flux denergie', 'documentation', 'design et technique']::text[], 'Flux d’énergie | RaccourcIA', 'Représente source, conversion, stockage et consommation d’énergie dans un système documenté.', 84, 544, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-energyflow', 'img-energyflow', '/energyflow', 'Flux d’énergie', 'energyflow', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Représente source, conversion, stockage et consommation d’énergie dans un système documenté.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['flux denergie', 'documentation', 'design et technique']::text[], 'Flux d’énergie | RaccourcIA', 'Représente source, conversion, stockage et consommation d’énergie dans un système documenté.', 84, 544, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-energyflow',
   command = '/energyflow',
   name = 'Flux d’énergie',
   slug = 'energyflow',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Représente source, conversion, stockage et consommation d’énergie dans un système documenté.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1460,14 +1504,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-assembly', 'img-assembly', '/assembly', 'Guide d’assemblage', 'assembly', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Décompose le montage en étapes visuelles ordonnées.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['guide dassemblage', 'documentation', 'design et technique']::text[], 'Guide d’assemblage | RaccourcIA', 'Décompose le montage en étapes visuelles ordonnées.', 84, 545, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-assembly', 'img-assembly', '/assembly', 'Guide d’assemblage', 'assembly', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Décompose le montage en étapes visuelles ordonnées.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['guide dassemblage', 'documentation', 'design et technique']::text[], 'Guide d’assemblage | RaccourcIA', 'Décompose le montage en étapes visuelles ordonnées.', 84, 545, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-assembly',
   command = '/assembly',
   name = 'Guide d’assemblage',
   slug = 'assembly',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Décompose le montage en étapes visuelles ordonnées.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1493,14 +1538,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-installationguide', 'img-installationguide', '/installationguide', 'Guide d’installation', 'installationguide', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Montre emplacement, orientation et connexions d’un équipement.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['guide dinstallation', 'documentation', 'design et technique']::text[], 'Guide d’installation | RaccourcIA', 'Montre emplacement, orientation et connexions d’un équipement.', 84, 546, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-installationguide', 'img-installationguide', '/installationguide', 'Guide d’installation', 'installationguide', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Montre emplacement, orientation et connexions d’un équipement.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['guide dinstallation', 'documentation', 'design et technique']::text[], 'Guide d’installation | RaccourcIA', 'Montre emplacement, orientation et connexions d’un équipement.', 84, 546, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-installationguide',
   command = '/installationguide',
   name = 'Guide d’installation',
   slug = 'installationguide',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Montre emplacement, orientation et connexions d’un équipement.',
   expected_input = 'Photos des personnes concernées',
@@ -1526,14 +1572,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-failuremode', 'img-failuremode', '/failuremode', 'Mode de défaillance', 'failuremode', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Compare un fonctionnement normal et un mode de panne défini à partir d’éléments techniques fournis.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['mode de defaillance', 'documentation', 'design et technique']::text[], 'Mode de défaillance | RaccourcIA', 'Compare un fonctionnement normal et un mode de panne défini à partir d’éléments techniques fournis.', 84, 547, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-failuremode', 'img-failuremode', '/failuremode', 'Mode de défaillance', 'failuremode', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Compare un fonctionnement normal et un mode de panne défini à partir d’éléments techniques fournis.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['mode de defaillance', 'documentation', 'design et technique']::text[], 'Mode de défaillance | RaccourcIA', 'Compare un fonctionnement normal et un mode de panne défini à partir d’éléments techniques fournis.', 84, 547, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-failuremode',
   command = '/failuremode',
   name = 'Mode de défaillance',
   slug = 'failuremode',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Compare un fonctionnement normal et un mode de panne défini à partir d’éléments techniques fournis.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1559,14 +1606,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-partslegend', 'img-partslegend', '/partslegend', 'Pièces légendées', 'partslegend', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Ajoute numéros et légende aux composants visibles ou documentés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['pieces legendees', 'documentation', 'design et technique']::text[], 'Pièces légendées | RaccourcIA', 'Ajoute numéros et légende aux composants visibles ou documentés.', 84, 548, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-partslegend', 'img-partslegend', '/partslegend', 'Pièces légendées', 'partslegend', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Ajoute numéros et légende aux composants visibles ou documentés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['pieces legendees', 'documentation', 'design et technique']::text[], 'Pièces légendées | RaccourcIA', 'Ajoute numéros et légende aux composants visibles ou documentés.', 84, 548, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-partslegend',
   command = '/partslegend',
   name = 'Pièces légendées',
   slug = 'partslegend',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Ajoute numéros et légende aux composants visibles ou documentés.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1592,14 +1640,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-blueprint', 'img-blueprint', '/blueprint', 'Plan technique bleu', 'blueprint', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Un plan visuel bleu fondé sur le modèle et la version identifiés, avec données réelles documentées lorsqu’elles sont disponibles ; illustration sans cotes sinon.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['plan technique bleu', 'documentation', 'design et technique']::text[], 'Plan technique bleu | RaccourcIA', 'Un plan visuel bleu fondé sur le modèle et la version identifiés, avec données réelles documentées lorsqu’elles sont disponibles ; illustration sans...', 84, 549, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-blueprint', 'img-blueprint', '/blueprint', 'Plan technique bleu', 'blueprint', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Un plan visuel bleu fondé sur le modèle et la version identifiés, avec données réelles documentées lorsqu’elles sont disponibles ; illustration sans cotes sinon.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['plan technique bleu', 'documentation', 'design et technique']::text[], 'Plan technique bleu | RaccourcIA', 'Un plan visuel bleu fondé sur le modèle et la version identifiés, avec données réelles documentées lorsqu’elles sont disponibles ; illustration sans...', 84, 549, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-blueprint',
   command = '/blueprint',
   name = 'Plan technique bleu',
   slug = 'blueprint',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Un plan visuel bleu fondé sur le modèle et la version identifiés, avec données réelles documentées lorsqu’elles sont disponibles ; illustration sans cotes sinon.',
   expected_input = 'Photo, plan ou dossier de référence',
@@ -1625,14 +1674,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-turntableboard', 'img-turntableboard', '/turntableboard', 'Planche multiangles', 'turntableboard', 'image'::public.app_mode, (select id from public.categories where slug = 'documentation'), 'Réunit plusieurs angles cohérents, signalés comme générés si non photographiés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['planche multiangles', 'documentation', 'design et technique']::text[], 'Planche multiangles | RaccourcIA', 'Réunit plusieurs angles cohérents, signalés comme générés si non photographiés.', 84, 550, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-turntableboard', 'img-turntableboard', '/turntableboard', 'Planche multiangles', 'turntableboard', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'documentation'), 'Réunit plusieurs angles cohérents, signalés comme générés si non photographiés.', 'Photo, plan ou dossier de référence', '1 image HD', 'Créer ce visuel', 1, 8, 'Photo, plan ou dossier de référence', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Rechercher et citer les données réelles si le sujet est identifiable', 'Ne jamais déduire une mesure non visible ou non documentée', array['documentation', 'design-et-technique', 'commande-image']::text[], array['planche multiangles', 'documentation', 'design et technique']::text[], 'Planche multiangles | RaccourcIA', 'Réunit plusieurs angles cohérents, signalés comme générés si non photographiés.', 84, 550, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-turntableboard',
   command = '/turntableboard',
   name = 'Planche multiangles',
   slug = 'turntableboard',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'documentation'),
   short_description = 'Réunit plusieurs angles cohérents, signalés comme générés si non photographiés.',
   expected_input = 'Photo, plan ou dossier de référence',

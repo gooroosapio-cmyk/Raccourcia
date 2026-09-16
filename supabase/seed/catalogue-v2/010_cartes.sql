@@ -8,14 +8,15 @@
 -- Le statut n'est jamais reecrit ici : la bascule seule ouvre un rayon.
 -- =====================================================================
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-ancestorportrait', 'img-ancestorportrait', '/ancestorportrait', 'Ancêtre imaginaire', 'ancestorportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Crée un portrait ancestral inspiré d’une époque culturellement définie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['ancetre imaginaire', 'epoques', 'portraits et souvenirs']::text[], 'Ancêtre imaginaire | RaccourcIA', 'Crée un portrait ancestral inspiré d’une époque culturellement définie.', 76, 1, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-ancestorportrait', 'img-ancestorportrait', '/ancestorportrait', 'Ancêtre imaginaire', 'ancestorportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Crée un portrait ancestral inspiré d’une époque culturellement définie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['ancetre imaginaire', 'epoques', 'portraits et souvenirs']::text[], 'Ancêtre imaginaire | RaccourcIA', 'Crée un portrait ancestral inspiré d’une époque culturellement définie.', 76, 1, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-ancestorportrait',
   command = '/ancestorportrait',
   name = 'Ancêtre imaginaire',
   slug = 'ancestorportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Crée un portrait ancestral inspiré d’une époque culturellement définie.',
   expected_input = 'Une photo nette de la personne',
@@ -41,14 +42,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-thenandnow', 'img-thenandnow', '/thenandnow', 'Avant et maintenant', 'thenandnow', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Met côte à côte deux époques avec cadrage et pose comparables.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['avant et maintenant', 'epoques', 'portraits et souvenirs']::text[], 'Avant et maintenant | RaccourcIA', 'Met côte à côte deux époques avec cadrage et pose comparables.', 76, 2, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-thenandnow', 'img-thenandnow', '/thenandnow', 'Avant et maintenant', 'thenandnow', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Met côte à côte deux époques avec cadrage et pose comparables.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['avant et maintenant', 'epoques', 'portraits et souvenirs']::text[], 'Avant et maintenant | RaccourcIA', 'Met côte à côte deux époques avec cadrage et pose comparables.', 76, 2, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-thenandnow',
   command = '/thenandnow',
   name = 'Avant et maintenant',
   slug = 'thenandnow',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Met côte à côte deux époques avec cadrage et pose comparables.',
   expected_input = 'Une photo nette de la personne',
@@ -74,14 +76,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-coupletimeline', 'img-coupletimeline', '/coupletimeline', 'Chronologie de couple', 'coupletimeline', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Décline un couple en plusieurs moments de vie avec continuité des visages, des symboles et de l’ambiance.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['chronologie de couple', 'epoques', 'portraits et souvenirs']::text[], 'Chronologie de couple | RaccourcIA', 'Décline un couple en plusieurs moments de vie avec continuité des visages, des symboles et de l’ambiance.', 76, 3, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-coupletimeline', 'img-coupletimeline', '/coupletimeline', 'Chronologie de couple', 'coupletimeline', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Décline un couple en plusieurs moments de vie avec continuité des visages, des symboles et de l’ambiance.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['chronologie de couple', 'epoques', 'portraits et souvenirs']::text[], 'Chronologie de couple | RaccourcIA', 'Décline un couple en plusieurs moments de vie avec continuité des visages, des symboles et de l’ambiance.', 76, 3, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-coupletimeline',
   command = '/coupletimeline',
   name = 'Chronologie de couple',
   slug = 'coupletimeline',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Décline un couple en plusieurs moments de vie avec continuité des visages, des symboles et de l’ambiance.',
   expected_input = 'Photos des personnes concernées',
@@ -107,14 +110,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-futuredescendant', 'img-futuredescendant', '/futuredescendant', 'Descendant futur', 'futuredescendant', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Imagine un descendant fictif en combinant des traits de façon respectueuse.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['descendant futur', 'epoques', 'portraits et souvenirs']::text[], 'Descendant futur | RaccourcIA', 'Imagine un descendant fictif en combinant des traits de façon respectueuse.', 76, 4, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-futuredescendant', 'img-futuredescendant', '/futuredescendant', 'Descendant futur', 'futuredescendant', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Imagine un descendant fictif en combinant des traits de façon respectueuse.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['descendant futur', 'epoques', 'portraits et souvenirs']::text[], 'Descendant futur | RaccourcIA', 'Imagine un descendant fictif en combinant des traits de façon respectueuse.', 76, 4, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-futuredescendant',
   command = '/futuredescendant',
   name = 'Descendant futur',
   slug = 'futuredescendant',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Imagine un descendant fictif en combinant des traits de façon respectueuse.',
   expected_input = 'Une photo nette de la personne',
@@ -140,14 +144,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-1990sflash', 'img-1990sflash', '/1990sflash', 'Flash années 1990', '1990sflash', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Recrée l’énergie d’un compact argentique et d’une soirée spontanée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['flash annees 1990', 'epoques', 'portraits et souvenirs']::text[], 'Flash années 1990 | RaccourcIA', 'Recrée l’énergie d’un compact argentique et d’une soirée spontanée.', 76, 5, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-1990sflash', 'img-1990sflash', '/1990sflash', 'Flash années 1990', '1990sflash', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Recrée l’énergie d’un compact argentique et d’une soirée spontanée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['flash annees 1990', 'epoques', 'portraits et souvenirs']::text[], 'Flash années 1990 | RaccourcIA', 'Recrée l’énergie d’un compact argentique et d’une soirée spontanée.', 76, 5, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-1990sflash',
   command = '/1990sflash',
   name = 'Flash années 1990',
   slug = '1990sflash',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Recrée l’énergie d’un compact argentique et d’une soirée spontanée.',
   expected_input = 'Une photo nette de la personne',
@@ -173,14 +178,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-lifeline', 'img-lifeline', '/lifeline', 'Frise de vie', 'lifeline', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Réunit plusieurs âges imaginés dans une composition chronologique cohérente.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['frise de vie', 'epoques', 'portraits et souvenirs']::text[], 'Frise de vie | RaccourcIA', 'Réunit plusieurs âges imaginés dans une composition chronologique cohérente.', 76, 6, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-lifeline', 'img-lifeline', '/lifeline', 'Frise de vie', 'lifeline', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Réunit plusieurs âges imaginés dans une composition chronologique cohérente.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['frise de vie', 'epoques', 'portraits et souvenirs']::text[], 'Frise de vie | RaccourcIA', 'Réunit plusieurs âges imaginés dans une composition chronologique cohérente.', 76, 6, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-lifeline',
   command = '/lifeline',
   name = 'Frise de vie',
   slug = 'lifeline',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Réunit plusieurs âges imaginés dans une composition chronologique cohérente.',
   expected_input = 'Une photo nette de la personne',
@@ -206,14 +212,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-familygenerations', 'img-familygenerations', '/familygenerations', 'Générations réunies', 'familygenerations', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Compose plusieurs générations d’une famille à partir des références fournies.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['generations reunies', 'epoques', 'portraits et souvenirs']::text[], 'Générations réunies | RaccourcIA', 'Compose plusieurs générations d’une famille à partir des références fournies.', 76, 7, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-familygenerations', 'img-familygenerations', '/familygenerations', 'Générations réunies', 'familygenerations', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Compose plusieurs générations d’une famille à partir des références fournies.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['generations reunies', 'epoques', 'portraits et souvenirs']::text[], 'Générations réunies | RaccourcIA', 'Compose plusieurs générations d’une famille à partir des références fournies.', 76, 7, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-familygenerations',
   command = '/familygenerations',
   name = 'Générations réunies',
   slug = 'familygenerations',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Compose plusieurs générations d’une famille à partir des références fournies.',
   expected_input = 'Photos des personnes concernées',
@@ -239,14 +246,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-childme', 'img-childme', '/childme', 'Moi enfant', 'childme', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Recompose une version enfant immédiatement reconnaissable dans une scène clairement fictive.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['moi enfant', 'epoques', 'portraits et souvenirs']::text[], 'Moi enfant | RaccourcIA', 'Recompose une version enfant immédiatement reconnaissable dans une scène clairement fictive.', 76, 8, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-childme', 'img-childme', '/childme', 'Moi enfant', 'childme', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Recompose une version enfant immédiatement reconnaissable dans une scène clairement fictive.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['moi enfant', 'epoques', 'portraits et souvenirs']::text[], 'Moi enfant | RaccourcIA', 'Recompose une version enfant immédiatement reconnaissable dans une scène clairement fictive.', 76, 8, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-childme',
   command = '/childme',
   name = 'Moi enfant',
   slug = 'childme',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Recompose une version enfant immédiatement reconnaissable dans une scène clairement fictive.',
   expected_input = 'Une photo nette de la personne',
@@ -272,14 +280,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-yearbookportrait', 'img-yearbookportrait', '/yearbookportrait', 'Photo d’album scolaire', 'yearbookportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Recrée un portrait d’album scolaire d’une décennie choisie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['photo dalbum scolaire', 'epoques', 'portraits et souvenirs']::text[], 'Photo d’album scolaire | RaccourcIA', 'Recrée un portrait d’album scolaire d’une décennie choisie.', 76, 9, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-yearbookportrait', 'img-yearbookportrait', '/yearbookportrait', 'Photo d’album scolaire', 'yearbookportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Recrée un portrait d’album scolaire d’une décennie choisie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['photo dalbum scolaire', 'epoques', 'portraits et souvenirs']::text[], 'Photo d’album scolaire | RaccourcIA', 'Recrée un portrait d’album scolaire d’une décennie choisie.', 76, 9, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-yearbookportrait',
   command = '/yearbookportrait',
   name = 'Photo d’album scolaire',
   slug = 'yearbookportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Recrée un portrait d’album scolaire d’une décennie choisie.',
   expected_input = 'Une photo nette de la personne',
@@ -305,14 +314,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-future2050', 'img-future2050', '/future2050', 'Portrait 2050', 'future2050', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Imagine une identité future crédible entre mode, technologie et sobriété.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait 2050', 'epoques', 'portraits et souvenirs']::text[], 'Portrait 2050 | RaccourcIA', 'Imagine une identité future crédible entre mode, technologie et sobriété.', 76, 10, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-future2050', 'img-future2050', '/future2050', 'Portrait 2050', 'future2050', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Imagine une identité future crédible entre mode, technologie et sobriété.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait 2050', 'epoques', 'portraits et souvenirs']::text[], 'Portrait 2050 | RaccourcIA', 'Imagine une identité future crédible entre mode, technologie et sobriété.', 76, 10, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-future2050',
   command = '/future2050',
   name = 'Portrait 2050',
   slug = 'future2050',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Imagine une identité future crédible entre mode, technologie et sobriété.',
   expected_input = 'Une photo nette de la personne',
@@ -338,14 +348,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-1920sportrait', 'img-1920sportrait', '/1920sportrait', 'Portrait années 1920', '1920sportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Replace tenue, décor et photographie dans l’esthétique des années folles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait annees 1920', 'epoques', 'portraits et souvenirs']::text[], 'Portrait années 1920 | RaccourcIA', 'Replace tenue, décor et photographie dans l’esthétique des années folles.', 76, 11, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-1920sportrait', 'img-1920sportrait', '/1920sportrait', 'Portrait années 1920', '1920sportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Replace tenue, décor et photographie dans l’esthétique des années folles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait annees 1920', 'epoques', 'portraits et souvenirs']::text[], 'Portrait années 1920 | RaccourcIA', 'Replace tenue, décor et photographie dans l’esthétique des années folles.', 76, 11, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-1920sportrait',
   command = '/1920sportrait',
   name = 'Portrait années 1920',
   slug = '1920sportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Replace tenue, décor et photographie dans l’esthétique des années folles.',
   expected_input = 'Une photo nette de la personne',
@@ -371,14 +382,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-1960smod', 'img-1960smod', '/1960smod', 'Portrait années 1960', '1960smod', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Adopte graphisme mod, coiffure et palette pop de la décennie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait annees 1960', 'epoques', 'portraits et souvenirs']::text[], 'Portrait années 1960 | RaccourcIA', 'Adopte graphisme mod, coiffure et palette pop de la décennie.', 76, 12, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-1960smod', 'img-1960smod', '/1960smod', 'Portrait années 1960', '1960smod', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Adopte graphisme mod, coiffure et palette pop de la décennie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait annees 1960', 'epoques', 'portraits et souvenirs']::text[], 'Portrait années 1960 | RaccourcIA', 'Adopte graphisme mod, coiffure et palette pop de la décennie.', 76, 12, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-1960smod',
   command = '/1960smod',
   name = 'Portrait années 1960',
   slug = '1960smod',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Adopte graphisme mod, coiffure et palette pop de la décennie.',
   expected_input = 'Une photo nette de la personne',
@@ -404,14 +416,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-1970soul', 'img-1970soul', '/1970soul', 'Portrait années 1970', '1970soul', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Crée une ambiance soul chaleureuse avec mode et grain analogique.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait annees 1970', 'epoques', 'portraits et souvenirs']::text[], 'Portrait années 1970 | RaccourcIA', 'Crée une ambiance soul chaleureuse avec mode et grain analogique.', 76, 13, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-1970soul', 'img-1970soul', '/1970soul', 'Portrait années 1970', '1970soul', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Crée une ambiance soul chaleureuse avec mode et grain analogique.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait annees 1970', 'epoques', 'portraits et souvenirs']::text[], 'Portrait années 1970 | RaccourcIA', 'Crée une ambiance soul chaleureuse avec mode et grain analogique.', 76, 13, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-1970soul',
   command = '/1970soul',
   name = 'Portrait années 1970',
   slug = '1970soul',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Crée une ambiance soul chaleureuse avec mode et grain analogique.',
   expected_input = 'Une photo nette de la personne',
@@ -437,14 +450,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-y2kportrait', 'img-y2kportrait', '/y2kportrait', 'Portrait années 2000', 'y2kportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Applique chrome, flash frontal et esthétique numérique du début des années 2000.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait annees 2000', 'epoques', 'portraits et souvenirs']::text[], 'Portrait années 2000 | RaccourcIA', 'Applique chrome, flash frontal et esthétique numérique du début des années 2000.', 76, 14, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-y2kportrait', 'img-y2kportrait', '/y2kportrait', 'Portrait années 2000', 'y2kportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Applique chrome, flash frontal et esthétique numérique du début des années 2000.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait annees 2000', 'epoques', 'portraits et souvenirs']::text[], 'Portrait années 2000 | RaccourcIA', 'Applique chrome, flash frontal et esthétique numérique du début des années 2000.', 76, 14, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-y2kportrait',
   command = '/y2kportrait',
   name = 'Portrait années 2000',
   slug = 'y2kportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Applique chrome, flash frontal et esthétique numérique du début des années 2000.',
   expected_input = 'Une photo nette de la personne',
@@ -470,14 +484,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-legacyportrait', 'img-legacyportrait', '/legacyportrait', 'Portrait d’héritage', 'legacyportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Relie une personne, un objet transmis et plusieurs générations dans une image patrimoniale sobre.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait dheritage', 'epoques', 'portraits et souvenirs']::text[], 'Portrait d’héritage | RaccourcIA', 'Relie une personne, un objet transmis et plusieurs générations dans une image patrimoniale sobre.', 76, 15, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-legacyportrait', 'img-legacyportrait', '/legacyportrait', 'Portrait d’héritage', 'legacyportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Relie une personne, un objet transmis et plusieurs générations dans une image patrimoniale sobre.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait dheritage', 'epoques', 'portraits et souvenirs']::text[], 'Portrait d’héritage | RaccourcIA', 'Relie une personne, un objet transmis et plusieurs générations dans une image patrimoniale sobre.', 76, 15, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-legacyportrait',
   command = '/legacyportrait',
   name = 'Portrait d’héritage',
   slug = 'legacyportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Relie une personne, un objet transmis et plusieurs générations dans une image patrimoniale sobre.',
   expected_input = 'Photos des personnes concernées',
@@ -503,14 +518,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-futureelder', 'img-futureelder', '/futureelder', 'Portrait futur âgé', 'futureelder', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Projette un vieillissement respectueux, naturel et explicitement fictif.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait futur age', 'epoques', 'portraits et souvenirs']::text[], 'Portrait futur âgé | RaccourcIA', 'Projette un vieillissement respectueux, naturel et explicitement fictif.', 76, 16, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-futureelder', 'img-futureelder', '/futureelder', 'Portrait futur âgé', 'futureelder', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Projette un vieillissement respectueux, naturel et explicitement fictif.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait futur age', 'epoques', 'portraits et souvenirs']::text[], 'Portrait futur âgé | RaccourcIA', 'Projette un vieillissement respectueux, naturel et explicitement fictif.', 76, 16, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-futureelder',
   command = '/futureelder',
   name = 'Portrait futur âgé',
   slug = 'futureelder',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Projette un vieillissement respectueux, naturel et explicitement fictif.',
   expected_input = 'Une photo nette de la personne',
@@ -536,14 +552,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-royalancestor', 'img-royalancestor', '/royalancestor', 'Portrait royal ancestral', 'royalancestor', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Transforme la personne en figure royale historique sans usurper une identité réelle.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait royal ancestral', 'epoques', 'portraits et souvenirs']::text[], 'Portrait royal ancestral | RaccourcIA', 'Transforme la personne en figure royale historique sans usurper une identité réelle.', 76, 17, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-royalancestor', 'img-royalancestor', '/royalancestor', 'Portrait royal ancestral', 'royalancestor', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Transforme la personne en figure royale historique sans usurper une identité réelle.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait royal ancestral', 'epoques', 'portraits et souvenirs']::text[], 'Portrait royal ancestral | RaccourcIA', 'Transforme la personne en figure royale historique sans usurper une identité réelle.', 76, 17, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-royalancestor',
   command = '/royalancestor',
   name = 'Portrait royal ancestral',
   slug = 'royalancestor',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Transforme la personne en figure royale historique sans usurper une identité réelle.',
   expected_input = 'Une photo nette de la personne',
@@ -569,14 +586,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-agerewind', 'img-agerewind', '/agerewind', 'Rajeunissement narratif', 'agerewind', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Rajeunit le portrait pour une évocation artistique, non une preuve biographique.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['rajeunissement narratif', 'epoques', 'portraits et souvenirs']::text[], 'Rajeunissement narratif | RaccourcIA', 'Rajeunit le portrait pour une évocation artistique, non une preuve biographique.', 76, 18, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-agerewind', 'img-agerewind', '/agerewind', 'Rajeunissement narratif', 'agerewind', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Rajeunit le portrait pour une évocation artistique, non une preuve biographique.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['rajeunissement narratif', 'epoques', 'portraits et souvenirs']::text[], 'Rajeunissement narratif | RaccourcIA', 'Rajeunit le portrait pour une évocation artistique, non une preuve biographique.', 76, 18, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-agerewind',
   command = '/agerewind',
   name = 'Rajeunissement narratif',
   slug = 'agerewind',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Rajeunit le portrait pour une évocation artistique, non une preuve biographique.',
   expected_input = 'Une photo nette de la personne',
@@ -602,14 +620,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-1950sstudio', 'img-1950sstudio', '/1950sstudio', 'Studio années 1950', '1950sstudio', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Reproduit lumière, pose et couleurs d’un studio photographique rétro.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'produit']::text[], array['studio annees 1950', 'epoques', 'portraits et souvenirs']::text[], 'Studio années 1950 | RaccourcIA', 'Reproduit lumière, pose et couleurs d’un studio photographique rétro.', 76, 19, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-1950sstudio', 'img-1950sstudio', '/1950sstudio', 'Studio années 1950', '1950sstudio', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Reproduit lumière, pose et couleurs d’un studio photographique rétro.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'produit']::text[], array['studio annees 1950', 'epoques', 'portraits et souvenirs']::text[], 'Studio années 1950 | RaccourcIA', 'Reproduit lumière, pose et couleurs d’un studio photographique rétro.', 76, 19, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-1950sstudio',
   command = '/1950sstudio',
   name = 'Studio années 1950',
   slug = '1950sstudio',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Reproduit lumière, pose et couleurs d’un studio photographique rétro.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -635,14 +654,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-1980sstudio', 'img-1980sstudio', '/1980sstudio', 'Studio années 1980', '1980sstudio', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Produit fond peint, flash doux et stylisme rétro immédiatement partageable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'produit']::text[], array['studio annees 1980', 'epoques', 'portraits et souvenirs']::text[], 'Studio années 1980 | RaccourcIA', 'Produit fond peint, flash doux et stylisme rétro immédiatement partageable.', 76, 20, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-1980sstudio', 'img-1980sstudio', '/1980sstudio', 'Studio années 1980', '1980sstudio', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Produit fond peint, flash doux et stylisme rétro immédiatement partageable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'produit']::text[], array['studio annees 1980', 'epoques', 'portraits et souvenirs']::text[], 'Studio années 1980 | RaccourcIA', 'Produit fond peint, flash doux et stylisme rétro immédiatement partageable.', 76, 20, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-1980sstudio',
   command = '/1980sstudio',
   name = 'Studio années 1980',
   slug = '1980sstudio',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Produit fond peint, flash doux et stylisme rétro immédiatement partageable.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -668,14 +688,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-futureheadline', 'img-futureheadline', '/futureheadline', 'Une de mon futur', 'futureheadline', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Imagine une réussite future sous forme de portrait éditorial en séparant clairement ambition et fait réel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['une de mon futur', 'epoques', 'portraits et souvenirs']::text[], 'Une de mon futur | RaccourcIA', 'Imagine une réussite future sous forme de portrait éditorial en séparant clairement ambition et fait réel.', 76, 21, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-futureheadline', 'img-futureheadline', '/futureheadline', 'Une de mon futur', 'futureheadline', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Imagine une réussite future sous forme de portrait éditorial en séparant clairement ambition et fait réel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['une de mon futur', 'epoques', 'portraits et souvenirs']::text[], 'Une de mon futur | RaccourcIA', 'Imagine une réussite future sous forme de portrait éditorial en séparant clairement ambition et fait réel.', 76, 21, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-futureheadline',
   command = '/futureheadline',
   name = 'Une de mon futur',
   slug = 'futureheadline',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Imagine une réussite future sous forme de portrait éditorial en séparant clairement ambition et fait réel.',
   expected_input = 'Une photo nette de la personne',
@@ -701,14 +722,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-teenself', 'img-teenself', '/teenself', 'Version adolescente', 'teenself', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Imagine une version adolescente plausible sans changer les caractéristiques identitaires.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['version adolescente', 'epoques', 'portraits et souvenirs']::text[], 'Version adolescente | RaccourcIA', 'Imagine une version adolescente plausible sans changer les caractéristiques identitaires.', 76, 22, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-teenself', 'img-teenself', '/teenself', 'Version adolescente', 'teenself', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Imagine une version adolescente plausible sans changer les caractéristiques identitaires.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['version adolescente', 'epoques', 'portraits et souvenirs']::text[], 'Version adolescente | RaccourcIA', 'Imagine une version adolescente plausible sans changer les caractéristiques identitaires.', 76, 22, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-teenself',
   command = '/teenself',
   name = 'Version adolescente',
   slug = 'teenself',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Imagine une version adolescente plausible sans changer les caractéristiques identitaires.',
   expected_input = 'Une photo nette de la personne',
@@ -734,14 +756,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-babyself', 'img-babyself', '/babyself', 'Version bébé imaginaire', 'babyself', 'image'::public.app_mode, (select id from public.categories where slug = 'epoques'), 'Imagine la personne bébé avec traits familiaux reconnaissables, sans prétention documentaire.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['version bebe imaginaire', 'epoques', 'portraits et souvenirs']::text[], 'Version bébé imaginaire | RaccourcIA', 'Imagine la personne bébé avec traits familiaux reconnaissables, sans prétention documentaire.', 76, 23, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-babyself', 'img-babyself', '/babyself', 'Version bébé imaginaire', 'babyself', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'epoques'), 'Imagine la personne bébé avec traits familiaux reconnaissables, sans prétention documentaire.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['epoques', 'portraits-et-souvenirs', 'commande-image']::text[], array['version bebe imaginaire', 'epoques', 'portraits et souvenirs']::text[], 'Version bébé imaginaire | RaccourcIA', 'Imagine la personne bébé avec traits familiaux reconnaissables, sans prétention documentaire.', 76, 23, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-babyself',
   command = '/babyself',
   name = 'Version bébé imaginaire',
   slug = 'babyself',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'epoques'),
   short_description = 'Imagine la personne bébé avec traits familiaux reconnaissables, sans prétention documentaire.',
   expected_input = 'Une photo nette de la personne',
@@ -767,14 +790,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-friendshipportrait', 'img-friendshipportrait', '/friendshipportrait', 'Amitié', 'friendshipportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Crée un portrait complice adapté à un souvenir ou une publication.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['amitie', 'relations', 'portraits et souvenirs']::text[], 'Amitié | RaccourcIA', 'Crée un portrait complice adapté à un souvenir ou une publication.', 76, 24, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-friendshipportrait', 'img-friendshipportrait', '/friendshipportrait', 'Amitié', 'friendshipportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Crée un portrait complice adapté à un souvenir ou une publication.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['amitie', 'relations', 'portraits et souvenirs']::text[], 'Amitié | RaccourcIA', 'Crée un portrait complice adapté à un souvenir ou une publication.', 76, 24, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-friendshipportrait',
   command = '/friendshipportrait',
   name = 'Amitié',
   slug = 'friendshipportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Crée un portrait complice adapté à un souvenir ou une publication.',
   expected_input = 'Une photo nette de la personne',
@@ -800,14 +824,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-anniversaryportrait', 'img-anniversaryportrait', '/anniversaryportrait', 'Anniversaire de couple', 'anniversaryportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Célèbre une durée de relation avec détails symboliques personnalisés.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['anniversaire de couple', 'relations', 'portraits et souvenirs']::text[], 'Anniversaire de couple | RaccourcIA', 'Célèbre une durée de relation avec détails symboliques personnalisés.', 76, 25, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-anniversaryportrait', 'img-anniversaryportrait', '/anniversaryportrait', 'Anniversaire de couple', 'anniversaryportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Célèbre une durée de relation avec détails symboliques personnalisés.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['anniversaire de couple', 'relations', 'portraits et souvenirs']::text[], 'Anniversaire de couple | RaccourcIA', 'Célèbre une durée de relation avec détails symboliques personnalisés.', 76, 25, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-anniversaryportrait',
   command = '/anniversaryportrait',
   name = 'Anniversaire de couple',
   slug = 'anniversaryportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Célèbre une durée de relation avec détails symboliques personnalisés.',
   expected_input = 'Photos des personnes concernées',
@@ -833,14 +858,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-engagementportrait', 'img-engagementportrait', '/engagementportrait', 'Fiançailles', 'engagementportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Met en scène une demande ou célébration de fiançailles crédible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['fiancailles', 'relations', 'portraits et souvenirs']::text[], 'Fiançailles | RaccourcIA', 'Met en scène une demande ou célébration de fiançailles crédible.', 76, 26, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-engagementportrait', 'img-engagementportrait', '/engagementportrait', 'Fiançailles', 'engagementportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Met en scène une demande ou célébration de fiançailles crédible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['fiancailles', 'relations', 'portraits et souvenirs']::text[], 'Fiançailles | RaccourcIA', 'Met en scène une demande ou célébration de fiançailles crédible.', 76, 26, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-engagementportrait',
   command = '/engagementportrait',
   name = 'Fiançailles',
   slug = 'engagementportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Met en scène une demande ou célébration de fiançailles crédible.',
   expected_input = 'Une photo nette de la personne',
@@ -866,14 +892,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-siblingportrait', 'img-siblingportrait', '/siblingportrait', 'Fratrie', 'siblingportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Compose frères et sœurs avec proximité naturelle et poses non figées.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['fratrie', 'relations', 'portraits et souvenirs']::text[], 'Fratrie | RaccourcIA', 'Compose frères et sœurs avec proximité naturelle et poses non figées.', 76, 27, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-siblingportrait', 'img-siblingportrait', '/siblingportrait', 'Fratrie', 'siblingportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Compose frères et sœurs avec proximité naturelle et poses non figées.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['fratrie', 'relations', 'portraits et souvenirs']::text[], 'Fratrie | RaccourcIA', 'Compose frères et sœurs avec proximité naturelle et poses non figées.', 76, 27, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-siblingportrait',
   command = '/siblingportrait',
   name = 'Fratrie',
   slug = 'siblingportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Compose frères et sœurs avec proximité naturelle et poses non figées.',
   expected_input = 'Photos des personnes concernées',
@@ -899,14 +926,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-petandme', 'img-petandme', '/petandme', 'Mon animal et moi', 'petandme', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Crée un duo complice entre la personne et son animal en respectant leurs apparences réelles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['mon animal et moi', 'relations', 'portraits et souvenirs']::text[], 'Mon animal et moi | RaccourcIA', 'Crée un duo complice entre la personne et son animal en respectant leurs apparences réelles.', 76, 28, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-petandme', 'img-petandme', '/petandme', 'Mon animal et moi', 'petandme', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Crée un duo complice entre la personne et son animal en respectant leurs apparences réelles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['mon animal et moi', 'relations', 'portraits et souvenirs']::text[], 'Mon animal et moi | RaccourcIA', 'Crée un duo complice entre la personne et son animal en respectant leurs apparences réelles.', 76, 28, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-petandme',
   command = '/petandme',
   name = 'Mon animal et moi',
   slug = 'petandme',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Crée un duo complice entre la personne et son animal en respectant leurs apparences réelles.',
   expected_input = 'Une photo nette de la personne',
@@ -932,14 +960,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-mentorandme', 'img-mentorandme', '/mentorandme', 'Mon mentor et moi', 'mentorandme', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Crée un portrait de transmission entre deux personnes réelles à partir de leurs références validées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['mon mentor et moi', 'relations', 'portraits et souvenirs']::text[], 'Mon mentor et moi | RaccourcIA', 'Crée un portrait de transmission entre deux personnes réelles à partir de leurs références validées.', 76, 29, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-mentorandme', 'img-mentorandme', '/mentorandme', 'Mon mentor et moi', 'mentorandme', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Crée un portrait de transmission entre deux personnes réelles à partir de leurs références validées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['mon mentor et moi', 'relations', 'portraits et souvenirs']::text[], 'Mon mentor et moi | RaccourcIA', 'Crée un portrait de transmission entre deux personnes réelles à partir de leurs références validées.', 76, 29, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-mentorandme',
   command = '/mentorandme',
   name = 'Mon mentor et moi',
   slug = 'mentorandme',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Crée un portrait de transmission entre deux personnes réelles à partir de leurs références validées.',
   expected_input = 'Une photo nette de la personne',
@@ -965,14 +994,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-communityportrait', 'img-communityportrait', '/communityportrait', 'Portrait communautaire', 'communityportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Valorise un groupe, une association ou un collectif dans son environnement.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait communautaire', 'relations', 'portraits et souvenirs']::text[], 'Portrait communautaire | RaccourcIA', 'Valorise un groupe, une association ou un collectif dans son environnement.', 76, 30, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-communityportrait', 'img-communityportrait', '/communityportrait', 'Portrait communautaire', 'communityportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Valorise un groupe, une association ou un collectif dans son environnement.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait communautaire', 'relations', 'portraits et souvenirs']::text[], 'Portrait communautaire | RaccourcIA', 'Valorise un groupe, une association ou un collectif dans son environnement.', 76, 30, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-communityportrait',
   command = '/communityportrait',
   name = 'Portrait communautaire',
   slug = 'communityportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Valorise un groupe, une association ou un collectif dans son environnement.',
   expected_input = 'Photos des personnes concernées',
@@ -998,14 +1028,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-coupleportrait', 'img-coupleportrait', '/coupleportrait', 'Portrait de couple', 'coupleportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Compose un portrait naturel de deux personnes en préservant leurs traits.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de couple', 'relations', 'portraits et souvenirs']::text[], 'Portrait de couple | RaccourcIA', 'Compose un portrait naturel de deux personnes en préservant leurs traits.', 76, 31, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-coupleportrait', 'img-coupleportrait', '/coupleportrait', 'Portrait de couple', 'coupleportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Compose un portrait naturel de deux personnes en préservant leurs traits.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de couple', 'relations', 'portraits et souvenirs']::text[], 'Portrait de couple | RaccourcIA', 'Compose un portrait naturel de deux personnes en préservant leurs traits.', 76, 31, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-coupleportrait',
   command = '/coupleportrait',
   name = 'Portrait de couple',
   slug = 'coupleportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Compose un portrait naturel de deux personnes en préservant leurs traits.',
   expected_input = 'Photos des personnes concernées',
@@ -1031,14 +1062,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-familyportrait', 'img-familyportrait', '/familyportrait', 'Portrait de famille', 'familyportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Harmonise plusieurs proches dans une composition chaleureuse et équilibrée.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de famille', 'relations', 'portraits et souvenirs']::text[], 'Portrait de famille | RaccourcIA', 'Harmonise plusieurs proches dans une composition chaleureuse et équilibrée.', 76, 32, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-familyportrait', 'img-familyportrait', '/familyportrait', 'Portrait de famille', 'familyportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Harmonise plusieurs proches dans une composition chaleureuse et équilibrée.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de famille', 'relations', 'portraits et souvenirs']::text[], 'Portrait de famille | RaccourcIA', 'Harmonise plusieurs proches dans une composition chaleureuse et équilibrée.', 76, 32, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-familyportrait',
   command = '/familyportrait',
   name = 'Portrait de famille',
   slug = 'familyportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Harmonise plusieurs proches dans une composition chaleureuse et équilibrée.',
   expected_input = 'Photos des personnes concernées',
@@ -1064,14 +1096,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-weddingportrait', 'img-weddingportrait', '/weddingportrait', 'Portrait de mariage', 'weddingportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Crée un portrait de mariage fidèle aux personnes, tenues et ambiance.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de mariage', 'relations', 'portraits et souvenirs']::text[], 'Portrait de mariage | RaccourcIA', 'Crée un portrait de mariage fidèle aux personnes, tenues et ambiance.', 76, 33, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-weddingportrait', 'img-weddingportrait', '/weddingportrait', 'Portrait de mariage', 'weddingportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Crée un portrait de mariage fidèle aux personnes, tenues et ambiance.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de mariage', 'relations', 'portraits et souvenirs']::text[], 'Portrait de mariage | RaccourcIA', 'Crée un portrait de mariage fidèle aux personnes, tenues et ambiance.', 76, 33, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-weddingportrait',
   command = '/weddingportrait',
   name = 'Portrait de mariage',
   slug = 'weddingportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Crée un portrait de mariage fidèle aux personnes, tenues et ambiance.',
   expected_input = 'Une photo nette de la personne',
@@ -1097,14 +1130,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-familysignature', 'img-familysignature', '/familysignature', 'Portrait signature de famille', 'familysignature', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Compose un portrait familial emblématique autour d’un lieu, d’une couleur et d’un objet propres à la famille.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait signature de famille', 'relations', 'portraits et souvenirs']::text[], 'Portrait signature de famille | RaccourcIA', 'Compose un portrait familial emblématique autour d’un lieu, d’une couleur et d’un objet propres à la famille.', 76, 34, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-familysignature', 'img-familysignature', '/familysignature', 'Portrait signature de famille', 'familysignature', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Compose un portrait familial emblématique autour d’un lieu, d’une couleur et d’un objet propres à la famille.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait signature de famille', 'relations', 'portraits et souvenirs']::text[], 'Portrait signature de famille | RaccourcIA', 'Compose un portrait familial emblématique autour d’un lieu, d’une couleur et d’un objet propres à la famille.', 76, 34, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-familysignature',
   command = '/familysignature',
   name = 'Portrait signature de famille',
   slug = 'familysignature',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Compose un portrait familial emblématique autour d’un lieu, d’une couleur et d’un objet propres à la famille.',
   expected_input = 'Photos des personnes concernées',
@@ -1130,14 +1164,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-innerchildhug', 'img-innerchildhug', '/innerchildhug', 'Rencontre avec son enfant intérieur', 'innerchildhug', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Réunit la personne adulte et sa version enfant dans une étreinte cohérente et émotionnelle.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['rencontre avec son enfant interieur', 'relations', 'portraits et souvenirs']::text[], 'Rencontre avec son enfant intérieur | RaccourcIA', 'Réunit la personne adulte et sa version enfant dans une étreinte cohérente et émotionnelle.', 76, 35, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-innerchildhug', 'img-innerchildhug', '/innerchildhug', 'Rencontre avec son enfant intérieur', 'innerchildhug', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Réunit la personne adulte et sa version enfant dans une étreinte cohérente et émotionnelle.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['rencontre avec son enfant interieur', 'relations', 'portraits et souvenirs']::text[], 'Rencontre avec son enfant intérieur | RaccourcIA', 'Réunit la personne adulte et sa version enfant dans une étreinte cohérente et émotionnelle.', 76, 35, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-innerchildhug',
   command = '/innerchildhug',
   name = 'Rencontre avec son enfant intérieur',
   slug = 'innerchildhug',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Réunit la personne adulte et sa version enfant dans une étreinte cohérente et émotionnelle.',
   expected_input = 'Une photo nette de la personne',
@@ -1163,14 +1198,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-reunionportrait', 'img-reunionportrait', '/reunionportrait', 'Retrouvailles', 'reunionportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'relations'), 'Réunit visuellement des proches à partir de références séparées clairement signalées.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['retrouvailles', 'relations', 'portraits et souvenirs']::text[], 'Retrouvailles | RaccourcIA', 'Réunit visuellement des proches à partir de références séparées clairement signalées.', 76, 36, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-reunionportrait', 'img-reunionportrait', '/reunionportrait', 'Retrouvailles', 'reunionportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'relations'), 'Réunit visuellement des proches à partir de références séparées clairement signalées.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['relations', 'portraits-et-souvenirs', 'commande-image']::text[], array['retrouvailles', 'relations', 'portraits et souvenirs']::text[], 'Retrouvailles | RaccourcIA', 'Réunit visuellement des proches à partir de références séparées clairement signalées.', 76, 36, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-reunionportrait',
   command = '/reunionportrait',
   name = 'Retrouvailles',
   slug = 'reunionportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'relations'),
   short_description = 'Réunit visuellement des proches à partir de références séparées clairement signalées.',
   expected_input = 'Photos des personnes concernées',
@@ -1196,14 +1232,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-newbornfamily', 'img-newbornfamily', '/newbornfamily', 'Famille avec nouveau-né', 'newbornfamily', 'image'::public.app_mode, (select id from public.categories where slug = 'celebrations'), 'Compose un souvenir familial tendre à partir de références fournies.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image']::text[], array['famille avec nouveau ne', 'celebrations', 'portraits et souvenirs']::text[], 'Famille avec nouveau-né | RaccourcIA', 'Compose un souvenir familial tendre à partir de références fournies.', 76, 37, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-newbornfamily', 'img-newbornfamily', '/newbornfamily', 'Famille avec nouveau-né', 'newbornfamily', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'celebrations'), 'Compose un souvenir familial tendre à partir de références fournies.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image']::text[], array['famille avec nouveau ne', 'celebrations', 'portraits et souvenirs']::text[], 'Famille avec nouveau-né | RaccourcIA', 'Compose un souvenir familial tendre à partir de références fournies.', 76, 37, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-newbornfamily',
   command = '/newbornfamily',
   name = 'Famille avec nouveau-né',
   slug = 'newbornfamily',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'celebrations'),
   short_description = 'Compose un souvenir familial tendre à partir de références fournies.',
   expected_input = 'Photos des personnes concernées',
@@ -1229,14 +1266,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-birthdayportrait', 'img-birthdayportrait', '/birthdayportrait', 'Portrait anniversaire', 'birthdayportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'celebrations'), 'Produit un visuel festif centré sur l’âge, les goûts et la personne.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['celebrations', 'portraits-et-souvenirs', 'commande-image', 'portrait', 'produit']::text[], array['portrait anniversaire', 'celebrations', 'portraits et souvenirs']::text[], 'Portrait anniversaire | RaccourcIA', 'Produit un visuel festif centré sur l’âge, les goûts et la personne.', 76, 38, true, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-birthdayportrait', 'img-birthdayportrait', '/birthdayportrait', 'Portrait anniversaire', 'birthdayportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'celebrations'), 'Produit un visuel festif centré sur l’âge, les goûts et la personne.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['celebrations', 'portraits-et-souvenirs', 'commande-image', 'portrait', 'produit']::text[], array['portrait anniversaire', 'celebrations', 'portraits et souvenirs']::text[], 'Portrait anniversaire | RaccourcIA', 'Produit un visuel festif centré sur l’âge, les goûts et la personne.', 76, 38, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-birthdayportrait',
   command = '/birthdayportrait',
   name = 'Portrait anniversaire',
   slug = 'birthdayportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'celebrations'),
   short_description = 'Produit un visuel festif centré sur l’âge, les goûts et la personne.',
   expected_input = 'Une photo du produit ou de l’objet',
@@ -1262,14 +1300,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-graduationportrait', 'img-graduationportrait', '/graduationportrait', 'Portrait de diplôme', 'graduationportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'celebrations'), 'Valorise la réussite avec codes académiques et décor adaptés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de diplome', 'celebrations', 'portraits et souvenirs']::text[], 'Portrait de diplôme | RaccourcIA', 'Valorise la réussite avec codes académiques et décor adaptés.', 76, 39, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-graduationportrait', 'img-graduationportrait', '/graduationportrait', 'Portrait de diplôme', 'graduationportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'celebrations'), 'Valorise la réussite avec codes académiques et décor adaptés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de diplome', 'celebrations', 'portraits et souvenirs']::text[], 'Portrait de diplôme | RaccourcIA', 'Valorise la réussite avec codes académiques et décor adaptés.', 76, 39, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-graduationportrait',
   command = '/graduationportrait',
   name = 'Portrait de diplôme',
   slug = 'graduationportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'celebrations'),
   short_description = 'Valorise la réussite avec codes académiques et décor adaptés.',
   expected_input = 'Une photo nette de la personne',
@@ -1295,14 +1334,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-festivalportrait', 'img-festivalportrait', '/festivalportrait', 'Portrait de festival', 'festivalportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'celebrations'), 'Intègre couleur, foule et énergie musicale autour de la personne.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de festival', 'celebrations', 'portraits et souvenirs']::text[], 'Portrait de festival | RaccourcIA', 'Intègre couleur, foule et énergie musicale autour de la personne.', 76, 40, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-festivalportrait', 'img-festivalportrait', '/festivalportrait', 'Portrait de festival', 'festivalportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'celebrations'), 'Intègre couleur, foule et énergie musicale autour de la personne.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait de festival', 'celebrations', 'portraits et souvenirs']::text[], 'Portrait de festival | RaccourcIA', 'Intègre couleur, foule et énergie musicale autour de la personne.', 76, 40, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-festivalportrait',
   command = '/festivalportrait',
   name = 'Portrait de festival',
   slug = 'festivalportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'celebrations'),
   short_description = 'Intègre couleur, foule et énergie musicale autour de la personne.',
   expected_input = 'Une photo nette de la personne',
@@ -1328,14 +1368,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-maternityportrait', 'img-maternityportrait', '/maternityportrait', 'Portrait maternité', 'maternityportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'celebrations'), 'Crée un portrait doux et respectueux sans modifier le corps réel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait maternite', 'celebrations', 'portraits et souvenirs']::text[], 'Portrait maternité | RaccourcIA', 'Crée un portrait doux et respectueux sans modifier le corps réel.', 76, 41, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-maternityportrait', 'img-maternityportrait', '/maternityportrait', 'Portrait maternité', 'maternityportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'celebrations'), 'Crée un portrait doux et respectueux sans modifier le corps réel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait maternite', 'celebrations', 'portraits et souvenirs']::text[], 'Portrait maternité | RaccourcIA', 'Crée un portrait doux et respectueux sans modifier le corps réel.', 76, 41, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-maternityportrait',
   command = '/maternityportrait',
   name = 'Portrait maternité',
   slug = 'maternityportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'celebrations'),
   short_description = 'Crée un portrait doux et respectueux sans modifier le corps réel.',
   expected_input = 'Une photo nette de la personne',
@@ -1361,14 +1402,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-awardnight', 'img-awardnight', '/awardnight', 'Soirée de récompense', 'awardnight', 'image'::public.app_mode, (select id from public.categories where slug = 'celebrations'), 'Crée un moment de remise de prix fictif et valorisant.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image']::text[], array['soiree de recompense', 'celebrations', 'portraits et souvenirs']::text[], 'Soirée de récompense | RaccourcIA', 'Crée un moment de remise de prix fictif et valorisant.', 76, 42, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-awardnight', 'img-awardnight', '/awardnight', 'Soirée de récompense', 'awardnight', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'celebrations'), 'Crée un moment de remise de prix fictif et valorisant.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image']::text[], array['soiree de recompense', 'celebrations', 'portraits et souvenirs']::text[], 'Soirée de récompense | RaccourcIA', 'Crée un moment de remise de prix fictif et valorisant.', 76, 42, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-awardnight',
   command = '/awardnight',
   name = 'Soirée de récompense',
   slug = 'awardnight',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'celebrations'),
   short_description = 'Crée un moment de remise de prix fictif et valorisant.',
   expected_input = 'Une photo nette de la personne',
@@ -1394,14 +1436,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-redcarpetmoment', 'img-redcarpetmoment', '/redcarpetmoment', 'Tapis rouge', 'redcarpetmoment', 'image'::public.app_mode, (select id from public.categories where slug = 'celebrations'), 'Met en scène une arrivée spectaculaire avec flashs et foule contrôlée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image']::text[], array['tapis rouge', 'celebrations', 'portraits et souvenirs']::text[], 'Tapis rouge | RaccourcIA', 'Met en scène une arrivée spectaculaire avec flashs et foule contrôlée.', 76, 43, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-redcarpetmoment', 'img-redcarpetmoment', '/redcarpetmoment', 'Tapis rouge', 'redcarpetmoment', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'celebrations'), 'Met en scène une arrivée spectaculaire avec flashs et foule contrôlée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['celebrations', 'portraits-et-souvenirs', 'commande-image']::text[], array['tapis rouge', 'celebrations', 'portraits et souvenirs']::text[], 'Tapis rouge | RaccourcIA', 'Met en scène une arrivée spectaculaire avec flashs et foule contrôlée.', 76, 43, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-redcarpetmoment',
   command = '/redcarpetmoment',
   name = 'Tapis rouge',
   slug = 'redcarpetmoment',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'celebrations'),
   short_description = 'Met en scène une arrivée spectaculaire avec flashs et foule contrôlée.',
   expected_input = 'Une photo nette de la personne',
@@ -1427,14 +1470,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-habeshaceremony', 'img-habeshaceremony', '/habeshaceremony', 'Cérémonie habesha', 'habeshaceremony', 'image'::public.app_mode, (select id from public.categories where slug = 'cultures'), 'Compose un portrait habesha selon le pays, l’occasion, la tenue et les références sélectionnés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['ceremonie habesha', 'cultures', 'portraits et souvenirs']::text[], 'Cérémonie habesha | RaccourcIA', 'Compose un portrait habesha selon le pays, l’occasion, la tenue et les références sélectionnés.', 76, 44, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-habeshaceremony', 'img-habeshaceremony', '/habeshaceremony', 'Cérémonie habesha', 'habeshaceremony', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Compose un portrait habesha selon le pays, l’occasion, la tenue et les références sélectionnés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['ceremonie habesha', 'cultures', 'portraits et souvenirs']::text[], 'Cérémonie habesha | RaccourcIA', 'Compose un portrait habesha selon le pays, l’occasion, la tenue et les références sélectionnés.', 76, 44, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-habeshaceremony',
   command = '/habeshaceremony',
   name = 'Cérémonie habesha',
   slug = 'habeshaceremony',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'cultures'),
   short_description = 'Compose un portrait habesha selon le pays, l’occasion, la tenue et les références sélectionnés.',
   expected_input = 'Une photo nette de la personne',
@@ -1460,14 +1504,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-russianceremony', 'img-russianceremony', '/russianceremony', 'Cérémonie russe', 'russianceremony', 'image'::public.app_mode, (select id from public.categories where slug = 'cultures'), 'Compose un portrait de cérémonie russe en demandant région, époque et tenue plutôt qu’un folklore générique.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['ceremonie russe', 'cultures', 'portraits et souvenirs']::text[], 'Cérémonie russe | RaccourcIA', 'Compose un portrait de cérémonie russe en demandant région, époque et tenue plutôt qu’un folklore générique.', 76, 45, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-russianceremony', 'img-russianceremony', '/russianceremony', 'Cérémonie russe', 'russianceremony', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Compose un portrait de cérémonie russe en demandant région, époque et tenue plutôt qu’un folklore générique.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['ceremonie russe', 'cultures', 'portraits et souvenirs']::text[], 'Cérémonie russe | RaccourcIA', 'Compose un portrait de cérémonie russe en demandant région, époque et tenue plutôt qu’un folklore générique.', 76, 45, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-russianceremony',
   command = '/russianceremony',
   name = 'Cérémonie russe',
   slug = 'russianceremony',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'cultures'),
   short_description = 'Compose un portrait de cérémonie russe en demandant région, époque et tenue plutôt qu’un folklore générique.',
   expected_input = 'Une photo nette de la personne',
@@ -1493,14 +1538,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-yorubaceremony', 'img-yorubaceremony', '/yorubaceremony', 'Cérémonie yoruba', 'yorubaceremony', 'image'::public.app_mode, (select id from public.categories where slug = 'cultures'), 'Compose un portrait yoruba en demandant type de cérémonie, tenue, couvre-chef et accessoires exacts.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['ceremonie yoruba', 'cultures', 'portraits et souvenirs']::text[], 'Cérémonie yoruba | RaccourcIA', 'Compose un portrait yoruba en demandant type de cérémonie, tenue, couvre-chef et accessoires exacts.', 76, 46, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-yorubaceremony', 'img-yorubaceremony', '/yorubaceremony', 'Cérémonie yoruba', 'yorubaceremony', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Compose un portrait yoruba en demandant type de cérémonie, tenue, couvre-chef et accessoires exacts.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['ceremonie yoruba', 'cultures', 'portraits et souvenirs']::text[], 'Cérémonie yoruba | RaccourcIA', 'Compose un portrait yoruba en demandant type de cérémonie, tenue, couvre-chef et accessoires exacts.', 76, 46, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-yorubaceremony',
   command = '/yorubaceremony',
   name = 'Cérémonie yoruba',
   slug = 'yorubaceremony',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'cultures'),
   short_description = 'Compose un portrait yoruba en demandant type de cérémonie, tenue, couvre-chef et accessoires exacts.',
   expected_input = 'Une photo nette de la personne',
@@ -1526,14 +1572,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-ndebelegeometryportrait', 'img-ndebelegeometryportrait', '/ndebelegeometryportrait', 'Géométrie ndébélé', 'ndebelegeometryportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'cultures'), 'Intègre le portrait à une composition inspirée de motifs ndébélé confirmés et clairement contextualisés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['geometrie ndebele', 'cultures', 'portraits et souvenirs']::text[], 'Géométrie ndébélé | RaccourcIA', 'Intègre le portrait à une composition inspirée de motifs ndébélé confirmés et clairement contextualisés.', 76, 47, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-ndebelegeometryportrait', 'img-ndebelegeometryportrait', '/ndebelegeometryportrait', 'Géométrie ndébélé', 'ndebelegeometryportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Intègre le portrait à une composition inspirée de motifs ndébélé confirmés et clairement contextualisés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['geometrie ndebele', 'cultures', 'portraits et souvenirs']::text[], 'Géométrie ndébélé | RaccourcIA', 'Intègre le portrait à une composition inspirée de motifs ndébélé confirmés et clairement contextualisés.', 76, 47, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-ndebelegeometryportrait',
   command = '/ndebelegeometryportrait',
   name = 'Géométrie ndébélé',
   slug = 'ndebelegeometryportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'cultures'),
   short_description = 'Intègre le portrait à une composition inspirée de motifs ndébélé confirmés et clairement contextualisés.',
   expected_input = 'Une photo nette de la personne',
@@ -1559,14 +1606,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-mariage-bengali', 'img-mariage-bengali', '/mariage-bengali', 'Mariage bengali', 'mariage-bengali', 'image'::public.app_mode, (select id from public.categories where slug = 'cultures'), 'Un portrait de mariage fondé sur une tenue bengalie choisie, sans mélange automatique de traditions régionales.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['mariage bengali', 'cultures', 'portraits et souvenirs']::text[], 'Mariage bengali | RaccourcIA', 'Un portrait de mariage fondé sur une tenue bengalie choisie, sans mélange automatique de traditions régionales.', 76, 48, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-mariage-bengali', 'img-mariage-bengali', '/mariage-bengali', 'Mariage bengali', 'mariage-bengali', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Un portrait de mariage fondé sur une tenue bengalie choisie, sans mélange automatique de traditions régionales.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['mariage bengali', 'cultures', 'portraits et souvenirs']::text[], 'Mariage bengali | RaccourcIA', 'Un portrait de mariage fondé sur une tenue bengalie choisie, sans mélange automatique de traditions régionales.', 76, 48, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-mariage-bengali',
   command = '/mariage-bengali',
   name = 'Mariage bengali',
   slug = 'mariage-bengali',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'cultures'),
   short_description = 'Un portrait de mariage fondé sur une tenue bengalie choisie, sans mélange automatique de traditions régionales.',
   expected_input = 'Une photo nette de la personne',
@@ -1592,14 +1640,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-indianweddingportrait', 'img-indianweddingportrait', '/indianweddingportrait', 'Mariage punjabi', 'indianweddingportrait', 'image'::public.app_mode, (select id from public.categories where slug = 'cultures'), 'Un portrait en tenue de mariage punjabi référencée, adapté au rôle du sujet et à l’occasion.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['mariage punjabi', 'cultures', 'portraits et souvenirs']::text[], 'Mariage punjabi | RaccourcIA', 'Un portrait en tenue de mariage punjabi référencée, adapté au rôle du sujet et à l’occasion.', 76, 49, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-indianweddingportrait', 'img-indianweddingportrait', '/indianweddingportrait', 'Mariage punjabi', 'indianweddingportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Un portrait en tenue de mariage punjabi référencée, adapté au rôle du sujet et à l’occasion.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['mariage punjabi', 'cultures', 'portraits et souvenirs']::text[], 'Mariage punjabi | RaccourcIA', 'Un portrait en tenue de mariage punjabi référencée, adapté au rôle du sujet et à l’occasion.', 76, 49, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-indianweddingportrait',
   command = '/indianweddingportrait',
   name = 'Mariage punjabi',
   slug = 'indianweddingportrait',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'cultures'),
   short_description = 'Un portrait en tenue de mariage punjabi référencée, adapté au rôle du sujet et à l’occasion.',
   expected_input = 'Une photo nette de la personne',
@@ -1625,14 +1674,15 @@ on conflict (command) where status <> 'archived' do update set
   show_image_card = true,
   catalog_v2 = true;
 
-insert into public.prompts (external_ref, card_id, command, name, slug, mode, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-mariage-tamoul', 'img-mariage-tamoul', '/mariage-tamoul', 'Mariage tamoul', 'mariage-tamoul', 'image'::public.app_mode, (select id from public.categories where slug = 'cultures'), 'Une tenue de mariage tamoule référencée est adaptée au rôle du sujet, avec plis, bordures et bijoux cohérents.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image']::text[], array['mariage tamoul', 'cultures', 'portraits et souvenirs']::text[], 'Mariage tamoul | RaccourcIA', 'Une tenue de mariage tamoule référencée est adaptée au rôle du sujet, avec plis, bordures et bijoux cohérents.', 76, 50, false, true, '2.0', true, 'draft'::public.content_status)
+insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
+values ('img-mariage-tamoul', 'img-mariage-tamoul', '/mariage-tamoul', 'Mariage tamoul', 'mariage-tamoul', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Une tenue de mariage tamoule référencée est adaptée au rôle du sujet, avec plis, bordures et bijoux cohérents.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image']::text[], array['mariage tamoul', 'cultures', 'portraits et souvenirs']::text[], 'Mariage tamoul | RaccourcIA', 'Une tenue de mariage tamoule référencée est adaptée au rôle du sujet, avec plis, bordures et bijoux cohérents.', 76, 50, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-mariage-tamoul',
   command = '/mariage-tamoul',
   name = 'Mariage tamoul',
   slug = 'mariage-tamoul',
   mode = 'image'::public.app_mode,
+  entity_type = 'commande_image',
   category_id = (select id from public.categories where slug = 'cultures'),
   short_description = 'Une tenue de mariage tamoule référencée est adaptée au rôle du sujet, avec plis, bordures et bijoux cohérents.',
   expected_input = 'Une photo du produit ou de l’objet',

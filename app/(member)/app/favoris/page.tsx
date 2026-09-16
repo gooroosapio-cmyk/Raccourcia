@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getFavorites } from '@/lib/catalog/queries';
-import { PromptGrid } from '@/components/cards/prompt-grid';
+import { ListeCompacte } from '@/components/cards/liste-compacte';
 import { EmptyState } from '@/components/ui/states';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
@@ -34,18 +34,16 @@ export default async function FavoritesPage() {
   return (
     <div className="space-y-4 pt-1">
       <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Favoris</h1>
-      <PromptGrid
-        prompts={favorites}
-        locked={!hasFullAccess}
-        emptyState={
-          <EmptyState
-            title="Aucun favori pour l’instant"
-            body="Ajoutez vos commandes préférées pour les retrouver ici."
-            actionLabel="Parcourir la bibliothèque"
-            actionHref="/app"
-          />
-        }
-      />
+      {favorites.length === 0 ? (
+        <EmptyState
+          title="Aucun favori pour le moment"
+          body="Enregistrez les commandes qui vous intéressent pour les retrouver ici."
+          actionLabel="Parcourir la bibliothèque"
+          actionHref="/app/bibliotheque"
+        />
+      ) : (
+        <ListeCompacte prompts={favorites} locked={!hasFullAccess} />
+      )}
     </div>
   );
 }

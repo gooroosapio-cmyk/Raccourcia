@@ -411,6 +411,7 @@ export type Database = {
           cta_label: string | null;
           default_ratio: string | null;
           default_values: string | null;
+          entity_type: string | null;
           expected_input: string | null;
           expected_output: string | null;
           external_ref: string | null;
@@ -475,6 +476,7 @@ export type Database = {
           command: string;
           cta_label?: string | null;
           default_ratio?: string | null;
+          entity_type?: string | null;
           identity_policy?: string | null;
           images_max?: number | null;
           images_min?: number | null;
@@ -502,6 +504,7 @@ export type Database = {
           command: string;
           cta_label?: string | null;
           default_ratio?: string | null;
+          entity_type?: string | null;
           identity_policy?: string | null;
           images_max?: number | null;
           images_min?: number | null;
