@@ -152,11 +152,10 @@ Images hors écran en `lazy`, quatre premières vignettes prioritaires.
 
 ## 8. Limites restantes
 
-- **Capacités et exemple de première demande des Modes IA** : 0 sur 82 en base.
-  Le brief demande de les afficher ; je ne les invente pas. Gabarit fourni dans
-  `docs/a-fournir/modes-ia.csv`.
-- **Livrables de 8 parcours sur 28** : absents, donc aucun nombre d'étapes
-  affiché pour eux plutôt qu'un chiffre faux.
+- ~~Capacités et exemple de première demande des Modes IA~~ : **levé.** Le lot
+  Moteur V3 les a apportés pour les 82 modes ; ils sont affichés (§10 ci-dessous).
+- ~~Livrables de 8 parcours sur 28~~ : **levé.** Les 28 parcours annoncent
+  désormais une liste de livrables vérifiable.
 - **20 mentions légales** affichent « à compléter » en production.
 - **Offre** : prix, prix de référence, inclusion des nouveautés et limite
   d'appareils restent à confirmer.
@@ -173,5 +172,44 @@ Images hors écran en `lazy`, quatre premières vignettes prioritaires.
 - Les rôles de médias — couverture, image témoin, résultat, avant/après,
   exemples — avec texte alternatif, point focal et ordre. La structure sera
   posée sans qu'aucune donnée ne soit inventée.
-- Les payloads : 615 cartes sur 692 n'en ont pas. Le brief interdit d'y toucher
-  dans cette phase.
+- Les payloads : ~~615 cartes sur 692 n'en ont pas~~ — **levé** par le lot
+  Moteur V3, les 692 commandes ont leur texte.
+
+---
+
+## 10. Fiches des Modes IA et des Parcours guidés
+
+Le lot Moteur V3 a mis en base sept champs de texte par commande — ce qu'elle
+fait, ce qu'elle rend, par quoi elle commence, ce qu'elle refuse, comment on
+l'arrête. Ils servaient à construire le prompt et n'étaient affichés nulle
+part. Les fiches de Mode IA et de Parcours les lisent maintenant.
+
+**Ce qui change.** Les trois genres avaient la même fiche : un mode affichait
+une section « À fournir » vide, puisqu'il ne demande aucune photo, et un
+parcours annonçait « plusieurs étapes » sans jamais dire combien.
+
+- **Mode IA** — ce qu'il sait faire, quand l'activer, _la question qu'il posera
+  en premier, mot pour mot_, ce qu'il rendra, ce qu'il ne fera pas, et comment
+  le mettre en pause ou en sortir.
+- **Parcours guidé** — la **liste numérotée des livrables avec leur format**
+  (« 1. Vue globale nettoyée · 4:5 »), ce qu'il faut préparer, sa méthode, ce
+  qu'il refuse, les mêmes jalons de sortie.
+- **Cartes de parcours** — le nombre de livrables s'affiche sous le titre, sur
+  la carte pleine largeur. « 2 livrables » ou « 7 livrables » décide seul si
+  l'on commence maintenant ou plus tard.
+- **Bouton de copie** — « Copier le parcours », et « Parcours copié. Collez-le
+  dans votre IA, puis suivez les étapes. »
+- **Page publique partagée** — même corps de fiche : un lien vers un parcours
+  ne montrait presque rien.
+
+**Aucun chiffre n'est estimé.** Le nombre de livrables vient de la liste
+réellement lue et n'est affiché que s'il concorde avec le nombre annoncé dans
+la même phrase du catalogue. Quand un texte ne se laisse pas découper, la fiche
+affiche la phrase telle qu'elle est écrite. Vérifié sur les 110 modes et
+parcours du catalogue : 28 parcours sur 28 annoncent un compte vérifiable, 110
+sur 110 annoncent leur première question et leurs jalons de sortie.
+
+**Poids.** Les sept champs ne voyagent que pour les modes et les parcours : les
+embarquer pour les 582 commandes image, qui ne les affichent pas, aurait ajouté
+25 Ko à chaque palier de galerie. JS client 1 563 833 → 1 570 553 octets
+(+ 6 720, + 0,43 %), aucune dépendance ajoutée.

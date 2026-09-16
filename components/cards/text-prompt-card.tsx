@@ -6,7 +6,7 @@ import { FavoriteButton } from '@/components/cards/favorite-button';
 import { VisualSlot } from '@/components/cards/visual-slot';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
-import { nomDuGenre } from '@/lib/catalog/experience';
+import { nomDuGenre, repereDuMoteur } from '@/lib/catalog/experience';
 import { IconeRayon } from '@/components/discovery/icone-rayon';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
@@ -64,6 +64,10 @@ export function TextPromptCard({
   const apercu = prompt.intention?.trim() || description;
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
   const genre = nomDuGenre(prompt);
+  // Le nombre de livrables d'un parcours, et seulement sur la carte pleine
+  // largeur : dans le carrousel, la carte fait une demi-colonne et la ligne
+  // supplementaire repousserait le bouton hors du cadre.
+  const repere = pleineLargeur ? repereDuMoteur(prompt) : null;
 
   return (
     <article className="anim-apparition relative flex h-full flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
@@ -112,11 +116,18 @@ export function TextPromptCard({
               <IconeRayon index={rayon} taille={15} />
             </span>
           ) : null}
-          {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
-              convention des raccourcis. Deux lignes reservees, toujours, sinon
-              la galerie part en escalier. */}
-          <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
-            {prompt.name}
+          <span className="flex min-w-0 flex-col">
+            {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
+                convention des raccourcis. Deux lignes reservees, toujours,
+                sinon la galerie part en escalier. */}
+            <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+              {prompt.name}
+            </span>
+            {repere ? (
+              <span className="mt-0.5 text-[length:var(--texte-meta)] font-semibold text-[color:var(--color-brand-strong)]">
+                {repere}
+              </span>
+            ) : null}
           </span>
         </span>
       </button>
@@ -149,7 +160,7 @@ export function TextPromptCard({
             pret={prompt.payloadReady}
             locked={locked}
             compact
-            estUnMode={prompt.entityType === 'mode_ia'}
+            genre={prompt.entityType}
             onLockedClick={ouvrirOffre}
           />
         </span>

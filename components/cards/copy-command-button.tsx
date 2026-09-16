@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import { useToast } from '@/components/ui/toast';
 import { PROVIDER_LABELS, PROVIDER_URLS, type ProviderKey } from '@/lib/constants';
+import type { PromptCard } from '@/lib/catalog/types';
 
 type Etat = 'repos' | 'chargement' | 'copie';
 
@@ -80,7 +81,7 @@ export function CopyCommandButton({
   pret = true,
   compact = false,
   forme = 'bouton',
-  estUnMode = false,
+  genre = null,
   onLockedClick,
   proposerOuverture = false,
 }: {
@@ -109,13 +110,15 @@ export function CopyCommandButton({
    */
   forme?: 'bouton' | 'icone';
   /**
-   * Vrai pour un Mode IA.
+   * Le genre de ce qu'on copie, quand ce n'est pas une commande image.
    *
-   * Un mode ne se colle pas comme une commande : on le pose en tete de
-   * conversation, puis on decrit son objectif. Le message de confirmation le
-   * dit, sinon rien n'apprend le geste a faire ensuite.
+   * Les trois ne se collent pas de la meme facon. Une commande se colle et
+   * rend son resultat. Un mode se pose en tete de conversation, puis on lui
+   * decrit son objectif. Un parcours se colle une fois et conduit plusieurs
+   * etapes, qu'il faut suivre. Le libelle et le message de confirmation le
+   * disent, sinon rien n'apprend le geste a faire ensuite.
    */
-  estUnMode?: boolean;
+  genre?: PromptCard['entityType'];
   onLockedClick?: () => void;
   /**
    * Propose d'ouvrir l'IA choisie une fois la commande copiee.
@@ -155,9 +158,11 @@ export function CopyCommandButton({
       () => {
         setEtat('copie');
         show(
-          estUnMode
+          genre === 'mode_ia'
             ? 'Mode copié. Collez-le dans votre IA, puis décrivez votre objectif.'
-            : 'Prompt copié.',
+            : genre === 'parcours'
+              ? 'Parcours copié. Collez-le dans votre IA, puis suivez les étapes.'
+              : 'Prompt copié.',
         );
         setOuvertureProposee(proposerOuverture);
         navigator.vibrate?.(10);
@@ -181,17 +186,7 @@ export function CopyCommandButton({
         }
       },
     );
-  }, [
-    estUnMode,
-    locked,
-    onLockedClick,
-    pret,
-    promptId,
-    proposerOuverture,
-    provider,
-    show,
-    surface,
-  ]);
+  }, [genre, locked, onLockedClick, pret, promptId, proposerOuverture, provider, show, surface]);
 
   const cle = provider as ProviderKey;
   const nomIA = PROVIDER_LABELS[cle];
@@ -211,11 +206,13 @@ export function CopyCommandButton({
         ? 'Copie'
         : compact
           ? 'Copier'
-          : estUnMode
+          : genre === 'mode_ia'
             ? 'Copier le mode'
-            : nomIA
-              ? `Copier le prompt pour ${nomIA}`
-              : 'Copier le prompt';
+            : genre === 'parcours'
+              ? 'Copier le parcours'
+              : nomIA
+                ? `Copier le prompt pour ${nomIA}`
+                : 'Copier le prompt';
 
   const ton = locked
     ? 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'

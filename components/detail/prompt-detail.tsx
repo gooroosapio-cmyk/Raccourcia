@@ -7,7 +7,10 @@ import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-af
 import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { InputExampleList } from '@/components/detail/input-example-list';
+import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
+import { GenreDeFiche } from '@/components/detail/genre-fiche';
 import { ModesCommande } from '@/components/detail/modes-commande';
+import { ListePuces, Section } from '@/components/detail/section-fiche';
 import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { OutputFormatList } from '@/components/detail/output-format-list';
 import { SheetCloseButton } from '@/components/ui/sheet-close';
@@ -284,66 +287,20 @@ export function PromptDetailSheet({
             </div>
 
             <div className="lg:[&>*:first-child]:mt-0">
-              {prompt.inputExamples.length > 0 || prompt.expectedInput ? (
-                <Section titre="À fournir">
-                  {prompt.inputExamples.length > 0 ? (
-                    <InputExampleList inputs={prompt.inputExamples} />
-                  ) : null}
-                  {prompt.expectedInput ? (
-                    <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-                      {prompt.expectedInput}
-                    </p>
-                  ) : null}
-                </Section>
-              ) : null}
+              {/* Trois genres, trois corps de fiche. Une commande image se
+                  juge sur son avant/apres et sur ce qu'il faut lui fournir ;
+                  un Mode IA sur ce qu'il fera de la conversation ; un
+                  Parcours sur la liste de ce qu'il rend. Le meme gabarit pour
+                  les trois laissait une section « A fournir » vide devant un
+                  mode, qui ne demande aucune photo. */}
+              {prompt.entityType === 'mode_ia' ? (
+                <CorpsMode prompt={prompt} />
+              ) : prompt.entityType === 'parcours' ? (
+                <CorpsParcours prompt={prompt} />
+              ) : (
+                <CorpsCommande prompt={prompt} />
+              )}
 
-              {prompt.outputFormats.length > 0 || prompt.resultSummary ? (
-                <Section titre="Vous obtenez">
-                  {prompt.outputFormats.length > 0 ? (
-                    <OutputFormatList formats={prompt.outputFormats} />
-                  ) : null}
-                  {prompt.resultSummary && prompt.resultSummary !== prompt.shortDescription ? (
-                    <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-                      {prompt.resultSummary}
-                    </p>
-                  ) : null}
-                </Section>
-              ) : null}
-
-              {/* « Quand l'utiliser » vient apres ce qu'on donne et ce qu'on
-              obtient : c'est ce qui fait choisir entre deux commandes
-              proches, pas ce qui fait comprendre celle-ci. */}
-              {prompt.useCases.length > 0 ? (
-                <Section titre="Quand l’utiliser">
-                  <ul className="flex flex-col gap-1.5">
-                    {prompt.useCases.slice(0, 4).map((cas) => (
-                      <li
-                        key={cas}
-                        className="flex items-start gap-2 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-night)]"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="mt-[0.5em] block h-1 w-1 shrink-0 rounded-full bg-[color:var(--color-brand)]"
-                        />
-                        <span>{cas}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </Section>
-              ) : null}
-
-              {prompt.riskLevel === 'eleve' && prompt.limitations ? (
-                <p className="mt-4 rounded-[color:var(--radius-control)] bg-[color:var(--color-member-soft)] px-3 py-2.5 text-[13px] leading-relaxed text-[color:var(--color-member)]">
-                  {prompt.limitations}
-                </p>
-              ) : null}
-
-              {prompt.requiredVariables.length > 0 ? (
-                <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-                  S’adapte à votre contexte. Si une information manque, l’IA posera une ou deux
-                  questions courtes.
-                </p>
-              ) : null}
               {prompt.modes.length > 0 ? (
                 <Section titre="Elle sait aussi faire">
                   <ModesCommande modes={prompt.modes} />
@@ -362,7 +319,7 @@ export function PromptDetailSheet({
             providers={compatibles}
             surface="detail"
             locked={locked}
-            estUnMode={prompt.entityType === 'mode_ia'}
+            genre={prompt.entityType}
             selected={actif?.key}
             onSelect={onProviderChange}
             onLockedClick={ouvrirOffre}
@@ -405,53 +362,63 @@ export function PromptDetailSheet({
   );
 }
 
-function Section({ titre, children }: { titre: string; children: React.ReactNode }) {
-  return (
-    <section className="mt-5">
-      <h3 className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">
-        {titre}
-      </h3>
-      {children}
-    </section>
-  );
-}
-
 /**
- * Ce qu'on est en train de regarder, dit avant le titre.
+ * Le corps d'une fiche de commande image : ce qu'on donne, ce qu'on obtient.
  *
- * Une commande image, un mode IA et un parcours se lisent de la meme facon
- * dans une fiche — meme titre, meme raccourci, meme bouton — alors qu'ils ne
- * s'utilisent pas du tout pareil. Un mode ne rend rien : il conditionne la
- * conversation qui suit, et on le colle une fois pour dix echanges. Un
- * parcours rend plusieurs fichiers a la file.
- *
- * Le dire en tete evite la deception : on sait ce qu'on copie avant de le
- * coller. Rien pour une commande image — c'est le cas courant, l'annoncer
- * reviendrait a mettre une etiquette sur chaque fiche.
+ * C'est l'affichage d'origine, inchange. Il ne convient qu'aux commandes qui
+ * produisent un resultat en un tour a partir d'une photo — soit cinq cent
+ * quatre-vingt-deux des six cent quatre-vingt-douze entrees du catalogue.
  */
-function GenreDeFiche({ entityType }: { entityType: PromptCard['entityType'] }) {
-  const genres = {
-    mode_ia: {
-      nom: 'Mode IA',
-      promesse: 'Donnez un rôle à votre IA',
-    },
-    parcours: {
-      nom: 'Parcours guidé',
-      promesse: 'Un objectif, plusieurs étapes pour y arriver',
-    },
-  } as const;
-
-  const genre = entityType === 'mode_ia' || entityType === 'parcours' ? genres[entityType] : null;
-  if (!genre) return null;
-
+function CorpsCommande({ prompt }: { prompt: PromptCard }) {
   return (
-    <span className="mb-1.5 inline-flex flex-wrap items-baseline gap-x-2 rounded-full bg-[color:var(--color-brand-soft)] px-2.5 py-1">
-      <span className="text-[length:var(--texte-meta)] font-bold uppercase tracking-wide text-[color:var(--color-brand-strong)]">
-        {genre.nom}
-      </span>
-      <span className="text-[length:var(--texte-meta)] text-[color:var(--color-night)]/70">
-        {genre.promesse}
-      </span>
-    </span>
+    <>
+      {prompt.inputExamples.length > 0 || prompt.expectedInput ? (
+        <Section titre="À fournir">
+          {prompt.inputExamples.length > 0 ? (
+            <InputExampleList inputs={prompt.inputExamples} />
+          ) : null}
+          {prompt.expectedInput ? (
+            <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+              {prompt.expectedInput}
+            </p>
+          ) : null}
+        </Section>
+      ) : null}
+
+      {prompt.outputFormats.length > 0 || prompt.resultSummary ? (
+        <Section titre="Vous obtenez">
+          {prompt.outputFormats.length > 0 ? (
+            <OutputFormatList formats={prompt.outputFormats} />
+          ) : null}
+          {prompt.resultSummary && prompt.resultSummary !== prompt.shortDescription ? (
+            <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+              {prompt.resultSummary}
+            </p>
+          ) : null}
+        </Section>
+      ) : null}
+
+      {/* « Quand l'utiliser » vient apres ce qu'on donne et ce qu'on
+              obtient : c'est ce qui fait choisir entre deux commandes
+              proches, pas ce qui fait comprendre celle-ci. */}
+      {prompt.useCases.length > 0 ? (
+        <Section titre="Quand l’utiliser">
+          <ListePuces items={prompt.useCases.slice(0, 4)} />
+        </Section>
+      ) : null}
+
+      {prompt.riskLevel === 'eleve' && prompt.limitations ? (
+        <p className="mt-4 rounded-[color:var(--radius-control)] bg-[color:var(--color-member-soft)] px-3 py-2.5 text-[13px] leading-relaxed text-[color:var(--color-member)]">
+          {prompt.limitations}
+        </p>
+      ) : null}
+
+      {prompt.requiredVariables.length > 0 ? (
+        <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+          S’adapte à votre contexte. Si une information manque, l’IA posera une ou deux questions
+          courtes.
+        </p>
+      ) : null}
+    </>
   );
 }

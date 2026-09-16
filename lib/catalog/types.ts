@@ -1,4 +1,5 @@
 import type { ExecutionLevel, InputExampleKind, OutputFormatKind } from '@/lib/constants';
+import type { Moteur } from '@/lib/catalog/moteur';
 import type { Enums } from '@/lib/supabase/database.types';
 
 /**
@@ -98,6 +99,16 @@ export type PromptCard = {
   expectedInput: string | null;
   limitations: string | null;
   requiredVariables: string[];
+  /**
+   * Ce que la commande fait, rend et refuse, tel que le catalogue l'ecrit.
+   *
+   * Present pour les Modes IA et les Parcours, `null` pour une commande
+   * image. Une fiche image se comprend par son avant/apres et ces sept
+   * champs n'y sont jamais lus : les embarquer pour les cinq cent
+   * quatre-vingt-deux commandes image ajouterait vingt-cinq kilo-octets a
+   * chaque palier de galerie sans rien afficher de plus.
+   */
+  moteur: Moteur | null;
 };
 
 /** Ce que la page publique ajoute. Toujours sans le prompt complet. */

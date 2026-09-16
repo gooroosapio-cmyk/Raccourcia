@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { CompatibilityList } from '@/components/detail/compatibility-list';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import type { Enums } from '@/lib/supabase/database.types';
+import type { PromptCard } from '@/lib/catalog/types';
 
 type Provider = { key: string; name: string; compatibility: Enums<'compatibility_level'> };
 
@@ -25,7 +26,7 @@ export function ChoixMoteur({
   providers,
   surface,
   locked,
-  estUnMode = false,
+  genre = null,
   selected,
   onSelect,
   onLockedClick,
@@ -37,8 +38,8 @@ export function ChoixMoteur({
   providers: Provider[];
   surface: 'carte' | 'detail' | 'page-publique';
   locked: boolean;
-  /** Vrai pour un Mode IA : le message apres copie change. */
-  estUnMode?: boolean;
+  /** Le genre de la fiche : le libelle et le message apres copie en dependent. */
+  genre?: PromptCard['entityType'];
   /**
    * Choix pilote par le parent, quand il doit survivre a la fermeture de la
    * fiche. Sans lui, le bloc garde son propre choix — c'est le cas d'une page
@@ -92,7 +93,7 @@ export function ChoixMoteur({
       ) : null}
 
       <CopyCommandButton
-        estUnMode={estUnMode}
+        genre={genre}
         promptId={promptId}
         provider={actif?.key ?? 'chatgpt'}
         surface={surface}

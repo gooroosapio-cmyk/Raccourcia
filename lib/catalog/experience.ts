@@ -1,3 +1,4 @@
+import { lireLesLivrables } from '@/lib/catalog/moteur';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -71,4 +72,25 @@ export function reperesDeCarte(carte: PromptCard): string[] {
   if (carte.entityType === 'parcours') reperes.push('Parcours guidé');
 
   return reperes.slice(0, 3);
+}
+
+/**
+ * Ce qu'un Parcours annonce des sa carte : combien de livrables il rend.
+ *
+ * C'est la seule information qui manquait vraiment devant une carte de
+ * parcours. « Un objectif, plusieurs etapes » ne dit pas si l'on s'engage
+ * pour deux fichiers ou pour sept, et cette difference decide seule si l'on
+ * commence maintenant ou plus tard.
+ *
+ * Le nombre vient de la liste reellement lue dans le catalogue, jamais d'une
+ * estimation : `lireLesLivrables` ne le rend que s'il concorde avec le nombre
+ * annonce dans la meme phrase.
+ */
+export function repereDuMoteur(carte: PromptCard): string | null {
+  if (carte.entityType !== 'parcours') return null;
+
+  const plan = lireLesLivrables(carte.moteur?.livrables ?? null);
+  if (!plan?.compte) return null;
+
+  return `${plan.compte} livrables`;
 }

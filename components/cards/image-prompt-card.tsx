@@ -148,7 +148,7 @@ export function ImagePromptCard({
             pret={prompt.payloadReady}
             locked={locked}
             compact
-            estUnMode={prompt.entityType === 'mode_ia'}
+            genre={prompt.entityType}
             onLockedClick={ouvrirOffre}
           />
         </span>

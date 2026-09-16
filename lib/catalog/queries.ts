@@ -15,6 +15,7 @@ import {
 import type { InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import { clesDeTri } from '@/lib/catalog/tri';
 import { modesLisibles } from '@/lib/catalog/modes';
+import { lireLeMoteur } from '@/lib/catalog/moteur';
 import { normaliserRecherche, portesDeRecherche } from '@/lib/catalog/recherche';
 import type {
   BeforeAfter,
@@ -309,6 +310,7 @@ const CARD_COLUMNS = `
   level, max_questions,
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
+  contexte, specification, livrables, questions_cadrage, criteres_reussite, erreurs, regle_sortie,
   categories(slug, name),
   prompt_variants(compatibility, status, ai_providers(key, name, is_active)),
   prompt_media(kind, storage_path, alt, sort_order),
@@ -346,6 +348,13 @@ type CardRow = {
   expected_input: string | null;
   limitations: string | null;
   required_variables: string[];
+  contexte: string | null;
+  specification: string | null;
+  livrables: string | null;
+  questions_cadrage: string | null;
+  criteres_reussite: string | null;
+  erreurs: string | null;
+  regle_sortie: string | null;
   prompt_variants: {
     compatibility: Enums<'compatibility_level'>;
     status: Enums<'content_status'>;
@@ -394,6 +403,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
 
   const thumbnail = parType('after') ?? parType('thumbnail');
   const comparaison = toBeforeAfter(row.prompt_media);
+  const genre = (row.entity_type as PromptCard['entityType']) ?? null;
 
   return {
     id: row.id,
@@ -411,7 +421,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     useCases: row.use_cases ?? [],
     tags: row.tags ?? [],
     showImageCard: row.show_image_card,
-    entityType: (row.entity_type as PromptCard['entityType']) ?? null,
+    entityType: genre,
     witnessType: row.witness_type ?? null,
     collectionSlug: row.categories?.slug ?? null,
     collectionName: row.categories?.name ?? null,
@@ -440,6 +450,10 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     expectedInput: row.expected_input,
     limitations: row.limitations,
     requiredVariables: row.required_variables ?? [],
+    // Seuls les Modes IA et les Parcours emportent leur moteur : eux seuls
+    // l'affichent, et une galerie de vingt-quatre commandes image le
+    // transporterait pour rien.
+    moteur: genre === 'mode_ia' || genre === 'parcours' ? lireLeMoteur(row) : null,
   };
 }
 
@@ -501,6 +515,10 @@ function masquerCommande(card: PromptCard): PromptCard {
     // Les modes ne s'affichent que sur la fiche, et une carte masquee
     // n'ouvre pas de fiche : ils n'ont rien a faire dans la page.
     modes: [],
+    // Le moteur ne se lit que dans la fiche, et une carte masquee n'en ouvre
+    // aucune. Ses sept champs citent la commande dans leurs phrases : les
+    // laisser voyager reviendrait a publier le nom qu'on vient de retirer.
+    moteur: null,
     shortDescription: nettoyer(card.shortDescription),
     resultSummary: nettoyer(card.resultSummary),
     useCases: card.useCases.map(nettoyer),
