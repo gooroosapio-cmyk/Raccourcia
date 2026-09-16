@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - moteur-v3
           - catalogue-v2
           - fermer-tables-sauvegarde
           - refonte-image-v6
@@ -275,6 +276,52 @@ jobs:
             left join public.prompts p on p.category_id = f.id
             where c.external_ref like 'V2-CAT-%' and c.is_visible
             group by c.name, c.sort_order order by c.sort_order;"
+
+      # Moteur V3 : la matiere que le catalogue V2 n'avait pas.
+      #
+      # Les cartes etaient arrivees sans variantes, donc sans version, donc
+      # sans texte a copier : 615 commandes publiees et inutilisables. Ce lot
+      # pose les trois variantes, les 2 076 payloads et les sept champs du
+      # moteur.
+      #
+      # Il ne touche ni titre, ni categorie, ni collection : le classeur porte
+      # encore la taxonomie d'avant le rangement des rayons, et l'ecrire
+      # deferait ce qui a ete valide depuis. L'appariement se fait sur
+      # `card_id`.
+      #
+      # Comme les autres bascules, il demande le mot « basculer » : ce que les
+      # membres peuvent copier change.
+      - name: Appliquer le moteur (V3)
+        if: inputs.dossier == 'moteur-v3' && inputs.bascule == 'basculer'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : les champs du moteur'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260916180000_moteur_v3.sql
+          total=$(ls supabase/seed/moteur-v3/*.sql | wc -l)
+          n=0
+          for fichier in supabase/seed/moteur-v3/*.sql; do
+            n=$((n + 1))
+            printf '  [%2d/%2d] %s\n' "$n" "$total" "$(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Etat du moteur :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) filter (where payload_ready) || ' cartes avec un texte a copier sur ' ||
+                   count(*) || ' cartes du catalogue'
+            from public.prompts where catalog_v2;"
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) || ' payloads courants du moteur V3'
+            from public.prompt_versions where version_label = 'moteur-v3' and is_current;"
+
+      - name: Moteur V3 demande sans confirmation
+        if: inputs.dossier == 'moteur-v3' && inputs.bascule != 'basculer'
+        run: |
+          echo "Le moteur V3 change ce que les membres peuvent copier."
+          echo "Relancer en tapant « basculer » dans le second champ."
+          exit 1
 
       - name: Refonte V2 demandee sans confirmation
         if: inputs.dossier == 'catalogue-v2' && inputs.bascule != 'basculer'

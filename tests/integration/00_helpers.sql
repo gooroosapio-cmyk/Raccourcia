@@ -51,3 +51,15 @@ returns boolean language sql stable as $$
     select 1 from public.prompts where catalog_v2 and status = 'published'
   )
 $$;
+
+-- Le moteur V3 remplace la version courante des commandes qu'il couvre. Les
+-- payloads d'avant restent en historique — rien n'est supprime — mais ils ne
+-- sont plus « courants », et les comptes qui les mesuraient changent. Les
+-- controles concernes s'appuient sur cette fonction pour savoir dans quel
+-- monde ils tournent.
+create or replace function tests_moteur_v3_applique()
+returns boolean language sql stable as $$
+  select exists (
+    select 1 from public.prompt_versions where version_label = 'moteur-v3' and is_current
+  )
+$$;

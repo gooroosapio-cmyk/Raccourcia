@@ -22,15 +22,29 @@ begin
 
   -- --- Ce qui est arrive ------------------------------------------------
 
-  perform tests_assert(v_n = 1599,
-    format('%s payloads V6 courants au lieu de 1599.', v_n));
+  -- Le moteur V3 reprend la main sur les commandes qu'il couvre : leurs
+  -- payloads V6 passent en historique et cessent d'etre courants. Ce qui doit
+  -- rester vrai alors, c'est qu'aucun n'a disparu — pas qu'ils sont encore
+  -- les derniers.
+  if tests_moteur_v3_applique() then
+    select count(*) into v_n
+    from public.prompt_versions where version_label = 'v6-payloads';
+    perform tests_assert(v_n >= 1599,
+      format('%s payloads V6 conserves au lieu d au moins 1599 : la refonte en a perdu.', v_n));
+  else
+    perform tests_assert(v_n = 1599,
+      format('%s payloads V6 courants au lieu de 1599.', v_n));
+  end if;
 
-  -- 533 commandes, trois moteurs chacune, pas une de plus.
+  -- 533 commandes, trois moteurs chacune, pas une de plus. Apres le moteur
+  -- V3, une partie de ces commandes a une version plus recente : on compte
+  -- alors celles que la refonte V6 a touchees, courantes ou non.
   select count(distinct p.id) into v_n
   from public.prompt_versions pv
   join public.prompt_variants v on v.id = pv.variant_id
   join public.prompts p on p.id = v.prompt_id
-  where pv.version_label = 'v6-payloads' and pv.is_current;
+  where pv.version_label = 'v6-payloads'
+    and (pv.is_current or tests_moteur_v3_applique());
   perform tests_assert(v_n = 533,
     format('%s commandes refondues au lieu de 533.', v_n));
 
@@ -170,6 +184,15 @@ begin
   if not exists (
     select 1 from public.prompt_versions where version_label = 'v6-payloads' and is_current
   ) then
+    return;
+  end if;
+
+  -- Le moteur V3 reprend la main sur une partie de ces commandes : l'empreinte
+  -- ne porterait plus sur le meme ensemble. La fidelite du lot V3 a sa propre
+  -- verification, dans 30_moteur_v3.sql ; les textes V6 restent en historique,
+  -- et 23 verifie plus haut qu'aucun n'a disparu.
+  if tests_moteur_v3_applique() then
+    raise notice 'Moteur V3 applique : empreinte V6 verifiee par son propre controle.';
     return;
   end if;
 
