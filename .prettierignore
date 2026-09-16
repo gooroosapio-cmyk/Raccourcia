@@ -4,3 +4,7 @@ package-lock.json
 data/source
 supabase/seed
 data/catalogue-v3
+data/kit-ui
+lib/ui/kit-icones.ts
+lib/ui/kit-illustrations.ts
+lib/ui/kit-taxonomie.ts

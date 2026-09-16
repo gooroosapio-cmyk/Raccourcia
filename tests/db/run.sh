@@ -294,6 +294,21 @@ if compgen -G "$ROOT/supabase/seed/moteur-v3/*.sql" > /dev/null; then
     from public.prompts where catalog_v2;"
 fi
 
+# Les descriptions de rayon, generees depuis le kit UI. Deux passes : ce lot
+# n'est fait que d'affectations, donc la seconde ne doit rien changer.
+if compgen -G "$ROOT/supabase/seed/kit-ui/*.sql" > /dev/null; then
+  echo "==> Kit UI : descriptions des rayons (x2)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/kit-ui/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) filter (where coalesce(short_description, '') <> '') ||
+           ' rayons decrits sur ' || count(*) || ' visibles'
+    from public.categories where is_visible;"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do
