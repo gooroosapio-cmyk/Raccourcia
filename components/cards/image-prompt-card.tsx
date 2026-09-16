@@ -4,28 +4,30 @@ import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { ResultThumbnail } from '@/components/cards/result-thumbnail';
+import { IconeRayon } from '@/components/discovery/icone-rayon';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
-import { repereDeCarte } from '@/lib/catalog/experience';
+import { nomDuGenre } from '@/lib/catalog/experience';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
- * Carte de galerie : le resultat, son nom, et rien de plus.
+ * Carte de galerie : le resultat, son nom, de quoi le copier.
  *
- * Elle portait jusqu'ici une description sur deux lignes, trois logos d'IA et
- * un bouton de copie pleine largeur. Dans une grille a deux colonnes, cela
- * faisait plus de texte que d'image : on parcourait des fiches, pas des
- * resultats. Ce qui a ete retire n'a pas disparu — formats, livrables,
- * modeles compatibles et instructions attendent dans la fiche, ou l'on va
- * precisement pour les lire.
+ * Trois choses ont ete apprises a l'usage.
  *
- * Reste ce qui sert a choisir : le visuel, un titre court, et au plus un
- * repere quand il change la decision — « 1 photo » dit qu'il faudra fournir
- * quelque chose.
+ * « 1 photo » sous chaque vignette ne distinguait rien : presque toutes les
+ * commandes image en demandent une. Un signe qui se repete a l'identique sur
+ * vingt cartes n'informe pas, il occupe une ligne. A sa place, l'icone du
+ * rayon d'ou vient la carte — le meme dessin que la pastille qui y mene.
  *
- * Toucher la carte ouvre la fiche. Le favori et la copie sont des freres,
- * jamais des enfants : un bouton ne s'imbrique pas dans un bouton, et l'on
- * n'enregistre pas une idee en voulant la regarder.
+ * Le bouton de copie est descendu sous le titre. Pose sur la vignette, il
+ * masquait le resultat a l'endroit ou l'oeil se porte, et deux pastilles
+ * rondes sur une image faisaient plus penser a une barre d'outils qu'a une
+ * idee.
+ *
+ * Toutes les cartes ont la meme hauteur, et le titre occupe deux lignes
+ * qu'il en remplisse une ou deux. Sans cela, une galerie a deux colonnes se
+ * decale a chaque titre court et le regard suit des marches d'escalier.
  *
  * Le visuel verrouille est floute. C'est un signal commercial, pas une
  * protection : le contenu premium n'atteint jamais le client, il ne sort que
@@ -39,6 +41,7 @@ export function ImagePromptCard({
   masque = false,
   visiteur = false,
   priority,
+  rayon,
   onOpen,
 }: {
   prompt: PromptCardData;
@@ -55,6 +58,8 @@ export function ImagePromptCard({
   /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
   visiteur?: boolean;
   priority: boolean;
+  /** Position du rayon d'ou vient la carte, quand l'ecran la connait. */
+  rayon?: number;
   onOpen: (prompt: PromptCardData) => void;
 }) {
   const { open: ouvrirOffre } = usePaywall();
@@ -62,14 +67,14 @@ export function ImagePromptCard({
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
   const description = prompt.shortDescription || prompt.resultSummary;
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
-  const repere = repereDeCarte(prompt);
+  const genre = nomDuGenre(prompt);
 
   return (
-    <article className="anim-apparition group relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
+    <article className="anim-apparition group relative flex h-full flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => onOpen(prompt)}
-        className="flex flex-1 flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
+        className="flex flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
       >
         <span className="relative block w-full">
           {/* L'agrandissement evite les bords transparents que laisse le flou. */}
@@ -96,20 +101,20 @@ export function ImagePromptCard({
           ) : null}
         </span>
 
-        <span className="flex flex-1 flex-col gap-0.5 px-2.5 pb-2.5 pt-2">
-          {/* Le titre, pas la commande. « Rayon X » se comprend sans rien
-              savoir du produit ; « /xray » demande de deja connaitre la
-              convention. Le raccourci attend dans la fiche, ou il est
-              explique et copiable. */}
-          <span className="line-clamp-2 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
-            {prompt.name}
-          </span>
-
-          {repere ? (
-            <span className="text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
-              {repere}
+        <span className="flex items-start gap-1.5 px-2.5 pb-1.5 pt-2">
+          {rayon !== undefined ? (
+            <span
+              aria-hidden="true"
+              className="mt-[1px] shrink-0 text-[color:var(--color-brand)]/70"
+            >
+              <IconeRayon index={rayon} taille={15} />
             </span>
           ) : null}
+          {/* Deux lignes, toujours : `min-h` reserve la seconde meme quand le
+              titre tient sur une, sinon la grille part en escalier. */}
+          <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+            {prompt.name}
+          </span>
         </span>
       </button>
 
@@ -117,24 +122,34 @@ export function ImagePromptCard({
         <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
       </span>
 
-      {/* Les deux gestes secondaires, poses sur le visuel : enregistrer et
-          copier. Ils ne prennent aucune ligne de texte a la carte. */}
-      <div className="absolute right-0.5 top-0.5 flex items-center">
-        <CopyCommandButton
-          promptId={prompt.id}
-          provider={actif?.key ?? 'chatgpt'}
-          surface="carte"
-          pret={prompt.payloadReady}
-          locked={locked}
-          forme="icone"
-          onLockedClick={ouvrirOffre}
-        />
+      <div className="absolute right-0.5 top-0.5">
         <FavoriteButton
           promptId={prompt.id}
           initial={prompt.isFavorite}
           disabled={locked || visiteur}
           sur
         />
+      </div>
+
+      {/* La copie ferme la carte, en bas, la ou se prend la decision : on
+          regarde le resultat, on lit le titre, on copie. */}
+      <div className="mt-auto flex items-center gap-2 px-2.5 pb-2.5">
+        {genre ? (
+          <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
+            {genre}
+          </span>
+        ) : null}
+        <span className="ml-auto w-full">
+          <CopyCommandButton
+            promptId={prompt.id}
+            provider={actif?.key ?? 'chatgpt'}
+            surface="carte"
+            pret={prompt.payloadReady}
+            locked={locked}
+            compact
+            onLockedClick={ouvrirOffre}
+          />
+        </span>
       </div>
     </article>
   );

@@ -7,10 +7,15 @@ import type { LibraryFamily } from '@/lib/catalog/types';
 /**
  * Les rayons de la Bibliotheque, chacun repliable.
  *
- * Deplies par defaut : on vient ici pour voir ce qu'il y a, pas pour ouvrir
- * huit tiroirs avant de trouver. Mais quarante-trois collections font une
- * page longue, et quelqu'un qui connait son rayon veut pouvoir replier le
- * reste plutot que de le faire defiler a chaque visite.
+ * Groupes par defaut : quarante-trois collections deployees font une page
+ * qu'on fait defiler longtemps avant d'avoir tout vu, et le premier palier
+ * n'y sert plus a rien. Six titres tiennent sur un ecran — on voit la forme
+ * du catalogue d'un coup d'oeil, puis on ouvre celui qu'on veut.
+ *
+ * L'etat retenu porte donc sur ce qui est *ouvert*, pas sur ce qui est
+ * ferme : ainsi un rayon ajoute en administration arrive ferme comme les
+ * autres, au lieu d'apparaitre deploye parce que personne ne l'avait encore
+ * replie.
  *
  * L'etat est retenu. Il vit dans le navigateur de la personne : c'est un
  * confort de lecture, pas une donnee du compte — il n'a rien a faire sur le
@@ -23,10 +28,10 @@ import type { LibraryFamily } from '@/lib/catalog/types';
  * en deux rendus, avec les rayons qui s'ouvrent puis se referment sous les
  * yeux.
  */
-const MEMOIRE = 'raccourcia.bibliotheque.replies';
-const EVENEMENT = 'raccourcia:replis';
+const MEMOIRE = 'raccourcia.bibliotheque.ouverts';
+const EVENEMENT = 'raccourcia:rayons-ouverts';
 
-/** Rien de replie : ce que le serveur rend, et le repli quand le stockage refuse. */
+/** Rien d'ouvert : ce que le serveur rend, et le repli quand le stockage refuse. */
 const AUCUN: ReadonlySet<string> = new Set();
 
 // Le dernier texte lu et l'ensemble qui en vient. `useSyncExternalStore`
@@ -35,7 +40,7 @@ const AUCUN: ReadonlySet<string> = new Set();
 let dernierBrut: string | null = null;
 let dernierEnsemble: ReadonlySet<string> = AUCUN;
 
-function lireLesReplis(): ReadonlySet<string> {
+function lireLesOuverts(): ReadonlySet<string> {
   let brut: string | null = null;
   try {
     brut = window.localStorage.getItem(MEMOIRE);
@@ -66,29 +71,29 @@ function ecouter(rappel: () => void): () => void {
 }
 
 export function RayonsDepliables({ familles }: { familles: LibraryFamily[] }) {
-  const replies = useSyncExternalStore(ecouter, lireLesReplis, () => AUCUN);
+  const ouverts = useSyncExternalStore(ecouter, lireLesOuverts, () => AUCUN);
 
   const basculer = useCallback(
     (slug: string) => {
-      const apres = new Set(replies);
+      const apres = new Set(ouverts);
       if (apres.has(slug)) apres.delete(slug);
       else apres.add(slug);
       try {
         window.localStorage.setItem(MEMOIRE, JSON.stringify([...apres]));
       } catch {
-        // Sans stockage, le repli ne survivra pas au rechargement. Il ne sert
+        // Sans stockage, l'ouverture ne survivra pas au rechargement. Il ne sert
         // alors a rien de prevenir : l'ecran ne bougerait pas non plus.
         return;
       }
       window.dispatchEvent(new Event(EVENEMENT));
     },
-    [replies],
+    [ouverts],
   );
 
   return (
     <div className="space-y-5">
       {familles.map((famille) => {
-        const replie = replies.has(famille.slug);
+        const ouvert = ouverts.has(famille.slug);
         const identifiant = `rayon-${famille.slug}`;
 
         return (
@@ -97,7 +102,7 @@ export function RayonsDepliables({ familles }: { familles: LibraryFamily[] }) {
               <button
                 type="button"
                 onClick={() => basculer(famille.slug)}
-                aria-expanded={!replie}
+                aria-expanded={ouvert}
                 aria-controls={identifiant}
                 className="touch-target flex w-full items-center justify-between gap-3 py-1 text-left"
               >
@@ -111,7 +116,7 @@ export function RayonsDepliables({ familles }: { familles: LibraryFamily[] }) {
                   fill="none"
                   aria-hidden="true"
                   className={`shrink-0 text-[color:var(--color-muted)] transition-transform duration-[var(--duration-fast)] ${
-                    replie ? '' : 'rotate-180'
+                    ouvert ? 'rotate-180' : ''
                   }`}
                 >
                   <path
@@ -125,10 +130,10 @@ export function RayonsDepliables({ familles }: { familles: LibraryFamily[] }) {
               </button>
             </h2>
 
-            {/* Le contenu sort du DOM quand il est replie plutot que d'etre
-                seulement masque : quarante-trois tuiles cachees continueraient
-                de charger leurs images et d'etre atteintes par la tabulation. */}
-            {replie ? null : (
+            {/* Le contenu n'existe que lorsqu'il est ouvert plutot que d'etre
+                masque : quarante-trois tuiles cachees continueraient de
+                charger leurs images et d'etre atteintes par la tabulation. */}
+            {ouvert ? (
               <div
                 id={identifiant}
                 className="mt-2 grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]"
@@ -137,7 +142,7 @@ export function RayonsDepliables({ familles }: { familles: LibraryFamily[] }) {
                   <CollectionTile key={collection.id} tile={collection} famille={famille.name} />
                 ))}
               </div>
-            )}
+            ) : null}
           </section>
         );
       })}

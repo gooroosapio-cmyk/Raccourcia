@@ -999,3 +999,42 @@ export async function getRecents(): Promise<PromptCard[]> {
     .map((entry) => cards.find((card) => card.id === entry.id))
     .filter((card) => card !== undefined);
 }
+
+/**
+ * Les dernieres commandes reellement copiees.
+ *
+ * « Reprendre » montrait la derniere commande *ouverte*. Or ouvrir une fiche
+ * ne veut rien dire : on en ouvre dix pour en retenir une. Copier, si — c'est
+ * le geste qui dit qu'on s'en est servi, et c'est celui-la qu'on veut
+ * reprendre.
+ *
+ * `recent_items` porte les deux dates ; seules les lignes qui ont une date de
+ * copie entrent ici. Une commande archivee depuis reste dans le journal mais
+ * ne revient pas : la lecture des cartes ne ramene que ce qui est publie.
+ */
+export async function getDernieresCopies(limite = 3): Promise<PromptCard[]> {
+  const supabase = await createClient();
+  const { data: rows, error } = await supabase
+    .from('recent_items')
+    .select('prompt_id, last_copied_at')
+    .not('last_copied_at', 'is', null)
+    .order('last_copied_at', { ascending: false })
+    .limit(limite);
+
+  if (error) throw new CatalogUnavailableError(error);
+  if ((rows ?? []).length === 0) return [];
+
+  const ordre = (rows ?? []).map((row) => row.prompt_id);
+  const favorites = await getFavoriteIds();
+  const { data } = await supabase
+    .from('prompts')
+    .select(CARD_COLUMNS)
+    .eq('status', 'published')
+    .in('id', ordre);
+
+  const cartes = ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
+  // L'ordre vient du journal, pas de la base : `in` ne le conserve pas.
+  return ordre
+    .map((id) => cartes.find((carte) => carte.id === id))
+    .filter((carte) => carte !== undefined);
+}

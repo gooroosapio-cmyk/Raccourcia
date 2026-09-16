@@ -44,12 +44,15 @@ export function FeedDecouverte({
   visiteur = false,
   initialProvider = 'chatgpt',
   intercalaires = [],
+  rayons,
 }: {
   prompts: PromptCard[];
   locked: boolean;
   visiteur?: boolean;
   initialProvider?: string;
   intercalaires?: Intercalaire[];
+  /** A quel rayon appartient chaque collection, par position. */
+  rayons?: Record<string, number>;
 }) {
   const [selection, setSelection] = useState<PromptCard | null>(null);
   const [montrees, setMontrees] = useState(PALIER);
@@ -73,7 +76,7 @@ export function FeedDecouverte({
 
   return (
     <>
-      <div className="grid grid-cols-2 items-start gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
+      <div className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
         {visibles.map((prompt, index) => {
           const verrouille = locked && !prompt.isFree;
           const apres = intercalaires.filter((element) => element.apres === index + 1);
@@ -84,6 +87,7 @@ export function FeedDecouverte({
             free: locked && prompt.isFree,
             masque: visiteur && verrouille,
             visiteur,
+            rayon: prompt.collectionSlug ? rayons?.[prompt.collectionSlug] : undefined,
             onOpen: ouvrir,
           };
 

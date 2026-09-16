@@ -2,23 +2,25 @@ import { RailExplorer } from '@/components/discovery/rail-explorer';
 import { CarteEditoriale } from '@/components/feed/carte-editoriale';
 import { FeedDecouverte, type Intercalaire } from '@/components/feed/feed-decouverte';
 import { PromptGrid } from '@/components/cards/prompt-grid';
-import { ListeCompacte } from '@/components/cards/liste-compacte';
 import { collectionsAProposer } from '@/lib/catalog/suggestions';
+import { indexDesRayons } from '@/lib/catalog/rayons';
 import type { LibraryFamily, PromptCard } from '@/lib/catalog/types';
 
 /**
  * Combien d'idees passent dans le carrousel de tete.
  *
- * Huit : de quoi faire trois ou quatre gestes avant d'arriver au bout. Une
- * rangee qu'on epuise en deux poussees n'invite pas a la parcourir.
+ * Seize : a deux cartes et demie par ecran, cela fait six ou sept poussees
+ * avant d'arriver au bout. Une rangee qu'on epuise en deux gestes n'invite
+ * pas a la parcourir, et le carrousel est la vitrine — c'est lui qui doit
+ * donner envie de descendre.
  */
-const CARROUSEL = 8;
+const CARROUSEL = 16;
 
 /**
  * L'Accueil quand rien n'est encore cherche.
  *
  * Quatre etages, dans l'ordre ou l'on s'en sert : par ou entrer, ce qu'on a
- * laisse en route, une poignee d'idees qui defilent, puis la galerie.
+ * copie en dernier, une vitrine qui defile, puis la galerie.
  *
  * Le carrousel et la galerie ne font pas double emploi. Le premier se
  * parcourt d'un pouce, horizontalement, sans quitter le haut de l'ecran :
@@ -39,10 +41,13 @@ export function AccueilEditorial({
   locked: boolean;
   visiteur: boolean;
 }) {
-  const derniere = reprendre[0];
-
   const carrousel = feed.slice(0, CARROUSEL);
   const galerie = feed.slice(CARROUSEL);
+
+  // Une carte connait sa collection, jamais sa famille. L'Accueil charge deja
+  // la bibliotheque entiere : il construit la correspondance une fois et la
+  // passe aux galeries, plutot qu'une jointure a deux etages par lecture.
+  const rayons = indexDesRayons(familles);
 
   // Deux invitations au plus, posees loin l'une de l'autre. Interrompre plus
   // souvent une galerie qu'on parcourt au pouce revient a la decouper en
@@ -65,12 +70,24 @@ export function AccueilEditorial({
     <div className="space-y-5 pt-1">
       <RailExplorer familles={familles} />
 
-      {derniere ? (
+      {reprendre.length > 0 ? (
         <section className="space-y-1.5">
           <h2 className="text-[length:var(--texte-carte)] font-semibold text-[color:var(--color-muted)]">
             Reprendre
           </h2>
-          <ListeCompacte prompts={[derniere]} locked={locked} visiteur={visiteur} />
+          {/* Les trois dernieres commandes copiees, et non ouvertes : on ouvre
+              dix fiches pour en retenir une, mais on ne copie que ce dont on
+              s'est servi. En carrousel, comme le reste — trois cartes en
+              colonne pousseraient la galerie hors de l'ecran. */}
+          <PromptGrid
+            prompts={reprendre}
+            locked={locked}
+            visiteur={visiteur}
+            disposition="rangee"
+            prioritaire={false}
+            rayons={rayons}
+            emptyState={null}
+          />
         </section>
       ) : null}
 
@@ -84,6 +101,7 @@ export function AccueilEditorial({
             locked={locked}
             visiteur={visiteur}
             disposition="rangee"
+            rayons={rayons}
             emptyState={null}
           />
         </section>
@@ -98,10 +116,8 @@ export function AccueilEditorial({
             prompts={galerie}
             locked={locked}
             visiteur={visiteur}
-            // Le carrousel a deja pris la priorite de chargement : deux
-            // rangees d'images prioritaires en demanderaient dix a la fois et
-            // le navigateur n'accelererait plus rien.
             intercalaires={intercalaires}
+            rayons={rayons}
           />
         </section>
       ) : (
