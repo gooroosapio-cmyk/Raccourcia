@@ -6,7 +6,8 @@ import { FavoriteButton } from '@/components/cards/favorite-button';
 import { VisualSlot } from '@/components/cards/visual-slot';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
-import { repereDeCarte } from '@/lib/catalog/experience';
+import { nomDuGenre } from '@/lib/catalog/experience';
+import { IconeRayon } from '@/components/discovery/icone-rayon';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
@@ -31,6 +32,7 @@ export function TextPromptCard({
   locked,
   free,
   visiteur = false,
+  rayon,
   onOpen,
 }: {
   prompt: PromptCardData;
@@ -39,6 +41,8 @@ export function TextPromptCard({
   free: boolean;
   /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
   visiteur?: boolean;
+  /** Position du rayon d'ou vient la carte, quand l'ecran la connait. */
+  rayon?: number;
   onOpen: (prompt: PromptCardData) => void;
 }) {
   const { open: ouvrirOffre } = usePaywall();
@@ -49,14 +53,14 @@ export function TextPromptCard({
   // comment elle s'y prend. La premiere des deux qui existe tient le cadre.
   const apercu = prompt.intention?.trim() || description;
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
-  const genre = repereDeCarte(prompt);
+  const genre = nomDuGenre(prompt);
 
   return (
-    <article className="anim-apparition relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
+    <article className="anim-apparition relative flex h-full flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => onOpen(prompt)}
-        className="flex flex-1 flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
+        className="flex flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
       >
         <VisualSlot ton="texte" mission={niveau?.mission ?? false}>
           <span
@@ -83,18 +87,21 @@ export function TextPromptCard({
           </span>
         </VisualSlot>
 
-        <span className="flex flex-1 flex-col gap-0.5 px-2.5 pb-2.5 pt-2">
-          {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
-              convention des raccourcis. Le raccourci attend dans la fiche. */}
-          <span className="line-clamp-2 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
-            {prompt.name}
-          </span>
-
-          {genre ? (
-            <span className="text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
-              {genre}
+        <span className="flex items-start gap-1.5 px-2.5 pb-1.5 pt-2">
+          {rayon !== undefined ? (
+            <span
+              aria-hidden="true"
+              className="mt-[1px] shrink-0 text-[color:var(--color-brand)]/70"
+            >
+              <IconeRayon index={rayon} taille={15} />
             </span>
           ) : null}
+          {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
+              convention des raccourcis. Deux lignes reservees, toujours, sinon
+              la galerie part en escalier. */}
+          <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+            {prompt.name}
+          </span>
         </span>
       </button>
 
@@ -102,22 +109,33 @@ export function TextPromptCard({
         <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
       </span>
 
-      <div className="absolute right-0.5 top-0.5 flex items-center">
-        <CopyCommandButton
-          promptId={prompt.id}
-          provider={actif?.key ?? 'chatgpt'}
-          surface="carte"
-          pret={prompt.payloadReady}
-          locked={locked}
-          forme="icone"
-          onLockedClick={ouvrirOffre}
-        />
+      <div className="absolute right-0.5 top-0.5">
         <FavoriteButton
           promptId={prompt.id}
           initial={prompt.isFavorite}
           disabled={locked || visiteur}
           sur
         />
+      </div>
+
+      {/* La copie ferme la carte, en bas, la ou se prend la decision. */}
+      <div className="mt-auto flex items-center gap-2 px-2.5 pb-2.5">
+        {genre ? (
+          <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
+            {genre}
+          </span>
+        ) : null}
+        <span className="ml-auto w-full">
+          <CopyCommandButton
+            promptId={prompt.id}
+            provider={actif?.key ?? 'chatgpt'}
+            surface="carte"
+            pret={prompt.payloadReady}
+            locked={locked}
+            compact
+            onLockedClick={ouvrirOffre}
+          />
+        </span>
       </div>
     </article>
   );

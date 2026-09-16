@@ -4,7 +4,7 @@ import {
   getBibliotheque,
   getCatalogPage,
   getCategories,
-  getRecents,
+  getDernieresCopies,
   getVivierDuFeed,
 } from '@/lib/catalog/queries';
 import { ordonnerLeFeed } from '@/lib/catalog/feed';
@@ -137,7 +137,7 @@ export default async function DiscoverPage({
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
   let accueil: {
     feed: PromptCard[];
-    reprendre: Awaited<ReturnType<typeof getRecents>>;
+    reprendre: Awaited<ReturnType<typeof getDernieresCopies>>;
     familles: Awaited<ReturnType<typeof getBibliotheque>>;
   } | null = null;
 
@@ -148,15 +148,15 @@ export default async function DiscoverPage({
       const [vivier, familles, reprendre] = await Promise.all([
         getVivierDuFeed(),
         getBibliotheque(),
-        acces.isMember ? getRecents() : Promise.resolve([]),
+        acces.isMember ? getDernieresCopies() : Promise.resolve([]),
       ]);
       accueil = {
         feed: ordonnerLeFeed(vivier),
         familles,
-        // Une seule : la reprise se pose desormais dans le feed, entre deux
-        // idees. Trois cartes y formaient une rangee, c'est-a-dire un
-        // historique — et il a sa page.
-        reprendre: reprendre.slice(0, 1),
+        // Trois, et ce sont des copies : ouvrir une fiche ne veut rien dire,
+        // on en ouvre dix pour en retenir une. Au-dela de trois, ce n'est
+        // plus une reprise mais un historique, et il a sa page.
+        reprendre,
       };
       page = { items: [], hasMore: false, total: 0 };
     } else {
