@@ -19,8 +19,10 @@ const TRAITS = [
   'M12 3.5c.6 4.2 1.8 5.4 6 6-4.2.6-5.4 1.8-6 6-.6-4.2-1.8-5.4-6-6 4.2-.6 5.4-1.8 6-6Z',
   // Produit : une boite.
   'M12 3.5 20 8v8l-8 4.5L4 16V8l8-4.5ZM4 8l8 4.5L20 8M12 12.5V20',
-  // Publicite : un porte-voix.
-  'M4 10v4h3l6 4V6l-6 4H4ZM17.5 9a4 4 0 0 1 0 6',
+  // Marques & publicite : une etiquette. Le porte-voix disait « publicite »
+  // et rien de la marque ; l'etiquette dit les deux — c'est ce qu'on pose sur
+  // un produit et ce qu'on montre dans une annonce.
+  'M11.2 3.5H19a1.5 1.5 0 0 1 1.5 1.5v7.8a1.5 1.5 0 0 1-.44 1.06l-6.7 6.7a1.5 1.5 0 0 1-2.12 0l-7.3-7.3a1.5 1.5 0 0 1 0-2.12l6.7-6.7a1.5 1.5 0 0 1 1.06-.44ZM16 8h.01',
   // Technique : un compas.
   'M12 4v3M9.5 20l2.5-9 2.5 9M12 7a2.5 2.5 0 0 1 2.5 2.5c0 1-.6 1.9-1.5 2.3M12 7a2.5 2.5 0 0 0-2.5 2.5c0 1 .6 1.9 1.5 2.3',
 ];

@@ -84,3 +84,32 @@ function seRessemblent(a: string, b: string): boolean {
   const tronquer = (nom: string) => nom.toLowerCase().split(/\s+/).slice(0, 2).join(' ');
   return tronquer(a) === tronquer(b);
 }
+
+/**
+ * Le carrousel de tete : des images, et des modes glisses parmi elles.
+ *
+ * Un mode tous les cinq : assez pour qu'on en rencontre en poussant la
+ * rangee, assez rare pour que la vitrine reste une vitrine d'images. Les
+ * mettre bout a bout en fin de carrousel revenait a ne jamais les montrer —
+ * personne ne pousse jusqu'au bout.
+ */
+export function melangerLeCarrousel(
+  images: PromptCard[],
+  modes: PromptCard[],
+  total: number,
+  tousLesN = 5,
+): PromptCard[] {
+  const carrousel: PromptCard[] = [];
+  const restantImages = [...images];
+  const restantModes = [...modes];
+
+  while (carrousel.length < total && (restantImages.length > 0 || restantModes.length > 0)) {
+    const placeDunMode = (carrousel.length + 1) % tousLesN === 0;
+    const source = placeDunMode && restantModes.length > 0 ? restantModes : restantImages;
+    const choisie = source.shift() ?? restantModes.shift() ?? restantImages.shift();
+    if (!choisie) break;
+    carrousel.push(choisie);
+  }
+
+  return carrousel;
+}

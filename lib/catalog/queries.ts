@@ -304,7 +304,7 @@ function colonnesDuComptage(filtreFournisseur: boolean): string {
  */
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
-  show_image_card, payload_ready, cta_label, entity_type, images_min, default_ratio,
+  show_image_card, payload_ready, cta_label, entity_type, images_min, default_ratio, witness_type,
   is_free, is_new, is_featured, risk_level, sort_order,
   level, max_questions,
   intention, expected_input, limitations, required_variables,
@@ -330,6 +330,7 @@ type CardRow = {
   show_image_card: boolean;
   payload_ready: boolean;
   entity_type: string | null;
+  witness_type: string | null;
   images_min: number | null;
   default_ratio: string | null;
   categories: { slug: string; name: string } | null;
@@ -411,6 +412,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     tags: row.tags ?? [],
     showImageCard: row.show_image_card,
     entityType: (row.entity_type as PromptCard['entityType']) ?? null,
+    witnessType: row.witness_type ?? null,
     collectionSlug: row.categories?.slug ?? null,
     collectionName: row.categories?.name ?? null,
     imagesMin: row.images_min,
@@ -1037,4 +1039,77 @@ export async function getDernieresCopies(limite = 3): Promise<PromptCard[]> {
   return ordre
     .map((id) => cartes.find((carte) => carte.id === id))
     .filter((carte) => carte !== undefined);
+}
+
+/**
+ * Le vivier du carrousel « A decouvrir ».
+ *
+ * Deux lectures, et c'est voulu.
+ *
+ * La premiere prend les transformations d'image des trois premiers rayons —
+ * portraits, styles, art — et exige un visuel : une vitrine sans image ne
+ * presente rien. Les rayons viennent de la bibliotheque, par leur position ;
+ * aucun n'est nomme ici, en changer l'ordre en administration change la
+ * vitrine.
+ *
+ * La seconde prend des modes IA, **sans** exiger de visuel : un mode
+ * conditionne une conversation, il n'a pas de resultat a montrer et n'en
+ * aura jamais. L'exiger reviendrait a ne jamais en proposer.
+ *
+ * Une seule requete avec un `or` aurait melange les deux exigences : soit
+ * elle imposait le visuel aux modes, soit elle l'abandonnait pour les images.
+ */
+export async function getVivierDuCarrousel(
+  collections: string[],
+  limite = 20,
+): Promise<{ images: PromptCard[]; modes: PromptCard[] }> {
+  const supabase = await createClient();
+  const favorites = await getFavoriteIds();
+
+  const rayons =
+    collections.length > 0
+      ? await supabase
+          .from('categories')
+          .select('id')
+          .in('slug', collections)
+          .eq('is_visible', true)
+      : { data: [] };
+
+  const identifiants = (rayons.data ?? []).map((ligne) => ligne.id);
+
+  const [imagesReponse, modesReponse] = await Promise.all([
+    identifiants.length > 0
+      ? supabase
+          .from('prompts')
+          .select(CARD_COLUMNS)
+          .eq('status', 'published')
+          .eq('media_ready', true)
+          .in('category_id', identifiants)
+          .order('payload_ready', { ascending: false })
+          .order('is_featured', { ascending: false })
+          .order('priority_score', { ascending: false, nullsFirst: false })
+          .order('command', { ascending: true })
+          .limit(limite)
+      : Promise.resolve({ data: [], error: null }),
+    supabase
+      .from('prompts')
+      .select(CARD_COLUMNS)
+      .eq('status', 'published')
+      .eq('entity_type', 'mode_ia')
+      .order('payload_ready', { ascending: false })
+      .order('is_featured', { ascending: false })
+      .order('priority_score', { ascending: false, nullsFirst: false })
+      .order('command', { ascending: true })
+      .limit(limite),
+  ]);
+
+  if (imagesReponse.error) throw new CatalogUnavailableError(imagesReponse.error);
+  if (modesReponse.error) throw new CatalogUnavailableError(modesReponse.error);
+
+  return {
+    images: ((imagesReponse.data ?? []) as unknown as CardRow[]).map((row) =>
+      toCard(row, favorites),
+    ),
+    modes: ((modesReponse.data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites)),
+  };
 }

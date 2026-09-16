@@ -7,16 +7,6 @@ import { indexDesRayons } from '@/lib/catalog/rayons';
 import type { LibraryFamily, PromptCard } from '@/lib/catalog/types';
 
 /**
- * Combien d'idees passent dans le carrousel de tete.
- *
- * Seize : a deux cartes et demie par ecran, cela fait six ou sept poussees
- * avant d'arriver au bout. Une rangee qu'on epuise en deux gestes n'invite
- * pas a la parcourir, et le carrousel est la vitrine — c'est lui qui doit
- * donner envie de descendre.
- */
-const CARROUSEL = 16;
-
-/**
  * L'Accueil quand rien n'est encore cherche.
  *
  * Quatre etages, dans l'ordre ou l'on s'en sert : par ou entrer, ce qu'on a
@@ -25,24 +15,31 @@ const CARROUSEL = 16;
  * Le carrousel et la galerie ne font pas double emploi. Le premier se
  * parcourt d'un pouce, horizontalement, sans quitter le haut de l'ecran :
  * c'est une vitrine. La seconde se descend et ne s'arrete pas : c'est le
- * rayon. Les deux ne montrent jamais les memes cartes — la galerie reprend
- * exactement la ou le carrousel s'arrete.
+ * rayon. Les deux ne montrent jamais les memes cartes : la galerie retire ce
+ * que la vitrine a pris, plutot que de couper au meme rang — la vitrine
+ * puise ailleurs, elle n'est pas le debut de la galerie.
  */
 export function AccueilEditorial({
   feed,
+  carrousel,
   reprendre,
   familles,
   locked,
   visiteur,
 }: {
   feed: PromptCard[];
+  /** La vitrine : trois premiers rayons et des modes, deja melangee. */
+  carrousel: PromptCard[];
   reprendre: PromptCard[];
   familles: LibraryFamily[];
   locked: boolean;
   visiteur: boolean;
 }) {
-  const carrousel = feed.slice(0, CARROUSEL);
-  const galerie = feed.slice(CARROUSEL);
+  // La galerie ne reprend jamais une carte de la vitrine : les voir deux fois
+  // a deux ecrans d'intervalle donne l'impression d'un catalogue plus court
+  // qu'il n'est.
+  const dansLaVitrine = new Set(carrousel.map((carte) => carte.id));
+  const galerie = feed.filter((carte) => !dansLaVitrine.has(carte.id));
 
   // Une carte connait sa collection, jamais sa famille. L'Accueil charge deja
   // la bibliotheque entiere : il construit la correspondance une fois et la
@@ -118,6 +115,7 @@ export function AccueilEditorial({
             visiteur={visiteur}
             intercalaires={intercalaires}
             rayons={rayons}
+            filtrable
           />
         </section>
       ) : (

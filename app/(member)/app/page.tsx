@@ -5,9 +5,11 @@ import {
   getCatalogPage,
   getCategories,
   getDernieresCopies,
+  getVivierDuCarrousel,
   getVivierDuFeed,
 } from '@/lib/catalog/queries';
-import { ordonnerLeFeed } from '@/lib/catalog/feed';
+import { melangerLeCarrousel, ordonnerLeFeed } from '@/lib/catalog/feed';
+import { famillesDeRayon } from '@/lib/catalog/familles-speciales';
 import type { PromptCard } from '@/lib/catalog/types';
 import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
 import { porteeDeRecherche } from '@/lib/catalog/recherche';
@@ -24,6 +26,15 @@ import type { FiltresAvances } from '@/components/discovery/filter-sheet';
 import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE, type Mode } from '@/lib/constants';
 
 export const metadata = { title: 'Découvrir' };
+
+/**
+ * Combien d'idees passent dans la vitrine de tete.
+ *
+ * Vingt : a deux cartes et demie par ecran, cela fait huit poussees avant
+ * d'arriver au bout. Une rangee qu'on epuise en deux gestes n'invite pas a la
+ * parcourir, et c'est elle qui doit donner envie de descendre.
+ */
+const CARTES_DU_CARROUSEL = 20;
 
 /**
  * Bibliotheque des commandes. Rendue cote serveur : le client ne recoit que
@@ -137,6 +148,7 @@ export default async function DiscoverPage({
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
   let accueil: {
     feed: PromptCard[];
+    carrousel: PromptCard[];
     reprendre: Awaited<ReturnType<typeof getDernieresCopies>>;
     familles: Awaited<ReturnType<typeof getBibliotheque>>;
   } | null = null;
@@ -150,8 +162,19 @@ export default async function DiscoverPage({
         getBibliotheque(),
         acces.isMember ? getDernieresCopies() : Promise.resolve([]),
       ]);
+
+      // La vitrine tire des trois premiers rayons — portraits, styles, art —
+      // et des modes IA. Les rayons viennent de la bibliotheque, par leur
+      // position : aucun n'est nomme ici, en changer l'ordre en
+      // administration change la vitrine.
+      const vitrine = famillesDeRayon(familles).slice(0, 3);
+      const { images, modes } = await getVivierDuCarrousel(
+        vitrine.flatMap((rayon) => rayon.collections.map((collection) => collection.slug)),
+      );
+
       accueil = {
         feed: ordonnerLeFeed(vivier),
+        carrousel: melangerLeCarrousel(images, modes, CARTES_DU_CARROUSEL),
         familles,
         // Trois, et ce sont des copies : ouvrir une fiche ne veut rien dire,
         // on en ouvre dix pour en retenir une. Au-dela de trois, ce n'est
@@ -243,6 +266,7 @@ export default async function DiscoverPage({
       {accueil ? (
         <AccueilEditorial
           feed={accueil.feed}
+          carrousel={accueil.carrousel}
           reprendre={accueil.reprendre}
           familles={accueil.familles}
           locked={!acces.hasFullAccess}
