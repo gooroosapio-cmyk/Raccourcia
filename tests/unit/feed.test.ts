@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ordonnerLeFeed } from '@/lib/catalog/feed';
+import { melangerLeCarrousel, ordonnerLeFeed } from '@/lib/catalog/feed';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /** Une carte reduite a ce dont l'ordre du feed a besoin. */
@@ -68,5 +68,35 @@ describe('ordonnerLeFeed', () => {
 
   it('rend une liste vide sans broncher', () => {
     expect(ordonnerLeFeed([])).toEqual([]);
+  });
+});
+
+describe('carrousel de tete', () => {
+  const carte = (id: string, type: 'commande_image' | 'mode_ia') =>
+    ({ id, name: id, entityType: type, collectionSlug: id }) as PromptCard;
+
+  it('glisse un mode toutes les cinq cartes', () => {
+    const images = Array.from({ length: 20 }, (_, i) => carte(`i${i}`, 'commande_image'));
+    const modes = Array.from({ length: 5 }, (_, i) => carte(`m${i}`, 'mode_ia'));
+
+    const suite = melangerLeCarrousel(images, modes, 20);
+
+    expect(suite).toHaveLength(20);
+    expect(suite[4]?.entityType).toBe('mode_ia');
+    expect(suite[9]?.entityType).toBe('mode_ia');
+    expect(suite[0]?.entityType).toBe('commande_image');
+  });
+
+  it('ne laisse pas de trou quand une source s’epuise', () => {
+    const images = Array.from({ length: 3 }, (_, i) => carte(`i${i}`, 'commande_image'));
+    const modes = Array.from({ length: 4 }, (_, i) => carte(`m${i}`, 'mode_ia'));
+
+    expect(melangerLeCarrousel(images, modes, 20)).toHaveLength(7);
+  });
+
+  it('s’arrete au total demande', () => {
+    const images = Array.from({ length: 40 }, (_, i) => carte(`i${i}`, 'commande_image'));
+
+    expect(melangerLeCarrousel(images, [], 20)).toHaveLength(20);
   });
 });

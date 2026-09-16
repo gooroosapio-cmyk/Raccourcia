@@ -7,6 +7,7 @@ import { PromptDetailSheet } from '@/components/detail/prompt-detail';
 import { openPaywall } from '@/components/paywall/paywall-provider';
 import { trackPromptView } from '@/lib/actions/catalog';
 import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
+import { SUJETS, SUJET_LABELS, filtrerParSujet, type Sujet } from '@/lib/catalog/sujets';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -45,6 +46,7 @@ export function FeedDecouverte({
   initialProvider = 'chatgpt',
   intercalaires = [],
   rayons,
+  filtrable = false,
 }: {
   prompts: PromptCard[];
   locked: boolean;
@@ -53,8 +55,18 @@ export function FeedDecouverte({
   intercalaires?: Intercalaire[];
   /** A quel rayon appartient chaque collection, par position. */
   rayons?: Record<string, number>;
+  /**
+   * Propose de ne garder qu'un genre de sujet : personnes, objets, modes.
+   *
+   * Un menu deroulant et non des puces : trois choix plus « Tout » feraient
+   * quatre pastilles en travers de l'ecran, au-dessus d'une galerie qui a
+   * besoin de sa hauteur. Le menu natif ouvre la liste du systeme, que le
+   * pouce connait deja.
+   */
+  filtrable?: boolean;
 }) {
   const [selection, setSelection] = useState<PromptCard | null>(null);
+  const [sujet, setSujet] = useState<Sujet | null>(null);
   const [montrees, setMontrees] = useState(PALIER);
   const [provider, changeProvider] = usePreferredProvider(initialProvider);
 
@@ -72,10 +84,41 @@ export function FeedDecouverte({
 
   if (prompts.length === 0) return null;
 
-  const visibles = prompts.slice(0, montrees);
+  const retenues = filtrerParSujet(prompts, sujet);
+  const visibles = retenues.slice(0, montrees);
 
   return (
     <>
+      {filtrable ? (
+        <label className="mb-2 flex items-center gap-2">
+          <span className="sr-only">Filtrer par sujet</span>
+          <select
+            value={sujet ?? ''}
+            onChange={(evenement) => {
+              setSujet((evenement.target.value || null) as Sujet | null);
+              // Le palier revient au debut : rester au quatrieme palier d'une
+              // liste qui n'est plus la meme laisse devant des cartes qu'on
+              // n'a pas fait defiler.
+              setMontrees(PALIER);
+            }}
+            className="touch-target w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[length:var(--texte-carte)] font-medium text-[color:var(--color-night)]"
+          >
+            <option value="">Tous les sujets</option>
+            {SUJETS.map((valeur) => (
+              <option key={valeur} value={valeur}>
+                {SUJET_LABELS[valeur]}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
+
+      {retenues.length === 0 ? (
+        <p className="py-6 text-center text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
+          Aucune idée de ce genre parmi celles-ci.
+        </p>
+      ) : null}
+
       <div className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
         {visibles.map((prompt, index) => {
           const verrouille = locked && !prompt.isFree;
@@ -118,7 +161,7 @@ export function FeedDecouverte({
         })}
       </div>
 
-      {montrees < prompts.length ? (
+      {montrees < retenues.length ? (
         <button
           type="button"
           onClick={() => setMontrees((n) => n + PALIER)}

@@ -184,7 +184,7 @@ export function DiscoveryConsole({
   // reapparaissent — ils n'ont pas ete supprimes, ils ont ete deplaces la ou
   // il y a quelque chose a filtrer.
   if (simple) {
-    return <SearchField value={terme} onChange={setTerme} placeholder={placeholder} />;
+    return <RechercheRetractable value={terme} onChange={setTerme} placeholder={placeholder} />;
   }
 
   // Les familles seulement, jamais leurs collections. Le catalogue V2 en
@@ -249,14 +249,90 @@ export function DiscoveryConsole({
   );
 }
 
-function SearchField({
+/**
+ * La recherche de l'Accueil : une loupe, puis un champ.
+ *
+ * Elle occupait une bande de cinquante pixels en permanence, sous un titre
+ * qui posait deja la question. Or on n'arrive pas sur l'Accueil en sachant
+ * quoi taper — on y arrive pour voir. La barre attendait donc une frappe qui
+ * ne venait pas, et repoussait les idees d'autant.
+ *
+ * Elle reste a un geste : la loupe l'ouvre, le champ prend le focus, et la
+ * croix ou le champ vide la referme. Rien n'est cache — le bouton porte son
+ * nom pour un lecteur d'ecran, et la recherche continue de vivre dans l'URL.
+ */
+function RechercheRetractable({
   value,
   onChange,
-  placeholder = 'Décrivez ce que vous voulez obtenir',
+  placeholder,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+}) {
+  // Ouverte d'office si une recherche est deja en cours : revenir d'un
+  // resultat sur une loupe fermee donnerait l'impression d'avoir tout perdu.
+  const [ouverte, setOuverte] = useState(Boolean(value));
+  const champRef = useRef<HTMLInputElement>(null);
+
+  if (!ouverte) {
+    return (
+      <div className="flex justify-start">
+        <button
+          type="button"
+          onClick={() => {
+            setOuverte(true);
+            // Le focus part apres le rendu : le champ n'existe pas encore.
+            requestAnimationFrame(() => champRef.current?.focus());
+          }}
+          aria-label="Rechercher une idée"
+          className="touch-target inline-flex items-center gap-2 rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3.5 text-[length:var(--texte-carte)] font-medium text-[color:var(--color-muted)]"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+            <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          Rechercher
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <SearchField ref={champRef} value={value} onChange={onChange} placeholder={placeholder} />
+      <button
+        type="button"
+        onClick={() => {
+          onChange('');
+          setOuverte(false);
+        }}
+        aria-label="Fermer la recherche"
+        className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[color:var(--radius-control)] text-[color:var(--color-muted)]"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="m6 6 12 12M18 6 6 18"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+function SearchField({
+  value,
+  onChange,
+  placeholder = 'Décrivez ce que vous voulez obtenir',
+  ref,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  ref?: React.Ref<HTMLInputElement>;
 }) {
   return (
     <label className="relative min-w-0 flex-1">
@@ -271,6 +347,7 @@ function SearchField({
         </svg>
       </span>
       <input
+        ref={ref}
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}

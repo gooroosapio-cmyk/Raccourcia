@@ -36,6 +36,14 @@ export type PromptCard = {
    */
   entityType: 'commande_image' | 'mode_ia' | 'parcours' | null;
   /**
+   * Ce que la commande attend qu'on lui donne, tel que le catalogue le
+   * formule : « Une photo nette de la personne », « Une photo du produit ou
+   * de l'objet ». C'est la seule donnee qui distingue une transformation de
+   * personne d'une mise en scene d'objet — le rayon ne suffit pas, « Art &
+   * effets » contient les deux.
+   */
+  witnessType: string | null;
+  /**
    * Le rayon d'ou vient la carte, pour le sur-titre du feed et pour la
    * regle qui interdit deux cartes du meme rayon a la suite.
    */
