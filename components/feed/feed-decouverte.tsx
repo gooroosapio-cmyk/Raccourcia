@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { Fragment, useCallback, useState, type ReactNode } from 'react';
 import { CarteFeed } from '@/components/feed/carte-feed';
 import { PromptDetailSheet } from '@/components/detail/prompt-detail';
 import { openPaywall } from '@/components/paywall/paywall-provider';
@@ -21,16 +21,25 @@ import type { PromptCard } from '@/lib/catalog/types';
  */
 const PALIER = 8;
 
+/**
+ * Ce qui s'intercale entre deux cartes : une reprise, une invitation a
+ * ouvrir un mode IA. `apres` compte les cartes reellement affichees, donc un
+ * intercalaire pose trop loin attend le palier suivant plutot que de remonter.
+ */
+export type Intercalaire = { cle: string; apres: number; noeud: ReactNode };
+
 export function FeedDecouverte({
   prompts,
   locked,
   visiteur = false,
   initialProvider = 'chatgpt',
+  intercalaires = [],
 }: {
   prompts: PromptCard[];
   locked: boolean;
   visiteur?: boolean;
   initialProvider?: string;
+  intercalaires?: Intercalaire[];
 }) {
   const [selection, setSelection] = useState<PromptCard | null>(null);
   const [montrees, setMontrees] = useState(PALIER);
@@ -57,18 +66,23 @@ export function FeedDecouverte({
       <div className="flex flex-col gap-3">
         {visibles.map((prompt, index) => {
           const verrouille = locked && !prompt.isFree;
+          const apres = intercalaires.filter((element) => element.apres === index + 1);
           return (
-            <CarteFeed
-              key={prompt.id}
-              prompt={prompt}
-              locked={verrouille}
-              free={locked && prompt.isFree}
-              visiteur={visiteur}
-              // Seule la premiere carte est prioritaire : c'est la seule
-              // certaine d'etre a l'ecran au chargement.
-              priority={index === 0}
-              onOpen={ouvrir}
-            />
+            <Fragment key={prompt.id}>
+              <CarteFeed
+                prompt={prompt}
+                locked={verrouille}
+                free={locked && prompt.isFree}
+                visiteur={visiteur}
+                // Seule la premiere carte est prioritaire : c'est la seule
+                // certaine d'etre a l'ecran au chargement.
+                priority={index === 0}
+                onOpen={ouvrir}
+              />
+              {apres.map((element) => (
+                <div key={element.cle}>{element.noeud}</div>
+              ))}
+            </Fragment>
           );
         })}
       </div>
