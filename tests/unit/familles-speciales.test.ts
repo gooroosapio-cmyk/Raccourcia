@@ -15,6 +15,7 @@ function famille(slug: string): LibraryFamily {
     description: '',
     mode: 'image',
     count: 1,
+    apercus: [],
     collections: [],
   };
 }

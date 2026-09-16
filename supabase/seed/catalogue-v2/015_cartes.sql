@@ -9,7 +9,7 @@
 -- =====================================================================
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-tinypersonworld', 'img-tinypersonworld', '/tinypersonworld', 'Personne miniature', 'tinypersonworld', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Place une version miniature de la personne dans un décor quotidien géant.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['personne miniature', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Personne miniature | RaccourcIA', 'Place une version miniature de la personne dans un décor quotidien géant.', 74, 251, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-tinypersonworld', 'img-tinypersonworld', '/tinypersonworld', 'Personne miniature', 'tinypersonworld', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Place une version miniature de la personne dans un décor quotidien géant.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['personne miniature', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Personne miniature | RaccourcIA', 'Place une version miniature de la personne dans un décor quotidien géant.', 74, 251, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-tinypersonworld',
   command = '/tinypersonworld',
@@ -17,7 +17,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'tinypersonworld',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Place une version miniature de la personne dans un décor quotidien géant.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -43,7 +43,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-balloonart', 'img-balloonart', '/balloonart', 'Sculpture ballon', 'balloonart', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme le portrait en assemblage de ballons brillants et sculptés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['sculpture ballon', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Sculpture ballon | RaccourcIA', 'Transforme le portrait en assemblage de ballons brillants et sculptés.', 74, 252, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-balloonart', 'img-balloonart', '/balloonart', 'Sculpture ballon', 'balloonart', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme le portrait en assemblage de ballons brillants et sculptés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['sculpture ballon', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Sculpture ballon | RaccourcIA', 'Transforme le portrait en assemblage de ballons brillants et sculptés.', 74, 252, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-balloonart',
   command = '/balloonart',
@@ -51,7 +51,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'balloonart',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme le portrait en assemblage de ballons brillants et sculptés.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -77,7 +77,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-plushie', 'img-plushie', '/plushie', 'Version peluche', 'plushie', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Recrée la personne en peluche douce tout en conservant ses signes distinctifs.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['version peluche', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Version peluche | RaccourcIA', 'Recrée la personne en peluche douce tout en conservant ses signes distinctifs.', 74, 253, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-plushie', 'img-plushie', '/plushie', 'Version peluche', 'plushie', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Recrée la personne en peluche douce tout en conservant ses signes distinctifs.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['version peluche', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Version peluche | RaccourcIA', 'Recrée la personne en peluche douce tout en conservant ses signes distinctifs.', 74, 253, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-plushie',
   command = '/plushie',
@@ -85,7 +85,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'plushie',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Recrée la personne en peluche douce tout en conservant ses signes distinctifs.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -111,7 +111,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-flowerbody', 'img-flowerbody', '/flowerbody', 'Corps floral', 'flowerbody', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Remplace certaines textures par pétales et fleurs sans masquer l’identité.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['corps floral', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Corps floral | RaccourcIA', 'Remplace certaines textures par pétales et fleurs sans masquer l’identité.', 53, 254, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-flowerbody', 'img-flowerbody', '/flowerbody', 'Corps floral', 'flowerbody', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Remplace certaines textures par pétales et fleurs sans masquer l’identité.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['corps floral', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Corps floral | RaccourcIA', 'Remplace certaines textures par pétales et fleurs sans masquer l’identité.', 53, 254, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-flowerbody',
   command = '/flowerbody',
@@ -119,7 +119,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'flowerbody',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Remplace certaines textures par pétales et fleurs sans masquer l’identité.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -145,7 +145,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-insectself', 'img-insectself', '/insectself', 'Humain-insecte', 'insectself', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Fusionne la personne avec un insecte choisi en conservant visage, posture et palette reconnaissables.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['humain insecte', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Humain-insecte | RaccourcIA', 'Fusionne la personne avec un insecte choisi en conservant visage, posture et palette reconnaissables.', 56, 255, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-insectself', 'img-insectself', '/insectself', 'Humain-insecte', 'insectself', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Fusionne la personne avec un insecte choisi en conservant visage, posture et palette reconnaissables.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['humain insecte', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Humain-insecte | RaccourcIA', 'Fusionne la personne avec un insecte choisi en conservant visage, posture et palette reconnaissables.', 56, 255, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-insectself',
   command = '/insectself',
@@ -153,7 +153,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'insectself',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Fusionne la personne avec un insecte choisi en conservant visage, posture et palette reconnaissables.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -179,7 +179,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-papercraftobject', 'img-papercraftobject', '/papercraftobject', 'Maquette papier', 'papercraftobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Convertit le produit en volume découpé et assemblé par languettes.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['maquette papier', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Maquette papier | RaccourcIA', 'Convertit le produit en volume découpé et assemblé par languettes.', 57, 256, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-papercraftobject', 'img-papercraftobject', '/papercraftobject', 'Maquette papier', 'papercraftobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Convertit le produit en volume découpé et assemblé par languettes.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['maquette papier', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Maquette papier | RaccourcIA', 'Convertit le produit en volume découpé et assemblé par languettes.', 57, 256, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-papercraftobject',
   command = '/papercraftobject',
@@ -187,7 +187,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'papercraftobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Convertit le produit en volume découpé et assemblé par languettes.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -213,7 +213,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-miniature', 'img-miniature', '/miniature', 'Miniature réaliste', 'miniature', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Réduit l’objet en maquette détaillée avec échelle immédiatement lisible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['miniature realiste', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Miniature réaliste | RaccourcIA', 'Réduit l’objet en maquette détaillée avec échelle immédiatement lisible.', 50, 257, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-miniature', 'img-miniature', '/miniature', 'Miniature réaliste', 'miniature', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Réduit l’objet en maquette détaillée avec échelle immédiatement lisible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['miniature realiste', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Miniature réaliste | RaccourcIA', 'Réduit l’objet en maquette détaillée avec échelle immédiatement lisible.', 50, 257, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-miniature',
   command = '/miniature',
@@ -221,7 +221,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'miniature',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Réduit l’objet en maquette détaillée avec échelle immédiatement lisible.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -247,7 +247,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-tinyworld', 'img-tinyworld', '/tinyworld', 'Monde miniature', 'tinyworld', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme le produit en décor habité par de minuscules personnages.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['monde miniature', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Monde miniature | RaccourcIA', 'Transforme le produit en décor habité par de minuscules personnages.', 56, 258, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-tinyworld', 'img-tinyworld', '/tinyworld', 'Monde miniature', 'tinyworld', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme le produit en décor habité par de minuscules personnages.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['monde miniature', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Monde miniature | RaccourcIA', 'Transforme le produit en décor habité par de minuscules personnages.', 56, 258, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-tinyworld',
   command = '/tinyworld',
@@ -255,7 +255,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'tinyworld',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme le produit en décor habité par de minuscules personnages.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -281,7 +281,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-candyobject', 'img-candyobject', '/candyobject', 'Objet bonbon', 'candyobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme la silhouette en confiserie colorée et translucide.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet bonbon', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet bonbon | RaccourcIA', 'Transforme la silhouette en confiserie colorée et translucide.', 33, 259, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-candyobject', 'img-candyobject', '/candyobject', 'Objet bonbon', 'candyobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme la silhouette en confiserie colorée et translucide.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet bonbon', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet bonbon | RaccourcIA', 'Transforme la silhouette en confiserie colorée et translucide.', 33, 259, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-candyobject',
   command = '/candyobject',
@@ -289,7 +289,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'candyobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme la silhouette en confiserie colorée et translucide.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -315,7 +315,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-embroideredobject', 'img-embroideredobject', '/embroideredobject', 'Objet brodé', 'embroideredobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Recompose forme, logo et détails avec fils et points textiles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet brode', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet brodé | RaccourcIA', 'Recompose forme, logo et détails avec fils et points textiles.', 50, 260, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-embroideredobject', 'img-embroideredobject', '/embroideredobject', 'Objet brodé', 'embroideredobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Recompose forme, logo et détails avec fils et points textiles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet brode', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet brodé | RaccourcIA', 'Recompose forme, logo et détails avec fils et points textiles.', 50, 260, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-embroideredobject',
   command = '/embroideredobject',
@@ -323,7 +323,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'embroideredobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Recompose forme, logo et détails avec fils et points textiles.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -349,7 +349,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-chocolateobject', 'img-chocolateobject', '/chocolateobject', 'Objet chocolat', 'chocolateobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Sculpte le produit dans différents chocolats avec détails gourmands.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet chocolat', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet chocolat | RaccourcIA', 'Sculpte le produit dans différents chocolats avec détails gourmands.', 36, 261, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-chocolateobject', 'img-chocolateobject', '/chocolateobject', 'Objet chocolat', 'chocolateobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Sculpte le produit dans différents chocolats avec détails gourmands.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet chocolat', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet chocolat | RaccourcIA', 'Sculpte le produit dans différents chocolats avec détails gourmands.', 36, 261, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-chocolateobject',
   command = '/chocolateobject',
@@ -357,7 +357,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'chocolateobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Sculpte le produit dans différents chocolats avec détails gourmands.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -383,7 +383,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-crystalobject', 'img-crystalobject', '/crystalobject', 'Objet cristal', 'crystalobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Recompose l’objet en cristal taillé réfractant la lumière.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet cristal', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet cristal | RaccourcIA', 'Recompose l’objet en cristal taillé réfractant la lumière.', 50, 262, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-crystalobject', 'img-crystalobject', '/crystalobject', 'Objet cristal', 'crystalobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Recompose l’objet en cristal taillé réfractant la lumière.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet cristal', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet cristal | RaccourcIA', 'Recompose l’objet en cristal taillé réfractant la lumière.', 50, 262, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-crystalobject',
   command = '/crystalobject',
@@ -391,7 +391,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'crystalobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Recompose l’objet en cristal taillé réfractant la lumière.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -417,7 +417,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-smokeobject', 'img-smokeobject', '/smokeobject', 'Objet de fumée', 'smokeobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Reconstruit la forme avec des volutes denses sur fond sombre.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet de fumee', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet de fumée | RaccourcIA', 'Reconstruit la forme avec des volutes denses sur fond sombre.', 33, 263, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-smokeobject', 'img-smokeobject', '/smokeobject', 'Objet de fumée', 'smokeobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Reconstruit la forme avec des volutes denses sur fond sombre.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet de fumee', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet de fumée | RaccourcIA', 'Reconstruit la forme avec des volutes denses sur fond sombre.', 33, 263, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-smokeobject',
   command = '/smokeobject',
@@ -425,7 +425,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'smokeobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Reconstruit la forme avec des volutes denses sur fond sombre.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -451,7 +451,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-iceobject', 'img-iceobject', '/iceobject', 'Objet de glace', 'iceobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Convertit le produit en glace sculptée avec bulles et fissures.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet de glace', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet de glace | RaccourcIA', 'Convertit le produit en glace sculptée avec bulles et fissures.', 53, 264, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-iceobject', 'img-iceobject', '/iceobject', 'Objet de glace', 'iceobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Convertit le produit en glace sculptée avec bulles et fissures.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet de glace', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet de glace | RaccourcIA', 'Convertit le produit en glace sculptée avec bulles et fissures.', 53, 264, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-iceobject',
   command = '/iceobject',
@@ -459,7 +459,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'iceobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Convertit le produit en glace sculptée avec bulles et fissures.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -485,7 +485,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-clayobject', 'img-clayobject', '/clayobject', 'Objet en argile', 'clayobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Recrée le produit comme une sculpture modelée artisanale.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet en argile', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet en argile | RaccourcIA', 'Recrée le produit comme une sculpture modelée artisanale.', 53, 265, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-clayobject', 'img-clayobject', '/clayobject', 'Objet en argile', 'clayobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Recrée le produit comme une sculpture modelée artisanale.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet en argile', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet en argile | RaccourcIA', 'Recrée le produit comme une sculpture modelée artisanale.', 53, 265, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-clayobject',
   command = '/clayobject',
@@ -493,7 +493,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'clayobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Recrée le produit comme une sculpture modelée artisanale.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -519,7 +519,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fossilobject', 'img-fossilobject', '/fossilobject', 'Objet fossile', 'fossilobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Imagine le produit comme un fossile découvert dans une strate rocheuse, encore identifiable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet fossile', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet fossile | RaccourcIA', 'Imagine le produit comme un fossile découvert dans une strate rocheuse, encore identifiable.', 53, 266, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-fossilobject', 'img-fossilobject', '/fossilobject', 'Objet fossile', 'fossilobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Imagine le produit comme un fossile découvert dans une strate rocheuse, encore identifiable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet fossile', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet fossile | RaccourcIA', 'Imagine le produit comme un fossile découvert dans une strate rocheuse, encore identifiable.', 53, 266, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fossilobject',
   command = '/fossilobject',
@@ -527,7 +527,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'fossilobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Imagine le produit comme un fossile découvert dans une strate rocheuse, encore identifiable.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -553,7 +553,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-gummyobject', 'img-gummyobject', '/gummyobject', 'Objet gélifié', 'gummyobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Donne une matière souple, brillante et semi-transparente très tactile.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet gelifie', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet gélifié | RaccourcIA', 'Donne une matière souple, brillante et semi-transparente très tactile.', 33, 267, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-gummyobject', 'img-gummyobject', '/gummyobject', 'Objet gélifié', 'gummyobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Donne une matière souple, brillante et semi-transparente très tactile.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet gelifie', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet gélifié | RaccourcIA', 'Donne une matière souple, brillante et semi-transparente très tactile.', 33, 267, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-gummyobject',
   command = '/gummyobject',
@@ -561,7 +561,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'gummyobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Donne une matière souple, brillante et semi-transparente très tactile.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -587,7 +587,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-mosaicobject', 'img-mosaicobject', '/mosaicobject', 'Objet mosaïque', 'mosaicobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Reconstruit les surfaces en tesselles de tailles cohérentes.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet mosaique', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet mosaïque | RaccourcIA', 'Reconstruit les surfaces en tesselles de tailles cohérentes.', 50, 268, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-mosaicobject', 'img-mosaicobject', '/mosaicobject', 'Objet mosaïque', 'mosaicobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Reconstruit les surfaces en tesselles de tailles cohérentes.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet mosaique', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet mosaïque | RaccourcIA', 'Reconstruit les surfaces en tesselles de tailles cohérentes.', 50, 268, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-mosaicobject',
   command = '/mosaicobject',
@@ -595,7 +595,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'mosaicobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Reconstruit les surfaces en tesselles de tailles cohérentes.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -621,7 +621,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-mossobject', 'img-mossobject', '/mossobject', 'Objet moussu', 'mossobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Donne une finition de mousse vivante dans une scène organique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet moussu', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet moussu | RaccourcIA', 'Donne une finition de mousse vivante dans une scène organique.', 33, 269, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-mossobject', 'img-mossobject', '/mossobject', 'Objet moussu', 'mossobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Donne une finition de mousse vivante dans une scène organique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet moussu', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet moussu | RaccourcIA', 'Donne une finition de mousse vivante dans une scène organique.', 33, 269, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-mossobject',
   command = '/mossobject',
@@ -629,7 +629,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'mossobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Donne une finition de mousse vivante dans une scène organique.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -655,7 +655,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-cloudobject', 'img-cloudobject', '/cloudobject', 'Objet nuage', 'cloudobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme le produit en volume nuageux léger et reconnaissable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet nuage', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet nuage | RaccourcIA', 'Transforme le produit en volume nuageux léger et reconnaissable.', 36, 270, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-cloudobject', 'img-cloudobject', '/cloudobject', 'Objet nuage', 'cloudobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme le produit en volume nuageux léger et reconnaissable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet nuage', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet nuage | RaccourcIA', 'Transforme le produit en volume nuageux léger et reconnaissable.', 36, 270, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-cloudobject',
   command = '/cloudobject',
@@ -663,7 +663,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'cloudobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme le produit en volume nuageux léger et reconnaissable.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -689,7 +689,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-origamiobject', 'img-origamiobject', '/origamiobject', 'Objet origami', 'origamiobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Reconstruit l’objet en plis de papier tout en gardant sa silhouette.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet origami', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet origami | RaccourcIA', 'Reconstruit l’objet en plis de papier tout en gardant sa silhouette.', 50, 271, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-origamiobject', 'img-origamiobject', '/origamiobject', 'Objet origami', 'origamiobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Reconstruit l’objet en plis de papier tout en gardant sa silhouette.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet origami', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet origami | RaccourcIA', 'Reconstruit l’objet en plis de papier tout en gardant sa silhouette.', 50, 271, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-origamiobject',
   command = '/origamiobject',
@@ -697,7 +697,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'origamiobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Reconstruit l’objet en plis de papier tout en gardant sa silhouette.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -723,7 +723,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-lavaobject', 'img-lavaobject', '/lavaobject', 'Objet volcanique', 'lavaobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Fait apparaître pierre sombre et veines de lave incandescente.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet volcanique', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet volcanique | RaccourcIA', 'Fait apparaître pierre sombre et veines de lave incandescente.', 33, 272, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-lavaobject', 'img-lavaobject', '/lavaobject', 'Objet volcanique', 'lavaobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Fait apparaître pierre sombre et veines de lave incandescente.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['objet volcanique', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet volcanique | RaccourcIA', 'Fait apparaître pierre sombre et veines de lave incandescente.', 33, 272, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-lavaobject',
   command = '/lavaobject',
@@ -731,7 +731,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'lavaobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Fait apparaître pierre sombre et veines de lave incandescente.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -757,7 +757,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-botanicalobject', 'img-botanicalobject', '/botanicalobject', 'Objet végétal', 'botanicalobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Recouvre ou reconstruit le produit avec feuilles, fleurs et tiges.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet vegetal', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet végétal | RaccourcIA', 'Recouvre ou reconstruit le produit avec feuilles, fleurs et tiges.', 53, 273, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-botanicalobject', 'img-botanicalobject', '/botanicalobject', 'Objet végétal', 'botanicalobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Recouvre ou reconstruit le produit avec feuilles, fleurs et tiges.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet vegetal', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Objet végétal | RaccourcIA', 'Recouvre ou reconstruit le produit avec feuilles, fleurs et tiges.', 53, 273, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-botanicalobject',
   command = '/botanicalobject',
@@ -765,7 +765,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'botanicalobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Recouvre ou reconstruit le produit avec feuilles, fleurs et tiges.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -791,7 +791,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-clayportrait', 'img-clayportrait', '/clayportrait', 'Personnage en argile', 'clayportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme la personne en sculpture d’argile modelée image par image.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['personnage en argile', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Personnage en argile | RaccourcIA', 'Transforme la personne en sculpture d’argile modelée image par image.', 56, 274, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-clayportrait', 'img-clayportrait', '/clayportrait', 'Personnage en argile', 'clayportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme la personne en sculpture d’argile modelée image par image.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['personnage en argile', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Personnage en argile | RaccourcIA', 'Transforme la personne en sculpture d’argile modelée image par image.', 56, 274, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-clayportrait',
   command = '/clayportrait',
@@ -799,7 +799,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'clayportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme la personne en sculpture d’argile modelée image par image.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -825,7 +825,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-embroideredportrait', 'img-embroideredportrait', '/embroideredportrait', 'Portrait brodé', 'embroideredportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme l’image en broderie textile riche, avec fils visibles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait brode', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Portrait brodé | RaccourcIA', 'Transforme l’image en broderie textile riche, avec fils visibles.', 56, 275, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-embroideredportrait', 'img-embroideredportrait', '/embroideredportrait', 'Portrait brodé', 'embroideredportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme l’image en broderie textile riche, avec fils visibles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait brode', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Portrait brodé | RaccourcIA', 'Transforme l’image en broderie textile riche, avec fils visibles.', 56, 275, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-embroideredportrait',
   command = '/embroideredportrait',
@@ -833,7 +833,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'embroideredportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme l’image en broderie textile riche, avec fils visibles.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -859,7 +859,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-chromeportrait', 'img-chromeportrait', '/chromeportrait', 'Portrait chrome', 'chromeportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Donne à la personne une finition chrome miroir sculpturale.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait chrome', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Portrait chrome | RaccourcIA', 'Donne à la personne une finition chrome miroir sculpturale.', 53, 276, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-chromeportrait', 'img-chromeportrait', '/chromeportrait', 'Portrait chrome', 'chromeportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Donne à la personne une finition chrome miroir sculpturale.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait chrome', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Portrait chrome | RaccourcIA', 'Donne à la personne une finition chrome miroir sculpturale.', 53, 276, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-chromeportrait',
   command = '/chromeportrait',
@@ -867,7 +867,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'chromeportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Donne à la personne une finition chrome miroir sculpturale.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -893,7 +893,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-mosaicportrait', 'img-mosaicportrait', '/mosaicportrait', 'Portrait mosaïque', 'mosaicportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Reconstruit le visage en tesselles colorées avec lecture nette à distance.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait mosaique', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Portrait mosaïque | RaccourcIA', 'Reconstruit le visage en tesselles colorées avec lecture nette à distance.', 56, 277, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-mosaicportrait', 'img-mosaicportrait', '/mosaicportrait', 'Portrait mosaïque', 'mosaicportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Reconstruit le visage en tesselles colorées avec lecture nette à distance.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait mosaique', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Portrait mosaïque | RaccourcIA', 'Reconstruit le visage en tesselles colorées avec lecture nette à distance.', 56, 277, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-mosaicportrait',
   command = '/mosaicportrait',
@@ -901,7 +901,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'mosaicportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Reconstruit le visage en tesselles colorées avec lecture nette à distance.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -927,7 +927,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-balloonproduct', 'img-balloonproduct', '/balloonproduct', 'Produit ballon', 'balloonproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Recompose l’objet en ballons gonflés et brillants.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['produit ballon', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Produit ballon | RaccourcIA', 'Recompose l’objet en ballons gonflés et brillants.', 53, 278, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-balloonproduct', 'img-balloonproduct', '/balloonproduct', 'Produit ballon', 'balloonproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Recompose l’objet en ballons gonflés et brillants.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['produit ballon', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Produit ballon | RaccourcIA', 'Recompose l’objet en ballons gonflés et brillants.', 53, 278, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-balloonproduct',
   command = '/balloonproduct',
@@ -935,7 +935,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'balloonproduct',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Recompose l’objet en ballons gonflés et brillants.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -961,7 +961,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-plushproduct', 'img-plushproduct', '/plushproduct', 'Produit peluche', 'plushproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme l’objet en peluche douce, ronde et reconnaissable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['produit peluche', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Produit peluche | RaccourcIA', 'Transforme l’objet en peluche douce, ronde et reconnaissable.', 54, 279, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-plushproduct', 'img-plushproduct', '/plushproduct', 'Produit peluche', 'plushproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme l’objet en peluche douce, ronde et reconnaissable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['produit peluche', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Produit peluche | RaccourcIA', 'Transforme l’objet en peluche douce, ronde et reconnaissable.', 54, 279, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-plushproduct',
   command = '/plushproduct',
@@ -969,7 +969,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'plushproduct',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme l’objet en peluche douce, ronde et reconnaissable.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -995,7 +995,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-iceportrait', 'img-iceportrait', '/iceportrait', 'Sculpture de glace', 'iceportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme la personne en sculpture glacée détaillée dans un décor froid.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['sculpture de glace', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Sculpture de glace | RaccourcIA', 'Transforme la personne en sculpture glacée détaillée dans un décor froid.', 56, 280, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-iceportrait', 'img-iceportrait', '/iceportrait', 'Sculpture de glace', 'iceportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme la personne en sculpture glacée détaillée dans un décor froid.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['sculpture de glace', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Sculpture de glace | RaccourcIA', 'Transforme la personne en sculpture glacée détaillée dans un décor froid.', 56, 280, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-iceportrait',
   command = '/iceportrait',
@@ -1003,7 +1003,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'iceportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme la personne en sculpture glacée détaillée dans un décor froid.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1029,7 +1029,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-sandsculpture', 'img-sandsculpture', '/sandsculpture', 'Sculpture de sable', 'sandsculpture', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme l’objet en sculpture de sable détaillée avec grains, effritements et ombres réalistes.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['sculpture de sable', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Sculpture de sable | RaccourcIA', 'Transforme l’objet en sculpture de sable détaillée avec grains, effritements et ombres réalistes.', 50, 281, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-sandsculpture', 'img-sandsculpture', '/sandsculpture', 'Sculpture de sable', 'sandsculpture', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme l’objet en sculpture de sable détaillée avec grains, effritements et ombres réalistes.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['sculpture de sable', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Sculpture de sable | RaccourcIA', 'Transforme l’objet en sculpture de sable détaillée avec grains, effritements et ombres réalistes.', 50, 281, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-sandsculpture',
   command = '/sandsculpture',
@@ -1037,7 +1037,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'sandsculpture',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme l’objet en sculpture de sable détaillée avec grains, effritements et ombres réalistes.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1063,7 +1063,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-glassportrait', 'img-glassportrait', '/glassportrait', 'Sculpture de verre', 'glassportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Convertit la silhouette en verre soufflé coloré et translucide.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['sculpture de verre', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Sculpture de verre | RaccourcIA', 'Convertit la silhouette en verre soufflé coloré et translucide.', 53, 282, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-glassportrait', 'img-glassportrait', '/glassportrait', 'Sculpture de verre', 'glassportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Convertit la silhouette en verre soufflé coloré et translucide.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['sculpture de verre', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Sculpture de verre | RaccourcIA', 'Convertit la silhouette en verre soufflé coloré et translucide.', 53, 282, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-glassportrait',
   command = '/glassportrait',
@@ -1071,7 +1071,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'glassportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Convertit la silhouette en verre soufflé coloré et translucide.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1097,7 +1097,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-softinflatable', 'img-softinflatable', '/softinflatable', 'Tout devient gonflable', 'softinflatable', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transformez votre sujet en sculpture souple et ludique.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['tout devient gonflable', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Tout devient gonflable | RaccourcIA', 'Transformez votre sujet en sculpture souple et ludique.', 36, 283, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-softinflatable', 'img-softinflatable', '/softinflatable', 'Tout devient gonflable', 'softinflatable', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transformez votre sujet en sculpture souple et ludique.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['tout devient gonflable', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Tout devient gonflable | RaccourcIA', 'Transformez votre sujet en sculpture souple et ludique.', 36, 283, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-softinflatable',
   command = '/softinflatable',
@@ -1105,7 +1105,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'softinflatable',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transformez votre sujet en sculpture souple et ludique.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1131,7 +1131,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-stainedglassobject', 'img-stainedglassobject', '/stainedglassobject', 'Vitrail', 'stainedglassobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme l’objet en panneaux de verre coloré sertis de plomb.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['vitrail', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Vitrail | RaccourcIA', 'Transforme l’objet en panneaux de verre coloré sertis de plomb.', 50, 284, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-stainedglassobject', 'img-stainedglassobject', '/stainedglassobject', 'Vitrail', 'stainedglassobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme l’objet en panneaux de verre coloré sertis de plomb.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['vitrail', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Vitrail | RaccourcIA', 'Transforme l’objet en panneaux de verre coloré sertis de plomb.', 50, 284, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-stainedglassobject',
   command = '/stainedglassobject',
@@ -1139,7 +1139,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'stainedglassobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme l’objet en panneaux de verre coloré sertis de plomb.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1165,7 +1165,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-giantcity', 'img-giantcity', '/giantcity', 'Géant dans la ville', 'giantcity', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Jouez avec une échelle monumentale sans destruction.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['geant dans la ville', 'vfx effets de scene', 'creations et vfx']::text[], 'Géant dans la ville | RaccourcIA', 'Jouez avec une échelle monumentale sans destruction.', 77, 285, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-giantcity', 'img-giantcity', '/giantcity', 'Géant dans la ville', 'giantcity', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Jouez avec une échelle monumentale sans destruction.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['geant dans la ville', 'vfx effets de scene', 'creations et vfx']::text[], 'Géant dans la ville | RaccourcIA', 'Jouez avec une échelle monumentale sans destruction.', 77, 285, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-giantcity',
   command = '/giantcity',
@@ -1173,7 +1173,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'giantcity',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Jouez avec une échelle monumentale sans destruction.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1199,7 +1199,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-hologramportrait', 'img-hologramportrait', '/hologramportrait', 'Hologramme', 'hologramportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Convertit le portrait en projection lumineuse irisée et futuriste.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['hologramme', 'vfx effets de scene', 'creations et vfx']::text[], 'Hologramme | RaccourcIA', 'Convertit le portrait en projection lumineuse irisée et futuriste.', 80, 286, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-hologramportrait', 'img-hologramportrait', '/hologramportrait', 'Hologramme', 'hologramportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Convertit le portrait en projection lumineuse irisée et futuriste.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['hologramme', 'vfx effets de scene', 'creations et vfx']::text[], 'Hologramme | RaccourcIA', 'Convertit le portrait en projection lumineuse irisée et futuriste.', 80, 286, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-hologramportrait',
   command = '/hologramportrait',
@@ -1207,7 +1207,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'hologramportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Convertit le portrait en projection lumineuse irisée et futuriste.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1233,7 +1233,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-liquidmetal', 'img-liquidmetal', '/liquidmetal', 'Métal liquide', 'liquidmetal', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Fait évoluer certaines zones du portrait en métal fluide réfléchissant.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['metal liquide', 'vfx effets de scene', 'creations et vfx']::text[], 'Métal liquide | RaccourcIA', 'Fait évoluer certaines zones du portrait en métal fluide réfléchissant.', 63, 287, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-liquidmetal', 'img-liquidmetal', '/liquidmetal', 'Métal liquide', 'liquidmetal', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Fait évoluer certaines zones du portrait en métal fluide réfléchissant.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['metal liquide', 'vfx effets de scene', 'creations et vfx']::text[], 'Métal liquide | RaccourcIA', 'Fait évoluer certaines zones du portrait en métal fluide réfléchissant.', 63, 287, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-liquidmetal',
   command = '/liquidmetal',
@@ -1241,7 +1241,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'liquidmetal',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Fait évoluer certaines zones du portrait en métal fluide réfléchissant.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1267,7 +1267,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-levitationorbit', 'img-levitationorbit', '/levitationorbit', 'Orbite en lévitation', 'levitationorbit', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Fait tourner accessoires ou composants autour du produit dans une composition suspendue et lisible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['orbite en levitation', 'vfx effets de scene', 'creations et vfx']::text[], 'Orbite en lévitation | RaccourcIA', 'Fait tourner accessoires ou composants autour du produit dans une composition suspendue et lisible.', 62, 288, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-levitationorbit', 'img-levitationorbit', '/levitationorbit', 'Orbite en lévitation', 'levitationorbit', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Fait tourner accessoires ou composants autour du produit dans une composition suspendue et lisible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['orbite en levitation', 'vfx effets de scene', 'creations et vfx']::text[], 'Orbite en lévitation | RaccourcIA', 'Fait tourner accessoires ou composants autour du produit dans une composition suspendue et lisible.', 62, 288, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-levitationorbit',
   command = '/levitationorbit',
@@ -1275,7 +1275,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'levitationorbit',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Fait tourner accessoires ou composants autour du produit dans une composition suspendue et lisible.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1301,7 +1301,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fireportrait', 'img-fireportrait', '/fireportrait', 'Portrait de feu', 'fireportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Construit cheveux ou contour avec flammes stylisées et éclairage cohérent.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait de feu', 'vfx effets de scene', 'creations et vfx']::text[], 'Portrait de feu | RaccourcIA', 'Construit cheveux ou contour avec flammes stylisées et éclairage cohérent.', 62, 289, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-fireportrait', 'img-fireportrait', '/fireportrait', 'Portrait de feu', 'fireportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Construit cheveux ou contour avec flammes stylisées et éclairage cohérent.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait de feu', 'vfx effets de scene', 'creations et vfx']::text[], 'Portrait de feu | RaccourcIA', 'Construit cheveux ou contour avec flammes stylisées et éclairage cohérent.', 62, 289, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fireportrait',
   command = '/fireportrait',
@@ -1309,7 +1309,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'fireportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Construit cheveux ou contour avec flammes stylisées et éclairage cohérent.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1335,7 +1335,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-watersplashportrait', 'img-watersplashportrait', '/watersplashportrait', 'Portrait éclaboussé', 'watersplashportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Recompose la silhouette par des éclaboussures d’eau figées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait eclabousse', 'vfx effets de scene', 'creations et vfx']::text[], 'Portrait éclaboussé | RaccourcIA', 'Recompose la silhouette par des éclaboussures d’eau figées.', 62, 290, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-watersplashportrait', 'img-watersplashportrait', '/watersplashportrait', 'Portrait éclaboussé', 'watersplashportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Recompose la silhouette par des éclaboussures d’eau figées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait eclabousse', 'vfx effets de scene', 'creations et vfx']::text[], 'Portrait éclaboussé | RaccourcIA', 'Recompose la silhouette par des éclaboussures d’eau figées.', 62, 290, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-watersplashportrait',
   command = '/watersplashportrait',
@@ -1343,7 +1343,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'watersplashportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Recompose la silhouette par des éclaboussures d’eau figées.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1369,7 +1369,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-screenescape', 'img-screenescape', '/screenescape', 'Sortie de l’écran', 'screenescape', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Votre sujet franchit le bord d’un écran.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['sortie de lecran', 'vfx effets de scene', 'creations et vfx']::text[], 'Sortie de l’écran | RaccourcIA', 'Votre sujet franchit le bord d’un écran.', 77, 291, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-screenescape', 'img-screenescape', '/screenescape', 'Sortie de l’écran', 'screenescape', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Votre sujet franchit le bord d’un écran.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['sortie de lecran', 'vfx effets de scene', 'creations et vfx']::text[], 'Sortie de l’écran | RaccourcIA', 'Votre sujet franchit le bord d’un écran.', 77, 291, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-screenescape',
   command = '/screenescape',
@@ -1377,7 +1377,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'screenescape',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Votre sujet franchit le bord d’un écran.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1403,7 +1403,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-portalstep', 'img-portalstep', '/portalstep', 'Un pas dans le portail', 'portalstep', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Traversez deux mondes dans une seule image.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['un pas dans le portail', 'vfx effets de scene', 'creations et vfx']::text[], 'Un pas dans le portail | RaccourcIA', 'Traversez deux mondes dans une seule image.', 77, 292, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-portalstep', 'img-portalstep', '/portalstep', 'Un pas dans le portail', 'portalstep', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Traversez deux mondes dans une seule image.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['un pas dans le portail', 'vfx effets de scene', 'creations et vfx']::text[], 'Un pas dans le portail | RaccourcIA', 'Traversez deux mondes dans une seule image.', 77, 292, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-portalstep',
   command = '/portalstep',
@@ -1411,7 +1411,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'portalstep',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Traversez deux mondes dans une seule image.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1437,7 +1437,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-papertear', 'img-papertear', '/papertear', 'Derrière le papier', 'papertear', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Révélez un monde derrière une déchirure.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['derriere le papier', 'vfx effets de scene', 'creations et vfx']::text[], 'Derrière le papier | RaccourcIA', 'Révélez un monde derrière une déchirure.', 59, 293, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-papertear', 'img-papertear', '/papertear', 'Derrière le papier', 'papertear', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Révélez un monde derrière une déchirure.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['derriere le papier', 'vfx effets de scene', 'creations et vfx']::text[], 'Derrière le papier | RaccourcIA', 'Révélez un monde derrière une déchirure.', 59, 293, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-papertear',
   command = '/papertear',
@@ -1445,7 +1445,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'papertear',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Révélez un monde derrière une déchirure.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1471,7 +1471,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-gravitypause', 'img-gravitypause', '/gravitypause', 'Gravité en pause', 'gravitypause', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Figez votre quotidien dans une scène suspendue.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['gravite en pause', 'vfx effets de scene', 'creations et vfx']::text[], 'Gravité en pause | RaccourcIA', 'Figez votre quotidien dans une scène suspendue.', 59, 294, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-gravitypause', 'img-gravitypause', '/gravitypause', 'Gravité en pause', 'gravitypause', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Figez votre quotidien dans une scène suspendue.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['gravite en pause', 'vfx effets de scene', 'creations et vfx']::text[], 'Gravité en pause | RaccourcIA', 'Figez votre quotidien dans une scène suspendue.', 59, 294, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-gravitypause',
   command = '/gravitypause',
@@ -1479,7 +1479,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'gravitypause',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Figez votre quotidien dans une scène suspendue.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1505,7 +1505,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-localfuture', 'img-localfuture', '/localfuture', 'Mon quartier demain', 'localfuture', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Imaginez un futur positif qui conserve l’identité du lieu.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['mon quartier demain', 'vfx effets de scene', 'creations et vfx']::text[], 'Mon quartier demain | RaccourcIA', 'Imaginez un futur positif qui conserve l’identité du lieu.', 59, 295, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-localfuture', 'img-localfuture', '/localfuture', 'Mon quartier demain', 'localfuture', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Imaginez un futur positif qui conserve l’identité du lieu.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['mon quartier demain', 'vfx effets de scene', 'creations et vfx']::text[], 'Mon quartier demain | RaccourcIA', 'Imaginez un futur positif qui conserve l’identité du lieu.', 59, 295, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-localfuture',
   command = '/localfuture',
@@ -1513,7 +1513,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'localfuture',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Imaginez un futur positif qui conserve l’identité du lieu.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1539,7 +1539,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-microscopeworld', 'img-microscopeworld', '/microscopeworld', 'Monde microscopique', 'microscopeworld', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Un paysage microscopique imaginaire inspiré d’une surface ; il ne révèle pas sa structure moléculaire réelle.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['monde microscopique', 'vfx effets de scene', 'creations et vfx']::text[], 'Monde microscopique | RaccourcIA', 'Un paysage microscopique imaginaire inspiré d’une surface ; il ne révèle pas sa structure moléculaire réelle.', 37, 296, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-microscopeworld', 'img-microscopeworld', '/microscopeworld', 'Monde microscopique', 'microscopeworld', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Un paysage microscopique imaginaire inspiré d’une surface ; il ne révèle pas sa structure moléculaire réelle.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['monde microscopique', 'vfx effets de scene', 'creations et vfx']::text[], 'Monde microscopique | RaccourcIA', 'Un paysage microscopique imaginaire inspiré d’une surface ; il ne révèle pas sa structure moléculaire réelle.', 37, 296, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-microscopeworld',
   command = '/microscopeworld',
@@ -1547,7 +1547,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'microscopeworld',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Un paysage microscopique imaginaire inspiré d’une surface ; il ne révèle pas sa structure moléculaire réelle.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1573,7 +1573,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-neonwireobject', 'img-neonwireobject', '/neonwireobject', 'Objet en fil néon', 'neonwireobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Redessine les contours et détails du produit avec un tube néon continu dans une scène sombre.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet en fil neon', 'vfx effets de scene', 'creations et vfx']::text[], 'Objet en fil néon | RaccourcIA', 'Redessine les contours et détails du produit avec un tube néon continu dans une scène sombre.', 59, 297, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-neonwireobject', 'img-neonwireobject', '/neonwireobject', 'Objet en fil néon', 'neonwireobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Redessine les contours et détails du produit avec un tube néon continu dans une scène sombre.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet en fil neon', 'vfx effets de scene', 'creations et vfx']::text[], 'Objet en fil néon | RaccourcIA', 'Redessine les contours et détails du produit avec un tube néon continu dans une scène sombre.', 59, 297, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-neonwireobject',
   command = '/neonwireobject',
@@ -1581,7 +1581,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'neonwireobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Redessine les contours et détails du produit avec un tube néon continu dans une scène sombre.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1607,7 +1607,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-liquidobject', 'img-liquidobject', '/liquidobject', 'Objet liquide', 'liquidobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Reconstruit l’objet en liquide en conservant silhouette, couleur et tension de surface lisibles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['objet liquide', 'vfx effets de scene', 'creations et vfx']::text[], 'Objet liquide | RaccourcIA', 'Reconstruit l’objet en liquide en conservant silhouette, couleur et tension de surface lisibles.', 56, 298, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-liquidobject', 'img-liquidobject', '/liquidobject', 'Objet liquide', 'liquidobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Reconstruit l’objet en liquide en conservant silhouette, couleur et tension de surface lisibles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['objet liquide', 'vfx effets de scene', 'creations et vfx']::text[], 'Objet liquide | RaccourcIA', 'Reconstruit l’objet en liquide en conservant silhouette, couleur et tension de surface lisibles.', 56, 298, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-liquidobject',
   command = '/liquidobject',
@@ -1615,7 +1615,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'liquidobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Reconstruit l’objet en liquide en conservant silhouette, couleur et tension de surface lisibles.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1641,7 +1641,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-lightpaintingobject', 'img-lightpaintingobject', '/lightpaintingobject', 'Objet peint par la lumière', 'lightpaintingobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Fait apparaître le produit à travers des traces lumineuses longues et contrôlées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet peint par la lumiere', 'vfx effets de scene', 'creations et vfx']::text[], 'Objet peint par la lumière | RaccourcIA', 'Fait apparaître le produit à travers des traces lumineuses longues et contrôlées.', 59, 299, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-lightpaintingobject', 'img-lightpaintingobject', '/lightpaintingobject', 'Objet peint par la lumière', 'lightpaintingobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Fait apparaître le produit à travers des traces lumineuses longues et contrôlées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet peint par la lumiere', 'vfx effets de scene', 'creations et vfx']::text[], 'Objet peint par la lumière | RaccourcIA', 'Fait apparaître le produit à travers des traces lumineuses longues et contrôlées.', 59, 299, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-lightpaintingobject',
   command = '/lightpaintingobject',
@@ -1649,7 +1649,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'lightpaintingobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Fait apparaître le produit à travers des traces lumineuses longues et contrôlées.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1675,7 +1675,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-waterorbit', 'img-waterorbit', '/waterorbit', 'Orbite d’eau figée', 'waterorbit', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'vfx-effets-de-scene'), 'Une spirale d’eau souligne votre sujet.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['orbite deau figee', 'vfx effets de scene', 'creations et vfx']::text[], 'Orbite d’eau figée | RaccourcIA', 'Une spirale d’eau souligne votre sujet.', 59, 300, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-waterorbit', 'img-waterorbit', '/waterorbit', 'Orbite d’eau figée', 'waterorbit', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'effets-de-scene'), 'Une spirale d’eau souligne votre sujet.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['vfx-effets-de-scene', 'creations-et-vfx', 'commande-image']::text[], array['orbite deau figee', 'vfx effets de scene', 'creations et vfx']::text[], 'Orbite d’eau figée | RaccourcIA', 'Une spirale d’eau souligne votre sujet.', 59, 300, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-waterorbit',
   command = '/waterorbit',
@@ -1683,7 +1683,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'waterorbit',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'vfx-effets-de-scene'),
+  category_id = (select id from public.categories where slug = 'effets-de-scene'),
   short_description = 'Une spirale d’eau souligne votre sujet.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',

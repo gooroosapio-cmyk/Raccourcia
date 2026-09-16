@@ -38,7 +38,7 @@ export default async function MemberLayout({ children }: { children: React.React
   const [acces, config] = await Promise.all([getAccessState(), getPublicConfig()]);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col lg:max-w-6xl">
+    <div className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col lg:max-w-[46rem]">
       <header className="sticky top-0 z-30 flex items-center justify-between bg-[color:var(--color-canvas)]/95 px-5 py-3 backdrop-blur">
         <Logo className="text-lg" />
 

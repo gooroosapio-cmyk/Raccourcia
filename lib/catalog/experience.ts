@@ -1,35 +1,28 @@
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
- * Ce qu'on fait d'une carte, dit avec le verbe qui convient.
+ * Ce qu'on fait d'une commande, dit avec le verbe qui convient.
  *
- * On ne « copie » pas une transformation d'image : on la lance. On n'ouvre
- * pas un mode conversationnel comme une fiche : on l'active. Et un parcours
- * se commence. Le libelle vient du catalogue quand il y est — le classeur le
- * fournit — et retombe sinon sur le verbe du genre.
+ * « Créer ce visuel » a ete retire, et le libelle du catalogue avec lui.
+ * RaccourcIA ne fabrique aucune image : il donne le texte a coller dans une
+ * IA qui, elle, la fabrique. Un bouton qui dit « Créer » promet un resultat
+ * que le produit ne rend pas, et la deception arrive apres l'achat.
  *
- * « Copier » reste possible en action secondaire, la ou coller le texte dans
- * son IA est reellement ce que l'on veut faire. Ce n'est plus l'action
- * principale d'une carte image : elle laissait croire que le produit livre
- * un texte, alors qu'il livre un resultat.
+ * Reste ce qui est vrai : on utilise un prompt, on active un mode, on
+ * commence un parcours.
  */
 export function actionPrincipale(carte: PromptCard): string {
-  if (carte.ctaLabel?.trim()) return carte.ctaLabel.trim();
-
   switch (carte.entityType) {
     case 'mode_ia':
-      return 'Activer';
+      return 'Activer le mode';
     case 'parcours':
-      return 'Commencer';
-    case 'commande_image':
-      return 'Créer';
+      return 'Commencer le parcours';
     default:
-      // Une commande d'un import anterieur : on garde le geste qu'elle avait.
-      return 'Voir la commande';
+      return 'Utiliser ce prompt';
   }
 }
 
-/** Le nom du genre, pour un badge ou une annonce vocale. */
+/** Le nom du genre, pour un repere ou une annonce vocale. */
 export function nomDuGenre(carte: PromptCard): string | null {
   switch (carte.entityType) {
     case 'mode_ia':
@@ -42,12 +35,31 @@ export function nomDuGenre(carte: PromptCard): string | null {
 }
 
 /**
- * Les deux ou trois informations qui aident a decider, devant une carte.
+ * Le seul repere que porte une carte de galerie.
  *
- * Elles remplacent les trois logos d'IA qui s'affichaient sous chaque carte :
- * trois symboles sans libelle, que personne ne pouvait lire, et qui ne
- * repondaient a aucune question qu'on se pose avant de choisir. Ce qu'on veut
- * savoir, c'est ce qu'il faut fournir et ce qu'on obtient.
+ * Un, pas trois. Une carte en affichait jusqu'a trois — « 1 photo »,
+ * « Format 4:5 », « Parcours guidé » — plus trois logos d'IA : six signes
+ * pour une vignette large comme la moitie d'un telephone. Le format est le
+ * meme pour les 582 commandes image du catalogue, donc il ne distingue rien ;
+ * les IA compatibles se lisent dans la fiche, au moment de choisir.
+ *
+ * Ce qui reste est ce qui change la decision devant la carte : le genre quand
+ * ce n'est pas une image, sinon ce qu'il faudra fournir.
+ */
+export function repereDeCarte(carte: PromptCard): string | null {
+  const genre = nomDuGenre(carte);
+  if (genre) return genre;
+  if (carte.imagesMin && carte.imagesMin > 0) {
+    return carte.imagesMin > 1 ? `${carte.imagesMin} photos` : '1 photo';
+  }
+  return null;
+}
+
+/**
+ * Les deux ou trois informations qui aident a decider, dans la fiche.
+ *
+ * La carte n'en montre plus qu'une ; la fiche a la place de les developper,
+ * et c'est la qu'on vient verifier ce qu'il faut fournir avant de se lancer.
  */
 export function reperesDeCarte(carte: PromptCard): string[] {
   const reperes: string[] = [];

@@ -44,7 +44,7 @@ export function RailExplorer({ familles }: { familles: LibraryFamily[] }) {
           debord qui fait comprendre qu'il y a une suite. */}
       <div className="rail -mx-5 px-5">
         <ul className="flex w-max gap-2 pb-1">
-          {rayons.map((famille) => (
+          {rayons.map((famille, index) => (
             <li key={famille.id} className="w-[148px] shrink-0">
               <CollectionTile
                 tile={{
@@ -52,12 +52,13 @@ export function RailExplorer({ familles }: { familles: LibraryFamily[] }) {
                   slug: famille.slug,
                   name: famille.name,
                   count: famille.count,
-                  imageUrl: famille.collections.find((c) => c.imageUrl)?.imageUrl ?? null,
+                  apercus: famille.apercus,
                 }}
                 famille="Explorer"
                 href={`/app/bibliotheque/famille/${famille.slug}`}
                 montrerLeCompte={false}
                 format="compact"
+                priority={index < 3}
               />
             </li>
           ))}

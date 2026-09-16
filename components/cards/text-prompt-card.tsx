@@ -1,31 +1,29 @@
 'use client';
 
-import { AILogo } from '@/components/brand/ai-logos';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { VisualSlot } from '@/components/cards/visual-slot';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
+import { repereDeCarte } from '@/lib/catalog/experience';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
- * Carte d'une commande texte, au meme gabarit que la carte image.
+ * Carte d'une commande sans visuel, au meme gabarit que la carte image.
  *
- * Les deux familles cohabitent dans une seule grille : une carte plus courte
- * pour le texte creerait des trous en quinconce a chaque changement de mode.
+ * Les deux familles cohabitent dans une seule galerie : une carte plus courte
+ * pour le texte creerait des trous en quinconce a chaque changement de rayon.
  *
- * La zone haute — celle que la carte image donne au visuel — porte ici
- * l'intention : ce que la commande cherche a obtenir, en une ligne. Le corps
- * garde la description, qui dit comment elle s'y prend. Les deux se lisent
- * ensemble et ne se repetent pas : « Rendre visible la structure interne »
- * au-dessus, « Transforme un objet en vue transparente... » en dessous.
+ * La zone haute — celle que la carte image donne au visuel — porte ici un
+ * apercu de ce que la commande produit : son intention, ou a defaut ce
+ * qu'elle sait faire. Jamais une photographie d'illustration, qui promettrait
+ * une image que la commande ne rend pas. Une composition typographique dit la
+ * meme chose sans mentir sur le resultat.
  *
- * Cette zone montrait d'abord quatre traits bleus imitant des lignes de
- * texte, puis des cas d'usage. Le decor n'apprenait rien; les cas d'usage
- * repetaient souvent la description avec d'autres mots. L'intention, elle,
- * dit autre chose. Et jamais une photographie d'illustration, qui
- * promettrait une image que la commande ne produit pas.
+ * Le genre se lit en haut du cadre — « Mode IA », « Parcours » — parce que
+ * c'est la seule chose qu'on ne devine pas d'un coup d'oeil quand il n'y a
+ * pas d'image.
  */
 export function TextPromptCard({
   prompt,
@@ -47,89 +45,54 @@ export function TextPromptCard({
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
   const description = prompt.shortDescription || prompt.resultSummary;
-  const intention = prompt.intention?.trim() ?? '';
-  // Repli quand l'intention manque : les cas d'usage tiennent la zone plutot
-  // que de la laisser vide.
-  const usages = prompt.useCases.slice(0, 3);
+  // L'intention dit ce que la commande cherche a obtenir ; la description dit
+  // comment elle s'y prend. La premiere des deux qui existe tient le cadre.
+  const apercu = prompt.intention?.trim() || description;
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
+  const genre = repereDeCarte(prompt);
 
   return (
     <article className="anim-apparition relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => onOpen(prompt)}
-        className="flex flex-1 flex-col text-left"
+        className="flex flex-1 flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
       >
         <VisualSlot ton="texte" mission={niveau?.mission ?? false}>
-          {/* Le repere de mission se pose en bas a gauche du cadre : quand il
-              est la, le texte lui laisse la place plutot que de passer
-              dessous. */}
           <span
-            className={`flex h-full w-full flex-col justify-center gap-1 px-2.5 pt-2 ${
-              niveau?.mission ? 'pb-7' : 'pb-2'
+            className={`flex h-full w-full flex-col justify-center gap-1.5 px-3 pt-3 ${
+              niveau?.mission ? 'pb-8' : 'pb-3'
             }`}
           >
-            {intention ? (
-              <>
-                <span className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/70">
-                  Intention
-                </span>
-                {/* Une ligne de moins quand le repere de mission est la : la
-                    reserve de place en bas ne suffit pas, l'ecretage compte
-                    les lignes sans savoir ce qui les recouvre. */}
-                <span
-                  className={`text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-night)]/85 ${
-                    niveau?.mission ? 'line-clamp-3' : 'line-clamp-4'
-                  }`}
-                >
-                  {intention}
-                </span>
-              </>
-            ) : usages.length > 0 ? (
-              <>
-                <span className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/70">
-                  Cas d’usage
-                </span>
-                {usages.map((usage) => (
-                  <span
-                    key={usage}
-                    className="flex items-start gap-1 text-[length:var(--texte-meta)] leading-[1.3] text-[color:var(--color-night)]/80"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="mt-[0.45em] block h-1 w-1 shrink-0 rounded-full bg-[color:var(--color-brand)]/50"
-                    />
-                    <span className="line-clamp-1">{usage}</span>
-                  </span>
-                ))}
-              </>
-            ) : (
-              <span className="line-clamp-3 text-[length:var(--texte-meta)] italic leading-[1.35] text-[color:var(--color-muted)]">
-                {description}
-              </span>
-            )}
+            {/* Le guillemet ouvrant fait lire ce qui suit comme un extrait :
+                sans lui, une phrase seule au milieu d'un cadre ressemble a une
+                legende manquante. */}
+            <span
+              aria-hidden="true"
+              className="text-[26px] font-bold leading-none text-[color:var(--color-brand)]/30"
+            >
+              “
+            </span>
+            <span
+              className={`text-[length:var(--texte-carte)] italic leading-[1.4] text-[color:var(--color-night)]/80 ${
+                niveau?.mission ? 'line-clamp-4' : 'line-clamp-5'
+              }`}
+            >
+              {apercu}
+            </span>
           </span>
         </VisualSlot>
 
-        <span className="flex flex-1 flex-col gap-1 px-2.5 pb-2 pt-2">
+        <span className="flex flex-1 flex-col gap-0.5 px-2.5 pb-2.5 pt-2">
           {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
               convention des raccourcis. Le raccourci attend dans la fiche. */}
-          <span className="line-clamp-3 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+          <span className="line-clamp-2 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
             {prompt.name}
           </span>
 
-          {/* Comment le raccourci s'y prend, sous ce qu'il cherche a obtenir.
-              Jamais `result_summary` en premier : il se repete a l'identique
-              sur toute une famille. */}
-          <span className="line-clamp-2 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-muted)]">
-            {description}
-          </span>
-
-          {compatibles.length > 0 ? (
-            <span className="mt-auto flex items-center gap-1 pt-1">
-              {compatibles.slice(0, 3).map((entry) => (
-                <AILogo key={entry.key} providerKey={entry.key} name={entry.name} taille={15} />
-              ))}
+          {genre ? (
+            <span className="text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
+              {genre}
             </span>
           ) : null}
         </span>
@@ -139,24 +102,21 @@ export function TextPromptCard({
         <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
       </span>
 
-      <div className="absolute right-0.5 top-0.5">
-        <FavoriteButton
-          promptId={prompt.id}
-          initial={prompt.isFavorite}
-          disabled={locked || visiteur}
-          sur
-        />
-      </div>
-
-      <div className="border-t border-[color:var(--color-line)] p-2">
+      <div className="absolute right-0.5 top-0.5 flex items-center">
         <CopyCommandButton
           promptId={prompt.id}
           provider={actif?.key ?? 'chatgpt'}
           surface="carte"
           pret={prompt.payloadReady}
           locked={locked}
-          compact
+          forme="icone"
           onLockedClick={ouvrirOffre}
+        />
+        <FavoriteButton
+          promptId={prompt.id}
+          initial={prompt.isFavorite}
+          disabled={locked || visiteur}
+          sur
         />
       </div>
     </article>

@@ -9,7 +9,7 @@
 -- =====================================================================
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-hokusaiwave', 'img-hokusaiwave', '/hokusaiwave', 'Portrait - Katsushika Hokusai', 'hokusaiwave', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'peintres-et-signatures-picturales'), 'Interprétation inspirée de Katsushika Hokusai. Contours d’encre, aplats indigo et vagues stylisées composent une estampe originale.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait katsushika hokusai', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Katsushika Hokusai | RaccourcIA', 'Interprétation inspirée de Katsushika Hokusai. Contours d’encre, aplats indigo et vagues stylisées composent une estampe originale.', 71, 201, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-hokusaiwave', 'img-hokusaiwave', '/hokusaiwave', 'Portrait - Katsushika Hokusai', 'hokusaiwave', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'signatures-picturales'), 'Interprétation inspirée de Katsushika Hokusai. Contours d’encre, aplats indigo et vagues stylisées composent une estampe originale.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait katsushika hokusai', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Katsushika Hokusai | RaccourcIA', 'Interprétation inspirée de Katsushika Hokusai. Contours d’encre, aplats indigo et vagues stylisées composent une estampe originale.', 71, 201, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-hokusaiwave',
   command = '/hokusaiwave',
@@ -17,7 +17,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'hokusaiwave',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'peintres-et-signatures-picturales'),
+  category_id = (select id from public.categories where slug = 'signatures-picturales'),
   short_description = 'Interprétation inspirée de Katsushika Hokusai. Contours d’encre, aplats indigo et vagues stylisées composent une estampe originale.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -43,7 +43,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-picassofacets', 'img-picassofacets', '/picassofacets', 'Portrait - Pablo Picasso', 'picassofacets', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'peintres-et-signatures-picturales'), 'Interprétation inspirée de Pablo Picasso. Facettes géométriques, points de vue superposés et palette structurée interprètent le visage.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait pablo picasso', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Pablo Picasso | RaccourcIA', 'Interprétation inspirée de Pablo Picasso. Facettes géométriques, points de vue superposés et palette structurée interprètent le visage.', 71, 202, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-picassofacets', 'img-picassofacets', '/picassofacets', 'Portrait - Pablo Picasso', 'picassofacets', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'signatures-picturales'), 'Interprétation inspirée de Pablo Picasso. Facettes géométriques, points de vue superposés et palette structurée interprètent le visage.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait pablo picasso', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Pablo Picasso | RaccourcIA', 'Interprétation inspirée de Pablo Picasso. Facettes géométriques, points de vue superposés et palette structurée interprètent le visage.', 71, 202, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-picassofacets',
   command = '/picassofacets',
@@ -51,7 +51,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'picassofacets',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'peintres-et-signatures-picturales'),
+  category_id = (select id from public.categories where slug = 'signatures-picturales'),
   short_description = 'Interprétation inspirée de Pablo Picasso. Facettes géométriques, points de vue superposés et palette structurée interprètent le visage.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -77,7 +77,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-rembrandtportrait', 'img-rembrandtportrait', '/rembrandtportrait', 'Portrait - Rembrandt van Rijn', 'rembrandtportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'peintres-et-signatures-picturales'), 'Interprétation inspirée de Rembrandt van Rijn. Une lumière latérale chaude modèle le visage sur un fond brun profond.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait rembrandt van rijn', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Rembrandt van Rijn | RaccourcIA', 'Interprétation inspirée de Rembrandt van Rijn. Une lumière latérale chaude modèle le visage sur un fond brun profond.', 71, 203, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-rembrandtportrait', 'img-rembrandtportrait', '/rembrandtportrait', 'Portrait - Rembrandt van Rijn', 'rembrandtportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'signatures-picturales'), 'Interprétation inspirée de Rembrandt van Rijn. Une lumière latérale chaude modèle le visage sur un fond brun profond.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait rembrandt van rijn', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Rembrandt van Rijn | RaccourcIA', 'Interprétation inspirée de Rembrandt van Rijn. Une lumière latérale chaude modèle le visage sur un fond brun profond.', 71, 203, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-rembrandtportrait',
   command = '/rembrandtportrait',
@@ -85,7 +85,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'rembrandtportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'peintres-et-signatures-picturales'),
+  category_id = (select id from public.categories where slug = 'signatures-picturales'),
   short_description = 'Interprétation inspirée de Rembrandt van Rijn. Une lumière latérale chaude modèle le visage sur un fond brun profond.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -111,7 +111,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-dalidream', 'img-dalidream', '/dalidream', 'Portrait - Salvador Dalí', 'dalidream', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'peintres-et-signatures-picturales'), 'Interprétation inspirée de Salvador Dalí. Horizon profond, ombres longues et objets impossibles composent un rêve surréaliste.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait salvador dali', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Salvador Dalí | RaccourcIA', 'Interprétation inspirée de Salvador Dalí. Horizon profond, ombres longues et objets impossibles composent un rêve surréaliste.', 63, 204, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-dalidream', 'img-dalidream', '/dalidream', 'Portrait - Salvador Dalí', 'dalidream', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'signatures-picturales'), 'Interprétation inspirée de Salvador Dalí. Horizon profond, ombres longues et objets impossibles composent un rêve surréaliste.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait salvador dali', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Salvador Dalí | RaccourcIA', 'Interprétation inspirée de Salvador Dalí. Horizon profond, ombres longues et objets impossibles composent un rêve surréaliste.', 63, 204, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-dalidream',
   command = '/dalidream',
@@ -119,7 +119,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'dalidream',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'peintres-et-signatures-picturales'),
+  category_id = (select id from public.categories where slug = 'signatures-picturales'),
   short_description = 'Interprétation inspirée de Salvador Dalí. Horizon profond, ombres longues et objets impossibles composent un rêve surréaliste.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -145,7 +145,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-vangoghcanvas', 'img-vangoghcanvas', '/vangoghcanvas', 'Portrait - Vincent van Gogh', 'vangoghcanvas', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'peintres-et-signatures-picturales'), 'Interprétation inspirée de Vincent van Gogh. Traits directionnels, empâtements et contrastes bleu-jaune donnent du mouvement au portrait.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait vincent van gogh', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Vincent van Gogh | RaccourcIA', 'Interprétation inspirée de Vincent van Gogh. Traits directionnels, empâtements et contrastes bleu-jaune donnent du mouvement au portrait.', 71, 205, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-vangoghcanvas', 'img-vangoghcanvas', '/vangoghcanvas', 'Portrait - Vincent van Gogh', 'vangoghcanvas', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'signatures-picturales'), 'Interprétation inspirée de Vincent van Gogh. Traits directionnels, empâtements et contrastes bleu-jaune donnent du mouvement au portrait.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['peintres-et-signatures-picturales', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait vincent van gogh', 'peintres et signatures picturales', 'creations et vfx']::text[], 'Portrait - Vincent van Gogh | RaccourcIA', 'Interprétation inspirée de Vincent van Gogh. Traits directionnels, empâtements et contrastes bleu-jaune donnent du mouvement au portrait.', 71, 205, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-vangoghcanvas',
   command = '/vangoghcanvas',
@@ -153,7 +153,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'vangoghcanvas',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'peintres-et-signatures-picturales'),
+  category_id = (select id from public.categories where slug = 'signatures-picturales'),
   short_description = 'Interprétation inspirée de Vincent van Gogh. Traits directionnels, empâtements et contrastes bleu-jaune donnent du mouvement au portrait.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -179,7 +179,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-artnouveauobject', 'img-artnouveauobject', '/artnouveauobject', 'Affiche Art nouveau', 'artnouveauobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Encadre le produit de lignes végétales et ornements élégants.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['affiche art nouveau', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Affiche Art nouveau | RaccourcIA', 'Encadre le produit de lignes végétales et ornements élégants.', 73, 206, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-artnouveauobject', 'img-artnouveauobject', '/artnouveauobject', 'Affiche Art nouveau', 'artnouveauobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Encadre le produit de lignes végétales et ornements élégants.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['affiche art nouveau', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Affiche Art nouveau | RaccourcIA', 'Encadre le produit de lignes végétales et ornements élégants.', 73, 206, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-artnouveauobject',
   command = '/artnouveauobject',
@@ -187,7 +187,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'artnouveauobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Encadre le produit de lignes végétales et ornements élégants.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -213,7 +213,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-bauhausobject', 'img-bauhausobject', '/bauhausobject', 'Affiche Bauhaus', 'bauhausobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Organise produit, formes et couleurs dans une composition moderniste.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['affiche bauhaus', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Affiche Bauhaus | RaccourcIA', 'Organise produit, formes et couleurs dans une composition moderniste.', 73, 207, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-bauhausobject', 'img-bauhausobject', '/bauhausobject', 'Affiche Bauhaus', 'bauhausobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Organise produit, formes et couleurs dans une composition moderniste.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['affiche bauhaus', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Affiche Bauhaus | RaccourcIA', 'Organise produit, formes et couleurs dans une composition moderniste.', 73, 207, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-bauhausobject',
   command = '/bauhausobject',
@@ -221,7 +221,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'bauhausobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Organise produit, formes et couleurs dans une composition moderniste.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -247,7 +247,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-watercolorobject', 'img-watercolorobject', '/watercolorobject', 'Aquarelle produit', 'watercolorobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Transforme la photo en lavis transparents avec bords pigmentés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['aquarelle produit', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Aquarelle produit | RaccourcIA', 'Transforme la photo en lavis transparents avec bords pigmentés.', 65, 208, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-watercolorobject', 'img-watercolorobject', '/watercolorobject', 'Aquarelle produit', 'watercolorobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Transforme la photo en lavis transparents avec bords pigmentés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['aquarelle produit', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Aquarelle produit | RaccourcIA', 'Transforme la photo en lavis transparents avec bords pigmentés.', 65, 208, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-watercolorobject',
   command = '/watercolorobject',
@@ -255,7 +255,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'watercolorobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Transforme la photo en lavis transparents avec bords pigmentés.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -281,7 +281,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-naivefolkportrait', 'img-naivefolkportrait', '/naivefolkportrait', 'Art naïf', 'naivefolkportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Simplifie perspective et formes dans une scène populaire joyeuse et narrative.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['art naif', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Art naïf | RaccourcIA', 'Simplifie perspective et formes dans une scène populaire joyeuse et narrative.', 62, 209, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-naivefolkportrait', 'img-naivefolkportrait', '/naivefolkportrait', 'Art naïf', 'naivefolkportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Simplifie perspective et formes dans une scène populaire joyeuse et narrative.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['art naif', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Art naïf | RaccourcIA', 'Simplifie perspective et formes dans une scène populaire joyeuse et narrative.', 62, 209, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-naivefolkportrait',
   command = '/naivefolkportrait',
@@ -289,7 +289,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'naivefolkportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Simplifie perspective et formes dans une scène populaire joyeuse et narrative.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -315,7 +315,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-baroquedrama', 'img-baroquedrama', '/baroquedrama', 'Baroque dramatique', 'baroquedrama', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Amplifie gestes, drapés et contrastes dans une composition théâtrale.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['baroque dramatique', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Baroque dramatique | RaccourcIA', 'Amplifie gestes, drapés et contrastes dans une composition théâtrale.', 62, 210, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-baroquedrama', 'img-baroquedrama', '/baroquedrama', 'Baroque dramatique', 'baroquedrama', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Amplifie gestes, drapés et contrastes dans une composition théâtrale.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['baroque dramatique', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Baroque dramatique | RaccourcIA', 'Amplifie gestes, drapés et contrastes dans une composition théâtrale.', 62, 210, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-baroquedrama',
   command = '/baroquedrama',
@@ -323,7 +323,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'baroquedrama',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Amplifie gestes, drapés et contrastes dans une composition théâtrale.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -349,7 +349,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-tactilecollage', 'img-tactilecollage', '/tactilecollage', 'Collage à toucher du regard', 'tactilecollage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Mélangez papier, tissu et photo dans une création artisanale.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['collage a toucher du regard', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Collage à toucher du regard | RaccourcIA', 'Mélangez papier, tissu et photo dans une création artisanale.', 62, 211, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-tactilecollage', 'img-tactilecollage', '/tactilecollage', 'Collage à toucher du regard', 'tactilecollage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Mélangez papier, tissu et photo dans une création artisanale.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['collage a toucher du regard', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Collage à toucher du regard | RaccourcIA', 'Mélangez papier, tissu et photo dans une création artisanale.', 62, 211, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-tactilecollage',
   command = '/tactilecollage',
@@ -357,7 +357,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'tactilecollage',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Mélangez papier, tissu et photo dans une création artisanale.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -383,7 +383,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-sketchtocharacter', 'img-sketchtocharacter', '/sketchtocharacter', 'Croquis vers personnage', 'sketchtocharacter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Transforme un croquis fourni en personnage abouti tout en conservant proportions et détails distinctifs.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['croquis vers personnage', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Croquis vers personnage | RaccourcIA', 'Transforme un croquis fourni en personnage abouti tout en conservant proportions et détails distinctifs.', 80, 212, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-sketchtocharacter', 'img-sketchtocharacter', '/sketchtocharacter', 'Croquis vers personnage', 'sketchtocharacter', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Transforme un croquis fourni en personnage abouti tout en conservant proportions et détails distinctifs.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['croquis vers personnage', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Croquis vers personnage | RaccourcIA', 'Transforme un croquis fourni en personnage abouti tout en conservant proportions et détails distinctifs.', 80, 212, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-sketchtocharacter',
   command = '/sketchtocharacter',
@@ -391,7 +391,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'sketchtocharacter',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Transforme un croquis fourni en personnage abouti tout en conservant proportions et détails distinctifs.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -417,7 +417,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-childdrawing3d', 'img-childdrawing3d', '/childdrawing3d', 'Dessin d’enfant en 3D', 'childdrawing3d', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Donne du volume à un dessin d’enfant sans corriger ses formes, couleurs ou inventions principales.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['dessin denfant en 3d', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Dessin d’enfant en 3D | RaccourcIA', 'Donne du volume à un dessin d’enfant sans corriger ses formes, couleurs ou inventions principales.', 80, 213, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-childdrawing3d', 'img-childdrawing3d', '/childdrawing3d', 'Dessin d’enfant en 3D', 'childdrawing3d', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Donne du volume à un dessin d’enfant sans corriger ses formes, couleurs ou inventions principales.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['dessin denfant en 3d', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Dessin d’enfant en 3D | RaccourcIA', 'Donne du volume à un dessin d’enfant sans corriger ses formes, couleurs ou inventions principales.', 80, 213, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-childdrawing3d',
   command = '/childdrawing3d',
@@ -425,7 +425,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'childdrawing3d',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Donne du volume à un dessin d’enfant sans corriger ses formes, couleurs ou inventions principales.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -451,7 +451,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-inkobject', 'img-inkobject', '/inkobject', 'Encre expressive', 'inkobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Dessine la silhouette avec traits d’encre, éclaboussures et blancs maîtrisés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['encre expressive', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Encre expressive | RaccourcIA', 'Dessine la silhouette avec traits d’encre, éclaboussures et blancs maîtrisés.', 62, 214, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-inkobject', 'img-inkobject', '/inkobject', 'Encre expressive', 'inkobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Dessine la silhouette avec traits d’encre, éclaboussures et blancs maîtrisés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['encre expressive', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Encre expressive | RaccourcIA', 'Dessine la silhouette avec traits d’encre, éclaboussures et blancs maîtrisés.', 62, 214, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-inkobject',
   command = '/inkobject',
@@ -459,7 +459,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'inkobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Dessine la silhouette avec traits d’encre, éclaboussures et blancs maîtrisés.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -485,7 +485,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-expressionistportrait', 'img-expressionistportrait', '/expressionistportrait', 'Expressionnisme', 'expressionistportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Déforme volontairement couleur et ligne pour traduire une émotion forte.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['expressionnisme', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Expressionnisme | RaccourcIA', 'Déforme volontairement couleur et ligne pour traduire une émotion forte.', 62, 215, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-expressionistportrait', 'img-expressionistportrait', '/expressionistportrait', 'Expressionnisme', 'expressionistportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Déforme volontairement couleur et ligne pour traduire une émotion forte.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['expressionnisme', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Expressionnisme | RaccourcIA', 'Déforme volontairement couleur et ligne pour traduire une émotion forte.', 62, 215, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-expressionistportrait',
   command = '/expressionistportrait',
@@ -493,7 +493,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'expressionistportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Déforme volontairement couleur et ligne pour traduire une émotion forte.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -519,7 +519,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-gouacheobject', 'img-gouacheobject', '/gouacheobject', 'Gouache', 'gouacheobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Repeint le produit en aplats opaques, mats et colorés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['gouache', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Gouache | RaccourcIA', 'Repeint le produit en aplats opaques, mats et colorés.', 65, 216, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-gouacheobject', 'img-gouacheobject', '/gouacheobject', 'Gouache', 'gouacheobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Repeint le produit en aplats opaques, mats et colorés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['gouache', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Gouache | RaccourcIA', 'Repeint le produit en aplats opaques, mats et colorés.', 65, 216, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-gouacheobject',
   command = '/gouacheobject',
@@ -527,7 +527,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'gouacheobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Repeint le produit en aplats opaques, mats et colorés.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -553,7 +553,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-doodleavatar', 'img-doodleavatar', '/doodleavatar', 'Gribouillage vers avatar', 'doodleavatar', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Fait émerger un avatar cohérent à partir d’un gribouillage, d’une silhouette ou de quelques traits.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['gribouillage vers avatar', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Gribouillage vers avatar | RaccourcIA', 'Fait émerger un avatar cohérent à partir d’un gribouillage, d’une silhouette ou de quelques traits.', 62, 217, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-doodleavatar', 'img-doodleavatar', '/doodleavatar', 'Gribouillage vers avatar', 'doodleavatar', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Fait émerger un avatar cohérent à partir d’un gribouillage, d’une silhouette ou de quelques traits.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['gribouillage vers avatar', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Gribouillage vers avatar | RaccourcIA', 'Fait émerger un avatar cohérent à partir d’un gribouillage, d’une silhouette ou de quelques traits.', 62, 217, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-doodleavatar',
   command = '/doodleavatar',
@@ -561,7 +561,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'doodleavatar',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Fait émerger un avatar cohérent à partir d’un gribouillage, d’une silhouette ou de quelques traits.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -587,7 +587,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-storybookobject', 'img-storybookobject', '/storybookobject', 'Illustration jeunesse', 'storybookobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Recompose le produit en illustration narrative chaleureuse et accessible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['illustration jeunesse', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Illustration jeunesse | RaccourcIA', 'Recompose le produit en illustration narrative chaleureuse et accessible.', 65, 218, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-storybookobject', 'img-storybookobject', '/storybookobject', 'Illustration jeunesse', 'storybookobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Recompose le produit en illustration narrative chaleureuse et accessible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['illustration jeunesse', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Illustration jeunesse | RaccourcIA', 'Recompose le produit en illustration narrative chaleureuse et accessible.', 65, 218, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-storybookobject',
   command = '/storybookobject',
@@ -595,7 +595,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'storybookobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Recompose le produit en illustration narrative chaleureuse et accessible.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -621,7 +621,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-lowpolyobject', 'img-lowpolyobject', '/lowpolyobject', 'Low-poly', 'lowpolyobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Réduit les volumes en facettes géométriques colorées.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['low poly', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Low-poly | RaccourcIA', 'Réduit les volumes en facettes géométriques colorées.', 62, 219, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-lowpolyobject', 'img-lowpolyobject', '/lowpolyobject', 'Low-poly', 'lowpolyobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Réduit les volumes en facettes géométriques colorées.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['low poly', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Low-poly | RaccourcIA', 'Réduit les volumes en facettes géométriques colorées.', 62, 219, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-lowpolyobject',
   command = '/lowpolyobject',
@@ -629,7 +629,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'lowpolyobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Réduit les volumes en facettes géométriques colorées.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -655,7 +655,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-stickerme', 'img-stickerme', '/stickerme', 'Mes réactions en stickers', 'stickerme', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Créez quatre réactions originales à partager.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['mes reactions en stickers', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Mes réactions en stickers | RaccourcIA', 'Créez quatre réactions originales à partager.', 88, 220, true, true, '2.0', true, 'draft'::public.content_status)
+values ('img-stickerme', 'img-stickerme', '/stickerme', 'Mes réactions en stickers', 'stickerme', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Créez quatre réactions originales à partager.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['mes reactions en stickers', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Mes réactions en stickers | RaccourcIA', 'Créez quatre réactions originales à partager.', 88, 220, true, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-stickerme',
   command = '/stickerme',
@@ -663,7 +663,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'stickerme',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Créez quatre réactions originales à partager.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -689,7 +689,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-africanmodernism', 'img-africanmodernism', '/africanmodernism', 'Modernisme africain', 'africanmodernism', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Compose un portrait graphique inspiré des modernismes africains documentés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['modernisme africain', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Modernisme africain | RaccourcIA', 'Compose un portrait graphique inspiré des modernismes africains documentés.', 65, 221, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-africanmodernism', 'img-africanmodernism', '/africanmodernism', 'Modernisme africain', 'africanmodernism', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Compose un portrait graphique inspiré des modernismes africains documentés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['modernisme africain', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Modernisme africain | RaccourcIA', 'Compose un portrait graphique inspiré des modernismes africains documentés.', 65, 221, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-africanmodernism',
   command = '/africanmodernism',
@@ -697,7 +697,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'africanmodernism',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Compose un portrait graphique inspiré des modernismes africains documentés.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -723,7 +723,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-dutchstilllife', 'img-dutchstilllife', '/dutchstilllife', 'Nature morte hollandaise', 'dutchstilllife', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Place le produit dans une composition sombre, riche et symbolique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['nature morte hollandaise', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Nature morte hollandaise | RaccourcIA', 'Place le produit dans une composition sombre, riche et symbolique.', 65, 222, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-dutchstilllife', 'img-dutchstilllife', '/dutchstilllife', 'Nature morte hollandaise', 'dutchstilllife', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Place le produit dans une composition sombre, riche et symbolique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['nature morte hollandaise', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Nature morte hollandaise | RaccourcIA', 'Place le produit dans une composition sombre, riche et symbolique.', 65, 222, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-dutchstilllife',
   command = '/dutchstilllife',
@@ -731,7 +731,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'dutchstilllife',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Place le produit dans une composition sombre, riche et symbolique.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -757,7 +757,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-impressionistobject', 'img-impressionistobject', '/impressionistobject', 'Objet impressionniste', 'impressionistobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Peint le produit en touches lumineuses dans une atmosphère changeante.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet impressionniste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Objet impressionniste | RaccourcIA', 'Peint le produit en touches lumineuses dans une atmosphère changeante.', 62, 223, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-impressionistobject', 'img-impressionistobject', '/impressionistobject', 'Objet impressionniste', 'impressionistobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Peint le produit en touches lumineuses dans une atmosphère changeante.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet impressionniste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Objet impressionniste | RaccourcIA', 'Peint le produit en touches lumineuses dans une atmosphère changeante.', 62, 223, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-impressionistobject',
   command = '/impressionistobject',
@@ -765,7 +765,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'impressionistobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Peint le produit en touches lumineuses dans une atmosphère changeante.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -791,7 +791,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-ukiyoeobject', 'img-ukiyoeobject', '/ukiyoeobject', 'Objet ukiyo-e', 'ukiyoeobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Transforme le produit en estampe aux contours nets et aplats colorés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet ukiyo e', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Objet ukiyo-e | RaccourcIA', 'Transforme le produit en estampe aux contours nets et aplats colorés.', 62, 224, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-ukiyoeobject', 'img-ukiyoeobject', '/ukiyoeobject', 'Objet ukiyo-e', 'ukiyoeobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Transforme le produit en estampe aux contours nets et aplats colorés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['objet ukiyo e', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Objet ukiyo-e | RaccourcIA', 'Transforme le produit en estampe aux contours nets et aplats colorés.', 62, 224, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-ukiyoeobject',
   command = '/ukiyoeobject',
@@ -799,7 +799,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'ukiyoeobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Transforme le produit en estampe aux contours nets et aplats colorés.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -825,7 +825,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-oilpaintobject', 'img-oilpaintobject', '/oilpaintobject', 'Peinture à l’huile', 'oilpaintobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Transforme le produit en tableau aux empâtements visibles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['peinture a lhuile', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Peinture à l’huile | RaccourcIA', 'Transforme le produit en tableau aux empâtements visibles.', 65, 225, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-oilpaintobject', 'img-oilpaintobject', '/oilpaintobject', 'Peinture à l’huile', 'oilpaintobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Transforme le produit en tableau aux empâtements visibles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['peinture a lhuile', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Peinture à l’huile | RaccourcIA', 'Transforme le produit en tableau aux empâtements visibles.', 65, 225, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-oilpaintobject',
   command = '/oilpaintobject',
@@ -833,7 +833,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'oilpaintobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Transforme le produit en tableau aux empâtements visibles.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -859,7 +859,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-botanicalplate', 'img-botanicalplate', '/botanicalplate', 'Planche botanique', 'botanicalplate', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Associe produit naturel, coupe et détails comme une illustration savante.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['planche botanique', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Planche botanique | RaccourcIA', 'Associe produit naturel, coupe et détails comme une illustration savante.', 65, 226, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-botanicalplate', 'img-botanicalplate', '/botanicalplate', 'Planche botanique', 'botanicalplate', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Associe produit naturel, coupe et détails comme une illustration savante.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'produit']::text[], array['planche botanique', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Planche botanique | RaccourcIA', 'Associe produit naturel, coupe et détails comme une illustration savante.', 65, 226, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-botanicalplate',
   command = '/botanicalplate',
@@ -867,7 +867,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'botanicalplate',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Associe produit naturel, coupe et détails comme une illustration savante.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -893,7 +893,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-pophalftone', 'img-pophalftone', '/pophalftone', 'Pop art tramé', 'pophalftone', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Transforme la personne en aplats saturés et trames d’impression originales.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['pop art trame', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Pop art tramé | RaccourcIA', 'Transforme la personne en aplats saturés et trames d’impression originales.', 65, 227, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-pophalftone', 'img-pophalftone', '/pophalftone', 'Pop art tramé', 'pophalftone', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Transforme la personne en aplats saturés et trames d’impression originales.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['pop art trame', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Pop art tramé | RaccourcIA', 'Transforme la personne en aplats saturés et trames d’impression originales.', 65, 227, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-pophalftone',
   command = '/pophalftone',
@@ -901,7 +901,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'pophalftone',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Transforme la personne en aplats saturés et trames d’impression originales.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -927,7 +927,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-artnouveauportrait', 'img-artnouveauportrait', '/artnouveauportrait', 'Portrait Art nouveau', 'artnouveauportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Encadre la personne de lignes végétales et typographie décorative originale.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait art nouveau', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait Art nouveau | RaccourcIA', 'Encadre la personne de lignes végétales et typographie décorative originale.', 65, 228, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-artnouveauportrait', 'img-artnouveauportrait', '/artnouveauportrait', 'Portrait Art nouveau', 'artnouveauportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Encadre la personne de lignes végétales et typographie décorative originale.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait art nouveau', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait Art nouveau | RaccourcIA', 'Encadre la personne de lignes végétales et typographie décorative originale.', 65, 228, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-artnouveauportrait',
   command = '/artnouveauportrait',
@@ -935,7 +935,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'artnouveauportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Encadre la personne de lignes végétales et typographie décorative originale.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -961,7 +961,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-bauhausportrait', 'img-bauhausportrait', '/bauhausportrait', 'Portrait Bauhaus', 'bauhausportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Réduit le portrait en formes géométriques, couleurs primaires et mise en page moderne.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait bauhaus', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait Bauhaus | RaccourcIA', 'Réduit le portrait en formes géométriques, couleurs primaires et mise en page moderne.', 65, 229, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-bauhausportrait', 'img-bauhausportrait', '/bauhausportrait', 'Portrait Bauhaus', 'bauhausportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Réduit le portrait en formes géométriques, couleurs primaires et mise en page moderne.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait bauhaus', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait Bauhaus | RaccourcIA', 'Réduit le portrait en formes géométriques, couleurs primaires et mise en page moderne.', 65, 229, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-bauhausportrait',
   command = '/bauhausportrait',
@@ -969,7 +969,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'bauhausportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Réduit le portrait en formes géométriques, couleurs primaires et mise en page moderne.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -995,7 +995,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-cubistportrait', 'img-cubistportrait', '/cubistportrait', 'Portrait cubiste', 'cubistportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Fragmente volumes et points de vue dans un cubisme original de galerie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait cubiste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait cubiste | RaccourcIA', 'Fragmente volumes et points de vue dans un cubisme original de galerie.', 65, 230, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-cubistportrait', 'img-cubistportrait', '/cubistportrait', 'Portrait cubiste', 'cubistportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Fragmente volumes et points de vue dans un cubisme original de galerie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait cubiste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait cubiste | RaccourcIA', 'Fragmente volumes et points de vue dans un cubisme original de galerie.', 65, 230, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-cubistportrait',
   command = '/cubistportrait',
@@ -1003,7 +1003,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'cubistportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Fragmente volumes et points de vue dans un cubisme original de galerie.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1029,7 +1029,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-fauvistportrait', 'img-fauvistportrait', '/fauvistportrait', 'Portrait fauve', 'fauvistportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Utilise des couleurs libres, franches et émotionnelles plutôt que réalistes.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait fauve', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait fauve | RaccourcIA', 'Utilise des couleurs libres, franches et émotionnelles plutôt que réalistes.', 65, 231, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-fauvistportrait', 'img-fauvistportrait', '/fauvistportrait', 'Portrait fauve', 'fauvistportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Utilise des couleurs libres, franches et émotionnelles plutôt que réalistes.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait fauve', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait fauve | RaccourcIA', 'Utilise des couleurs libres, franches et émotionnelles plutôt que réalistes.', 65, 231, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-fauvistportrait',
   command = '/fauvistportrait',
@@ -1037,7 +1037,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'fauvistportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Utilise des couleurs libres, franches et émotionnelles plutôt que réalistes.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1063,7 +1063,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-pointillistportrait', 'img-pointillistportrait', '/pointillistportrait', 'Portrait pointilliste', 'pointillistportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Reconstruit le visage par une multitude de points colorés optiquement mélangés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait pointilliste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait pointilliste | RaccourcIA', 'Reconstruit le visage par une multitude de points colorés optiquement mélangés.', 65, 232, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-pointillistportrait', 'img-pointillistportrait', '/pointillistportrait', 'Portrait pointilliste', 'pointillistportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Reconstruit le visage par une multitude de points colorés optiquement mélangés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait pointilliste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait pointilliste | RaccourcIA', 'Reconstruit le visage par une multitude de points colorés optiquement mélangés.', 65, 232, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-pointillistportrait',
   command = '/pointillistportrait',
@@ -1071,7 +1071,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'pointillistportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Reconstruit le visage par une multitude de points colorés optiquement mélangés.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1097,7 +1097,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-renaissancepanel', 'img-renaissancepanel', '/renaissancepanel', 'Portrait Renaissance', 'renaissancepanel', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Recrée pose, pigments et profondeur d’un panneau peint de la Renaissance.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait renaissance', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait Renaissance | RaccourcIA', 'Recrée pose, pigments et profondeur d’un panneau peint de la Renaissance.', 65, 233, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-renaissancepanel', 'img-renaissancepanel', '/renaissancepanel', 'Portrait Renaissance', 'renaissancepanel', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Recrée pose, pigments et profondeur d’un panneau peint de la Renaissance.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait renaissance', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait Renaissance | RaccourcIA', 'Recrée pose, pigments et profondeur d’un panneau peint de la Renaissance.', 65, 233, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-renaissancepanel',
   command = '/renaissancepanel',
@@ -1105,7 +1105,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'renaissancepanel',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Recrée pose, pigments et profondeur d’un panneau peint de la Renaissance.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1131,7 +1131,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-tingatingaportrait', 'img-tingatingaportrait', '/tingatingaportrait', 'Portrait Tingatinga', 'tingatingaportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Réinterprète le portrait avec aplats vifs, motifs animaliers et énergie narrative d’Afrique de l’Est.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait tingatinga', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait Tingatinga | RaccourcIA', 'Réinterprète le portrait avec aplats vifs, motifs animaliers et énergie narrative d’Afrique de l’Est.', 65, 234, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-tingatingaportrait', 'img-tingatingaportrait', '/tingatingaportrait', 'Portrait Tingatinga', 'tingatingaportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Réinterprète le portrait avec aplats vifs, motifs animaliers et énergie narrative d’Afrique de l’Est.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['portrait tingatinga', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Portrait Tingatinga | RaccourcIA', 'Réinterprète le portrait avec aplats vifs, motifs animaliers et énergie narrative d’Afrique de l’Est.', 65, 234, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-tingatingaportrait',
   command = '/tingatingaportrait',
@@ -1139,7 +1139,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'tingatingaportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Réinterprète le portrait avec aplats vifs, motifs animaliers et énergie narrative d’Afrique de l’Est.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1165,7 +1165,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-ukiyoeprofile', 'img-ukiyoeprofile', '/ukiyoeprofile', 'Profil ukiyo-e', 'ukiyoeprofile', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Stylise un portrait de profil en gravure japonaise traditionnelle.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['profil ukiyo e', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Profil ukiyo-e | RaccourcIA', 'Stylise un portrait de profil en gravure japonaise traditionnelle.', 65, 235, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-ukiyoeprofile', 'img-ukiyoeprofile', '/ukiyoeprofile', 'Profil ukiyo-e', 'ukiyoeprofile', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Stylise un portrait de profil en gravure japonaise traditionnelle.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['profil ukiyo e', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Profil ukiyo-e | RaccourcIA', 'Stylise un portrait de profil en gravure japonaise traditionnelle.', 65, 235, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-ukiyoeprofile',
   command = '/ukiyoeprofile',
@@ -1173,7 +1173,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'ukiyoeprofile',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Stylise un portrait de profil en gravure japonaise traditionnelle.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1199,7 +1199,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-rococopastel', 'img-rococopastel', '/rococopastel', 'Rococo pastel', 'rococopastel', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Transforme le portrait en scène raffinée, légère et décorative.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['rococo pastel', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Rococo pastel | RaccourcIA', 'Transforme le portrait en scène raffinée, légère et décorative.', 65, 236, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-rococopastel', 'img-rococopastel', '/rococopastel', 'Rococo pastel', 'rococopastel', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Transforme le portrait en scène raffinée, légère et décorative.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['rococo pastel', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Rococo pastel | RaccourcIA', 'Transforme le portrait en scène raffinée, légère et décorative.', 65, 236, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-rococopastel',
   command = '/rococopastel',
@@ -1207,7 +1207,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'rococopastel',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Transforme le portrait en scène raffinée, légère et décorative.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1233,7 +1233,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-surrealcollage', 'img-surrealcollage', '/surrealcollage', 'Collage surréaliste', 'surrealcollage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Combine l’objet à des échelles et contextes impossibles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['collage surrealiste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Collage surréaliste | RaccourcIA', 'Combine l’objet à des échelles et contextes impossibles.', 54, 237, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-surrealcollage', 'img-surrealcollage', '/surrealcollage', 'Collage surréaliste', 'surrealcollage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Combine l’objet à des échelles et contextes impossibles.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['collage surrealiste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Collage surréaliste | RaccourcIA', 'Combine l’objet à des échelles et contextes impossibles.', 54, 237, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-surrealcollage',
   command = '/surrealcollage',
@@ -1241,7 +1241,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'surrealcollage',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Combine l’objet à des échelles et contextes impossibles.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1267,7 +1267,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-comicinkobject', 'img-comicinkobject', '/comicinkobject', 'Encrage comics', 'comicinkobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Transforme l’objet en dessin dynamique aux ombres hachurées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['encrage comics', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Encrage comics | RaccourcIA', 'Transforme l’objet en dessin dynamique aux ombres hachurées.', 59, 238, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-comicinkobject', 'img-comicinkobject', '/comicinkobject', 'Encrage comics', 'comicinkobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Transforme l’objet en dessin dynamique aux ombres hachurées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['encrage comics', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Encrage comics | RaccourcIA', 'Transforme l’objet en dessin dynamique aux ombres hachurées.', 59, 238, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-comicinkobject',
   command = '/comicinkobject',
@@ -1275,7 +1275,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'comicinkobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Transforme l’objet en dessin dynamique aux ombres hachurées.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1301,7 +1301,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-charcoalobject', 'img-charcoalobject', '/charcoalobject', 'Fusain', 'charcoalobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Traduit volume et matière par noirs profonds et poussière de charbon.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['fusain', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Fusain | RaccourcIA', 'Traduit volume et matière par noirs profonds et poussière de charbon.', 59, 239, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-charcoalobject', 'img-charcoalobject', '/charcoalobject', 'Fusain', 'charcoalobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Traduit volume et matière par noirs profonds et poussière de charbon.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['fusain', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Fusain | RaccourcIA', 'Traduit volume et matière par noirs profonds et poussière de charbon.', 59, 239, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-charcoalobject',
   command = '/charcoalobject',
@@ -1309,7 +1309,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'charcoalobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Traduit volume et matière par noirs profonds et poussière de charbon.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1335,7 +1335,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-scientificengraving', 'img-scientificengraving', '/scientificengraving', 'Gravure scientifique', 'scientificengraving', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Recompose l’objet en gravure ancienne détaillée et légendable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['gravure scientifique', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Gravure scientifique | RaccourcIA', 'Recompose l’objet en gravure ancienne détaillée et légendable.', 59, 240, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-scientificengraving', 'img-scientificengraving', '/scientificengraving', 'Gravure scientifique', 'scientificengraving', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Recompose l’objet en gravure ancienne détaillée et légendable.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['gravure scientifique', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Gravure scientifique | RaccourcIA', 'Recompose l’objet en gravure ancienne détaillée et légendable.', 59, 240, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-scientificengraving',
   command = '/scientificengraving',
@@ -1343,7 +1343,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'scientificengraving',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Recompose l’objet en gravure ancienne détaillée et légendable.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1369,7 +1369,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-claydesk', 'img-claydesk', '/claydesk', 'Mon bureau en pâte à modeler', 'claydesk', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Recréez un lieu familier dans une matière douce et imparfaite.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['mon bureau en pate a modeler', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Mon bureau en pâte à modeler | RaccourcIA', 'Recréez un lieu familier dans une matière douce et imparfaite.', 59, 241, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-claydesk', 'img-claydesk', '/claydesk', 'Mon bureau en pâte à modeler', 'claydesk', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Recréez un lieu familier dans une matière douce et imparfaite.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['mon bureau en pate a modeler', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Mon bureau en pâte à modeler | RaccourcIA', 'Recréez un lieu familier dans une matière douce et imparfaite.', 59, 241, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-claydesk',
   command = '/claydesk',
@@ -1377,7 +1377,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'claydesk',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Recréez un lieu familier dans une matière douce et imparfaite.',
   expected_input = 'Une image de départ ou un sujet décrit',
   expected_output = '1 image HD',
@@ -1403,7 +1403,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-cubistobject', 'img-cubistobject', '/cubistobject', 'Objet cubiste', 'cubistobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Fragmente l’objet en plusieurs points de vue géométriques simultanés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['objet cubiste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Objet cubiste | RaccourcIA', 'Fragmente l’objet en plusieurs points de vue géométriques simultanés.', 59, 242, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-cubistobject', 'img-cubistobject', '/cubistobject', 'Objet cubiste', 'cubistobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Fragmente l’objet en plusieurs points de vue géométriques simultanés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['objet cubiste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Objet cubiste | RaccourcIA', 'Fragmente l’objet en plusieurs points de vue géométriques simultanés.', 59, 242, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-cubistobject',
   command = '/cubistobject',
@@ -1411,7 +1411,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'cubistobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Fragmente l’objet en plusieurs points de vue géométriques simultanés.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1437,7 +1437,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-voxelobject', 'img-voxelobject', '/voxelobject', 'Objet voxel', 'voxelobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Reconstruit l’objet en cubes tridimensionnels réguliers.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['objet voxel', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Objet voxel | RaccourcIA', 'Reconstruit l’objet en cubes tridimensionnels réguliers.', 59, 243, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-voxelobject', 'img-voxelobject', '/voxelobject', 'Objet voxel', 'voxelobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Reconstruit l’objet en cubes tridimensionnels réguliers.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['objet voxel', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Objet voxel | RaccourcIA', 'Reconstruit l’objet en cubes tridimensionnels réguliers.', 59, 243, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-voxelobject',
   command = '/voxelobject',
@@ -1445,7 +1445,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'voxelobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Reconstruit l’objet en cubes tridimensionnels réguliers.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1471,7 +1471,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-pastelobject', 'img-pastelobject', '/pastelobject', 'Pastel sec', 'pastelobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Recompose l’objet en pigments poudreux et couleurs douces.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['pastel sec', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Pastel sec | RaccourcIA', 'Recompose l’objet en pigments poudreux et couleurs douces.', 59, 244, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-pastelobject', 'img-pastelobject', '/pastelobject', 'Pastel sec', 'pastelobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Recompose l’objet en pigments poudreux et couleurs douces.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['pastel sec', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Pastel sec | RaccourcIA', 'Recompose l’objet en pigments poudreux et couleurs douces.', 59, 244, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-pastelobject',
   command = '/pastelobject',
@@ -1479,7 +1479,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'pastelobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Recompose l’objet en pigments poudreux et couleurs douces.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1505,7 +1505,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-screenprintobject', 'img-screenprintobject', '/screenprintobject', 'Sérigraphie pop', 'screenprintobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Réduit l’objet en aplats francs et trames d’impression.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['serigraphie pop', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Sérigraphie pop | RaccourcIA', 'Réduit l’objet en aplats francs et trames d’impression.', 59, 245, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-screenprintobject', 'img-screenprintobject', '/screenprintobject', 'Sérigraphie pop', 'screenprintobject', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Réduit l’objet en aplats francs et trames d’impression.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image']::text[], array['serigraphie pop', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Sérigraphie pop | RaccourcIA', 'Réduit l’objet en aplats francs et trames d’impression.', 59, 245, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-screenprintobject',
   command = '/screenprintobject',
@@ -1513,7 +1513,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'screenprintobject',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Réduit l’objet en aplats francs et trames d’impression.',
   expected_input = 'Une photo du produit ou de l’objet',
   expected_output = '1 image HD',
@@ -1539,7 +1539,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-surrealcanvas', 'img-surrealcanvas', '/surrealcanvas', 'Toile surréaliste', 'surrealcanvas', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'), 'Place le portrait dans une scène impossible aux symboles personnels.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['toile surrealiste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Toile surréaliste | RaccourcIA', 'Place le portrait dans une scène impossible aux symboles personnels.', 60, 246, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-surrealcanvas', 'img-surrealcanvas', '/surrealcanvas', 'Toile surréaliste', 'surrealcanvas', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'mouvements-artistiques'), 'Place le portrait dans une scène impossible aux symboles personnels.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['illustration-et-mouvements-artistiques', 'creations-et-vfx', 'commande-image', 'portrait']::text[], array['toile surrealiste', 'illustration et mouvements artistiques', 'creations et vfx']::text[], 'Toile surréaliste | RaccourcIA', 'Place le portrait dans une scène impossible aux symboles personnels.', 60, 246, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-surrealcanvas',
   command = '/surrealcanvas',
@@ -1547,7 +1547,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'surrealcanvas',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'illustration-et-mouvements-artistiques'),
+  category_id = (select id from public.categories where slug = 'mouvements-artistiques'),
   short_description = 'Place le portrait dans une scène impossible aux symboles personnels.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1573,7 +1573,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-actionfigure', 'img-actionfigure', '/actionfigure', 'Figurine articulée', 'actionfigure', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Transforme la personne en figurine de collection articulée et reconnaissable.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['figurine articulee', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Figurine articulée | RaccourcIA', 'Transforme la personne en figurine de collection articulée et reconnaissable.', 74, 247, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-actionfigure', 'img-actionfigure', '/actionfigure', 'Figurine articulée', 'actionfigure', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Transforme la personne en figurine de collection articulée et reconnaissable.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['figurine articulee', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Figurine articulée | RaccourcIA', 'Transforme la personne en figurine de collection articulée et reconnaissable.', 74, 247, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-actionfigure',
   command = '/actionfigure',
@@ -1581,7 +1581,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'actionfigure',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Transforme la personne en figurine de collection articulée et reconnaissable.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1607,7 +1607,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-brickfigure', 'img-brickfigure', '/brickfigure', 'Figurine en briques', 'brickfigure', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Recompose la personne en jouet de briques générique, sans marque.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['figurine en briques', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Figurine en briques | RaccourcIA', 'Recompose la personne en jouet de briques générique, sans marque.', 74, 248, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-brickfigure', 'img-brickfigure', '/brickfigure', 'Figurine en briques', 'brickfigure', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Recompose la personne en jouet de briques générique, sans marque.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['figurine en briques', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Figurine en briques | RaccourcIA', 'Recompose la personne en jouet de briques générique, sans marque.', 74, 248, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-brickfigure',
   command = '/brickfigure',
@@ -1615,7 +1615,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'brickfigure',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Recompose la personne en jouet de briques générique, sans marque.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1641,7 +1641,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-papercutportrait', 'img-papercutportrait', '/papercutportrait', 'Papier découpé', 'papercutportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Recrée le visage en couches de papier coloré découpées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['papier decoupe', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Papier découpé | RaccourcIA', 'Recrée le visage en couches de papier coloré découpées.', 71, 249, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-papercutportrait', 'img-papercutportrait', '/papercutportrait', 'Papier découpé', 'papercutportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Recrée le visage en couches de papier coloré découpées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['papier decoupe', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Papier découpé | RaccourcIA', 'Recrée le visage en couches de papier coloré découpées.', 71, 249, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-papercutportrait',
   command = '/papercutportrait',
@@ -1649,7 +1649,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'papercutportrait',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Recrée le visage en couches de papier coloré découpées.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',
@@ -1675,7 +1675,7 @@ on conflict (command) where status <> 'archived' do update set
   catalog_v2 = true;
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
-values ('img-toybox', 'img-toybox', '/toybox', 'Personnage en boîte', 'toybox', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'), 'Présente la personne en figurine emballée avec accessoires personnalisés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['personnage en boite', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Personnage en boîte | RaccourcIA', 'Présente la personne en figurine emballée avec accessoires personnalisés.', 74, 250, false, true, '2.0', true, 'draft'::public.content_status)
+values ('img-toybox', 'img-toybox', '/toybox', 'Personnage en boîte', 'toybox', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'matieres-et-metamorphoses'), 'Présente la personne en figurine emballée avec accessoires personnalisés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['matieres-jouets-et-metamorphoses', 'creations-et-vfx', 'commande-image']::text[], array['personnage en boite', 'matieres jouets et metamorphoses', 'creations et vfx']::text[], 'Personnage en boîte | RaccourcIA', 'Présente la personne en figurine emballée avec accessoires personnalisés.', 74, 250, false, true, '2.0', true, 'draft'::public.content_status)
 on conflict (command) where status <> 'archived' do update set
   card_id = 'img-toybox',
   command = '/toybox',
@@ -1683,7 +1683,7 @@ on conflict (command) where status <> 'archived' do update set
   slug = 'toybox',
   mode = 'image'::public.app_mode,
   entity_type = 'commande_image',
-  category_id = (select id from public.categories where slug = 'matieres-jouets-et-metamorphoses'),
+  category_id = (select id from public.categories where slug = 'matieres-et-metamorphoses'),
   short_description = 'Présente la personne en figurine emballée avec accessoires personnalisés.',
   expected_input = 'Une photo nette de la personne',
   expected_output = '1 image HD',

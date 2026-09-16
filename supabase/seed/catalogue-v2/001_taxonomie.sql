@@ -11,11 +11,11 @@
 -- Rejouable : reconnaissance par `external_ref`.
 -- =====================================================================
 
--- --- Portraits et souvenirs (5 collections) ---
+-- --- Portraits & souvenirs (5 collections) ---
 insert into public.categories (external_ref, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-CAT-01', 'image'::public.app_mode, 'portraits-et-souvenirs', 'Portraits et souvenirs', 1, 'draft'::public.content_status, false, 'prompt-media/families/image/portraits-et-souvenirs.webp'
+select 'V2-CAT-01', 'image'::public.app_mode, 'portraits-et-souvenirs', 'Portraits & souvenirs', 1, 'draft'::public.content_status, false, 'prompt-media/families/image/portraits-et-souvenirs.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-CAT-01');
-update public.categories set slug = 'portraits-et-souvenirs', name = 'Portraits et souvenirs', sort_order = 1, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/portraits-et-souvenirs.webp' where external_ref = 'V2-CAT-01';
+update public.categories set slug = 'portraits-et-souvenirs', name = 'Portraits & souvenirs', sort_order = 1, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/portraits-et-souvenirs.webp' where external_ref = 'V2-CAT-01';
 
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
 select 'V2-COL-01-01', (select id from public.categories where external_ref = 'V2-CAT-01'), 'image'::public.app_mode, 'epoques', 'Époques', 1, 'draft'::public.content_status, false, 'prompt-media/families/image/epoques.webp'
@@ -61,11 +61,11 @@ select 'V2-COL-02-04', (select id from public.categories where external_ref = 'V
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-02-04');
 update public.categories set slug = 'retouche', name = 'Retouche', sort_order = 4, parent_id = (select id from public.categories where external_ref = 'V2-CAT-02'), fallback_image_path = 'prompt-media/families/image/retouche.webp' where external_ref = 'V2-COL-02-04';
 
--- --- Créations et VFX (21 collections) ---
+-- --- Art & effets (21 collections) ---
 insert into public.categories (external_ref, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-CAT-03', 'image'::public.app_mode, 'creations-et-vfx', 'Créations et VFX', 3, 'draft'::public.content_status, false, 'prompt-media/families/image/creations-et-vfx.webp'
+select 'V2-CAT-03', 'image'::public.app_mode, 'creations-et-vfx', 'Art & effets', 3, 'draft'::public.content_status, false, 'prompt-media/families/image/creations-et-vfx.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-CAT-03');
-update public.categories set slug = 'creations-et-vfx', name = 'Créations et VFX', sort_order = 3, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/creations-et-vfx.webp' where external_ref = 'V2-CAT-03';
+update public.categories set slug = 'creations-et-vfx', name = 'Art & effets', sort_order = 3, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/creations-et-vfx.webp' where external_ref = 'V2-CAT-03';
 
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
 select 'V2-COL-03-01', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'humour', 'Humour', 1, 'draft'::public.content_status, false, 'prompt-media/families/image/humour.webp'
@@ -76,87 +76,87 @@ select 'V2-COL-03-02', (select id from public.categories where external_ref = 'V
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-02');
 update public.categories set slug = 'jeux-visuels', name = 'Jeux visuels', sort_order = 2, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/jeux-visuels.webp' where external_ref = 'V2-COL-03-02';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-03', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'cinema-action-et-espionnage', 'Cinéma - Action et espionnage', 3, 'draft'::public.content_status, false, 'prompt-media/families/image/cinema-action-et-espionnage.webp'
+select 'V2-COL-03-03', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'action-et-espionnage', 'Action & espionnage', 3, 'draft'::public.content_status, false, 'prompt-media/families/image/action-et-espionnage.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-03');
-update public.categories set slug = 'cinema-action-et-espionnage', name = 'Cinéma - Action et espionnage', sort_order = 3, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/cinema-action-et-espionnage.webp' where external_ref = 'V2-COL-03-03';
+update public.categories set slug = 'action-et-espionnage', name = 'Action & espionnage', sort_order = 3, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/action-et-espionnage.webp' where external_ref = 'V2-COL-03-03';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-04', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'editorial-mode-et-beaute', 'Éditorial - Mode et beauté', 4, 'draft'::public.content_status, false, 'prompt-media/families/image/editorial-mode-et-beaute.webp'
+select 'V2-COL-03-04', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'mode-et-beaute', 'Mode & beauté', 4, 'draft'::public.content_status, false, 'prompt-media/families/image/mode-et-beaute.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-04');
-update public.categories set slug = 'editorial-mode-et-beaute', name = 'Éditorial - Mode et beauté', sort_order = 4, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/editorial-mode-et-beaute.webp' where external_ref = 'V2-COL-03-04';
+update public.categories set slug = 'mode-et-beaute', name = 'Mode & beauté', sort_order = 4, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/mode-et-beaute.webp' where external_ref = 'V2-COL-03-04';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-05', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'cinema-personnages-et-scenes', 'Cinéma - personnages et scènes', 5, 'draft'::public.content_status, false, 'prompt-media/families/image/cinema-personnages-et-scenes.webp'
+select 'V2-COL-03-05', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'personnages-cultes', 'Personnages cultes', 5, 'draft'::public.content_status, false, 'prompt-media/families/image/personnages-cultes.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-05');
-update public.categories set slug = 'cinema-personnages-et-scenes', name = 'Cinéma - personnages et scènes', sort_order = 5, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/cinema-personnages-et-scenes.webp' where external_ref = 'V2-COL-03-05';
+update public.categories set slug = 'personnages-cultes', name = 'Personnages cultes', sort_order = 5, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/personnages-cultes.webp' where external_ref = 'V2-COL-03-05';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-06', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'editorial-business-et-parcours', 'Éditorial - Business et parcours', 6, 'draft'::public.content_status, false, 'prompt-media/families/image/editorial-business-et-parcours.webp'
+select 'V2-COL-03-06', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'business-et-leadership', 'Business & leadership', 6, 'draft'::public.content_status, false, 'prompt-media/families/image/business-et-leadership.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-06');
-update public.categories set slug = 'editorial-business-et-parcours', name = 'Éditorial - Business et parcours', sort_order = 6, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/editorial-business-et-parcours.webp' where external_ref = 'V2-COL-03-06';
+update public.categories set slug = 'business-et-leadership', name = 'Business & leadership', sort_order = 6, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/business-et-leadership.webp' where external_ref = 'V2-COL-03-06';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-07', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'editorial-sport-et-performance', 'Éditorial - Sport et performance', 7, 'draft'::public.content_status, false, 'prompt-media/families/image/editorial-sport-et-performance.webp'
+select 'V2-COL-03-07', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'sport-et-performance', 'Sport & performance', 7, 'draft'::public.content_status, false, 'prompt-media/families/image/sport-et-performance.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-07');
-update public.categories set slug = 'editorial-sport-et-performance', name = 'Éditorial - Sport et performance', sort_order = 7, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/editorial-sport-et-performance.webp' where external_ref = 'V2-COL-03-07';
+update public.categories set slug = 'sport-et-performance', name = 'Sport & performance', sort_order = 7, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/sport-et-performance.webp' where external_ref = 'V2-COL-03-07';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-08', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'peintres-et-signatures-picturales', 'Peintres et signatures picturales', 8, 'draft'::public.content_status, false, 'prompt-media/families/image/peintres-et-signatures-picturales.webp'
+select 'V2-COL-03-08', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'signatures-picturales', 'Signatures picturales', 8, 'draft'::public.content_status, false, 'prompt-media/families/image/signatures-picturales.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-08');
-update public.categories set slug = 'peintres-et-signatures-picturales', name = 'Peintres et signatures picturales', sort_order = 8, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/peintres-et-signatures-picturales.webp' where external_ref = 'V2-COL-03-08';
+update public.categories set slug = 'signatures-picturales', name = 'Signatures picturales', sort_order = 8, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/signatures-picturales.webp' where external_ref = 'V2-COL-03-08';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-09', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'illustration-et-mouvements-artistiques', 'Illustration et mouvements artistiques', 9, 'draft'::public.content_status, false, 'prompt-media/families/image/illustration-et-mouvements-artistiques.webp'
+select 'V2-COL-03-09', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'mouvements-artistiques', 'Mouvements artistiques', 9, 'draft'::public.content_status, false, 'prompt-media/families/image/mouvements-artistiques.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-09');
-update public.categories set slug = 'illustration-et-mouvements-artistiques', name = 'Illustration et mouvements artistiques', sort_order = 9, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/illustration-et-mouvements-artistiques.webp' where external_ref = 'V2-COL-03-09';
+update public.categories set slug = 'mouvements-artistiques', name = 'Mouvements artistiques', sort_order = 9, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/mouvements-artistiques.webp' where external_ref = 'V2-COL-03-09';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-10', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'matieres-jouets-et-metamorphoses', 'Matières, jouets et métamorphoses', 10, 'draft'::public.content_status, false, 'prompt-media/families/image/matieres-jouets-et-metamorphoses.webp'
+select 'V2-COL-03-10', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'matieres-et-metamorphoses', 'Matières & métamorphoses', 10, 'draft'::public.content_status, false, 'prompt-media/families/image/matieres-et-metamorphoses.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-10');
-update public.categories set slug = 'matieres-jouets-et-metamorphoses', name = 'Matières, jouets et métamorphoses', sort_order = 10, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/matieres-jouets-et-metamorphoses.webp' where external_ref = 'V2-COL-03-10';
+update public.categories set slug = 'matieres-et-metamorphoses', name = 'Matières & métamorphoses', sort_order = 10, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/matieres-et-metamorphoses.webp' where external_ref = 'V2-COL-03-10';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-11', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'vfx-effets-de-scene', 'VFX - effets de scène', 11, 'draft'::public.content_status, false, 'prompt-media/families/image/vfx-effets-de-scene.webp'
+select 'V2-COL-03-11', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'effets-de-scene', 'Effets de scène', 11, 'draft'::public.content_status, false, 'prompt-media/families/image/effets-de-scene.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-11');
-update public.categories set slug = 'vfx-effets-de-scene', name = 'VFX - effets de scène', sort_order = 11, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/vfx-effets-de-scene.webp' where external_ref = 'V2-COL-03-11';
+update public.categories set slug = 'effets-de-scene', name = 'Effets de scène', sort_order = 11, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/effets-de-scene.webp' where external_ref = 'V2-COL-03-11';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-12', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'vfx-espace-et-gravite', 'VFX - espace et gravité', 12, 'draft'::public.content_status, false, 'prompt-media/families/image/vfx-espace-et-gravite.webp'
+select 'V2-COL-03-12', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'espace-et-gravite', 'Espace & gravité', 12, 'draft'::public.content_status, false, 'prompt-media/families/image/espace-et-gravite.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-12');
-update public.categories set slug = 'vfx-espace-et-gravite', name = 'VFX - espace et gravité', sort_order = 12, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/vfx-espace-et-gravite.webp' where external_ref = 'V2-COL-03-12';
+update public.categories set slug = 'espace-et-gravite', name = 'Espace & gravité', sort_order = 12, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/espace-et-gravite.webp' where external_ref = 'V2-COL-03-12';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-13', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'vfx-lumiere-et-optique', 'VFX - lumière et optique', 13, 'draft'::public.content_status, false, 'prompt-media/families/image/vfx-lumiere-et-optique.webp'
+select 'V2-COL-03-13', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'lumiere-et-optique', 'Lumière & optique', 13, 'draft'::public.content_status, false, 'prompt-media/families/image/lumiere-et-optique.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-13');
-update public.categories set slug = 'vfx-lumiere-et-optique', name = 'VFX - lumière et optique', sort_order = 13, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/vfx-lumiere-et-optique.webp' where external_ref = 'V2-COL-03-13';
+update public.categories set slug = 'lumiere-et-optique', name = 'Lumière & optique', sort_order = 13, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/lumiere-et-optique.webp' where external_ref = 'V2-COL-03-13';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-14', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'vfx-particules-et-metamorphoses', 'VFX - particules et métamorphoses', 14, 'draft'::public.content_status, false, 'prompt-media/families/image/vfx-particules-et-metamorphoses.webp'
+select 'V2-COL-03-14', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'particules-et-metamorphoses', 'Particules & métamorphoses', 14, 'draft'::public.content_status, false, 'prompt-media/families/image/particules-et-metamorphoses.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-14');
-update public.categories set slug = 'vfx-particules-et-metamorphoses', name = 'VFX - particules et métamorphoses', sort_order = 14, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/vfx-particules-et-metamorphoses.webp' where external_ref = 'V2-COL-03-14';
+update public.categories set slug = 'particules-et-metamorphoses', name = 'Particules & métamorphoses', sort_order = 14, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/particules-et-metamorphoses.webp' where external_ref = 'V2-COL-03-14';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
 select 'V2-COL-03-15', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'montages-originaux', 'Montages originaux', 15, 'draft'::public.content_status, false, 'prompt-media/families/image/montages-originaux.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-15');
 update public.categories set slug = 'montages-originaux', name = 'Montages originaux', sort_order = 15, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/montages-originaux.webp' where external_ref = 'V2-COL-03-15';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-16', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'humour-et-scenes-atypiques', 'Humour et scènes atypiques', 16, 'draft'::public.content_status, false, 'prompt-media/families/image/humour-et-scenes-atypiques.webp'
+select 'V2-COL-03-16', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'scenes-atypiques', 'Scènes atypiques', 16, 'draft'::public.content_status, false, 'prompt-media/families/image/scenes-atypiques.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-16');
-update public.categories set slug = 'humour-et-scenes-atypiques', name = 'Humour et scènes atypiques', sort_order = 16, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/humour-et-scenes-atypiques.webp' where external_ref = 'V2-COL-03-16';
+update public.categories set slug = 'scenes-atypiques', name = 'Scènes atypiques', sort_order = 16, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/scenes-atypiques.webp' where external_ref = 'V2-COL-03-16';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
 select 'V2-COL-03-17', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'dessins-et-manuscrits', 'Dessins et manuscrits', 17, 'draft'::public.content_status, false, 'prompt-media/families/image/dessins-et-manuscrits.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-17');
 update public.categories set slug = 'dessins-et-manuscrits', name = 'Dessins et manuscrits', sort_order = 17, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/dessins-et-manuscrits.webp' where external_ref = 'V2-COL-03-17';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-18', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'editorial-musique-et-pop-culture', 'Éditorial - Musique et pop culture', 18, 'draft'::public.content_status, false, 'prompt-media/families/image/editorial-musique-et-pop-culture.webp'
+select 'V2-COL-03-18', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'musique-et-pop-culture', 'Musique & pop culture', 18, 'draft'::public.content_status, false, 'prompt-media/families/image/musique-et-pop-culture.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-18');
-update public.categories set slug = 'editorial-musique-et-pop-culture', name = 'Éditorial - Musique et pop culture', sort_order = 18, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/editorial-musique-et-pop-culture.webp' where external_ref = 'V2-COL-03-18';
+update public.categories set slug = 'musique-et-pop-culture', name = 'Musique & pop culture', sort_order = 18, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/musique-et-pop-culture.webp' where external_ref = 'V2-COL-03-18';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-19', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'cinema-sf-et-exploration', 'Cinéma - SF et exploration', 19, 'draft'::public.content_status, false, 'prompt-media/families/image/cinema-sf-et-exploration.webp'
+select 'V2-COL-03-19', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'affiches-de-cinema', 'Affiches de cinéma', 19, 'draft'::public.content_status, false, 'prompt-media/families/image/affiches-de-cinema.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-19');
-update public.categories set slug = 'cinema-sf-et-exploration', name = 'Cinéma - SF et exploration', sort_order = 19, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/cinema-sf-et-exploration.webp' where external_ref = 'V2-COL-03-19';
+update public.categories set slug = 'affiches-de-cinema', name = 'Affiches de cinéma', sort_order = 19, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/affiches-de-cinema.webp' where external_ref = 'V2-COL-03-19';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-20', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'cinema-romance-et-comedie', 'Cinéma - Romance et comédie', 20, 'draft'::public.content_status, false, 'prompt-media/families/image/cinema-romance-et-comedie.webp'
+select 'V2-COL-03-20', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'ambiances-de-cinema', 'Ambiances de cinéma', 20, 'draft'::public.content_status, false, 'prompt-media/families/image/ambiances-de-cinema.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-20');
-update public.categories set slug = 'cinema-romance-et-comedie', name = 'Cinéma - Romance et comédie', sort_order = 20, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/cinema-romance-et-comedie.webp' where external_ref = 'V2-COL-03-20';
+update public.categories set slug = 'ambiances-de-cinema', name = 'Ambiances de cinéma', sort_order = 20, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/ambiances-de-cinema.webp' where external_ref = 'V2-COL-03-20';
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-COL-03-21', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'cinema-fantastique-et-mystere', 'Cinéma - Fantastique et mystère', 21, 'draft'::public.content_status, false, 'prompt-media/families/image/cinema-fantastique-et-mystere.webp'
+select 'V2-COL-03-21', (select id from public.categories where external_ref = 'V2-CAT-03'), 'image'::public.app_mode, 'fantastique-et-mystere', 'Fantastique & mystère', 21, 'draft'::public.content_status, false, 'prompt-media/families/image/fantastique-et-mystere.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-03-21');
-update public.categories set slug = 'cinema-fantastique-et-mystere', name = 'Cinéma - Fantastique et mystère', sort_order = 21, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/cinema-fantastique-et-mystere.webp' where external_ref = 'V2-COL-03-21';
+update public.categories set slug = 'fantastique-et-mystere', name = 'Fantastique & mystère', sort_order = 21, parent_id = (select id from public.categories where external_ref = 'V2-CAT-03'), fallback_image_path = 'prompt-media/families/image/fantastique-et-mystere.webp' where external_ref = 'V2-COL-03-21';
 
--- --- Produit et e-commerce (4 collections) ---
+-- --- Photos produit (4 collections) ---
 insert into public.categories (external_ref, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-CAT-04', 'image'::public.app_mode, 'produit-et-e-commerce', 'Produit et e-commerce', 4, 'draft'::public.content_status, false, 'prompt-media/families/image/produit-et-e-commerce.webp'
+select 'V2-CAT-04', 'image'::public.app_mode, 'produit-et-e-commerce', 'Photos produit', 4, 'draft'::public.content_status, false, 'prompt-media/families/image/produit-et-e-commerce.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-CAT-04');
-update public.categories set slug = 'produit-et-e-commerce', name = 'Produit et e-commerce', sort_order = 4, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/produit-et-e-commerce.webp' where external_ref = 'V2-CAT-04';
+update public.categories set slug = 'produit-et-e-commerce', name = 'Photos produit', sort_order = 4, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/produit-et-e-commerce.webp' where external_ref = 'V2-CAT-04';
 
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
 select 'V2-COL-04-01', (select id from public.categories where external_ref = 'V2-CAT-04'), 'image'::public.app_mode, 'photo-produit', 'Photo produit', 1, 'draft'::public.content_status, false, 'prompt-media/families/image/photo-produit.webp'
@@ -175,11 +175,11 @@ select 'V2-COL-04-04', (select id from public.categories where external_ref = 'V
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-04-04');
 update public.categories set slug = 'restauration', name = 'Restauration', sort_order = 4, parent_id = (select id from public.categories where external_ref = 'V2-CAT-04'), fallback_image_path = 'prompt-media/families/image/restauration.webp' where external_ref = 'V2-COL-04-04';
 
--- --- Publicité et marque (5 collections) ---
+-- --- Marques & publicité (5 collections) ---
 insert into public.categories (external_ref, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-CAT-05', 'image'::public.app_mode, 'publicite-et-marque', 'Publicité et marque', 5, 'draft'::public.content_status, false, 'prompt-media/families/image/publicite-et-marque.webp'
+select 'V2-CAT-05', 'image'::public.app_mode, 'publicite-et-marque', 'Marques & publicité', 5, 'draft'::public.content_status, false, 'prompt-media/families/image/publicite-et-marque.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-CAT-05');
-update public.categories set slug = 'publicite-et-marque', name = 'Publicité et marque', sort_order = 5, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/publicite-et-marque.webp' where external_ref = 'V2-CAT-05';
+update public.categories set slug = 'publicite-et-marque', name = 'Marques & publicité', sort_order = 5, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/publicite-et-marque.webp' where external_ref = 'V2-CAT-05';
 
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
 select 'V2-COL-05-01', (select id from public.categories where external_ref = 'V2-CAT-05'), 'image'::public.app_mode, 'commerce-local', 'Commerce local', 1, 'draft'::public.content_status, false, 'prompt-media/families/image/commerce-local.webp'
@@ -202,11 +202,11 @@ select 'V2-COL-05-05', (select id from public.categories where external_ref = 'V
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-COL-05-05');
 update public.categories set slug = 'packaging', name = 'Packaging', sort_order = 5, parent_id = (select id from public.categories where external_ref = 'V2-CAT-05'), fallback_image_path = 'prompt-media/families/image/packaging.webp' where external_ref = 'V2-COL-05-05';
 
--- --- Design et technique (5 collections) ---
+-- --- Design & technique (5 collections) ---
 insert into public.categories (external_ref, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
-select 'V2-CAT-06', 'image'::public.app_mode, 'design-et-technique', 'Design et technique', 6, 'draft'::public.content_status, false, 'prompt-media/families/image/design-et-technique.webp'
+select 'V2-CAT-06', 'image'::public.app_mode, 'design-et-technique', 'Design & technique', 6, 'draft'::public.content_status, false, 'prompt-media/families/image/design-et-technique.webp'
 where not exists (select 1 from public.categories c where c.external_ref = 'V2-CAT-06');
-update public.categories set slug = 'design-et-technique', name = 'Design et technique', sort_order = 6, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/design-et-technique.webp' where external_ref = 'V2-CAT-06';
+update public.categories set slug = 'design-et-technique', name = 'Design & technique', sort_order = 6, mode = 'image'::public.app_mode, fallback_image_path = 'prompt-media/families/image/design-et-technique.webp' where external_ref = 'V2-CAT-06';
 
 insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)
 select 'V2-COL-06-01', (select id from public.categories where external_ref = 'V2-CAT-06'), 'image'::public.app_mode, 'pedagogie', 'Pédagogie', 1, 'draft'::public.content_status, false, 'prompt-media/families/image/pedagogie.webp'

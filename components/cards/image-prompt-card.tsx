@@ -1,30 +1,31 @@
 'use client';
 
-import { AILogo } from '@/components/brand/ai-logos';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { ResultThumbnail } from '@/components/cards/result-thumbnail';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
+import { repereDeCarte } from '@/lib/catalog/experience';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
- * Carte d'une commande image, pensee pour une demi-largeur d'ecran.
+ * Carte de galerie : le resultat, son nom, et rien de plus.
  *
- * Deux colonnes montrent quatre a six commandes par ecran la ou une seule en
- * montrait une : sur un catalogue de trois cents entrees, c'est la difference
- * entre parcourir et faire defiler.
+ * Elle portait jusqu'ici une description sur deux lignes, trois logos d'IA et
+ * un bouton de copie pleine largeur. Dans une grille a deux colonnes, cela
+ * faisait plus de texte que d'image : on parcourait des fiches, pas des
+ * resultats. Ce qui a ete retire n'a pas disparu — formats, livrables,
+ * modeles compatibles et instructions attendent dans la fiche, ou l'on va
+ * precisement pour les lire.
  *
- * La vignette montre le resultat seul. Le badge d'acces et le favori sont
- * poses dessus plutot qu'en dessous : dans une carte etroite, chaque ligne de
- * texte gagnee revient a une commande de plus a l'ecran.
+ * Reste ce qui sert a choisir : le visuel, un titre court, et au plus un
+ * repere quand il change la decision — « 1 photo » dit qu'il faudra fournir
+ * quelque chose.
  *
- * L'ouverture de la fiche tient dans un seul bouton, image et texte compris :
- * deux zones cliquables pour une meme action doubleraient les arrets du
- * clavier et feraient lire la commande deux fois a un lecteur d'ecran. Le
- * favori et la copie sont des freres, jamais des enfants — un bouton ne
- * s'imbrique pas dans un bouton.
+ * Toucher la carte ouvre la fiche. Le favori et la copie sont des freres,
+ * jamais des enfants : un bouton ne s'imbrique pas dans un bouton, et l'on
+ * n'enregistre pas une idee en voulant la regarder.
  *
  * Le visuel verrouille est floute. C'est un signal commercial, pas une
  * protection : le contenu premium n'atteint jamais le client, il ne sort que
@@ -45,10 +46,10 @@ export function ImagePromptCard({
   locked: boolean;
   free: boolean;
   /**
-   * Vrai pour un visiteur devant une commande verrouillee : le nom de la
-   * commande disparait, seule sa description reste. Le nom est ce qui se
-   * recopie dans ChatGPT — l'afficher a qui n'a pas encore d'acces revient a
-   * donner l'etiquette du produit et a garder la boite.
+   * Vrai pour un visiteur devant une commande verrouillee : le nom disparait,
+   * seule la description reste. Le nom est ce qui se recopie dans une IA —
+   * l'afficher a qui n'a pas encore d'acces revient a donner l'etiquette du
+   * produit et a garder la boite.
    */
   masque?: boolean;
   /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
@@ -61,17 +62,27 @@ export function ImagePromptCard({
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
   const description = prompt.shortDescription || prompt.resultSummary;
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
+  const repere = repereDeCarte(prompt);
 
   return (
-    <article className="anim-apparition relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
+    <article className="anim-apparition group relative flex flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => onOpen(prompt)}
-        className="flex flex-1 flex-col text-left"
+        className="flex flex-1 flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
       >
         <span className="relative block w-full">
           {/* L'agrandissement evite les bords transparents que laisse le flou. */}
-          <span className={`block ${locked ? 'scale-[1.06] blur-[7px]' : ''}`}>
+          <span
+            className={`block ${
+              locked
+                ? 'scale-[1.06] blur-[7px]'
+                : // Le zoom au survol n'existe que la ou il y a un curseur :
+                  // sur mobile il ne se declencherait qu'apres le toucher,
+                  // c'est-a-dire une fois la fiche ouverte.
+                  'transition-transform duration-[var(--duration-base)] ease-[var(--ease-out)] motion-safe:group-hover:scale-[1.03]'
+            }`}
+          >
             <ResultThumbnail
               url={prompt.thumbnailUrl}
               alt={masque ? description : prompt.thumbnailAlt}
@@ -85,26 +96,18 @@ export function ImagePromptCard({
           ) : null}
         </span>
 
-        <span className="flex flex-1 flex-col gap-1 px-2.5 pb-2 pt-2">
+        <span className="flex flex-1 flex-col gap-0.5 px-2.5 pb-2.5 pt-2">
           {/* Le titre, pas la commande. « Rayon X » se comprend sans rien
               savoir du produit ; « /xray » demande de deja connaitre la
               convention. Le raccourci attend dans la fiche, ou il est
               explique et copiable. */}
-          <span className="line-clamp-3 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+          <span className="line-clamp-2 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
             {prompt.name}
           </span>
 
-          {/* Ce que fait ce raccourci, pas le format qu'il produit :
-              `result_summary` se repete a l'identique sur toute une famille. */}
-          <span className="line-clamp-2 text-[length:var(--texte-carte)] leading-[1.35] text-[color:var(--color-muted)]">
-            {description}
-          </span>
-
-          {compatibles.length > 0 ? (
-            <span className="mt-auto flex items-center gap-1 pt-1">
-              {compatibles.slice(0, 3).map((entry) => (
-                <AILogo key={entry.key} providerKey={entry.key} name={entry.name} taille={15} />
-              ))}
+          {repere ? (
+            <span className="text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
+              {repere}
             </span>
           ) : null}
         </span>
@@ -114,24 +117,23 @@ export function ImagePromptCard({
         <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
       </span>
 
-      <div className="absolute right-0.5 top-0.5">
-        <FavoriteButton
-          promptId={prompt.id}
-          initial={prompt.isFavorite}
-          disabled={locked || visiteur}
-          sur
-        />
-      </div>
-
-      <div className="border-t border-[color:var(--color-line)] p-2">
+      {/* Les deux gestes secondaires, poses sur le visuel : enregistrer et
+          copier. Ils ne prennent aucune ligne de texte a la carte. */}
+      <div className="absolute right-0.5 top-0.5 flex items-center">
         <CopyCommandButton
           promptId={prompt.id}
           provider={actif?.key ?? 'chatgpt'}
           surface="carte"
           pret={prompt.payloadReady}
           locked={locked}
-          compact
+          forme="icone"
           onLockedClick={ouvrirOffre}
+        />
+        <FavoriteButton
+          promptId={prompt.id}
+          initial={prompt.isFavorite}
+          disabled={locked || visiteur}
+          sur
         />
       </div>
     </article>

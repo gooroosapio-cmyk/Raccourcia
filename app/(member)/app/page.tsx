@@ -218,10 +218,10 @@ export default async function DiscoverPage({
       {editorial ? (
         <div>
           <h1 className="text-[22px] font-bold leading-tight text-[color:var(--color-night)]">
-            Créez quelque chose d’unique
+            Quelle sera votre prochaine création&nbsp;?
           </h1>
           <p className="mt-0.5 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-muted)]">
-            Explorez des idées prêtes à transformer vos images, vos projets et vos conversations.
+            Choisissez une idée. Copiez le prompt. Créez avec votre IA.
           </p>
         </div>
       ) : (
@@ -239,7 +239,7 @@ export default async function DiscoverPage({
         categorySlug={query.categorySlug}
         transverse={portee === 'catalogue'}
         simple={editorial}
-        placeholder={editorial ? 'Que voulez-vous créer ?' : undefined}
+        placeholder={editorial ? 'Rechercher une idée, un style, un personnage…' : undefined}
         search={query.search}
         filtres={filtres}
         resultCount={page.total}

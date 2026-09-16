@@ -10,6 +10,11 @@
  * Le cadre est aussi le seul endroit ou une carte peut annoncer quelque chose
  * sans voler une ligne de texte : c'est la que se pose le repere des
  * commandes qui menent une mission.
+ *
+ * 4:5 et non 4:3 : c'est le format que le catalogue annonce pour ses 582
+ * commandes image. Un cadre plus large recadrait chaque visuel de plus d'un
+ * quart de sa hauteur — la galerie montrait des resultats amputes de ce qui
+ * se trouvait en haut et en bas. Le cadre suit le visuel, pas l'inverse.
  */
 export function VisualSlot({
   ton = 'media',
@@ -35,7 +40,7 @@ export function VisualSlot({
       : 'bg-[color:var(--color-canvas)]';
 
   return (
-    <span className={`relative block aspect-[4/3] w-full overflow-hidden ${fond}`}>
+    <span className={`relative block aspect-[4/5] w-full overflow-hidden ${fond}`}>
       {children}
       {mission ? (
         <span className="pointer-events-none absolute bottom-1.5 left-1.5 rounded-full bg-[color:var(--color-night)]/70 px-2 py-0.5 text-[length:var(--texte-meta)] font-medium text-white backdrop-blur-[2px]">
