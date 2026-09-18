@@ -53,7 +53,11 @@ export async function POST(request: NextRequest) {
       external_event_id: deriveExternalEventId(record, rawBody),
       event_type: typeof record.event === 'string' ? record.event : null,
       signature_valid: true,
-      payload: scrubChariowPayload(record) as Json,
+      // `NonNullable<Json>` et non `Json` : la colonne est declaree `not
+      // null`, ce que le typage genere dit desormais. L'appel ne peut pas
+      // rendre `null` — il recoit un objet et en rend une copie nettoyee —
+      // mais la signature de la fonction, elle, est `unknown`.
+      payload: scrubChariowPayload(record) as NonNullable<Json>,
     })
     .select('id')
     .single();

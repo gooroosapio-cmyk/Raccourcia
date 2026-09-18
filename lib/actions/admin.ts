@@ -720,21 +720,6 @@ export async function appliquerEnMasse(
   const { ids, operation } = parsed.data;
   const supabase = await createClient();
 
-  /*
-   * Les types de la base sont generes depuis le schema deploye. Ces deux
-   * fonctions arrivent avec la migration de ce meme commit : elles n'y
-   * figurent pas encore, et le typage genere refuse leur nom.
-   *
-   * Le pont est etroit — deux noms, une forme de retour — plutot qu'un
-   * relachement du typage sur tout le client. Le contrat reel est verifie par
-   * le test d'integration, qui appelle les fonctions pour de vrai.
-   */
-  type ResultatEnMasse = { traites: number; refuses: number; motifs: string[] };
-  const appeler = supabase.rpc as unknown as (
-    nom: 'admin_set_prompts_status' | 'admin_set_prompts_free',
-    args: Record<string, unknown>,
-  ) => Promise<{ data: ResultatEnMasse[] | null; error: { message: string } | null }>;
-
   const statuts = {
     publier: 'published',
     brouillon: 'draft',
@@ -743,11 +728,11 @@ export async function appliquerEnMasse(
 
   const { data, error } =
     operation === 'offrir' || operation === 'reserver'
-      ? await appeler('admin_set_prompts_free', {
+      ? await supabase.rpc('admin_set_prompts_free', {
           p_prompt_ids: ids,
           p_free: operation === 'offrir',
         })
-      : await appeler('admin_set_prompts_status', {
+      : await supabase.rpc('admin_set_prompts_status', {
           p_prompt_ids: ids,
           p_status: statuts[operation],
         });
