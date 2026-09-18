@@ -4,7 +4,7 @@ import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { ResultThumbnail } from '@/components/cards/result-thumbnail';
-import { Icone } from '@/components/ui/icone';
+import { LienDeCollection } from '@/components/cards/lien-de-collection';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
 import { nomDuGenre } from '@/lib/catalog/experience';
@@ -111,22 +111,19 @@ export function ImagePromptCard({
           ) : null}
         </span>
 
-        <span className="flex items-start gap-1.5 px-2.5 pb-1.5 pt-2">
-          {rayon ? (
-            <span
-              aria-hidden="true"
-              className="mt-[1px] shrink-0 text-[color:var(--color-brand)]/70"
-            >
-              <Icone svg={rayon} taille={15} />
-            </span>
-          ) : null}
-          {/* Deux lignes, toujours : `min-h` reserve la seconde meme quand le
-              titre tient sur une, sinon la grille part en escalier. */}
+        {/* Deux lignes, toujours : `min-h` reserve la seconde meme quand le
+            titre tient sur une, sinon la grille part en escalier. */}
+        <span className="block px-2.5 pb-1 pt-2">
           <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
             {prompt.name}
           </span>
         </span>
       </button>
+
+      {/* Hors du bouton : un lien dans un bouton rend la cible imprevisible. */}
+      <div className="px-2.5 pb-1">
+        <LienDeCollection prompt={prompt} trait={rayon} />
+      </div>
 
       <span className="pointer-events-none absolute left-1.5 top-1.5">
         <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />

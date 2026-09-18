@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { UpgradePanel, type Offre } from '@/components/paywall/upgrade-panel';
 import { SheetCloseButton } from '@/components/ui/sheet-close';
+import { SheetDragHandle, useSheetDrag } from '@/components/ui/sheet-drag';
 
 /**
  * Fenetre d'offre de l'acces a vie.
@@ -14,9 +15,17 @@ import { SheetCloseButton } from '@/components/ui/sheet-close';
  * Elle reste fermable. Un mur infranchissable ferait fuir avant d'avoir
  * convaincu : la fermeture ramene simplement aux commandes offertes, les
  * seules que le visiteur peut copier.
+ *
+ * Elle se repousse du pouce, comme la fiche d'une commande. Elle portait deja
+ * la poignee — ce petit trait horizontal qui, sur telephone, veut dire « ca
+ * se glisse » — mais le geste ne faisait rien. Une fenetre qui refuse le
+ * geste qu'elle annonce donne l'impression d'un mur, precisement sur l'ecran
+ * ou il ne faut pas.
  */
 export function OfferSheet({ offre, onClose }: { offre: Offre; onClose: () => void }) {
   const fermerRef = useRef<HTMLButtonElement>(null);
+  const contenuRef = useRef<HTMLDivElement>(null);
+  const glissement = useSheetDrag({ onClose, contenuRef });
 
   useEffect(() => {
     fermerRef.current?.focus();
@@ -45,35 +54,47 @@ export function OfferSheet({ offre, onClose }: { offre: Offre; onClose: () => vo
       <div
         aria-hidden="true"
         onClick={onClose}
+        style={{ opacity: glissement.opaciteFond }}
         className="anim-fondu absolute inset-0 bg-[color:var(--color-night)]/45"
       />
 
-      <div className="anim-sheet relative max-h-[90dvh] w-full max-w-screen-sm overflow-y-auto rounded-t-[color:var(--radius-sheet)] bg-[color:var(--color-surface)] px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[var(--shadow-sheet)]">
-        {/* La poignee dit que le panneau se glisse ; la croix donne la sortie
+      <div
+        style={glissement.style}
+        className="anim-sheet relative flex max-h-[90dvh] w-full max-w-screen-sm flex-col overflow-hidden rounded-t-[color:var(--radius-sheet)] bg-[color:var(--color-surface)] shadow-[var(--shadow-sheet)] transition-transform duration-[var(--duration-sheet)] ease-[var(--ease-out)]"
+      >
+        {/* La zone de prise couvre la poignee et la croix : c'est la qu'un
+            pouce se pose pour repousser la fenetre. Le contenu, lui, garde son
+            defilement — le geste ne lui est pas vole.
+
+            La poignee dit que le panneau se glisse ; la croix donne la sortie
             a qui ne glisse pas — souris, clavier, lecteur d'ecran. Elle est
             en haut parce que le lien du bas oblige a parcourir toute l'offre
             avant d'etre atteint. */}
-        <div className="relative mb-4 flex items-center justify-center">
-          <span
-            aria-hidden="true"
-            className="h-1 w-10 rounded-full bg-[color:var(--color-line-strong)]"
-          />
-          <span className="absolute right-0 -mr-1">
-            <SheetCloseButton ref={fermerRef} onClose={onClose} libelle="Fermer l’offre" />
-          </span>
+        <div {...glissement.poignee} className="shrink-0 touch-none px-5 pt-1">
+          <SheetDragHandle />
+          <div className="relative mb-2 flex items-center justify-end">
+            <span className="-mr-1">
+              <SheetCloseButton ref={fermerRef} onClose={onClose} libelle="Fermer l’offre" />
+            </span>
+          </div>
         </div>
 
-        <div id="offre-titre">
-          <UpgradePanel offre={offre} compact />
-        </div>
-
-        <button
-          type="button"
-          onClick={onClose}
-          className="mt-1 flex h-12 w-full items-center justify-center text-[14px] text-[color:var(--color-muted)]"
+        <div
+          ref={contenuRef}
+          className="flex-1 overflow-y-auto overscroll-contain px-5 pb-[max(1rem,env(safe-area-inset-bottom))]"
         >
-          Continuer avec les commandes offertes
-        </button>
+          <div id="offre-titre">
+            <UpgradePanel offre={offre} compact />
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="mt-1 flex h-12 w-full items-center justify-center text-[14px] text-[color:var(--color-muted)]"
+          >
+            Continuer avec les commandes offertes
+          </button>
+        </div>
       </div>
     </div>
   );

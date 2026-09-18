@@ -1049,8 +1049,13 @@ export async function getRecents(): Promise<PromptCard[]> {
  * `recent_items` porte les deux dates ; seules les lignes qui ont une date de
  * copie entrent ici. Une commande archivee depuis reste dans le journal mais
  * ne revient pas : la lecture des cartes ne ramene que ce qui est publie.
+ *
+ * Dix et non trois. Trois tenaient dans une rangee sans defilement, mais on
+ * ne revient pas chercher ce qu'on a copie il y a deux minutes — on revient
+ * chercher ce qu'on a copie la semaine derniere et dont on a oublie le nom.
+ * Trois ne remontaient jamais assez loin ; la rangee defile de toute facon.
  */
-export async function getDernieresCopies(limite = 3): Promise<PromptCard[]> {
+export async function getDernieresCopies(limite = 10): Promise<PromptCard[]> {
   const supabase = await createClient();
   const { data: rows, error } = await supabase
     .from('recent_items')

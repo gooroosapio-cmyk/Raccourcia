@@ -39,13 +39,23 @@ export function usePaywall() {
  * un espace reserve (`?offre=1`, pose par la redirection serveur et relaye
  * par `PaywallAutoOpen`), et le simple temps passe.
  *
- * L'ouverture spontanee n'a lieu qu'une fois par visite. Reproposer sans fin
- * transformerait la fenetre en harcelement, et ferait fuir un visiteur qui
- * n'a pas encore eu le temps de juger le catalogue.
+ * L'ouverture spontanee n'a lieu qu'une fois par visite, et seulement sur le
+ * catalogue. Elle surgissait sur n'importe quelle page, y compris au milieu
+ * d'une fiche qu'on etait en train de lire : la seule chose qu'elle
+ * interrompait alors, c'etait l'argument de vente lui-meme. Reproposer sans
+ * fin transformerait la fenetre en harcelement, et ferait fuir un visiteur
+ * qui n'a pas encore eu le temps de juger le catalogue.
  *
- * Fermer ramene toujours au catalogue, ou se trouvent les commandes
- * offertes : le visiteur n'est jamais laisse devant une page qu'il ne peut
- * pas utiliser.
+ * Fermer ne deplace plus personne. La fenetre ramenait au catalogue a chaque
+ * fermeture : un visiteur qui lisait une fiche depuis quarante-cinq secondes
+ * voyait la fenetre s'ouvrir seule, la fermait, et se retrouvait a l'accueil.
+ * Il avait perdu sa place pour avoir refuse une offre qu'il n'avait pas
+ * demandee — c'est-a-dire qu'on le punissait de lire.
+ *
+ * Le renvoi ne garde son sens que dans un cas : quand la fenetre s'est
+ * ouverte parce qu'un espace reserve a renvoye ici (`?offre=1`). La page
+ * derriere est alors vraiment inutilisable, et le catalogue est le bon
+ * endroit ou reposer le visiteur.
  */
 export function PaywallLayer({ hasAccess, offre }: { hasAccess: boolean; offre: Offre }) {
   const router = useRouter();
@@ -53,10 +63,14 @@ export function PaywallLayer({ hasAccess, offre }: { hasAccess: boolean; offre: 
 
   const [ouverte, setOuverte] = useState(false);
   const dejaProposee = useRef(false);
+  // Vrai quand la fenetre s'est ouverte parce qu'un espace reserve a renvoye
+  // ici : c'est le seul cas ou la page derriere ne sert a rien.
+  const renvoi = useRef(false);
 
   const open = useCallback(() => {
     if (hasAccess) return;
     dejaProposee.current = true;
+    renvoi.current = window.location.search.includes('offre=1');
     setOuverte(true);
   }, [hasAccess]);
 
@@ -67,25 +81,27 @@ export function PaywallLayer({ hasAccess, offre }: { hasAccess: boolean; offre: 
     };
   }, [open]);
 
-  // Ouverture spontanee, une seule fois par visite.
+  // Ouverture spontanee, une seule fois par visite et sur le catalogue seul.
   useEffect(() => {
-    if (hasAccess || dejaProposee.current) return;
+    if (hasAccess || dejaProposee.current || pathname !== '/app') return;
     const minuteur = setTimeout(open, DELAI_OUVERTURE_MS);
     return () => clearTimeout(minuteur);
-  }, [hasAccess, open]);
+  }, [hasAccess, open, pathname]);
 
   const close = useCallback(() => {
     setOuverte(false);
-    // Retour aux commandes copiables : le catalogue les remonte en tete
-    // pour un visiteur sans acces.
-    if (pathname !== '/app') {
-      router.push('/app');
-      return;
-    }
+
     // Le parametre a fait son office : le laisser rouvrirait la fenetre au
     // moindre retour arriere. Lu ici, hors rendu, il ne coute aucun Suspense.
-    if (window.location.search.includes('offre=1')) router.replace('/app');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!renvoi.current) return;
+    renvoi.current = false;
+    if (pathname === '/app') {
+      router.replace('/app');
+      return;
+    }
+    // Renvoye d'un espace reserve : le catalogue est la seule page que le
+    // visiteur peut reellement utiliser.
+    router.push('/app');
   }, [pathname, router]);
 
   if (!ouverte) return null;
