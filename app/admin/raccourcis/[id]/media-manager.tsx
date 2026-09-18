@@ -40,12 +40,23 @@ export function PromptMediaManager({
   command,
   media,
   requiresPair,
+  entityType,
 }: {
   promptId: string;
   command: string;
   media: AdminPromptDetail['media'];
   /** Vrai pour une commande a carte visuelle : la paire y est exigee. */
   requiresPair: boolean;
+  /**
+   * Le genre de la commande. Il decide des emplacements offerts.
+   *
+   * L'ecran proposait « Image avant » et « Résultat » a tout le monde, y
+   * compris a un Mode IA. Un mode ne produit aucune image — il conditionne
+   * une conversation — et sa carte n'en montre jamais. Les deux emplacements
+   * invitaient donc a un travail sans effet, et pire : a deposer une
+   * illustration qui aurait ete lue comme un resultat de commande.
+   */
+  entityType: AdminPromptDetail['entityType'];
 }) {
   const [deleteState, deleteAction] = useActionState<AdminActionState, FormData>(
     deletePromptMedia,
@@ -54,7 +65,49 @@ export function PromptMediaManager({
 
   const avant = media.find((item) => item.kind === 'before') ?? null;
   const apres = media.find((item) => item.kind === 'after') ?? null;
+  const vignette = media.find((item) => item.kind === 'thumbnail') ?? null;
   const manquants = [!avant && 'Avant', !apres && 'Résultat'].filter(Boolean);
+
+  /*
+   * Un Mode IA n'a rien a montrer, et n'aura jamais rien : ce qu'il produit
+   * est une conversation. Lui offrir des emplacements reviendrait a promettre
+   * qu'un visuel changera quelque chose a sa carte.
+   */
+  if (entityType === 'mode_ia') {
+    return (
+      <p className="rounded-[color:var(--radius-control)] bg-[color:var(--color-sky)] px-3 py-2.5 text-[length:var(--texte-carte)] leading-relaxed text-[color:var(--color-night)]">
+        Un Mode IA ne porte pas de visuel : ce qu’il produit est une conversation, et sa carte
+        l’annonce par son texte. Rien à déposer ici.
+      </p>
+    );
+  }
+
+  /*
+   * Un Parcours rend plusieurs fichiers a la file : aucun avant/apres ne le
+   * represente. Une seule vignette, qui illustre l'objectif, et la liste de
+   * ses livrables fait le reste sur la carte.
+   */
+  if (entityType === 'parcours') {
+    return (
+      <div className="space-y-3">
+        <p className="rounded-[color:var(--radius-control)] bg-[color:var(--color-sky)] px-3 py-2.5 text-[length:var(--texte-carte)] leading-relaxed text-[color:var(--color-night)]">
+          Un Parcours rend plusieurs fichiers : aucune comparaison avant/après ne le représente. Une
+          vignette suffit à illustrer l’objectif ; la carte annonce les livrables d’elle-même.
+        </p>
+        <div className="grid grid-cols-1 gap-3 min-[560px]:grid-cols-2">
+          <Emplacement
+            promptId={promptId}
+            kind="thumbnail"
+            titre="Vignette du parcours"
+            role="Illustre l’objectif. Jamais un livrable en particulier."
+            media={vignette}
+            onDelete={deleteAction}
+          />
+        </div>
+        <AdminFeedback state={deleteState} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -123,7 +176,7 @@ function Emplacement({
   onDelete,
 }: {
   promptId: string;
-  kind: 'before' | 'after';
+  kind: 'before' | 'after' | 'thumbnail';
   titre: string;
   role: string;
   media: VisuelExistant;
@@ -301,7 +354,13 @@ function Emplacement({
           onChange={(evenement) => setAlt(evenement.target.value)}
           type="text"
           maxLength={200}
-          placeholder={kind === 'before' ? 'Ce que montre le départ' : 'Ce que montre le résultat'}
+          placeholder={
+            kind === 'before'
+              ? 'Ce que montre le départ'
+              : kind === 'thumbnail'
+                ? 'Ce que montre la vignette'
+                : 'Ce que montre le résultat'
+          }
           className="mt-1 h-11 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[length:var(--texte-carte)]"
         />
       </label>

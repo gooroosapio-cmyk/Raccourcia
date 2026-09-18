@@ -32,6 +32,8 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - actions-groupees
+          - menage-taxonomie
           - kit-ui
           - moteur-v3
           - catalogue-v2
@@ -117,7 +119,9 @@ jobs:
           inputs.dossier != 'fermer-tables-sauvegarde' &&
           inputs.dossier != 'catalogue-v2' &&
           inputs.dossier != 'moteur-v3' &&
-          inputs.dossier != 'kit-ui'
+          inputs.dossier != 'kit-ui' &&
+          inputs.dossier != 'menage-taxonomie' &&
+          inputs.dossier != 'actions-groupees'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -346,6 +350,54 @@ jobs:
             select '    ' || count(*) filter (where coalesce(short_description, '') <> '') ||
                    ' rayons decrits sur ' || count(*) || ' ouverts'
             from public.categories where is_visible and external_ref like 'V2-%';"
+
+      # Les actions groupees de l'administration.
+      #
+      # Une migration seule : deux fonctions qui repetent l'appel unitaire
+      # pour chaque identifiant, sans en contourner aucun controle. Rien de ce
+      # que les membres voient ne change tant que personne ne s'en sert — le
+      # mot « basculer » n'a donc pas de sens ici.
+      #
+      # Elle est idempotente (`create or replace`), la rejouer ne coute rien.
+      - name: Installer les actions groupees (administration)
+        if: inputs.dossier == 'actions-groupees'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : admin_set_prompts_status / admin_set_prompts_free'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260918100000_actions_groupees_admin.sql
+          echo '  Fonctions en place :'
+          psql "$PGURL" -At -c "
+            select '    ' || p.proname
+            from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+            where n.nspname = 'public' and p.proname like 'admin_set_prompts_%'
+            order by p.proname;"
+
+      # Le menage de taxonomie : fermer les rayons que le rangement a vides.
+      #
+      # Des affectations conditionnelles, jamais une suppression : un rayon
+      # archive garde sa ligne, ses relations et son identifiant, et se rouvre
+      # d'un geste depuis l'administration. Rien de ce que les membres voient
+      # ne change — ces rayons sont deja vides — donc le mot « basculer » n'est
+      # pas demande.
+      - name: Fermer les rayons vides (menage de taxonomie)
+        if: inputs.dossier == 'menage-taxonomie'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          for fichier in supabase/seed/menage-taxonomie/*.sql; do
+            echo "  $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Ce que l administration propose au rangement :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) || ' categorie(s)'
+            from public.categories c
+            where c.status <> 'archived'
+               or exists (select 1 from public.prompts p where p.category_id = c.id);"
 
       - name: Moteur V3 demande sans confirmation
         if: inputs.dossier == 'moteur-v3' && inputs.bascule != 'basculer'

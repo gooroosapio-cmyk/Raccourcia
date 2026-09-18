@@ -9,6 +9,7 @@ import { trackPromptView } from '@/lib/actions/catalog';
 import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import { FiltresDeGalerie } from '@/components/feed/filtres-galerie';
 import { appliquerLesFiltres, type FiltresGalerie } from '@/lib/catalog/sujets';
+import { Sentinelle } from '@/components/feed/sentinelle';
 import { decouperLeFeed } from '@/lib/catalog/feed';
 import type { PromptCard } from '@/lib/catalog/types';
 
@@ -28,9 +29,13 @@ import type { PromptCard } from '@/lib/catalog/types';
  * vignettes chargees d'un coup sur un reseau mobile reviennent a ne rien
  * afficher pendant plusieurs secondes.
  *
- * Vingt-quatre, soit douze rangees de deux : le bouton arrivait deux fois
- * trop tot. On le rencontrait avant d'avoir eu le temps de regarder, et une
- * galerie qu'on interrompt tous les six gestes n'est plus une galerie.
+ * Le palier suivant vient de lui-meme. Il fallait viser un bouton tous les
+ * vingt-quatre cartes pour continuer a descendre, c'est-a-dire demander la
+ * permission de continuer a regarder. La sentinelle du bas s'en charge, une
+ * hauteur d'ecran a l'avance, et garde le bouton pour le clavier.
+ *
+ * Vingt-quatre par palier, soit douze rangees de deux : assez pour que le
+ * chargement suivant ne se remarque pas, assez peu pour qu'il soit court.
  */
 const PALIER = 24;
 
@@ -71,6 +76,10 @@ export function FeedDecouverte({
   const [filtres, setFiltres] = useState<FiltresGalerie>({});
   const [montrees, setMontrees] = useState(PALIER);
   const [provider, changeProvider] = usePreferredProvider(initialProvider);
+
+  const allonger = useCallback(() => {
+    setMontrees((n) => n + PALIER);
+  }, []);
 
   const ouvrir = useCallback(
     (prompt: PromptCard) => {
@@ -121,13 +130,7 @@ export function FeedDecouverte({
       />
 
       {montrees < retenues.length ? (
-        <button
-          type="button"
-          onClick={() => setMontrees((n) => n + PALIER)}
-          className="touch-target mt-3 flex w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-4 text-[15px] font-medium text-[color:var(--color-night)]"
-        >
-          Voir plus d’idées
-        </button>
+        <Sentinelle onVisible={allonger} libelle="Voir plus d’idées" />
       ) : null}
 
       {selection ? (

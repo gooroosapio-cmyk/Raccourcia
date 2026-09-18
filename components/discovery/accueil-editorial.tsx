@@ -70,10 +70,11 @@ export function AccueilEditorial({
           <h2 className="text-[length:var(--texte-carte)] font-semibold text-[color:var(--color-muted)]">
             Copiées récemment
           </h2>
-          {/* Les trois dernieres commandes copiees, et non ouvertes : on ouvre
+          {/* Les dix dernieres commandes copiees, et non ouvertes : on ouvre
               dix fiches pour en retenir une, mais on ne copie que ce dont on
-              s'est servi. En carrousel — trois cartes en colonne pousseraient
-              la galerie hors de l'ecran. */}
+              s'est servi. En carrousel — dix cartes en colonne pousseraient la
+              galerie hors de l'ecran, tandis qu'une rangee qui defile se
+              parcourt d'un pouce et s'arrete quand on veut. */}
           <PromptGrid
             prompts={reprendre}
             locked={locked}

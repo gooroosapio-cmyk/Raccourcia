@@ -7,7 +7,7 @@ import { VisualSlot } from '@/components/cards/visual-slot';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
 import { nomDuGenre, repereDuMoteur } from '@/lib/catalog/experience';
-import { Icone } from '@/components/ui/icone';
+import { LienDeCollection } from '@/components/cards/lien-de-collection';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
@@ -109,19 +109,7 @@ export function TextPromptCard({
           </span>
         </VisualSlot>
 
-        <span
-          className={`flex items-start gap-1.5 ${
-            pleineLargeur ? 'px-3 pb-2 pt-3' : 'px-2.5 pb-1.5 pt-2'
-          }`}
-        >
-          {rayon ? (
-            <span
-              aria-hidden="true"
-              className="mt-[1px] shrink-0 text-[color:var(--color-brand)]/70"
-            >
-              <Icone svg={rayon} taille={15} />
-            </span>
-          ) : null}
+        <span className={`block ${pleineLargeur ? 'px-3 pb-1 pt-3' : 'px-2.5 pb-1 pt-2'}`}>
           <span className="flex min-w-0 flex-col">
             {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
                 convention des raccourcis. Deux lignes reservees, toujours,
@@ -137,6 +125,11 @@ export function TextPromptCard({
           </span>
         </span>
       </button>
+
+      {/* Hors du bouton : un lien dans un bouton rend la cible imprevisible. */}
+      <div className={pleineLargeur ? 'px-3 pb-1' : 'px-2.5 pb-1'}>
+        <LienDeCollection prompt={prompt} trait={rayon} />
+      </div>
 
       <span className="pointer-events-none absolute left-1.5 top-1.5">
         <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
