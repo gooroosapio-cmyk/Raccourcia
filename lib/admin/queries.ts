@@ -2,6 +2,7 @@ import 'server-only';
 
 import { createClient } from '@/lib/supabase/server';
 import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
+import { normaliserRecherche } from '@/lib/catalog/recherche';
 import type { EntityType } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
@@ -91,27 +92,64 @@ const ROW_COLUMNS =
 export async function getAdminDashboard(): Promise<AdminDashboard> {
   const supabase = await createClient();
 
-  const [{ data: prompts }, { data: categories }, { data: logs }, { count: unmatchedPurchases }] =
-    await Promise.all([
-      supabase.from('prompts').select('id, mode, status'),
-      supabase.from('categories').select('id, is_visible'),
-      supabase
-        .from('admin_audit_logs')
-        .select('id, action, entity_type, created_at')
-        .order('created_at', { ascending: false })
-        .limit(8),
-      // Vente encaissee mais dont le produit Chariow n'est rattache a aucun
-      // produit du catalogue : signale un chariow_product_id manquant.
-      supabase
-        .from('purchases')
-        .select('id', { count: 'exact', head: true })
-        .eq('status', 'completed')
-        .is('product_id', null),
-    ]);
+  /**
+   * Un compte se demande a la base, il ne se calcule pas ici.
+   *
+   * Ces chiffres venaient d'un `select('id, mode, status')` sans limite,
+   * compte en memoire. A mille deux cents raccourcis cela passait ; a dix
+   * mille, le tableau de bord telecharge dix mille lignes pour afficher cinq
+   * nombres, et PostgREST s'arrete de toute facon a sa limite par defaut —
+   * les totaux deviennent alors faux sans prevenir. `head: true` ne ramene
+   * aucune ligne : seul l'en-tete de comptage voyage.
+   */
+  const total = supabase.from('prompts').select('id', { count: 'exact', head: true });
+  const parStatut = (statut: Enums<'content_status'>) =>
+    supabase.from('prompts').select('id', { count: 'exact', head: true }).eq('status', statut);
+  const parMode = (mode: Enums<'app_mode'>) =>
+    supabase.from('prompts').select('id', { count: 'exact', head: true }).eq('mode', mode);
 
-  const rows = prompts ?? [];
-  const byMode = { image: 0, texte: 0, analyse: 0 } as Record<Enums<'app_mode'>, number>;
-  for (const row of rows) byMode[row.mode] += 1;
+  const [
+    { count: nbTotal },
+    { count: nbPublies },
+    { count: nbBrouillons },
+    { count: nbArchives },
+    { count: nbImage },
+    { count: nbTexte },
+    { count: nbAnalyse },
+    { count: nbCategoriesFermees },
+    { data: logs },
+    { count: unmatchedPurchases },
+  ] = await Promise.all([
+    total,
+    parStatut('published'),
+    parStatut('draft'),
+    parStatut('archived'),
+    parMode('image'),
+    parMode('texte'),
+    parMode('analyse'),
+    supabase
+      .from('categories')
+      .select('id', { count: 'exact', head: true })
+      .eq('is_visible', false),
+    supabase
+      .from('admin_audit_logs')
+      .select('id, action, entity_type, created_at')
+      .order('created_at', { ascending: false })
+      .limit(8),
+    // Vente encaissee mais dont le produit Chariow n'est rattache a aucun
+    // produit du catalogue : signale un chariow_product_id manquant.
+    supabase
+      .from('purchases')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'completed')
+      .is('product_id', null),
+  ]);
+
+  const byMode = {
+    image: nbImage ?? 0,
+    texte: nbTexte ?? 0,
+    analyse: nbAnalyse ?? 0,
+  } as Record<Enums<'app_mode'>, number>;
 
   // Contenus incomplets : publies mais sans categorie visible, donc invisibles
   // pour les membres sans que rien ne le signale.
@@ -123,12 +161,12 @@ export async function getAdminDashboard(): Promise<AdminDashboard> {
     .limit(10);
 
   return {
-    total: rows.length,
-    published: rows.filter((row) => row.status === 'published').length,
-    drafts: rows.filter((row) => row.status === 'draft').length,
-    archived: rows.filter((row) => row.status === 'archived').length,
+    total: nbTotal ?? 0,
+    published: nbPublies ?? 0,
+    drafts: nbBrouillons ?? 0,
+    archived: nbArchives ?? 0,
     byMode,
-    hiddenCategories: (categories ?? []).filter((row) => !row.is_visible).length,
+    hiddenCategories: nbCategoriesFermees ?? 0,
     incomplete: ((incomplete ?? []) as unknown as Parameters<typeof toRow>[0][]).map(toRow),
     unmatchedPurchases: unmatchedPurchases ?? 0,
     recentActivity: (logs ?? []).map((log) => ({
@@ -154,34 +192,89 @@ export type AdminPromptFilters = {
    * question « que reste-t-il a produire ? ».
    */
   media?: 'avec' | 'sans';
+  /** Par quoi la liste est triee. Voir `TRIS_ADMIN`. */
+  tri?: TriAdmin;
   page: number;
 };
 
+/**
+ * Les ordres de lecture de la liste d'administration.
+ *
+ * « Modifie » repond a « ou en etais-je ? » et reste l'ordre par defaut.
+ * « Catalogue » donne l'ordre reel d'affichage cote membre, le seul qui
+ * permette de verifier ce qu'un visiteur verra en premier. « Titre » sert a
+ * retrouver une commande dont on a le nom mais pas le raccourci — a plusieurs
+ * milliers d'entrees, parcourir par date ne mene nulle part.
+ */
+export const TRIS_ADMIN = {
+  modifie: { colonne: 'updated_at', ascendant: false, libelle: 'Modifié en dernier' },
+  catalogue: { colonne: 'sort_order', ascendant: true, libelle: 'Ordre du catalogue' },
+  titre: { colonne: 'name', ascendant: true, libelle: 'Titre (A→Z)' },
+  commande: { colonne: 'command', ascendant: true, libelle: 'Raccourci (A→Z)' },
+} as const;
+
+export type TriAdmin = keyof typeof TRIS_ADMIN;
+
 const ADMIN_PAGE_SIZE = 25;
 
+/**
+ * Une page de la liste d'administration, et le total qui lui correspond.
+ *
+ * Le total est demande separement, avec exactement les memes restrictions.
+ * La liste ne disait que « page suivante » : on ignorait combien de
+ * raccourcis un filtre retenait, donc s'il en retenait trop pour qu'on
+ * travaille dessus un par un. A quelques centaines d'entrees c'est genant ;
+ * a plusieurs milliers, c'est la seule chose qu'on veut savoir avant de
+ * commencer.
+ *
+ * La recherche porte sur `search_norm`, la forme normalisee : « beaute »
+ * trouve « Beauté ». Elle interrogeait `search_text`, qui garde les accents —
+ * taper le mot sans accent ne ramenait rien, et rien ne le disait. Les deux
+ * colonnes portent un index trigramme, le changement ne coute donc rien.
+ */
 export async function listAdminPrompts(
   filters: AdminPromptFilters,
-): Promise<{ items: AdminPromptRow[]; hasMore: boolean }> {
+): Promise<{ items: AdminPromptRow[]; hasMore: boolean; total: number; parPage: number }> {
   const supabase = await createClient();
   const from = (filters.page - 1) * ADMIN_PAGE_SIZE;
+  const terme = filters.search ? normaliserRecherche(filters.search) : '';
 
-  let request = supabase.from('prompts').select(ROW_COLUMNS);
+  // Une seule construction pour la lecture et pour le comptage : deux chemins
+  // separes finissent toujours par diverger, et le nombre annonce cesse alors
+  // de decrire la liste montree.
+  const construire = (colonnes: string, compter = false) => {
+    let requete = compter
+      ? supabase.from('prompts').select(colonnes, { count: 'exact', head: true })
+      : supabase.from('prompts').select(colonnes);
 
-  if (filters.mode) request = request.eq('mode', filters.mode);
-  if (filters.status) request = request.eq('status', filters.status);
-  if (filters.categoryId) request = request.eq('category_id', filters.categoryId);
-  if (filters.access) request = request.eq('is_free', filters.access === 'gratuit');
-  if (filters.media) request = request.eq('media_ready', filters.media === 'avec');
-  if (filters.search) request = request.ilike('search_text', `%${filters.search.toLowerCase()}%`);
+    if (filters.mode) requete = requete.eq('mode', filters.mode);
+    if (filters.status) requete = requete.eq('status', filters.status);
+    if (filters.categoryId) requete = requete.eq('category_id', filters.categoryId);
+    if (filters.access) requete = requete.eq('is_free', filters.access === 'gratuit');
+    if (filters.media) requete = requete.eq('media_ready', filters.media === 'avec');
+    if (terme) requete = requete.ilike('search_norm', `%${terme}%`);
 
-  const { data } = await request
-    .order('updated_at', { ascending: false })
-    .range(from, from + ADMIN_PAGE_SIZE);
+    return requete;
+  };
 
-  const rows = (data ?? []) as unknown as Parameters<typeof toRow>[0][];
+  const tri = TRIS_ADMIN[filters.tri ?? 'modifie'];
+
+  const [lecture, comptage] = await Promise.all([
+    construire(ROW_COLUMNS)
+      .order(tri.colonne, { ascending: tri.ascendant })
+      // Derniere cle unique : sans elle, deux ex aequo s'echangent d'une page
+      // a l'autre et la meme ligne peut apparaitre deux fois ou disparaitre.
+      .order('id', { ascending: true })
+      .range(from, from + ADMIN_PAGE_SIZE),
+    construire('id', true),
+  ]);
+
+  const rows = (lecture.data ?? []) as unknown as Parameters<typeof toRow>[0][];
   return {
     items: rows.slice(0, ADMIN_PAGE_SIZE).map(toRow),
     hasMore: rows.length > ADMIN_PAGE_SIZE,
+    total: comptage.count ?? rows.length,
+    parPage: ADMIN_PAGE_SIZE,
   };
 }
 

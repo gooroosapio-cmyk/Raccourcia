@@ -1,6 +1,12 @@
 import Link from 'next/link';
 
-import { categoriesDeRangement, listAdminCategories, listAdminPrompts } from '@/lib/admin/queries';
+import {
+  categoriesDeRangement,
+  listAdminCategories,
+  listAdminPrompts,
+  TRIS_ADMIN,
+  type TriAdmin,
+} from '@/lib/admin/queries';
 import type { AdminPromptFilters as FiltresListe } from '@/lib/admin/queries';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
 import { AdminPromptRowItem } from '@/components/admin/prompt-row';
@@ -9,6 +15,15 @@ import type { Enums } from '@/lib/supabase/database.types';
 
 export const metadata = { title: 'Raccourcis' };
 
+/**
+ * La liste d'administration, pensee pour un catalogue qui grossit.
+ *
+ * Elle n'annoncait que « page suivante ». On ignorait combien de raccourcis
+ * un filtre retenait — donc s'il en retenait trois ou trois mille — et l'on
+ * ne pouvait pas revenir en arriere. A quelques centaines d'entrees c'est
+ * genant ; a plusieurs milliers, savoir ou l'on se trouve est la premiere
+ * chose dont on a besoin avant d'ouvrir quoi que ce soit.
+ */
 export default async function AdminPromptsPage({
   searchParams,
 }: {
@@ -23,6 +38,7 @@ export default async function AdminPromptsPage({
   const status = asString(params.statut);
   const acces = asString(params.acces);
   const visuel = asString(params.visuel);
+  const tri = asString(params.tri);
 
   // Le type contextuel garde les litteraux : sans lui, « gratuit » redevient
   // `string` dans l'objet et ne correspond plus a la liste fermee.
@@ -37,13 +53,33 @@ export default async function AdminPromptsPage({
     // jamais transmise a la requete.
     access: acces === 'gratuit' || acces === 'premium' ? acces : undefined,
     media: visuel === 'avec' || visuel === 'sans' ? visuel : undefined,
-    page: Number(asString(params.page) ?? 1) || 1,
+    tri: tri && tri in TRIS_ADMIN ? (tri as TriAdmin) : undefined,
+    page: Math.max(Number(asString(params.page) ?? 1) || 1, 1),
   };
 
-  const [{ items, hasMore }, categories] = await Promise.all([
+  const [{ items, hasMore, total, parPage }, categories] = await Promise.all([
     listAdminPrompts(filters),
     listAdminCategories(),
   ]);
+
+  /** L'adresse de la meme liste, a une page ou un tri pres. */
+  const adresse = (changements: { page?: number; tri?: TriAdmin }) => {
+    const suite = new URLSearchParams();
+    if (filters.search) suite.set('q', filters.search);
+    if (filters.mode) suite.set('mode', filters.mode);
+    if (filters.status) suite.set('statut', filters.status);
+    if (filters.categoryId) suite.set('categorie', filters.categoryId);
+    if (filters.access) suite.set('acces', filters.access);
+    if (filters.media) suite.set('visuel', filters.media);
+    const triRetenu = changements.tri ?? filters.tri;
+    if (triRetenu) suite.set('tri', triRetenu);
+    const page = changements.page ?? filters.page;
+    if (page > 1) suite.set('page', String(page));
+    return `/admin/raccourcis${suite.size > 0 ? `?${suite}` : ''}`;
+  };
+
+  const premier = items.length === 0 ? 0 : (filters.page - 1) * parPage + 1;
+  const dernier = (filters.page - 1) * parPage + items.length;
 
   return (
     <div className="space-y-4">
@@ -67,6 +103,43 @@ export default async function AdminPromptsPage({
         categories={categoriesDeRangement(categories)}
       />
 
+      {/* Combien, et ou l'on en est. Le tri se change sans perdre les filtres :
+          c'est la meme liste, regardee dans un autre ordre. */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm text-[color:var(--color-muted)]">
+          {total === 0 ? (
+            'Aucun raccourci'
+          ) : (
+            <>
+              <span className="font-medium text-[color:var(--color-night)]">
+                {premier}–{dernier}
+              </span>{' '}
+              sur {total.toLocaleString('fr-FR')}
+            </>
+          )}
+        </p>
+
+        <nav aria-label="Trier la liste" className="flex flex-wrap gap-1.5">
+          {(Object.keys(TRIS_ADMIN) as TriAdmin[]).map((cle) => {
+            const actif = (filters.tri ?? 'modifie') === cle;
+            return (
+              <Link
+                key={cle}
+                href={adresse({ tri: cle, page: 1 })}
+                aria-current={actif ? 'true' : undefined}
+                className={`inline-flex h-8 items-center rounded-full border px-3 text-[13px] font-medium ${
+                  actif
+                    ? 'border-[color:var(--color-brand)] bg-[color:var(--color-brand)] text-white'
+                    : 'border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[color:var(--color-night)]'
+                }`}
+              >
+                {TRIS_ADMIN[cle].libelle}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
       {items.length === 0 ? (
         <p className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-5 text-center text-[15px] text-[color:var(--color-muted)]">
           Aucun raccourci ne correspond à ces filtres.
@@ -79,21 +152,31 @@ export default async function AdminPromptsPage({
         </ul>
       )}
 
-      {hasMore ? (
-        <Link
-          href={`/admin/raccourcis?${new URLSearchParams({
-            ...(filters.search ? { q: filters.search } : {}),
-            ...(filters.mode ? { mode: filters.mode } : {}),
-            ...(filters.status ? { statut: filters.status } : {}),
-            ...(filters.categoryId ? { categorie: filters.categoryId } : {}),
-            ...(filters.access ? { acces: filters.access } : {}),
-            ...(filters.media ? { visuel: filters.media } : {}),
-            page: String(filters.page + 1),
-          })}`}
-          className="flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-sm font-medium text-[color:var(--color-night)]"
-        >
-          Page suivante
-        </Link>
+      {/* Les deux sens. Une liste qui n'avance que vers l'avant oblige a
+          repartir du debut des qu'on depasse ce qu'on cherchait. */}
+      {total > parPage ? (
+        <nav aria-label="Pagination" className="flex items-center justify-between gap-2">
+          {filters.page > 1 ? (
+            <Link
+              href={adresse({ page: filters.page - 1 })}
+              className="inline-flex h-11 items-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-4 text-sm font-medium text-[color:var(--color-night)]"
+            >
+              Page précédente
+            </Link>
+          ) : (
+            <span />
+          )}
+          {hasMore ? (
+            <Link
+              href={adresse({ page: filters.page + 1 })}
+              className="inline-flex h-11 items-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-4 text-sm font-medium text-[color:var(--color-night)]"
+            >
+              Page suivante
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
       ) : null}
     </div>
   );

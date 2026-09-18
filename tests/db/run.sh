@@ -309,6 +309,22 @@ if compgen -G "$ROOT/supabase/seed/kit-ui/*.sql" > /dev/null; then
     from public.categories where is_visible;"
 fi
 
+# Le menage de taxonomie. Deux passes : ce lot n'est fait que d'affectations
+# conditionnelles, la seconde ne doit donc rien fermer de plus.
+if compgen -G "$ROOT/supabase/seed/menage-taxonomie/*.sql" > /dev/null; then
+  echo "==> Menage de la taxonomie (x2)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/menage-taxonomie/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) || ' categorie(s) proposables au rangement'
+    from public.categories c
+    where c.status <> 'archived'
+       or exists (select 1 from public.prompts p where p.category_id = c.id);"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

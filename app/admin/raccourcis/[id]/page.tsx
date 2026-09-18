@@ -56,12 +56,16 @@ export default async function AdminPromptPage({ params }: { params: Promise<{ id
         <PromptVersionForms promptId={prompt.id} variants={prompt.variants} />
       </Section>
 
-      <Section title="Visuels" hint="Miniature pour la carte, avant et après pour montrer l’effet.">
+      <Section
+        title="Visuels"
+        hint="Ce que l’écran propose dépend du genre : une comparaison pour une commande image, une vignette pour un parcours, rien pour un mode."
+      >
         <PromptMediaManager
           promptId={prompt.id}
           command={prompt.command}
           media={prompt.media}
           requiresPair={prompt.showImageCard}
+          entityType={prompt.entityType}
         />
       </Section>
     </div>
