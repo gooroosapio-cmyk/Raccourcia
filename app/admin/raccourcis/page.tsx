@@ -10,6 +10,7 @@ import {
 import type { AdminPromptFilters as FiltresListe } from '@/lib/admin/queries';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
 import { AdminPromptRowItem } from '@/components/admin/prompt-row';
+import { CaseDeSelection, SelectionEnMasse } from '@/components/admin/selection-en-masse';
 import { CONTENT_STATUS, MODES, type Mode } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
@@ -145,11 +146,18 @@ export default async function AdminPromptsPage({
           Aucun raccourci ne correspond à ces filtres.
         </p>
       ) : (
-        <ul className="space-y-2">
-          {items.map((prompt) => (
-            <AdminPromptRowItem key={prompt.id} prompt={prompt} />
-          ))}
-        </ul>
+        <SelectionEnMasse>
+          <ul className="space-y-2">
+            {items.map((prompt) => (
+              <li key={prompt.id} className="flex items-start gap-2.5">
+                <CaseDeSelection id={prompt.id} nom={prompt.name} />
+                <div className="min-w-0 flex-1">
+                  <AdminPromptRowItem prompt={prompt} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </SelectionEnMasse>
       )}
 
       {/* Les deux sens. Une liste qui n'avance que vers l'avant oblige a

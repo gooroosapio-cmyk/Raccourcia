@@ -20,9 +20,17 @@ import type { AdminPromptRow } from '@/lib/admin/queries';
  * commande, puis ou elle est rangee, puis son etat. Les trois gestes rapides
  * restent en bas a droite, la ou le pouce les atteint sans couvrir le texte.
  */
+/**
+ * Une ligne de la liste d'administration.
+ *
+ * Elle rend un cadre, pas un element de liste : c'est l'appelant qui decide
+ * si elle vit dans un `<ul>` ou a cote d'une case a cocher. Elle portait son
+ * propre `<li>`, ce qui interdisait de la poser dans une ligne avec autre
+ * chose — un `<li>` dans un `<li>` n'est pas du HTML valide.
+ */
 export function AdminPromptRowItem({ prompt }: { prompt: AdminPromptRow }) {
   return (
-    <li className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-2.5">
+    <div className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-2.5">
       <div className="flex items-start gap-3">
         {/* L'apercu ouvre la fiche comme le texte : viser l'image est le
             geste naturel quand c'est elle qu'on a reconnue. */}
@@ -73,7 +81,7 @@ export function AdminPromptRowItem({ prompt }: { prompt: AdminPromptRow }) {
           status={prompt.status}
         />
       </div>
-    </li>
+    </div>
   );
 }
 

@@ -100,6 +100,18 @@ export const promptFreeInput = z.object({
   free: z.coerce.boolean(),
 });
 
+/**
+ * Une action groupee : des identifiants, et ce qu'on leur fait.
+ *
+ * Le plafond de deux cents vaut ici comme en base. Le repeter cote serveur
+ * n'est pas une redondance inutile : il permet de repondre une phrase claire
+ * plutot que de laisser la base lever une exception que personne ne lit.
+ */
+export const promptsEnMasseInput = z.object({
+  ids: z.array(z.string().uuid()).min(1).max(200),
+  operation: z.enum(['publier', 'brouillon', 'archiver', 'offrir', 'reserver']),
+});
+
 export const variantCompatibilityInput = z.object({
   promptId: z.string().uuid(),
   variantId: z.string().uuid(),

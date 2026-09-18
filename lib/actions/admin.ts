@@ -21,6 +21,7 @@ import {
   promptStatusInput,
   promptVersionInput,
   variantCompatibilityInput,
+  promptsEnMasseInput,
 } from '@/lib/validation/admin-schemas';
 
 export type AdminActionState = { error?: string; success?: string };
@@ -681,4 +682,105 @@ export async function setConfigValue(
   revalidatePath('/admin/parametres');
   revalidatePath('/app');
   return { success: 'Parametre enregistré.' };
+}
+
+/**
+ * Applique un geste a une selection de raccourcis.
+ *
+ * A quelques centaines d'entrees, publier un par un tient encore. A
+ * plusieurs milliers, c'est ce qui empeche de travailler : une vague d'import
+ * arrive en brouillon, et il faut cinquante gestes pour la mettre en ligne.
+ *
+ * Rien n'est contourne. La base repete exactement l'appel unitaire pour
+ * chaque identifiant : publier passe toujours par les controles de qualite,
+ * et chaque ligne laisse sa trace dans le journal. Une commande refusee
+ * n'annule pas les autres — le resultat dit combien sont passees, combien ont
+ * ete refusees et pourquoi, sans quoi il faudrait rouvrir les cinquante pour
+ * trouver laquelle bloque.
+ */
+export async function appliquerEnMasse(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = promptsEnMasseInput.safeParse({
+    ids: formData.getAll('ids').filter((valeur) => typeof valeur === 'string'),
+    operation: formData.get('operation'),
+  });
+  if (!parsed.success) {
+    return {
+      error:
+        formData.getAll('ids').length > 200
+          ? 'Sélection trop large : 200 raccourcis au maximum d’un seul geste.'
+          : 'Sélectionnez au moins un raccourci.',
+    };
+  }
+
+  const { ids, operation } = parsed.data;
+  const supabase = await createClient();
+
+  /*
+   * Les types de la base sont generes depuis le schema deploye. Ces deux
+   * fonctions arrivent avec la migration de ce meme commit : elles n'y
+   * figurent pas encore, et le typage genere refuse leur nom.
+   *
+   * Le pont est etroit — deux noms, une forme de retour — plutot qu'un
+   * relachement du typage sur tout le client. Le contrat reel est verifie par
+   * le test d'integration, qui appelle les fonctions pour de vrai.
+   */
+  type ResultatEnMasse = { traites: number; refuses: number; motifs: string[] };
+  const appeler = supabase.rpc as unknown as (
+    nom: 'admin_set_prompts_status' | 'admin_set_prompts_free',
+    args: Record<string, unknown>,
+  ) => Promise<{ data: ResultatEnMasse[] | null; error: { message: string } | null }>;
+
+  const statuts = {
+    publier: 'published',
+    brouillon: 'draft',
+    archiver: 'archived',
+  } as const;
+
+  const { data, error } =
+    operation === 'offrir' || operation === 'reserver'
+      ? await appeler('admin_set_prompts_free', {
+          p_prompt_ids: ids,
+          p_free: operation === 'offrir',
+        })
+      : await appeler('admin_set_prompts_status', {
+          p_prompt_ids: ids,
+          p_status: statuts[operation],
+        });
+
+  if (error) return { error: readableError(error.message) };
+
+  const resultat = data?.[0];
+  const traites = resultat?.traites ?? 0;
+  const refuses = resultat?.refuses ?? 0;
+
+  revalidatePath('/admin/raccourcis');
+  revalidatePath('/admin');
+  revalidatePath('/app');
+
+  const gestes = {
+    publier: 'publié',
+    brouillon: 'repassé en brouillon',
+    archiver: 'archivé',
+    offrir: 'offert',
+    reserver: 'remis derrière l’accès à vie',
+  } as const;
+
+  const fait = `${traites} raccourci${traites > 1 ? 's' : ''} ${gestes[operation]}${
+    traites > 1 && operation !== 'reserver' ? 's' : ''
+  }.`;
+
+  if (refuses === 0) return { success: fait };
+
+  // Le motif, et non un simple decompte : « 2 refusés » oblige a rouvrir la
+  // liste entiere pour comprendre, alors que la raison tient en une phrase.
+  const motifs = (resultat?.motifs ?? []).map(readableError).join(' ');
+  return {
+    success: fait,
+    error: `${refuses} refusé${refuses > 1 ? 's' : ''}. ${motifs}`.trim(),
+  };
 }
