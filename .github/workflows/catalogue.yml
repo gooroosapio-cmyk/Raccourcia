@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - taxonomie-v3
           - actions-groupees
           - menage-taxonomie
           - kit-ui
@@ -121,7 +122,8 @@ jobs:
           inputs.dossier != 'moteur-v3' &&
           inputs.dossier != 'kit-ui' &&
           inputs.dossier != 'menage-taxonomie' &&
-          inputs.dossier != 'actions-groupees'
+          inputs.dossier != 'actions-groupees' &&
+          inputs.dossier != 'taxonomie-v3'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -350,6 +352,36 @@ jobs:
             select '    ' || count(*) filter (where coalesce(short_description, '') <> '') ||
                    ' rayons decrits sur ' || count(*) || ' ouverts'
             from public.categories where is_visible and external_ref like 'V2-%';"
+
+      # Le socle V3 : tags relationnels, likes, champs personnalisables.
+      #
+      # La migration cree les tables et leurs politiques ; les lots creent la
+      # taxonomie et posent les tags que la base sait justifier — bibliotheque
+      # et IA declarees. Aucun tag de style ou de contexte n'est attribue : on
+      # ne les deduit pas d'un nom de commande.
+      #
+      # Rien de ce que les membres voient ne change tant qu'aucun ecran ne lit
+      # ces tables. Le mot « basculer » n'a donc pas de sens ici.
+      - name: Installer le socle V3 (tags, likes, champs)
+        if: inputs.dossier == 'taxonomie-v3'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : tags, likes, champs personnalisables'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260919090000_tags_likes_et_champs.sql
+          for fichier in supabase/seed/taxonomie-v3/*.sql; do
+            echo "  $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Etat de la taxonomie :'
+          psql "$PGURL" -At -c "
+            select '    ' || (select count(*) from public.tags) || ' tags, ' ||
+                   (select count(*) from public.prompt_tags) || ' associations, ' ||
+                   (select count(*) from public.prompts
+                    where status = 'published' and library is null) ||
+                   ' commande(s) publiee(s) sans bibliotheque';"
 
       # Les actions groupees de l'administration.
       #

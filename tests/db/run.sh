@@ -325,6 +325,20 @@ if compgen -G "$ROOT/supabase/seed/menage-taxonomie/*.sql" > /dev/null; then
        or exists (select 1 from public.prompts p where p.category_id = c.id);"
 fi
 
+# La taxonomie V3 : les tags, puis leur attribution. Deux passes — le lot
+# n'insere que sur conflit ignore, la seconde ne doit rien ajouter.
+if compgen -G "$ROOT/supabase/seed/taxonomie-v3/*.sql" > /dev/null; then
+  echo "==> Taxonomie V3 (x2)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/taxonomie-v3/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || (select count(*) from public.tags) || ' tags, ' ||
+           (select count(*) from public.prompt_tags) || ' associations';"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do
