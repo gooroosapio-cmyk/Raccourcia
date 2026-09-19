@@ -6,8 +6,10 @@ import {
   INPUT_EXAMPLE_KINDS,
   MEDIA_KINDS,
   MODES,
+  LIBRARIES,
   OUTPUT_FORMAT_KINDS,
   PROVIDER_KEYS,
+  TAG_GROUPS,
 } from '@/lib/constants';
 
 /**
@@ -49,6 +51,10 @@ export const promptIdentityInput = z.object({
   shortDescription: z.string().trim().min(5).max(300),
   mode: z.enum(MODES),
   categoryId: z.string().uuid().optional(),
+  // La bibliotheque de rangement. Absente, elle est laissee telle quelle :
+  // un declencheur en pose une par defaut, et l'ecraser depuis un formulaire
+  // qui ne la propose pas ferait perdre une correction faite a la main.
+  library: z.enum(LIBRARIES).optional(),
   intention: optionalText,
   useCases: list,
   tags: list,
@@ -195,3 +201,103 @@ export const newPromptInput = z.object({
 });
 
 export const providerKeys = z.enum(PROVIDER_KEYS);
+
+// --- Tags, champs et suppressions (V3) --------------------------------------
+
+/**
+ * Un tag. Le slug est normalise par la base — accents, espaces, casse — donc
+ * il est accepte tel qu'il est saisi : refuser « Portrait Pro » ici
+ * obligerait l'administration a connaitre la regle de slugification.
+ */
+export const tagInput = z.object({
+  id: z.string().uuid().optional(),
+  slug: z.string().trim().min(1).max(60),
+  name: z.string().trim().min(1).max(80),
+  groupe: z.enum(TAG_GROUPS),
+  description: z
+    .string()
+    .trim()
+    .max(300)
+    .optional()
+    .transform((valeur) => (valeur === '' ? undefined : valeur)),
+  /** Un chemin de stockage, comme les autres visuels du catalogue. */
+  imagePath: z
+    .string()
+    .trim()
+    .max(300)
+    .optional()
+    .transform((valeur) => (valeur === '' ? undefined : valeur)),
+  isActive: z.boolean().default(true),
+  sortOrder: z.coerce.number().int().min(0).max(9999).default(0),
+});
+
+export const tagDeleteInput = z.object({ tagId: z.string().uuid() });
+
+/**
+ * Un champ de personnalisation.
+ *
+ * La position est bornee a trois par la base ; elle l'est aussi ici pour que
+ * le refus arrive avant l'aller-retour. Les choix ne servent qu'au genre
+ * « liste » : ailleurs ils sont ignores plutot que refuses, parce qu'un
+ * formulaire qui change de genre ne doit pas perdre ce qui y etait saisi.
+ */
+export const promptFieldInput = z.object({
+  id: z.string().uuid().optional(),
+  promptId: z.string().uuid(),
+  cle: z.string().trim().min(1).max(60),
+  libelle: z.string().trim().min(1).max(80),
+  indication: z
+    .string()
+    .trim()
+    .max(160)
+    .optional()
+    .transform((valeur) => (valeur === '' ? undefined : valeur)),
+  kind: z.enum(['texte', 'texte_long', 'nombre', 'liste']),
+  requis: z.boolean().default(false),
+  position: z.coerce.number().int().min(1).max(3),
+  /** Une ligne par choix : « valeur | Libelle », ou juste le libelle. */
+  choix: z
+    .string()
+    .max(1000)
+    .optional()
+    .transform((valeur) =>
+      (valeur ?? '')
+        .split('\n')
+        .map((ligne) => ligne.trim())
+        .filter(Boolean)
+        .slice(0, 12),
+    ),
+});
+
+export const promptFieldDeleteInput = z.object({ fieldId: z.string().uuid() });
+
+export const promptDeleteInput = z.object({
+  promptId: z.string().uuid(),
+  /** Coche pour emporter aussi les anciens liens qui menent a la commande. */
+  emporterLesLiens: z.boolean().default(false),
+  /**
+   * La commande telle qu'elle est ecrite sur la fiche, retapee a la main.
+   *
+   * Une case a cocher se coche sans lire. Retaper « /goldenselfie » demande
+   * de regarder ce qu'on detruit, et c'est la seule barriere qui distingue
+   * un geste voulu d'un geste rapide.
+   */
+  confirmation: z.string().trim().min(1).max(60),
+});
+
+export const categoryDeleteInput = z.object({
+  categoryId: z.string().uuid(),
+  /** Ou vont les commandes du rayon. Absent quand il est vide. */
+  reaffectation: z
+    .string()
+    .uuid()
+    .optional()
+    .or(z.literal('').transform(() => undefined)),
+  confirmation: z.string().trim().min(1).max(120),
+});
+
+/** Les tags poses sur une commande. Remplace la liste entiere. */
+export const promptTagsInput = z.object({
+  promptId: z.string().uuid(),
+  tagIds: z.array(z.string().uuid()).max(40),
+});

@@ -23,7 +23,8 @@ la vente est synchronisee une fois, puis l'acces depend d'un entitlement local.
 - **Commerce** : `products`, `purchases`, `entitlements`, `webhook_events`
 - **Catalogue** : `categories`, `prompts`, `ai_providers`, `prompt_variants`,
   `prompt_versions`, `prompt_media`
-- **Usage** : `favorites`, `copy_events`, `recent_items`
+- **Taxonomie V3** : `tags`, `prompt_tags`, `prompt_fields`, `prompt_field_choices`
+- **Usage** : `favorites`, `copy_events`, `recent_items`, `prompt_likes`
 - **Gouvernance** : `admin_audit_logs`, `security_events`, `rate_limit_counters`,
   `app_config`
 
@@ -49,6 +50,45 @@ Consequence : desactiver une categorie ou une sous-categorie masque
 immediatement tous ses prompts cote utilisateur, **sans supprimer aucune
 donnee**. La reactivation est instantanee. L'administrateur, lui, continue de
 voir les contenus masques.
+
+### Tags relationnels : ce qui se croise
+
+`prompts.tags` etait un `text[]` : 443 valeurs libres pour 3 046 occurrences,
+dont 44 repetaient un slug de categorie, et « mode-ia » comme « modes-ia »
+portaient exactement les memes 82 commandes. Un tableau de chaines ne sait ni
+renommer, ni fusionner, ni compter, ni porter une image.
+
+`tags` + `prompt_tags` le remplacent pour la navigation. Le slug se normalise
+a l'ecriture, donc deux ecritures d'une meme idee ne peuvent plus creer deux
+tags. La colonne `tags` n'est pas supprimee : elle reste la source de la
+recherche plein texte.
+
+Un rayon range une commande a une place et une seule ; un tag qualifie, et
+plusieurs se croisent — en ET, par `prompts_avec_tous_les_tags`, parce qu'une
+jointure filtree donnerait un OU et que la liste s'allongerait a chaque tag
+coche.
+
+Les groupes `bibliotheque` et `ia` ne sont jamais proposes comme tags : ce
+sont deja deux facettes du filtre de l'accueil, et ce sont les seuls a porter
+quatre a six cents commandes.
+
+### Bibliotheques : Images, Textes, Reflexions
+
+`prompts.library` ne se deduit pas de `app_mode` : les 82 commandes `texte`
+d'aujourd'hui sont toutes des Modes IA, donc des Reflexions, mais un
+/businessplan sera `texte` sans en etre un. Un declencheur pose une valeur
+par defaut et ne comble que le vide ; l'administration corrige.
+
+### Champs de personnalisation
+
+`prompt_fields` (trois au plus, position unique) et `prompt_field_choices`.
+Ce que le membre saisit est applique **dans la route de resolution**, jamais
+dans le navigateur : le serveur relit les champs reellement declares, donc
+une clef inventee dans la requete n'atteint rien et une contrainte
+« obligatoire » ne se leve pas en retirant une ligne de la charge utile.
+
+La valeur reste une donnee par la forme — une ligne, ou indentee dans un bloc
+ferme annonce comme tel. Voir `lib/prompt/personnalisation.ts`.
 
 ### Versions de payload
 
@@ -95,7 +135,10 @@ supprimee, et l'interface le dit.
 | `/activation`                  | Email d'achat + licence + choix du mot de passe               |
 | `/recuperation`                | Email d'achat + licence + nouveau mot de passe                |
 | `/r/[slug]`                    | Page publique partageable, sans le prompt complet             |
-| `/app`                         | Bibliotheque : recherche, mode, categories, grille 2 colonnes |
+| `/app`                         | Accueil : filtre depliant (bibliotheque, rayon, tags, IA)     |
+| `/app/decouvrir`               | Feed plein ecran des visuels « apres », defilement au curseur |
+| `/app/bibliotheque`            | Exploration par tags, puis rayons                             |
+| `/app/bibliotheque/tag/[tag]`  | Les commandes d'un tag, croisables via `?avec=`               |
 | `/app/favoris`, `/app/recents` | Vues personnelles du meme catalogue                           |
 | `/compte`                      | Acces a vie, appareils, securite, deconnexion                 |
 | `/api/resolve-prompt`          | Seule sortie du prompt complet, `no-store`                    |
@@ -103,7 +146,8 @@ supprimee, et l'interface le dit.
 | `/admin`                       | Tableau de bord : uniquement des alertes actionnables         |
 | `/admin/raccourcis`            | Liste filtrable, creation, fiche d'edition et publication     |
 | `/admin/analytics`             | Ce qui est copie, et ce qui dort                              |
-| `/admin/categories`            | Hierarchie, activation et desactivation en cascade            |
+| `/admin/categories`            | Hierarchie, activation, desactivation en cascade, suppression |
+| `/admin/tags`                  | Referentiel des tags : creation, reglage, suppression         |
 | `/admin/membres`               | Recherche d'un compte, deblocage d'acces pour le support      |
 | `/admin/parametres`            | Reglages `app_config`, sans redeploiement                     |
 
@@ -117,15 +161,34 @@ des fonctions `SECURITY DEFINER` qui revalident le role cote base. La garde de
 route `lib/admin/guard.ts` ameliore l'experience, elle ne constitue pas la
 securite.
 
-| Fonction                    | Garantie                                                        |
-| --------------------------- | --------------------------------------------------------------- |
-| `admin_new_prompt_version`  | Cree une version courante, retire l'ancienne sans l'effacer     |
-| `admin_publish_prompt`      | Refuse un contenu incomplet, avec un code d'erreur precis       |
-| `admin_set_prompt_status`   | Publie, repasse en brouillon ou archive ; jamais de suppression |
-| `admin_set_category_status` | Desactive une categorie et toute sa descendance                 |
-| `admin_get_prompt_versions` | Seule lecture admin des payloads                                |
-| `admin_set_access`          | Accorde ou revoque l'acces a vie, avec journalisation           |
-| `admin_analytics_*`         | Agregats de copie, jamais le detail par personne                |
+| Fonction                     | Garantie                                                                                 |
+| ---------------------------- | ---------------------------------------------------------------------------------------- |
+| `admin_new_prompt_version`   | Cree une version courante, retire l'ancienne sans l'effacer                              |
+| `admin_publish_prompt`       | Refuse un contenu incomplet, avec un code d'erreur precis                                |
+| `admin_set_prompt_status`    | Publie, repasse en brouillon ou archive ; jamais de suppression                          |
+| `admin_set_category_status`  | Desactive une categorie et toute sa descendance                                          |
+| `admin_get_prompt_versions`  | Seule lecture admin des payloads                                                         |
+| `admin_set_access`           | Accorde ou revoque l'acces a vie, avec journalisation                                    |
+| `admin_analytics_*`          | Agregats de copie, jamais le detail par personne                                         |
+| `admin_apercu_suppression_*` | Compte ce qu'une suppression emporterait, avant de la proposer                           |
+| `admin_supprimer_commande`   | Rend les chemins de stockage a nettoyer ; refuse d'emporter en silence les anciens liens |
+| `admin_supprimer_categorie`  | Exige une reaffectation quand le rayon porte encore des commandes                        |
+| `admin_supprimer_tag`        | Retire l'etiquette, jamais les commandes                                                 |
+
+### Supprimer, et ce que cela demande
+
+Archiver reste le geste par defaut : il conserve la ligne, ses relations et
+son identifiant, et se defait. La suppression definitive existe depuis la V3
+(partie XII du cahier) et demande trois choses a chaque fois :
+
+1. **Un bilan avant.** Une confirmation sans bilan n'est qu'un clic de plus.
+2. **Une confirmation qui oblige a lire** : retaper la commande ou le nom du
+   rayon. Une case a cocher se coche sans regarder.
+3. **Aucun orphelin.** Les cascades emportent les relations ; ce qu'elles
+   n'emportent pas est soit rendu a l'appelant — les fichiers du stockage —
+   soit reaffecte : les commandes d'un rayon supprime.
+
+Le journal garde l'etat d'avant. C'est la seule chose qui reste.
 
 `prompt_versions` reste fermee a toute requete client, administrateur compris :
 la table n'a aucune policy de lecture et ses privileges SQL sont revoques. Le

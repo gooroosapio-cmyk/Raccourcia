@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - administration-v3
           - ecrans-v3
           - taxonomie-v3
           - actions-groupees
@@ -125,7 +126,8 @@ jobs:
           inputs.dossier != 'menage-taxonomie' &&
           inputs.dossier != 'actions-groupees' &&
           inputs.dossier != 'taxonomie-v3' &&
-          inputs.dossier != 'ecrans-v3'
+          inputs.dossier != 'ecrans-v3' &&
+          inputs.dossier != 'administration-v3'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -444,6 +446,38 @@ jobs:
           psql "$PGURL" -At -c "
             select '    ' || jsonb_array_length(public.tags_explorables()) ||
                    ' tag(s) porte(s) par au moins une commande publiee';"
+
+      # L'administration V3 : suppression definitive controlee.
+      #
+      # Trois apercus et trois suppressions — commande, rayon, tag — plus la
+      # liste des tags telle que l'administration la voit. Chacune verifie
+      # `is_admin()` en premiere ligne, journalise l'etat d'avant dans
+      # `admin_audit_logs`, et refuse de laisser un orphelin : une commande
+      # rend les chemins de ses visuels pour que le stockage soit nettoye, un
+      # rayon qui porte encore des commandes exige de dire ou elles vont.
+      #
+      # Archiver reste le geste par defaut. Ces fonctions ajoutent un geste,
+      # elles n'en retirent aucun et n'assouplissent aucune politique. Rien
+      # de ce que les membres voient ne change : le mot « basculer » n'a donc
+      # pas de sens ici.
+      - name: Installer l'administration V3 (suppressions controlees)
+        if: inputs.dossier == 'administration-v3'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : apercus et suppressions controlees'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260920090000_suppression_controlee.sql
+          echo '  Fonctions en place :'
+          psql "$PGURL" -At -c "
+            select '    ' || p.proname
+            from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+            where n.nspname = 'public'
+              and (p.proname like 'admin_supprimer_%'
+                or p.proname like 'admin_apercu_%'
+                or p.proname = 'admin_liste_tags')
+            order by p.proname;"
 
       # Les actions groupees de l'administration.
       #

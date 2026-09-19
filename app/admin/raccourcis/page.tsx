@@ -94,6 +94,18 @@ export default async function AdminPromptsPage({
         </Link>
       </div>
 
+      {/* Le retour d'une suppression : la page d'ou elle partait n'existe
+          plus, donc c'est ici qu'elle se dit. Sans ce mot, la liste revient
+          simplement plus courte, et rien ne confirme le geste. */}
+      {asString(params.supprime) === '1' ? (
+        <p
+          role="status"
+          className="rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-sky)] p-3 text-[13px] leading-relaxed text-[color:var(--color-night)]"
+        >
+          Commande supprimée. Le journal d’administration en garde la trace.
+        </p>
+      ) : null}
+
       <AdminPromptFilters
         search={filters.search}
         mode={filters.mode}

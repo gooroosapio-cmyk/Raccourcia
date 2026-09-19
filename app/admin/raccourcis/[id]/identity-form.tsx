@@ -16,6 +16,8 @@ import {
   ENTITY_TYPE_LABELS,
   INPUT_EXAMPLE_KINDS,
   INPUT_EXAMPLE_LABELS,
+  LIBRARIES,
+  LIBRARY_LABELS,
   MODES,
   MODE_LABELS,
   OUTPUT_FORMAT_KINDS,
@@ -113,6 +115,32 @@ export function PromptIdentityForm({
             </option>
           ))}
         </select>
+      </label>
+
+      {/* La bibliotheque ne se deduit pas du mode : les quatre-vingt-deux
+          commandes « texte » d'aujourd'hui sont toutes des Modes IA, donc
+          des Reflexions, mais un /businessplan sera « texte » sans en etre
+          un. Un declencheur en pose une par defaut ; c'est ici qu'on la
+          corrige, et elle n'est jamais remise a vide. */}
+      <label className="block">
+        <span className="text-[13px] font-medium text-[color:var(--color-night)]">
+          Bibliothèque
+        </span>
+        <select
+          name="library"
+          defaultValue={prompt.library ?? ''}
+          className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
+        >
+          <option value="">Laisser la valeur par défaut</option>
+          {LIBRARIES.map((library) => (
+            <option key={library} value={library}>
+              {LIBRARY_LABELS[library]}
+            </option>
+          ))}
+        </select>
+        <span className="mt-1 block text-[12px] text-[color:var(--color-muted)]">
+          C’est le premier filtre de l’accueil.
+        </span>
       </label>
 
       <label className="block">

@@ -1527,6 +1527,14 @@ export type Database = {
           published_at: string;
         }[];
       };
+      admin_apercu_suppression_categorie: {
+        Args: { p_category_id: string };
+        Returns: Json;
+      };
+      admin_apercu_suppression_commande: {
+        Args: { p_prompt_id: string };
+        Returns: Json;
+      };
       admin_get_prompt_versions: {
         Args: { p_prompt_id: string };
         Returns: {
@@ -1542,6 +1550,7 @@ export type Database = {
           version_label: string;
         }[];
       };
+      admin_liste_tags: { Args: Record<PropertyKey, never>; Returns: Json };
       admin_log: {
         Args: {
           p_action: string;
@@ -1610,6 +1619,15 @@ export type Database = {
           traites: number;
         }[];
       };
+      admin_supprimer_categorie: {
+        Args: { p_category_id: string; p_reaffectation?: string };
+        Returns: Json;
+      };
+      admin_supprimer_commande: {
+        Args: { p_emporter_les_liens?: boolean; p_prompt_id: string };
+        Returns: Json;
+      };
+      admin_supprimer_tag: { Args: { p_tag_id: string }; Returns: Json };
       alias_recherche: { Args: { v: string[] }; Returns: string };
       analytics_window: { Args: { p_days: number }; Returns: number };
       consume_rate_limit: {

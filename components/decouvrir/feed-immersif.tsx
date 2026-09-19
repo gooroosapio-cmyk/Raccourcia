@@ -238,9 +238,14 @@ function CarteImmersive({
               <ul className="mt-2.5 flex flex-wrap gap-1.5">
                 {carte.tags.map((tag) => (
                   <li key={tag.slug}>
+                    {/* La pastille reste fine, la zone de frappe fait
+                        44 px : trois pastilles a 44 px de haut mangeraient
+                        la zone d'information, et une pastille de 30 px se
+                        manque au pouce. Le pseudo-element etend la cible
+                        sans toucher au dessin. */}
                     <Link
                       href={`/app/bibliotheque/tag/${tag.slug}`}
-                      className="inline-flex min-h-[30px] items-center rounded-full border border-white/25 px-2.5 text-[12px] font-medium text-white/85"
+                      className="relative inline-flex min-h-[30px] items-center rounded-full border border-white/25 px-2.5 text-[12px] font-medium text-white/85 after:absolute after:-inset-y-[7px] after:inset-x-0 after:content-['']"
                     >
                       {tag.name}
                     </Link>

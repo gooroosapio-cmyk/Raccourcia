@@ -1,8 +1,13 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 
-import { saveCategory, setCategoryStatus, type AdminActionState } from '@/lib/actions/admin';
+import {
+  saveCategory,
+  setCategoryStatus,
+  supprimerCategorie,
+  type AdminActionState,
+} from '@/lib/actions/admin';
 import { AdminField, AdminFeedback, AdminSubmit, AdminTextarea } from '@/components/ui/admin-form';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { MODES, MODE_LABELS } from '@/lib/constants';
@@ -103,6 +108,11 @@ export function CategoryRow({
     {},
   );
   const [editState, editAction] = useActionState<AdminActionState, FormData>(saveCategory, {});
+  const [deleteState, deleteAction] = useActionState<AdminActionState, FormData>(
+    supprimerCategorie,
+    {},
+  );
+  const [supprimer, setSupprimer] = useState(false);
 
   const published = category.status === 'published';
   // Une sous-categorie publiee peut rester invisible si son parent est desactive :
@@ -236,6 +246,97 @@ export function CategoryRow({
           <AdminFeedback state={editState} />
           <AdminSubmit tone="secondaire">Enregistrer</AdminSubmit>
         </form>
+
+        {/* Desactiver masque et se defait ; supprimer ne se defait pas. Les
+            deux ne se ressemblent donc pas : celui-ci est au fond de la
+            fiche, derriere un deuxieme pas, et il faut retaper le nom. */}
+        <div className="mt-4 border-t border-[color:var(--color-line)] pt-3">
+          {!supprimer ? (
+            <button
+              type="button"
+              onClick={() => setSupprimer(true)}
+              className="touch-target flex w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-danger)] text-[13px] font-medium text-[color:var(--color-danger)]"
+            >
+              Supprimer définitivement
+            </button>
+          ) : (
+            <form action={deleteAction} className="space-y-2">
+              <input type="hidden" name="categoryId" value={category.id} />
+
+              <div className="rounded-[color:var(--radius-control)] bg-[color:var(--color-danger-soft)] p-3">
+                <p className="text-[13px] font-semibold text-[color:var(--color-danger)]">
+                  Cette suppression est définitive.
+                </p>
+                <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-night)]">
+                  {children.length > 0
+                    ? `${children.length} sous-catégorie${children.length > 1 ? 's' : ''} partiront avec ce rayon. `
+                    : ''}
+                  {affectedCount > 0
+                    ? `${affectedCount} raccourci${affectedCount > 1 ? 's' : ''} doivent être reclassés : aucun n’est supprimé.`
+                    : 'Aucun raccourci n’y est rangé.'}
+                </p>
+              </div>
+
+              {affectedCount > 0 ? (
+                <label className="block">
+                  <span className="text-[13px] font-medium text-[color:var(--color-night)]">
+                    Reclasser les raccourcis dans
+                  </span>
+                  <select
+                    name="reaffectation"
+                    required
+                    defaultValue=""
+                    className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
+                  >
+                    <option value="">Choisir un rayon</option>
+                    {categories
+                      .filter(
+                        (autre) =>
+                          autre.id !== category.id &&
+                          autre.parentId !== category.id &&
+                          autre.mode === category.mode,
+                      )
+                      .map((autre) => (
+                        <option key={autre.id} value={autre.id}>
+                          {autre.parentId ? '— ' : ''}
+                          {autre.name}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+              ) : null}
+
+              <label className="block">
+                <span className="text-[13px] font-medium text-[color:var(--color-night)]">
+                  Retapez « {category.name} » pour confirmer
+                </span>
+                <input
+                  name="confirmation"
+                  autoComplete="off"
+                  className="mt-1 h-12 w-full rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 text-[15px]"
+                />
+              </label>
+
+              <AdminFeedback state={deleteState} />
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSupprimer(false)}
+                  className="touch-target flex items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] text-[13px] font-medium text-[color:var(--color-night)]"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="touch-target flex items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-danger)] text-[13px] font-semibold text-white"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
       </details>
     </li>
   );

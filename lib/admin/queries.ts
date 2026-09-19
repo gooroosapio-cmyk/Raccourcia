@@ -317,6 +317,19 @@ export type AdminPromptDetail = {
     payload: string | null;
   }[];
   media: { id: string; kind: Enums<'media_kind'>; url: string; alt: string | null }[];
+  /**
+   * La bibliotheque de rangement : Images, Textes, Reflexions.
+   *
+   * Elle ne se deduit pas du mode — les quatre-vingt-deux commandes `texte`
+   * d'aujourd'hui sont toutes des Modes IA, donc des Reflexions, mais un
+   * /businessplan sera `texte` sans en etre un. Un declencheur pose une
+   * valeur par defaut ; celle-ci se corrige ici.
+   */
+  library: Enums<'app_library'> | null;
+  /** Les tags poses sur la commande, par identifiant. */
+  tagIds: string[];
+  /** Les champs a remplir avant de copier. Trois au plus. */
+  champs: AdminChamp[];
 };
 
 export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | null> {
@@ -329,8 +342,11 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
        entity_type, univers, search_keywords,
        intention, use_cases, tags, show_image_card, is_free, is_featured, is_new,
        expected_input, limitations, admin_notes,
-       result_summary, input_examples, output_formats,
-       prompt_media(id, kind, storage_path, alt, sort_order)`,
+       result_summary, input_examples, output_formats, library,
+       prompt_media(id, kind, storage_path, alt, sort_order),
+       prompt_tags(tag_id),
+       prompt_fields(id, cle, libelle, indication, kind, requis, position,
+                     prompt_field_choices(valeur, libelle, position))`,
     )
     .eq('id', id)
     .maybeSingle();
@@ -368,6 +384,7 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
     result_summary: string | null;
     input_examples: Enums<'input_example_kind'>[] | null;
     output_formats: Enums<'output_format_kind'>[] | null;
+    library: Enums<'app_library'> | null;
     prompt_media: {
       id: string;
       kind: Enums<'media_kind'>;
@@ -375,6 +392,19 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
       alt: string | null;
       sort_order: number;
     }[];
+    prompt_tags: { tag_id: string }[] | null;
+    prompt_fields:
+      | {
+          id: string;
+          cle: string;
+          libelle: string;
+          indication: string | null;
+          kind: Enums<'prompt_field_kind'>;
+          requis: boolean;
+          position: number;
+          prompt_field_choices: { valeur: string; libelle: string; position: number }[] | null;
+        }[]
+      | null;
   };
 
   return {
@@ -420,8 +450,38 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
         url: urlVisuel(media.storage_path, LARGEURS_VISUEL.comparaison),
         alt: media.alt,
       })),
+    library: row.library,
+    tagIds: (row.prompt_tags ?? []).map((entree) => entree.tag_id),
+    champs: (row.prompt_fields ?? [])
+      .slice()
+      .sort((a, b) => a.position - b.position)
+      .map((champ) => ({
+        id: champ.id,
+        cle: champ.cle,
+        libelle: champ.libelle,
+        indication: champ.indication,
+        kind: champ.kind,
+        requis: champ.requis,
+        position: champ.position,
+        choix: (champ.prompt_field_choices ?? [])
+          .slice()
+          .sort((a, b) => a.position - b.position)
+          .map((choix) => ({ valeur: choix.valeur, libelle: choix.libelle })),
+      })),
   };
 }
+
+/** Un champ de personnalisation, tel que l'administration le regle. */
+export type AdminChamp = {
+  id: string;
+  cle: string;
+  libelle: string;
+  indication: string | null;
+  kind: Enums<'prompt_field_kind'>;
+  requis: boolean;
+  position: number;
+  choix: { valeur: string; libelle: string }[];
+};
 
 export type AdminCategory = {
   id: string;
