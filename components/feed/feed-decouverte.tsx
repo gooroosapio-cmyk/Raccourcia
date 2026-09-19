@@ -54,6 +54,7 @@ export function FeedDecouverte({
   intercalaires = [],
   rayons,
   filtrable = false,
+  chargerLaSuite,
 }: {
   prompts: PromptCard[];
   locked: boolean;
@@ -71,15 +72,61 @@ export function FeedDecouverte({
    * pouce connait deja.
    */
   filtrable?: boolean;
+  /**
+   * De quoi prolonger la galerie au-dela du vivier initial.
+   *
+   * Sans elle, la galerie s'arrete a ce que la page a charge — soixante
+   * cartes — et rien ne dit qu'il en existe six cents de plus. Avec elle,
+   * elle continue tant que le catalogue en a, palier par palier.
+   *
+   * Absente pour les galeries bornees : une rangee de reprises n'a pas de
+   * suite a chercher.
+   */
+  chargerLaSuite?: (page: number) => Promise<PromptCard[]>;
 }) {
   const [selection, setSelection] = useState<PromptCard | null>(null);
   const [filtres, setFiltres] = useState<FiltresGalerie>({});
   const [montrees, setMontrees] = useState(PALIER);
   const [provider, changeProvider] = usePreferredProvider(initialProvider);
 
+  // Ce que le serveur a envoye en plus du vivier initial, et jusqu'ou on
+  // est alle. `fini` retient qu'un palier est revenu vide : sans lui, la
+  // sentinelle redemanderait indefiniment la meme page inexistante.
+  const [ajoutees, setAjoutees] = useState<PromptCard[]>([]);
+  const [page, setPage] = useState(1);
+  const [charge, setCharge] = useState(false);
+  const [fini, setFini] = useState(false);
+
+  const toutes = useMemo(() => [...prompts, ...ajoutees], [ajoutees, prompts]);
+
   const allonger = useCallback(() => {
     setMontrees((n) => n + PALIER);
-  }, []);
+
+    // Le palier suivant est demande avant d'en avoir besoin : quand ce
+    // qu'on montre approche de ce qu'on a, pas quand il n'y a plus rien.
+    if (!chargerLaSuite || charge || fini) return;
+    if (montrees + PALIER < toutes.length) return;
+
+    setCharge(true);
+    const suivante = page + 1;
+    void chargerLaSuite(suivante)
+      .then((cartes) => {
+        setPage(suivante);
+        if (cartes.length === 0) {
+          setFini(true);
+          return;
+        }
+        // Le vivier initial et les paliers suivants viennent de deux
+        // requetes differentes : une carte peut se retrouver dans les deux.
+        // La montrer deux fois donnerait une galerie qui begaie.
+        setAjoutees((actuelles) => {
+          const vues = new Set([...prompts, ...actuelles].map((carte) => carte.id));
+          return [...actuelles, ...cartes.filter((carte) => !vues.has(carte.id))];
+        });
+      })
+      .catch(() => setFini(true))
+      .finally(() => setCharge(false));
+  }, [charge, chargerLaSuite, fini, montrees, page, prompts, toutes.length]);
 
   const ouvrir = useCallback(
     (prompt: PromptCard) => {
@@ -95,7 +142,7 @@ export function FeedDecouverte({
 
   if (prompts.length === 0) return null;
 
-  const retenues = appliquerLesFiltres(prompts, filtres);
+  const retenues = appliquerLesFiltres(toutes, filtres);
   const visibles = retenues.slice(0, montrees);
 
   return (
@@ -129,7 +176,7 @@ export function FeedDecouverte({
         ouvrir={ouvrir}
       />
 
-      {montrees < retenues.length ? (
+      {montrees < retenues.length || (chargerLaSuite && !fini) ? (
         <Sentinelle onVisible={allonger} libelle="Voir plus d’idées" />
       ) : null}
 

@@ -56,7 +56,7 @@ export function FeedImmersif({
   const allonger = useCallback(() => {
     if (!curseur || charge) return;
     setCharge(true);
-    void chargerLaSuite(curseur.rang, curseur.id)
+    void chargerLaSuite(curseur.image, curseur.texte)
       .then((page) => {
         // Concatenation et non remplacement : le palier precedent reste a
         // l'ecran, donc la position de lecture ne bouge pas.
@@ -179,30 +179,39 @@ function CarteImmersive({
   ouverture: boolean;
   onUtiliser: (carte: CarteDecouverte) => void;
 }) {
+  const illustree = carte.genre === 'image' && carte.visuelUrl !== '';
+
   return (
     <article className="relative h-full w-full snap-start overflow-hidden bg-[#0b1220]">
-      {/* 1. Le fond. Agrandi au-dela du cadre : un flou laisse sinon
-          apparaitre les bords transparents de sa propre image. */}
-      <Image
-        src={carte.visuelUrl}
-        alt=""
-        aria-hidden="true"
-        fill
-        sizes="100vw"
-        priority={prioritaire}
-        className="scale-125 object-cover blur-2xl brightness-[0.45] saturate-150"
-      />
+      {illustree ? (
+        <>
+          {/* 1. Le fond. Agrandi au-dela du cadre : un flou laisse sinon
+              apparaitre les bords transparents de sa propre image. */}
+          <Image
+            src={carte.visuelUrl}
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes="100vw"
+            priority={prioritaire}
+            className="scale-125 object-cover blur-2xl brightness-[0.45] saturate-150"
+          />
 
-      {/* 2. Le visuel, entier. `contain` et non `cover` : cette page montre ce
-          que la commande produit, la recadrer reviendrait a le montrer faux. */}
-      <Image
-        src={carte.visuelUrl}
-        alt={carte.visuelAlt}
-        fill
-        sizes="100vw"
-        priority={prioritaire}
-        className="object-contain"
-      />
+          {/* 2. Le visuel, entier. `contain` et non `cover` : cette page
+              montre ce que la commande produit, la recadrer reviendrait a le
+              montrer faux. */}
+          <Image
+            src={carte.visuelUrl}
+            alt={carte.visuelAlt}
+            fill
+            sizes="100vw"
+            priority={prioritaire}
+            className="object-contain"
+          />
+        </>
+      ) : (
+        <CarteEcrite carte={carte} />
+      )}
 
       {/* 3. Le fondu. Opaque en bas, nul a mi-hauteur : le texte se lit quel
           que soit le visuel dessous, sans le masquer. */}
@@ -271,6 +280,67 @@ function CarteImmersive({
       </div>
     </article>
   );
+}
+
+/**
+ * Une commande qui n'a pas d'image a montrer.
+ *
+ * Un tiers du catalogue redige, analyse ou converse. Ces commandes n'ont
+ * pas de resultat visuel, et leur en inventer un — une illustration
+ * generique, un degrade avec un nom dessus — reviendrait a promettre une
+ * image la ou il n'y en aura pas.
+ *
+ * Ce qu'elles ont a la place, c'est ce qu'elles font. On l'ecrit donc, en
+ * grand, sur une surface qui se reconnait au premier coup d'oeil comme
+ * n'etant pas une photo : c'est l'equivalent de l'image pour une commande
+ * de texte, pas un cadre vide en attendant mieux.
+ *
+ * La teinte vient du nom de la commande : deux cartes voisines ne se
+ * ressemblent pas, et une meme carte garde sa couleur d'un passage a
+ * l'autre.
+ */
+function CarteEcrite({ carte }: { carte: CarteDecouverte }) {
+  const teinte = teinteDe(carte.command);
+
+  return (
+    <div
+      className="absolute inset-0 flex flex-col justify-center px-6 pb-[42%] pt-16"
+      style={{
+        background: `linear-gradient(155deg, ${teinte.haut} 0%, ${teinte.bas} 100%)`,
+      }}
+    >
+      {carte.bibliotheque ? (
+        <p className="text-[length:var(--texte-meta)] font-semibold uppercase tracking-[0.12em] text-white/70">
+          {carte.bibliotheque}
+        </p>
+      ) : null}
+
+      {/* Le detail, et non la description courte : c'est le contenu de la
+          carte, donc il prend la place qu'aurait eue l'image. */}
+      <p className="mt-3 line-clamp-[9] text-[19px] font-medium leading-[1.45] text-white">
+        {carte.detail || carte.description}
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Deux teintes sombres tirees du nom de la commande.
+ *
+ * Sombres, parce que le texte de la zone basse se pose dessus en blanc.
+ * Tirees du nom, parce qu'un tirage au sort changerait de couleur a chaque
+ * rechargement — ce qui se lit comme un defaut d'affichage, pas comme une
+ * variete.
+ */
+function teinteDe(commande: string): { haut: string; bas: string } {
+  let empreinte = 0;
+  for (const caractere of commande) {
+    empreinte = (empreinte * 31 + caractere.charCodeAt(0)) % 360;
+  }
+  return {
+    haut: `hsl(${empreinte} 46% 32%)`,
+    bas: `hsl(${(empreinte + 38) % 360} 52% 16%)`,
+  };
 }
 
 /**

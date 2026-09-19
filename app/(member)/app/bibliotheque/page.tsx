@@ -1,6 +1,7 @@
 import { getBibliotheque } from '@/lib/catalog/queries';
 import { getTagsExplorables } from '@/lib/catalog/tags';
 import { ExplorationParTags } from '@/components/library/exploration-par-tags';
+import { RechercheBibliotheque } from '@/components/library/recherche-bibliotheque';
 import { CollectionTile } from '@/components/library/collection-tile';
 import { RayonsDepliables, type RayonDepliable } from '@/components/library/rayons-depliables';
 import { FaconsDUtiliser } from '@/components/library/facons-d-utiliser';
@@ -73,6 +74,8 @@ export default async function BibliothequePage() {
   return (
     <div className="space-y-5 pt-1">
       <Titre />
+
+      <RechercheBibliotheque />
 
       <FaconsDUtiliser modesIa={modesIa} parcours={parcours} />
 

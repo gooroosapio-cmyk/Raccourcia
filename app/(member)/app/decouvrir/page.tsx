@@ -52,8 +52,8 @@ export default async function DecouvrirPage() {
         <h1 className="sr-only">Découvrir</h1>
         {disponibles === 0 ? (
           <EmptyState
-            title="Aucun visuel à montrer"
-            body="Cette page présente les résultats obtenus avec les commandes. Aucune n’a encore de visuel publié : la Bibliothèque, elle, reste ouverte."
+            title="Rien à découvrir pour l’instant"
+            body="Cette page montre ce que les commandes produisent. Aucune n’est encore publiée : la Bibliothèque, elle, reste ouverte."
           />
         ) : (
           <EmptyState

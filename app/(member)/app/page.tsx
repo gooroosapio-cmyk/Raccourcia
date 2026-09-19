@@ -6,6 +6,7 @@ import {
   getVivierDuFeed,
 } from '@/lib/catalog/queries';
 import { getFacettes } from '@/lib/catalog/filtres';
+import { getCollectionsPopulaires } from '@/lib/catalog/accueil';
 import { ordonnerLeFeed } from '@/lib/catalog/feed';
 import type { PromptCard } from '@/lib/catalog/types';
 import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
@@ -115,16 +116,20 @@ export default async function AccueilPage({
     feed: PromptCard[];
     reprendre: Awaited<ReturnType<typeof getDernieresCopies>>;
     familles: Awaited<ReturnType<typeof getBibliotheque>>;
+    collections: Awaited<ReturnType<typeof getCollectionsPopulaires>>;
   } | null = null;
 
   try {
     if (editorial) {
       // L'historique n'existe que pour un compte : le demander a un visiteur
       // revient a interroger une table qui lui est fermee.
-      const [vivier, familles, reprendre] = await Promise.all([
+      const [vivier, familles, reprendre, collections] = await Promise.all([
         getVivierDuFeed(),
         getBibliotheque(),
         acces.isMember ? getDernieresCopies() : Promise.resolve([]),
+        // Dix collections : de quoi remplir une rangee qui defile sans en
+        // faire un sommaire.
+        getCollectionsPopulaires(10),
       ]);
 
       accueil = {
@@ -134,6 +139,7 @@ export default async function AccueilPage({
         feed: ordonnerLeFeed(vivier),
         familles,
         reprendre,
+        collections,
       };
       page = { items: [], hasMore: false, total: 0 };
     } else {
@@ -197,6 +203,7 @@ export default async function AccueilPage({
           feed={accueil.feed}
           reprendre={accueil.reprendre}
           familles={accueil.familles}
+          collections={accueil.collections}
           locked={!acces.hasFullAccess}
           visiteur={!acces.isMember}
         />

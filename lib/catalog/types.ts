@@ -238,6 +238,23 @@ export type CarteDecouverte = {
   command: string;
   name: string;
   description: string;
+  /**
+   * Ce que la carte montre.
+   *
+   * « image » : le resultat, plein cadre. « texte » : une carte
+   * typographique, parce qu'une commande de redaction n'a pas de resultat
+   * a montrer et qu'un cadre vide ne donne envie de rien. Ce qu'elle a a la
+   * place, c'est ce qu'elle fait — donc on l'ecrit.
+   */
+  genre: 'image' | 'texte';
+  /**
+   * Ce que la commande fait, en detail. Rempli pour une carte texte, ou
+   * c'est le contenu principal ; vide pour une image, ou le visuel parle.
+   */
+  detail: string;
+  /** La bibliotheque d'ou vient la carte : le sur-titre d'une carte texte. */
+  bibliotheque: string | null;
+  /** Vide pour une carte texte. */
   visuelUrl: string;
   visuelAlt: string;
   /** Trois au plus : au-dela, la zone basse mange le visuel. */
@@ -248,8 +265,20 @@ export type CarteDecouverte = {
   isFree: boolean;
 };
 
-/** Le curseur du feed : le rang et l'identifiant de la derniere carte rendue. */
-export type CurseurDecouverte = { rang: number; id: string };
+/**
+ * Le curseur du feed. Deux marque-pages, un par vivier.
+ *
+ * Decouvrir melange deux catalogues qui n'ont ni la meme taille ni le meme
+ * rythme : sept cent soixante-cinq cartes image, deux cent quarante-cinq
+ * cartes texte et reflexion. Un seul curseur les epuiserait a des vitesses
+ * differentes et le melange se deferait au bout de quelques paliers.
+ */
+export type CurseurDecouverte = {
+  /** Ou l'on en est dans les images. */
+  image: { rang: number; id: string } | null;
+  /** Ou l'on en est dans les textes et les modes. */
+  texte: { rang: number; id: string } | null;
+};
 
 export type PageDecouverte = {
   cartes: CarteDecouverte[];
