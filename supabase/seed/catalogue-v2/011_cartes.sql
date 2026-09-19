@@ -10,7 +10,7 @@
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-amazighheritage', 'img-amazighheritage', '/amazighheritage', 'Portrait amazigh', 'amazighheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Crée un portrait amazigh régionalement précisé, avec bijoux, textile et décor documentés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait amazigh', 'cultures', 'portraits et souvenirs']::text[], 'Portrait amazigh | RaccourcIA', 'Crée un portrait amazigh régionalement précisé, avec bijoux, textile et décor documentés.', 76, 51, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-amazighheritage',
   command = '/amazighheritage',
   name = 'Portrait amazigh',
@@ -44,7 +44,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-bambaraheritage', 'img-bambaraheritage', '/bambaraheritage', 'Portrait bambara', 'bambaraheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Transforme la photo en portrait bambara documenté en respectant matières, accessoires et occasion.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait bambara', 'cultures', 'portraits et souvenirs']::text[], 'Portrait bambara | RaccourcIA', 'Transforme la photo en portrait bambara documenté en respectant matières, accessoires et occasion.', 76, 52, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-bambaraheritage',
   command = '/bambaraheritage',
   name = 'Portrait bambara',
@@ -78,7 +78,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-bamilekeheritage', 'img-bamilekeheritage', '/bamilekeheritage', 'Portrait bamiléké', 'bamilekeheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Crée un portrait bamiléké précis à partir de tissus, perles et contexte fournis, sans généralisation.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait bamileke', 'cultures', 'portraits et souvenirs']::text[], 'Portrait bamiléké | RaccourcIA', 'Crée un portrait bamiléké précis à partir de tissus, perles et contexte fournis, sans généralisation.', 76, 53, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-bamilekeheritage',
   command = '/bamilekeheritage',
   name = 'Portrait bamiléké',
@@ -112,7 +112,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-boboheritage', 'img-boboheritage', '/boboheritage', 'Portrait bobo', 'boboheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Crée un portrait bobo contextualisé à partir de références vestimentaires et géographiques confirmées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait bobo', 'cultures', 'portraits et souvenirs']::text[], 'Portrait bobo | RaccourcIA', 'Crée un portrait bobo contextualisé à partir de références vestimentaires et géographiques confirmées.', 76, 54, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-boboheritage',
   command = '/boboheritage',
   name = 'Portrait bobo',
@@ -146,7 +146,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-hanbokportrait', 'img-hanbokportrait', '/hanbokportrait', 'Portrait en hanbok', 'hanbokportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Crée un portrait en hanbok adapté à l’époque, à la saison et à l’occasion indiquées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait en hanbok', 'cultures', 'portraits et souvenirs']::text[], 'Portrait en hanbok | RaccourcIA', 'Crée un portrait en hanbok adapté à l’époque, à la saison et à l’occasion indiquées.', 76, 55, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-hanbokportrait',
   command = '/hanbokportrait',
   name = 'Portrait en hanbok',
@@ -180,7 +180,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-kebaya', 'img-kebaya', '/kebaya', 'Portrait en kebaya', 'kebaya', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Une kebaya et son étoffe associée sont représentées selon une référence régionale et une occasion précises.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait en kebaya', 'cultures', 'portraits et souvenirs']::text[], 'Portrait en kebaya | RaccourcIA', 'Une kebaya et son étoffe associée sont représentées selon une référence régionale et une occasion précises.', 76, 56, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-kebaya',
   command = '/kebaya',
   name = 'Portrait en kebaya',
@@ -214,7 +214,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-kimonoheritage', 'img-kimonoheritage', '/kimonoheritage', 'Portrait en kimono', 'kimonoheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Crée un portrait en kimono selon saison, occasion, niveau de formalité et références choisies.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait en kimono', 'cultures', 'portraits et souvenirs']::text[], 'Portrait en kimono | RaccourcIA', 'Crée un portrait en kimono selon saison, occasion, niveau de formalité et références choisies.', 76, 57, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-kimonoheritage',
   command = '/kimonoheritage',
   name = 'Portrait en kimono',
@@ -248,7 +248,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-aodai', 'img-aodai', '/aodai', 'Portrait en áo dài', 'aodai', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Une tunique longue sur pantalon compose un portrait vietnamien aux lignes fluides et au tombé soigné.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait en ao dai', 'cultures', 'portraits et souvenirs']::text[], 'Portrait en áo dài | RaccourcIA', 'Une tunique longue sur pantalon compose un portrait vietnamien aux lignes fluides et au tombé soigné.', 76, 58, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-aodai',
   command = '/aodai',
   name = 'Portrait en áo dài',
@@ -282,7 +282,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-gouroheritage', 'img-gouroheritage', '/gouroheritage', 'Portrait gouro', 'gouroheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Crée une tenue et un décor gouro contextualisés sans mélanger les codes de peuples voisins.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait gouro', 'cultures', 'portraits et souvenirs']::text[], 'Portrait gouro | RaccourcIA', 'Crée une tenue et un décor gouro contextualisés sans mélanger les codes de peuples voisins.', 76, 59, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-gouroheritage',
   command = '/gouroheritage',
   name = 'Portrait gouro',
@@ -316,7 +316,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-igboheritage', 'img-igboheritage', '/igboheritage', 'Portrait igbo', 'igboheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Crée un portrait igbo contemporain ou cérémoniel fondé sur des références choisies par l’utilisateur.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait igbo', 'cultures', 'portraits et souvenirs']::text[], 'Portrait igbo | RaccourcIA', 'Crée un portrait igbo contemporain ou cérémoniel fondé sur des références choisies par l’utilisateur.', 76, 60, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-igboheritage',
   command = '/igboheritage',
   name = 'Portrait igbo',
@@ -350,7 +350,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-kabyle', 'img-kabyle', '/kabyle', 'Portrait kabyle', 'kabyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Une tenue et des bijoux kabyles de référence composent un portrait régional précis, sans ajout de symboles arbitraires.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait kabyle', 'cultures', 'portraits et souvenirs']::text[], 'Portrait kabyle | RaccourcIA', 'Une tenue et des bijoux kabyles de référence composent un portrait régional précis, sans ajout de symboles arbitraires.', 76, 61, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-kabyle',
   command = '/kabyle',
   name = 'Portrait kabyle',
@@ -384,7 +384,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-kenteheritage', 'img-kenteheritage', '/kenteheritage', 'Portrait kente', 'kenteheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Met en valeur un portrait ghanéen autour d’un kente dont les couleurs et le contexte sont précisés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait kente', 'cultures', 'portraits et souvenirs']::text[], 'Portrait kente | RaccourcIA', 'Met en valeur un portrait ghanéen autour d’un kente dont les couleurs et le contexte sont précisés.', 76, 62, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-kenteheritage',
   command = '/kenteheritage',
   name = 'Portrait kente',
@@ -418,7 +418,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-kente-ewe', 'img-kente-ewe', '/kente-ewe', 'Portrait kente ewe', 'kente-ewe', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Un portrait mettant en valeur un tissu kente ewe référencé, avec bandes tissées, motifs et drapé cohérents.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait kente ewe', 'cultures', 'portraits et souvenirs']::text[], 'Portrait kente ewe | RaccourcIA', 'Un portrait mettant en valeur un tissu kente ewe référencé, avec bandes tissées, motifs et drapé cohérents.', 76, 63, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-kente-ewe',
   command = '/kente-ewe',
   name = 'Portrait kente ewe',
@@ -452,7 +452,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-rifain', 'img-rifain', '/rifain', 'Portrait rifain', 'rifain', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Un portrait inspiré d’une tenue rifaine documentée, avec étoffes et accessoires adaptés à l’occasion choisie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait rifain', 'cultures', 'portraits et souvenirs']::text[], 'Portrait rifain | RaccourcIA', 'Un portrait inspiré d’une tenue rifaine documentée, avec étoffes et accessoires adaptés à l’occasion choisie.', 76, 64, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-rifain',
   command = '/rifain',
   name = 'Portrait rifain',
@@ -486,7 +486,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-senoufoheritage', 'img-senoufoheritage', '/senoufoheritage', 'Portrait sénoufo', 'senoufoheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Met en scène un portrait sénoufo contemporain ou cérémoniel selon les références validées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait senoufo', 'cultures', 'portraits et souvenirs']::text[], 'Portrait sénoufo | RaccourcIA', 'Met en scène un portrait sénoufo contemporain ou cérémoniel selon les références validées.', 76, 65, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-senoufoheritage',
   command = '/senoufoheritage',
   name = 'Portrait sénoufo',
@@ -520,7 +520,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-baouleheritage', 'img-baouleheritage', '/baouleheritage', 'Élégance baoulé', 'baouleheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Compose un portrait baoulé documenté à partir de l’occasion, des tissus, bijoux et références fournis.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['elegance baoule', 'cultures', 'portraits et souvenirs']::text[], 'Élégance baoulé | RaccourcIA', 'Compose un portrait baoulé documenté à partir de l’occasion, des tissus, bijoux et références fournis.', 76, 66, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-baouleheritage',
   command = '/baouleheritage',
   name = 'Élégance baoulé',
@@ -554,7 +554,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-hausaheritage', 'img-hausaheritage', '/hausaheritage', 'Élégance haoussa', 'hausaheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Met en scène une élégance haoussa adaptée au lieu, au genre vestimentaire et à l’occasion déclarés.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image']::text[], array['elegance haoussa', 'cultures', 'portraits et souvenirs']::text[], 'Élégance haoussa | RaccourcIA', 'Met en scène une élégance haoussa adaptée au lieu, au genre vestimentaire et à l’occasion déclarés.', 76, 67, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-hausaheritage',
   command = '/hausaheritage',
   name = 'Élégance haoussa',
@@ -588,7 +588,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-mossiheritage', 'img-mossiheritage', '/mossiheritage', 'Élégance mossi', 'mossiheritage', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Compose un portrait mossi du Burkina Faso adapté à une occasion et à une époque clairement précisées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['elegance mossi', 'cultures', 'portraits et souvenirs']::text[], 'Élégance mossi | RaccourcIA', 'Compose un portrait mossi du Burkina Faso adapté à une occasion et à une époque clairement précisées.', 76, 68, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-mossiheritage',
   command = '/mossiheritage',
   name = 'Élégance mossi',
@@ -622,7 +622,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-wolofelegance', 'img-wolofelegance', '/wolofelegance', 'Élégance wolof', 'wolofelegance', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'cultures'), 'Crée un portrait wolof raffiné autour d’une tenue, d’une coiffure et d’un contexte choisis.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['cultures', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['elegance wolof', 'cultures', 'portraits et souvenirs']::text[], 'Élégance wolof | RaccourcIA', 'Crée un portrait wolof raffiné autour d’une tenue, d’une coiffure et d’un contexte choisis.', 76, 69, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-wolofelegance',
   command = '/wolofelegance',
   name = 'Élégance wolof',
@@ -656,7 +656,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-africancapitalportrait', 'img-africancapitalportrait', '/africancapitalportrait', 'Capitale africaine', 'africancapitalportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'voyages'), 'Crée un portrait urbain dans une capitale africaine précisément choisie, au-delà des décors touristiques génériques.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['voyages', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['capitale africaine', 'voyages', 'portraits et souvenirs']::text[], 'Capitale africaine | RaccourcIA', 'Crée un portrait urbain dans une capitale africaine précisément choisie, au-delà des décors touristiques génériques.', 76, 70, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-africancapitalportrait',
   command = '/africancapitalportrait',
   name = 'Capitale africaine',
@@ -690,7 +690,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-vacationpostcard', 'img-vacationpostcard', '/vacationpostcard', 'Carte postale personnelle', 'vacationpostcard', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'voyages'), 'Replace la personne dans une destination sous forme clairement créative.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['voyages', 'portraits-et-souvenirs', 'commande-image']::text[], array['carte postale personnelle', 'voyages', 'portraits et souvenirs']::text[], 'Carte postale personnelle | RaccourcIA', 'Replace la personne dans une destination sous forme clairement créative.', 76, 71, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-vacationpostcard',
   command = '/vacationpostcard',
   name = 'Carte postale personnelle',
@@ -724,7 +724,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-worldcapitalportrait', 'img-worldcapitalportrait', '/worldcapitalportrait', 'Portrait dans une capitale', 'worldcapitalportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'voyages'), 'Place la personne devant un monument ou un quartier réel d’une capitale choisie, avec lumière et perspective crédibles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['voyages', 'portraits-et-souvenirs', 'commande-image', 'portrait']::text[], array['portrait dans une capitale', 'voyages', 'portraits et souvenirs']::text[], 'Portrait dans une capitale | RaccourcIA', 'Place la personne devant un monument ou un quartier réel d’une capitale choisie, avec lumière et perspective crédibles.', 76, 72, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-worldcapitalportrait',
   command = '/worldcapitalportrait',
   name = 'Portrait dans une capitale',
@@ -758,7 +758,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-locspreview', 'img-locspreview', '/locspreview', 'Aperçu locks', 'locspreview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Teste longueur, épaisseur et coiffage de locks de façon réaliste.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['apercu locks', 'beaute', 'style et identite']::text[], 'Aperçu locks | RaccourcIA', 'Teste longueur, épaisseur et coiffage de locks de façon réaliste.', 82, 73, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-locspreview',
   command = '/locspreview',
   name = 'Aperçu locks',
@@ -792,7 +792,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-braidpreview', 'img-braidpreview', '/braidpreview', 'Aperçu tresses', 'braidpreview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Teste un style de tresses avec implantation, volume et texture plausibles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['apercu tresses', 'beaute', 'style et identite']::text[], 'Aperçu tresses | RaccourcIA', 'Teste un style de tresses avec implantation, volume et texture plausibles.', 82, 74, true, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-braidpreview',
   command = '/braidpreview',
   name = 'Aperçu tresses',
@@ -826,7 +826,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-bridalbeauty', 'img-bridalbeauty', '/bridalbeauty', 'Beauté de cérémonie', 'bridalbeauty', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Compose coiffure et maquillage harmonisés pour mariage ou grande occasion.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['beaute de ceremonie', 'beaute', 'style et identite']::text[], 'Beauté de cérémonie | RaccourcIA', 'Compose coiffure et maquillage harmonisés pour mariage ou grande occasion.', 82, 75, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-bridalbeauty',
   command = '/bridalbeauty',
   name = 'Beauté de cérémonie',
@@ -860,7 +860,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-haircolor', 'img-haircolor', '/haircolor', 'Couleur de cheveux', 'haircolor', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Change uniquement la couleur des cheveux avec reflets crédibles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['couleur de cheveux', 'beaute', 'style et identite']::text[], 'Couleur de cheveux | RaccourcIA', 'Change uniquement la couleur des cheveux avec reflets crédibles.', 82, 76, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-haircolor',
   command = '/haircolor',
   name = 'Couleur de cheveux',
@@ -894,7 +894,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-makeuptry', 'img-makeuptry', '/makeuptry', 'Essai maquillage', 'makeuptry', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Applique un maquillage choisi en préservant peau et proportions du visage.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['essai maquillage', 'beaute', 'style et identite']::text[], 'Essai maquillage | RaccourcIA', 'Applique un maquillage choisi en préservant peau et proportions du visage.', 82, 77, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-makeuptry',
   command = '/makeuptry',
   name = 'Essai maquillage',
@@ -928,7 +928,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-afroshape', 'img-afroshape', '/afroshape', 'Forme afro', 'afroshape', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Explore plusieurs silhouettes afro sans altérer la texture capillaire.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['forme afro', 'beaute', 'style et identite']::text[], 'Forme afro | RaccourcIA', 'Explore plusieurs silhouettes afro sans altérer la texture capillaire.', 82, 78, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-afroshape',
   command = '/afroshape',
   name = 'Forme afro',
@@ -962,7 +962,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-nailartpreview', 'img-nailartpreview', '/nailartpreview', 'Nail art', 'nailartpreview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Visualise motifs, formes et finitions sur les mains photographiées.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['nail art', 'beaute', 'style et identite']::text[], 'Nail art | RaccourcIA', 'Visualise motifs, formes et finitions sur les mains photographiées.', 82, 79, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-nailartpreview',
   command = '/nailartpreview',
   name = 'Nail art',
@@ -996,7 +996,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-hairstyle', 'img-hairstyle', '/hairstyle', 'Nouvelle coiffure', 'hairstyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Prévisualise une coupe adaptée au visage tout en conservant l’identité.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['nouvelle coiffure', 'beaute', 'style et identite']::text[], 'Nouvelle coiffure | RaccourcIA', 'Prévisualise une coupe adaptée au visage tout en conservant l’identité.', 82, 80, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-hairstyle',
   command = '/hairstyle',
   name = 'Nouvelle coiffure',
@@ -1030,7 +1030,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-beardstyle', 'img-beardstyle', '/beardstyle', 'Style de barbe', 'beardstyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Compare une barbe courte, structurée ou fournie adaptée à la morphologie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['style de barbe', 'beaute', 'style et identite']::text[], 'Style de barbe | RaccourcIA', 'Compare une barbe courte, structurée ou fournie adaptée à la morphologie.', 82, 81, true, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-beardstyle',
   command = '/beardstyle',
   name = 'Style de barbe',
@@ -1064,7 +1064,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-headwrapstyle', 'img-headwrapstyle', '/headwrapstyle', 'Style de foulard', 'headwrapstyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Explore nouages, volumes et tissus en respectant cheveux et visage.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['style de foulard', 'beaute', 'style et identite']::text[], 'Style de foulard | RaccourcIA', 'Explore nouages, volumes et tissus en respectant cheveux et visage.', 82, 82, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-headwrapstyle',
   command = '/headwrapstyle',
   name = 'Style de foulard',
@@ -1098,7 +1098,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-skincareglow', 'img-skincareglow', '/skincareglow', 'Éclat naturel', 'skincareglow', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'beaute'), 'Donne un rendu peau reposée sans effacer pores ni caractéristiques.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['beaute', 'style-et-identite', 'commande-image']::text[], array['eclat naturel', 'beaute', 'style et identite']::text[], 'Éclat naturel | RaccourcIA', 'Donne un rendu peau reposée sans effacer pores ni caractéristiques.', 82, 83, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-skincareglow',
   command = '/skincareglow',
   name = 'Éclat naturel',
@@ -1132,7 +1132,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-capsulelook', 'img-capsulelook', '/capsulelook', 'Capsule personnelle', 'capsulelook', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Crée un look polyvalent à partir de quelques pièces cohérentes.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['capsule personnelle', 'essayage', 'style et identite']::text[], 'Capsule personnelle | RaccourcIA', 'Crée un look polyvalent à partir de quelques pièces cohérentes.', 82, 84, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-capsulelook',
   command = '/capsulelook',
   name = 'Capsule personnelle',
@@ -1166,7 +1166,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-outfitchange', 'img-outfitchange', '/outfitchange', 'Changement de tenue', 'outfitchange', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Remplace les vêtements en conservant pose, corps, visage et lumière.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['changement de tenue', 'essayage', 'style et identite']::text[], 'Changement de tenue | RaccourcIA', 'Remplace les vêtements en conservant pose, corps, visage et lumière.', 82, 85, true, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-outfitchange',
   command = '/outfitchange',
   name = 'Changement de tenue',
@@ -1200,7 +1200,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-suittryon', 'img-suittryon', '/suittryon', 'Costume professionnel', 'suittryon', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Prévisualise coupe, couleur et tombé d’un costume adapté à la personne.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['costume professionnel', 'essayage', 'style et identite']::text[], 'Costume professionnel | RaccourcIA', 'Prévisualise coupe, couleur et tombé d’un costume adapté à la personne.', 82, 86, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-suittryon',
   command = '/suittryon',
   name = 'Costume professionnel',
@@ -1234,7 +1234,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-glassestry', 'img-glassestry', '/glassestry', 'Essai lunettes', 'glassestry', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Place une monture plausible selon angle, oreilles, nez et reflets.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['essai lunettes', 'essayage', 'style et identite']::text[], 'Essai lunettes | RaccourcIA', 'Place une monture plausible selon angle, oreilles, nez et reflets.', 82, 87, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-glassestry',
   command = '/glassestry',
   name = 'Essai lunettes',
@@ -1268,7 +1268,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-androgynouslook', 'img-androgynouslook', '/androgynouslook', 'Look androgyne', 'androgynouslook', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Explore une expression vestimentaire androgyne sans modifier l’identité.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['look androgyne', 'essayage', 'style et identite']::text[], 'Look androgyne | RaccourcIA', 'Explore une expression vestimentaire androgyne sans modifier l’identité.', 82, 88, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-androgynouslook',
   command = '/androgynouslook',
   name = 'Look androgyne',
@@ -1302,7 +1302,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-couturelook', 'img-couturelook', '/couturelook', 'Look haute couture', 'couturelook', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Imagine une tenue éditoriale spectaculaire avec construction textile crédible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['look haute couture', 'essayage', 'style et identite']::text[], 'Look haute couture | RaccourcIA', 'Imagine une tenue éditoriale spectaculaire avec construction textile crédible.', 82, 89, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-couturelook',
   command = '/couturelook',
   name = 'Look haute couture',
@@ -1336,7 +1336,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-weddinglook', 'img-weddinglook', '/weddinglook', 'Look mariage', 'weddinglook', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Explore une tenue de marié ou mariée en préservant l’identité.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['look mariage', 'essayage', 'style et identite']::text[], 'Look mariage | RaccourcIA', 'Explore une tenue de marié ou mariée en préservant l’identité.', 82, 90, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-weddinglook',
   command = '/weddinglook',
   name = 'Look mariage',
@@ -1370,7 +1370,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-sportswearlook', 'img-sportswearlook', '/sportswearlook', 'Look sportif', 'sportswearlook', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Crée une tenue fonctionnelle adaptée à une discipline donnée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['look sportif', 'essayage', 'style et identite']::text[], 'Look sportif | RaccourcIA', 'Crée une tenue fonctionnelle adaptée à une discipline donnée.', 82, 91, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-sportswearlook',
   command = '/sportswearlook',
   name = 'Look sportif',
@@ -1404,7 +1404,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-streetwearlook', 'img-streetwearlook', '/streetwearlook', 'Look streetwear', 'streetwearlook', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Crée une silhouette urbaine moderne sans transformer la morphologie.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['look streetwear', 'essayage', 'style et identite']::text[], 'Look streetwear | RaccourcIA', 'Crée une silhouette urbaine moderne sans transformer la morphologie.', 82, 92, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-streetwearlook',
   command = '/streetwearlook',
   name = 'Look streetwear',
@@ -1438,7 +1438,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-modestfashion', 'img-modestfashion', '/modestfashion', 'Mode pudique', 'modestfashion', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Compose une silhouette couvrante, actuelle et élégante selon le contexte.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['mode pudique', 'essayage', 'style et identite']::text[], 'Mode pudique | RaccourcIA', 'Compose une silhouette couvrante, actuelle et élégante selon le contexte.', 82, 93, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-modestfashion',
   command = '/modestfashion',
   name = 'Mode pudique',
@@ -1472,7 +1472,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-graduationlook', 'img-graduationlook', '/graduationlook', 'Tenue de diplômé', 'graduationlook', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Ajoute robe, toque et détails de cérémonie cohérents.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['tenue de diplome', 'essayage', 'style et identite']::text[], 'Tenue de diplômé | RaccourcIA', 'Ajoute robe, toque et détails de cérémonie cohérents.', 82, 94, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-graduationlook',
   command = '/graduationlook',
   name = 'Tenue de diplômé',
@@ -1506,7 +1506,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-eveninglook', 'img-eveninglook', '/eveninglook', 'Tenue de soirée', 'eveninglook', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Prévisualise une silhouette élégante adaptée au lieu et au niveau de formalité.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['tenue de soiree', 'essayage', 'style et identite']::text[], 'Tenue de soirée | RaccourcIA', 'Prévisualise une silhouette élégante adaptée au lieu et au niveau de formalité.', 82, 95, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-eveninglook',
   command = '/eveninglook',
   name = 'Tenue de soirée',
@@ -1540,7 +1540,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-traditionalattire', 'img-traditionalattire', '/traditionalattire', 'Tenue traditionnelle', 'traditionalattire', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Habille la personne avec une tenue culturellement précisée et documentée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['tenue traditionnelle', 'essayage', 'style et identite']::text[], 'Tenue traditionnelle | RaccourcIA', 'Habille la personne avec une tenue culturellement précisée et documentée.', 82, 96, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-traditionalattire',
   command = '/traditionalattire',
   name = 'Tenue traditionnelle',
@@ -1574,7 +1574,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-uniformpreview', 'img-uniformpreview', '/uniformpreview', 'Uniforme métier', 'uniformpreview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Prévisualise un uniforme professionnel générique sans faux insignes officiels.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['uniforme metier', 'essayage', 'style et identite']::text[], 'Uniforme métier | RaccourcIA', 'Prévisualise un uniforme professionnel générique sans faux insignes officiels.', 82, 97, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-uniformpreview',
   command = '/uniformpreview',
   name = 'Uniforme métier',
@@ -1608,7 +1608,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-runwayeditorial', 'img-runwayeditorial', '/runwayeditorial', 'Éditorial podium', 'runwayeditorial', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Transforme la photo en campagne mode spectaculaire et structurée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['editorial podium', 'essayage', 'style et identite']::text[], 'Éditorial podium | RaccourcIA', 'Transforme la photo en campagne mode spectaculaire et structurée.', 82, 98, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-runwayeditorial',
   command = '/runwayeditorial',
   name = 'Éditorial podium',
@@ -1642,7 +1642,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-waxeditorial', 'img-waxeditorial', '/waxeditorial', 'Éditorial wax', 'waxeditorial', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'essayage'), 'Compose un look contemporain autour de motifs wax cohérents.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['essayage', 'style-et-identite', 'commande-image']::text[], array['editorial wax', 'essayage', 'style et identite']::text[], 'Éditorial wax | RaccourcIA', 'Compose un look contemporain autour de motifs wax cohérents.', 82, 99, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-waxeditorial',
   command = '/waxeditorial',
   name = 'Éditorial wax',
@@ -1676,7 +1676,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-dutchportrait', 'img-dutchportrait', '/dutchportrait', 'Angle incliné', 'dutchportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Incline le cadre pour une tension visuelle volontaire et contemporaine.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['angle incline', 'portrait pro', 'style et identite']::text[], 'Angle incliné | RaccourcIA', 'Incline le cadre pour une tension visuelle volontaire et contemporaine.', 82, 100, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-dutchportrait',
   command = '/dutchportrait',
   name = 'Angle incliné',

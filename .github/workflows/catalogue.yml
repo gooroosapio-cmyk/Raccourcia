@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - catalogue-2026-09
           - administration-v3
           - ecrans-v3
           - taxonomie-v3
@@ -127,7 +128,8 @@ jobs:
           inputs.dossier != 'actions-groupees' &&
           inputs.dossier != 'taxonomie-v3' &&
           inputs.dossier != 'ecrans-v3' &&
-          inputs.dossier != 'administration-v3'
+          inputs.dossier != 'administration-v3' &&
+          inputs.dossier != 'catalogue-2026-09'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -387,6 +389,51 @@ jobs:
                     where status = 'published' and library is null) ||
                    ' commande(s) publiee(s) sans bibliotheque';"
 
+      # Le catalogue de septembre 2026 : la taxonomie V2 de la bibliotheque.
+      #
+      # 1 010 cartes pour 429 commandes, rangees en 73 collections et 27
+      # categories, avec leurs payloads, leurs tags et leurs champs de fiche.
+      # Une commande porte desormais plusieurs cartes : /vintageportrait rend
+      # « Annees folles », « Studio 1940 » et « Carte postale 1900 » — trois
+      # compositions pour un seul nom a retenir.
+      #
+      # CE LOT NE PUBLIE RIEN ET N'EFFACE RIEN. Le fichier d'import declare
+      # lui-meme ses 1 010 lignes en brouillon, sans visuel et sans media a
+      # produire : le catalogue en ligne continue de fonctionner pendant que
+      # le nouveau s'installe a cote. Aucun visuel n'est touche — la regle
+      # d'import du referentiel est explicite sur ce point.
+      #
+      # Publier, archiver l'ancien et reaffecter se decident ensuite, en
+      # regardant ce que l'import a produit. Le mot « basculer » n'a donc pas
+      # de sens ici.
+      #
+      # Idempotent : les lots s'appuient sur card_id et external_ref, et les
+      # rejouer ne cree ni doublon ni version d'historique supplementaire.
+      - name: Importer le catalogue de septembre 2026
+        if: inputs.dossier == 'catalogue-2026-09'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : plusieurs cartes par commande'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260920140000_cartes_par_commande.sql
+          for fichier in supabase/seed/catalogue-2026-09/*.sql; do
+            echo "  $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Etat du catalogue :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) || ' carte(s) V2 en ' ||
+                   count(*) filter (where status = 'draft') || ' brouillon(s), ' ||
+                   count(distinct command_id) || ' commande(s)'
+            from public.prompts where external_ref like 'V2-%';"
+          psql "$PGURL" -At -c "
+            select '    catalogue en ligne inchange : ' || count(*) || ' commande(s) publiee(s)'
+            from public.prompts where status = 'published' and external_ref not like 'V2-%';"
+          psql "$PGURL" -At -c "
+            select '    visuels conserves : ' || count(*) from public.prompt_media;"
+
       # Ce dont les ecrans V3 ont besoin : l'ordre de Decouvrir et les
       # facettes de l'accueil.
       #
@@ -403,6 +450,12 @@ jobs:
       # `tags_explorables` et `tags_voisins` servent la Bibliotheque, qui
       # s'ouvre desormais sur les tags : ce qui est reellement porte, et ce
       # qui se croise encore avec la selection en cours.
+      #
+      # `collections_populaires` sert l'accueil, ou les collections
+      # remplacent les categories : une categorie est un tiroir, une
+      # collection est une intention de recherche. La meme migration donne
+      # aux tuiles de tag le visuel d'une de leurs cartes, faute de quoi la
+      # grille reste vide tant que l'administration n'a rien depose.
       #
       # Les deux lisent a travers les politiques du lecteur. Aucune n'est
       # contournee ni assouplie, et rien de ce que les membres voient ne
@@ -426,6 +479,9 @@ jobs:
           echo '  Migration : tags_explorables / tags_voisins'
           psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
             < supabase/migrations/20260919180000_exploration_par_tags.sql
+          echo '  Migration : collections_populaires, visuel des tuiles de tag'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260920160000_accueil_et_tuiles.sql
           echo '  Etat du feed :'
           psql "$PGURL" -At -c "
             select '    ' || count(*) || ' commande(s) publiee(s) avec un visuel apres, ' ||

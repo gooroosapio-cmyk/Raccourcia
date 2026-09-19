@@ -95,6 +95,20 @@ export const LIBRARY_LABELS: Record<Library, string> = {
 };
 
 /**
+ * Ce que chaque bibliotheque promet, en une ligne.
+ *
+ * Trois phrases et non une description de rayon : ce sont les libelles de
+ * l'enum, au meme titre que leur nom. Elles tiennent ici parce qu'il n'y a
+ * pas de ligne en base pour une bibliotheque — c'est une valeur d'enum,
+ * pas un enregistrement qu'on ouvre ou qu'on ferme.
+ */
+export const LIBRARY_PROMESSES: Record<Library, string> = {
+  images: 'Générez, éditez et transformez vos images.',
+  textes: 'Rédigez, reformulez et trouvez l’inspiration en un instant.',
+  reflexions: 'Apprenez, explorez et approfondissez avec l’IA.',
+};
+
+/**
  * Les familles de tags, telles que la Bibliotheque les annonce.
  *
  * Les valeurs sont celles de l'enum `tag_group` ; les libelles disent ce que

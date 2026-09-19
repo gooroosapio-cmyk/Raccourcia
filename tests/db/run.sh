@@ -339,6 +339,25 @@ if compgen -G "$ROOT/supabase/seed/taxonomie-v3/*.sql" > /dev/null; then
            (select count(*) from public.prompt_tags) || ' associations';"
 fi
 
+# Le catalogue de septembre 2026 : 1 010 cartes pour 429 commandes.
+#
+# Deux passes, comme les autres lots : l'import s'appuie sur card_id et
+# doit pouvoir etre rejoue sans creer de doublon ni gonfler l'historique
+# des payloads. C'est le seul controle qui attrape un `on conflict` pose de
+# travers, et un import a moitie idempotent ne se voit qu'en production.
+if compgen -G "$ROOT/supabase/seed/catalogue-2026-09/*.sql" > /dev/null; then
+  echo "==> Catalogue 2026-09 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/catalogue-2026-09/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) || ' cartes, ' || count(distinct command_id) ||
+           ' commandes, ' || count(*) filter (where status = 'draft') || ' en brouillon'
+    from public.prompts where external_ref like 'V2-%';"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

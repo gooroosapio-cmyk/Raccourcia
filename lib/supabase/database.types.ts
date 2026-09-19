@@ -888,10 +888,13 @@ export type Database = {
           blocking_condition: string | null;
           card_id: string | null;
           card_image_mode: Database['public']['Enums']['card_image_mode'] | null;
+          card_slug: string | null;
           catalog_v2: boolean;
           catalog_version: string | null;
           category_id: string | null;
           command: string;
+          command_id: string | null;
+          command_objectif: string | null;
           contexte: string | null;
           copy_rule: string | null;
           created_at: string;
@@ -909,6 +912,7 @@ export type Database = {
           expected_output: string | null;
           external_ref: string | null;
           fallback_if_incomplete: string | null;
+          fiche_champs_max: number | null;
           id: string;
           identity_policy: string | null;
           images_max: number | null;
@@ -993,10 +997,13 @@ export type Database = {
           blocking_condition?: string | null;
           card_id?: string | null;
           card_image_mode?: Database['public']['Enums']['card_image_mode'] | null;
+          card_slug?: string | null;
           catalog_v2?: boolean;
           catalog_version?: string | null;
           category_id?: string | null;
           command: string;
+          command_id?: string | null;
+          command_objectif?: string | null;
           contexte?: string | null;
           copy_rule?: string | null;
           created_at?: string;
@@ -1014,6 +1021,7 @@ export type Database = {
           expected_output?: string | null;
           external_ref?: string | null;
           fallback_if_incomplete?: string | null;
+          fiche_champs_max?: number | null;
           id?: string;
           identity_policy?: string | null;
           images_max?: number | null;
@@ -1098,10 +1106,13 @@ export type Database = {
           blocking_condition?: string | null;
           card_id?: string | null;
           card_image_mode?: Database['public']['Enums']['card_image_mode'] | null;
+          card_slug?: string | null;
           catalog_v2?: boolean;
           catalog_version?: string | null;
           category_id?: string | null;
           command?: string;
+          command_id?: string | null;
+          command_objectif?: string | null;
           contexte?: string | null;
           copy_rule?: string | null;
           created_at?: string;
@@ -1119,6 +1130,7 @@ export type Database = {
           expected_output?: string | null;
           external_ref?: string | null;
           fallback_if_incomplete?: string | null;
+          fiche_champs_max?: number | null;
           id?: string;
           identity_policy?: string | null;
           images_max?: number | null;
@@ -1630,6 +1642,7 @@ export type Database = {
       admin_supprimer_tag: { Args: { p_tag_id: string }; Returns: Json };
       alias_recherche: { Args: { v: string[] }; Returns: string };
       analytics_window: { Args: { p_days: number }; Returns: number };
+      collections_populaires: { Args: { p_limite?: number }; Returns: Json };
       consume_rate_limit: {
         Args: {
           p_bucket: string;
@@ -1805,7 +1818,8 @@ export type Database = {
         | 'usage'
         | 'resultat'
         | 'experience'
-        | 'autre';
+        | 'autre'
+        | 'capacite';
       version_status: 'draft' | 'published' | 'retired';
     };
     CompositeTypes: {
@@ -1982,6 +1996,7 @@ export const Constants = {
         'resultat',
         'experience',
         'autre',
+        'capacite',
       ],
       version_status: ['draft', 'published', 'retired'],
     },

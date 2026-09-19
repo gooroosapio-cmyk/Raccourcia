@@ -10,7 +10,7 @@
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-highkeyproduct', 'img-highkeyproduct', '/highkeyproduct', 'Studio high-key', 'highkeyproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Éclaire le produit sur fond clair avec ombres très légères.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['studio high key', 'photo produit', 'produit et e commerce']::text[], 'Studio high-key | RaccourcIA', 'Éclaire le produit sur fond clair avec ombres très légères.', 88, 401, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-highkeyproduct',
   command = '/highkeyproduct',
   name = 'Studio high-key',
@@ -44,7 +44,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-lowkeyproduct', 'img-lowkeyproduct', '/lowkeyproduct', 'Studio low-key', 'lowkeyproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Crée un packshot sombre, contrasté et sophistiqué.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['studio low key', 'photo produit', 'produit et e commerce']::text[], 'Studio low-key | RaccourcIA', 'Crée un packshot sombre, contrasté et sophistiqué.', 88, 402, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-lowkeyproduct',
   command = '/lowkeyproduct',
   name = 'Studio low-key',
@@ -78,7 +78,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-monochromestudio', 'img-monochromestudio', '/monochromestudio', 'Studio monochrome', 'monochromestudio', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Harmonise fond, accessoires et lumière dans une seule famille de couleur.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['studio monochrome', 'photo produit', 'produit et e commerce']::text[], 'Studio monochrome | RaccourcIA', 'Harmonise fond, accessoires et lumière dans une seule famille de couleur.', 88, 403, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-monochromestudio',
   command = '/monochromestudio',
   name = 'Studio monochrome',
@@ -112,7 +112,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-metallicstudio', 'img-metallicstudio', '/metallicstudio', 'Studio métallique', 'metallicstudio', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Met en scène le produit dans un décor métallique futuriste.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['studio metallique', 'photo produit', 'produit et e commerce']::text[], 'Studio métallique | RaccourcIA', 'Met en scène le produit dans un décor métallique futuriste.', 88, 404, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-metallicstudio',
   command = '/metallicstudio',
   name = 'Studio métallique',
@@ -146,7 +146,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-pastelstudio', 'img-pastelstudio', '/pastelstudio', 'Studio pastel', 'pastelstudio', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Crée une composition douce aux volumes arrondis et couleurs légères.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['studio pastel', 'photo produit', 'produit et e commerce']::text[], 'Studio pastel | RaccourcIA', 'Crée une composition douce aux volumes arrondis et couleurs légères.', 88, 405, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-pastelstudio',
   command = '/pastelstudio',
   name = 'Studio pastel',
@@ -180,7 +180,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-catalogconsistency', 'img-catalogconsistency', '/catalogconsistency', 'Série homogénéisée', 'catalogconsistency', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Uniformise cadrage, fond et lumière de plusieurs photos de catalogue.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['serie homogeneisee', 'photo produit', 'produit et e commerce']::text[], 'Série homogénéisée | RaccourcIA', 'Uniformise cadrage, fond et lumière de plusieurs photos de catalogue.', 88, 406, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-catalogconsistency',
   command = '/catalogconsistency',
   name = 'Série homogénéisée',
@@ -214,7 +214,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-catalogset', 'img-catalogset', '/catalogset', 'Série photo produit', 'catalogset', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Décline plusieurs produits avec cadrage et direction lumière identiques.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['serie packshot', 'photo produit', 'produit et e commerce']::text[], 'Série packshot | RaccourcIA', 'Décline plusieurs produits avec cadrage et direction lumière identiques.', 88, 407, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-catalogset',
   command = '/catalogset',
   name = 'Série photo produit',
@@ -248,7 +248,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-telecompression', 'img-telecompression', '/telecompression', 'Téléobjectif compressé', 'telecompression', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Rapproche visuellement les plans pour une composition dense et premium.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['teleobjectif compresse', 'photo produit', 'produit et e commerce']::text[], 'Téléobjectif compressé | RaccourcIA', 'Rapproche visuellement les plans pour une composition dense et premium.', 88, 408, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-telecompression',
   command = '/telecompression',
   name = 'Téléobjectif compressé',
@@ -282,7 +282,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-blackvelvet', 'img-blackvelvet', '/blackvelvet', 'Velours noir', 'blackvelvet', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Présente bijoux ou objets précieux sur une matière noire profonde.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['velours noir', 'photo produit', 'produit et e commerce']::text[], 'Velours noir | RaccourcIA', 'Présente bijoux ou objets précieux sur une matière noire profonde.', 88, 409, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-blackvelvet',
   command = '/blackvelvet',
   name = 'Velours noir',
@@ -316,7 +316,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-rearview', 'img-rearview', '/rearview', 'Vue arrière', 'rearview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Génère une vue arrière uniquement si les références suffisantes sont fournies.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['vue arriere', 'photo produit', 'produit et e commerce']::text[], 'Vue arrière | RaccourcIA', 'Génère une vue arrière uniquement si les références suffisantes sont fournies.', 88, 410, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-rearview',
   command = '/rearview',
   name = 'Vue arrière',
@@ -350,7 +350,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-wormeyeproduct', 'img-wormeyeproduct', '/wormeyeproduct', 'Vue au ras du sol', 'wormeyeproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Photographie l’objet depuis un point très bas pour accentuer volume, hauteur et caractère monumental.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['vue au ras du sol', 'photo produit', 'produit et e commerce']::text[], 'Vue au ras du sol | RaccourcIA', 'Photographie l’objet depuis un point très bas pour accentuer volume, hauteur et caractère monumental.', 88, 411, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-wormeyeproduct',
   command = '/wormeyeproduct',
   name = 'Vue au ras du sol',
@@ -384,7 +384,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-frontview', 'img-frontview', '/frontview', 'Vue de face', 'frontview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Présente la face principale à hauteur neutre avec géométrie lisible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['vue de face', 'photo produit', 'produit et e commerce']::text[], 'Vue de face | RaccourcIA', 'Présente la face principale à hauteur neutre avec géométrie lisible.', 88, 412, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-frontview',
   command = '/frontview',
   name = 'Vue de face',
@@ -418,7 +418,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-highangleproduct', 'img-highangleproduct', '/highangleproduct', 'Vue en plongée', 'highangleproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Observe le produit depuis un angle supérieur sans devenir totalement vertical.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['vue en plongee', 'photo produit', 'produit et e commerce']::text[], 'Vue en plongée | RaccourcIA', 'Observe le produit depuis un angle supérieur sans devenir totalement vertical.', 88, 413, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-highangleproduct',
   command = '/highangleproduct',
   name = 'Vue en plongée',
@@ -452,7 +452,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-isometric', 'img-isometric', '/isometric', 'Vue isométrique', 'isometric', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Transforme l’objet en représentation trois-quarts aux axes réguliers.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['vue isometrique', 'photo produit', 'produit et e commerce']::text[], 'Vue isométrique | RaccourcIA', 'Transforme l’objet en représentation trois-quarts aux axes réguliers.', 88, 414, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-isometric',
   command = '/isometric',
   name = 'Vue isométrique',
@@ -486,7 +486,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-sideview', 'img-sideview', '/sideview', 'Vue latérale', 'sideview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Montre le profil fonctionnel de l’objet avec proportions contrôlées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['vue laterale', 'photo produit', 'produit et e commerce']::text[], 'Vue latérale | RaccourcIA', 'Montre le profil fonctionnel de l’objet avec proportions contrôlées.', 88, 415, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-sideview',
   command = '/sideview',
   name = 'Vue latérale',
@@ -520,7 +520,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-threequarterview', 'img-threequarterview', '/threequarterview', 'Vue trois-quarts', 'threequarterview', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Révèle simultanément face et profondeur dans un angle commercial classique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['vue trois quarts', 'photo produit', 'produit et e commerce']::text[], 'Vue trois-quarts | RaccourcIA', 'Révèle simultanément face et profondeur dans un angle commercial classique.', 88, 416, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-threequarterview',
   command = '/threequarterview',
   name = 'Vue trois-quarts',
@@ -554,7 +554,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-topdown', 'img-topdown', '/topdown', 'Vue zénithale', 'topdown', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Cadre l’objet exactement au-dessus pour une lecture graphique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image']::text[], array['vue zenithale', 'photo produit', 'produit et e commerce']::text[], 'Vue zénithale | RaccourcIA', 'Cadre l’objet exactement au-dessus pour une lecture graphique.', 88, 417, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-topdown',
   command = '/topdown',
   name = 'Vue zénithale',
@@ -588,7 +588,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-throughglass', 'img-throughglass', '/throughglass', 'Vue à travers verre', 'throughglass', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Cadre le produit derrière une matière transparente créant profondeur et réfraction.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['vue a travers verre', 'photo produit', 'produit et e commerce']::text[], 'Vue à travers verre | RaccourcIA', 'Cadre le produit derrière une matière transparente créant profondeur et réfraction.', 88, 418, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-throughglass',
   command = '/throughglass',
   name = 'Vue à travers verre',
@@ -622,7 +622,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-splashfreeze', 'img-splashfreeze', '/splashfreeze', 'Éclaboussure figée', 'splashfreeze', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'photo-produit'), 'Entoure le produit d’un liquide adapté, capturé à haute vitesse.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['photo-produit', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['eclaboussure figee', 'photo produit', 'produit et e commerce']::text[], 'Éclaboussure figée | RaccourcIA', 'Entoure le produit d’un liquide adapté, capturé à haute vitesse.', 88, 419, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-splashfreeze',
   command = '/splashfreeze',
   name = 'Éclaboussure figée',
@@ -656,7 +656,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-workshopscene', 'img-workshopscene', '/workshopscene', 'Scène d’atelier', 'workshopscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Replace outil ou création dans un espace artisanal documenté.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['atelier', 'usage', 'produit et e commerce']::text[], 'Atelier | RaccourcIA', 'Replace outil ou création dans un espace artisanal documenté.', 88, 420, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-workshopscene',
   command = '/workshopscene',
   name = 'Scène d’atelier',
@@ -690,7 +690,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-desklifestyle', 'img-desklifestyle', '/desklifestyle', 'Bureau quotidien', 'desklifestyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Présente l’objet sur un espace de travail organisé et humain.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['bureau quotidien', 'usage', 'produit et e commerce']::text[], 'Bureau quotidien | RaccourcIA', 'Présente l’objet sur un espace de travail organisé et humain.', 88, 421, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-desklifestyle',
   command = '/desklifestyle',
   name = 'Bureau quotidien',
@@ -724,7 +724,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-giftscene', 'img-giftscene', '/giftscene', 'Produit en cadeau', 'giftscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Transforme le produit en présent avec ruban, carte et décor adaptés.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['cadeau', 'usage', 'produit et e commerce']::text[], 'Cadeau | RaccourcIA', 'Transforme le produit en présent avec ruban, carte et décor adaptés.', 88, 422, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-giftscene',
   command = '/giftscene',
   name = 'Produit en cadeau',
@@ -758,7 +758,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-unboxingmoment', 'img-unboxingmoment', '/unboxingmoment', 'Scène de déballage', 'unboxingmoment', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Montre emballage ouvert, contenu et accessoires dans un instant de découverte.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['deballage', 'usage', 'produit et e commerce']::text[], 'Déballage | RaccourcIA', 'Montre emballage ouvert, contenu et accessoires dans un instant de découverte.', 88, 423, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-unboxingmoment',
   command = '/unboxingmoment',
   name = 'Scène de déballage',
@@ -792,7 +792,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-naturescene', 'img-naturescene', '/naturescene', 'Décor naturel', 'naturescene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Associe le produit à roche, eau, végétation ou terre de façon crédible.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['decor naturel', 'usage', 'produit et e commerce']::text[], 'Décor naturel | RaccourcIA', 'Associe le produit à roche, eau, végétation ou terre de façon crédible.', 88, 424, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-naturescene',
   command = '/naturescene',
   name = 'Décor naturel',
@@ -826,7 +826,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-tropicalscene', 'img-tropicalscene', '/tropicalscene', 'Décor tropical', 'tropicalscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Crée une ambiance végétale chaude adaptée au produit.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['decor tropical', 'usage', 'produit et e commerce']::text[], 'Décor tropical | RaccourcIA', 'Crée une ambiance végétale chaude adaptée au produit.', 88, 425, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-tropicalscene',
   command = '/tropicalscene',
   name = 'Décor tropical',
@@ -860,7 +860,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-ingredienthero', 'img-ingredienthero', '/ingredienthero', 'Ingrédients vedettes', 'ingredienthero', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Organise autour du produit uniquement les ingrédients réels fournis dans une composition commerciale claire.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['ingredients vedettes', 'usage', 'produit et e commerce']::text[], 'Ingrédients vedettes | RaccourcIA', 'Organise autour du produit uniquement les ingrédients réels fournis dans une composition commerciale claire.', 88, 426, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-ingredienthero',
   command = '/ingredienthero',
   name = 'Ingrédients vedettes',
@@ -894,7 +894,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-luxuryliving', 'img-luxuryliving', '/luxuryliving', 'Intérieur haut de gamme', 'luxuryliving', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Insère le produit dans un salon élégant sans fausser son échelle.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['interieur haut de gamme', 'usage', 'produit et e commerce']::text[], 'Intérieur haut de gamme | RaccourcIA', 'Insère le produit dans un salon élégant sans fausser son échelle.', 88, 427, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-luxuryliving',
   command = '/luxuryliving',
   name = 'Intérieur haut de gamme',
@@ -928,7 +928,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-picnicscene', 'img-picnicscene', '/picnicscene', 'Scène de pique-nique', 'picnicscene', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Met en scène aliments ou accessoires dans une composition conviviale.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['pique nique', 'usage', 'produit et e commerce']::text[], 'Pique-nique | RaccourcIA', 'Met en scène aliments ou accessoires dans une composition conviviale.', 88, 428, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-picnicscene',
   command = '/picnicscene',
   name = 'Scène de pique-nique',
@@ -962,7 +962,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-handheldproduct', 'img-handheldproduct', '/handheldproduct', 'Produit en main', 'handheldproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Ajoute une main crédible pour donner échelle et proximité.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['produit en main', 'usage', 'produit et e commerce']::text[], 'Produit en main | RaccourcIA', 'Ajoute une main crédible pour donner échelle et proximité.', 88, 429, true, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-handheldproduct',
   command = '/handheldproduct',
   name = 'Produit en main',
@@ -996,7 +996,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-artisanproductstory', 'img-artisanproductstory', '/artisanproductstory', 'Produit et geste artisanal', 'artisanproductstory', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Replace l’objet dans son atelier et montre un geste de fabrication confirmé sans inventer son origine.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['produit et geste artisanal', 'usage', 'produit et e commerce']::text[], 'Produit et geste artisanal | RaccourcIA', 'Replace l’objet dans son atelier et montre un geste de fabrication confirmé sans inventer son origine.', 88, 430, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-artisanproductstory',
   command = '/artisanproductstory',
   name = 'Produit et geste artisanal',
@@ -1030,7 +1030,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-localproducthero', 'img-localproducthero', '/localproducthero', 'Produit local en vedette', 'localproducthero', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Crée un visuel principal ancré dans le lieu, la saison et l’histoire réelle d’un produit local.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['produit local en vedette', 'usage', 'produit et e commerce']::text[], 'Produit local en vedette | RaccourcIA', 'Crée un visuel principal ancré dans le lieu, la saison et l’histoire réelle d’un produit local.', 88, 431, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-localproducthero',
   command = '/localproducthero',
   name = 'Produit local en vedette',
@@ -1064,7 +1064,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-seasonallifestyle', 'img-seasonallifestyle', '/seasonallifestyle', 'Saison vécue', 'seasonallifestyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Intègre le produit à une scène saisonnière sans clichés excessifs.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['saison vecue', 'usage', 'produit et e commerce']::text[], 'Saison vécue | RaccourcIA', 'Intègre le produit à une scène saisonnière sans clichés excessifs.', 88, 432, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-seasonallifestyle',
   command = '/seasonallifestyle',
   name = 'Saison vécue',
@@ -1098,7 +1098,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-kitchenlifestyle', 'img-kitchenlifestyle', '/kitchenlifestyle', 'Scène de cuisine', 'kitchenlifestyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Place le produit dans une cuisine crédible en situation d’usage.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['scene de cuisine', 'usage', 'produit et e commerce']::text[], 'Scène de cuisine | RaccourcIA', 'Place le produit dans une cuisine crédible en situation d’usage.', 88, 433, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-kitchenlifestyle',
   command = '/kitchenlifestyle',
   name = 'Scène de cuisine',
@@ -1132,7 +1132,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-bathroomlifestyle', 'img-bathroomlifestyle', '/bathroomlifestyle', 'Scène de salle de bain', 'bathroomlifestyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Intègre cosmétique ou accessoire dans un décor propre et réaliste.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['scene de salle de bain', 'usage', 'produit et e commerce']::text[], 'Scène de salle de bain | RaccourcIA', 'Intègre cosmétique ou accessoire dans un décor propre et réaliste.', 88, 434, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-bathroomlifestyle',
   command = '/bathroomlifestyle',
   name = 'Scène de salle de bain',
@@ -1166,7 +1166,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-travellifestyle', 'img-travellifestyle', '/travellifestyle', 'Scène de voyage', 'travellifestyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Met en situation bagage, accessoire ou produit nomade.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['scene de voyage', 'usage', 'produit et e commerce']::text[], 'Scène de voyage | RaccourcIA', 'Met en situation bagage, accessoire ou produit nomade.', 88, 435, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-travellifestyle',
   command = '/travellifestyle',
   name = 'Scène de voyage',
@@ -1200,7 +1200,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-urbanstreetproduct', 'img-urbanstreetproduct', '/urbanstreetproduct', 'Scène urbaine', 'urbanstreetproduct', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Pose l’objet dans une rue contemporaine avec identité locale.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['scene urbaine', 'usage', 'produit et e commerce']::text[], 'Scène urbaine | RaccourcIA', 'Pose l’objet dans une rue contemporaine avec identité locale.', 88, 436, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-urbanstreetproduct',
   command = '/urbanstreetproduct',
   name = 'Scène urbaine',
@@ -1234,7 +1234,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-restauranttable', 'img-restauranttable', '/restauranttable', 'Table de restaurant', 'restauranttable', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Valorise plat, boisson ou objet de table dans un service réaliste.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['table de restaurant', 'usage', 'produit et e commerce']::text[], 'Table de restaurant | RaccourcIA', 'Valorise plat, boisson ou objet de table dans un service réaliste.', 88, 437, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-restauranttable',
   command = '/restauranttable',
   name = 'Table de restaurant',
@@ -1268,7 +1268,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-gymlifestyle', 'img-gymlifestyle', '/gymlifestyle', 'Univers sportif', 'gymlifestyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Place le produit dans un entraînement adapté sans usage dangereux.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['univers sportif', 'usage', 'produit et e commerce']::text[], 'Univers sportif | RaccourcIA', 'Place le produit dans un entraînement adapté sans usage dangereux.', 88, 438, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-gymlifestyle',
   command = '/gymlifestyle',
   name = 'Univers sportif',
@@ -1302,7 +1302,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-outdoorlifestyle', 'img-outdoorlifestyle', '/outdoorlifestyle', 'Usage extérieur', 'outdoorlifestyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Intègre le produit dans un environnement naturel cohérent avec sa fonction.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['usage exterieur', 'usage', 'produit et e commerce']::text[], 'Usage extérieur | RaccourcIA', 'Intègre le produit dans un environnement naturel cohérent avec sa fonction.', 88, 439, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-outdoorlifestyle',
   command = '/outdoorlifestyle',
   name = 'Usage extérieur',
@@ -1336,7 +1336,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-familyuse', 'img-familyuse', '/familyuse', 'Usage familial', 'familyuse', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Montre le produit utilisé naturellement dans une scène familiale.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['usage familial', 'usage', 'produit et e commerce']::text[], 'Usage familial | RaccourcIA', 'Montre le produit utilisé naturellement dans une scène familiale.', 88, 440, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-familyuse',
   command = '/familyuse',
   name = 'Usage familial',
@@ -1370,7 +1370,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-nightlifestyle', 'img-nightlifestyle', '/nightlifestyle', 'Usage nocturne', 'nightlifestyle', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Montre le produit la nuit avec éclairage ambiant réaliste.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['usage nocturne', 'usage', 'produit et e commerce']::text[], 'Usage nocturne | RaccourcIA', 'Montre le produit la nuit avec éclairage ambiant réaliste.', 88, 441, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-nightlifestyle',
   command = '/nightlifestyle',
   name = 'Usage nocturne',
@@ -1404,7 +1404,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-pocketscale', 'img-pocketscale', '/pocketscale', 'Échelle de poche', 'pocketscale', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Place le produit près d’une poche, d’une main ou d’un objet repère pour communiquer sa taille.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['usage', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['echelle de poche', 'usage', 'produit et e commerce']::text[], 'Échelle de poche | RaccourcIA', 'Place le produit près d’une poche, d’une main ou d’un objet repère pour communiquer sa taille.', 88, 442, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-pocketscale',
   command = '/pocketscale',
   name = 'Échelle de poche',
@@ -1438,7 +1438,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-scalecomparison', 'img-scalecomparison', '/scalecomparison', 'Échelle humaine', 'scalecomparison', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'usage'), 'Place une personne ou un repère connu pour comprendre la taille.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['usage', 'produit-et-e-commerce', 'commande-image']::text[], array['echelle humaine', 'usage', 'produit et e commerce']::text[], 'Échelle humaine | RaccourcIA', 'Place une personne ou un repère connu pour comprendre la taille.', 88, 443, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-scalecomparison',
   command = '/scalecomparison',
   name = 'Échelle humaine',
@@ -1472,7 +1472,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-resalehonest', 'img-resalehonest', '/resalehonest', 'Annonce seconde main', 'resalehonest', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'preparation'), 'Présentez un article d’occasion sans cacher son état.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['preparation', 'produit-et-e-commerce', 'commande-image']::text[], array['annonce seconde main', 'preparation', 'produit et e commerce']::text[], 'Annonce seconde main | RaccourcIA', 'Présentez un article d’occasion sans cacher son état.', 88, 444, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-resalehonest',
   command = '/resalehonest',
   name = 'Annonce seconde main',
@@ -1506,7 +1506,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-productcolormatch', 'img-productcolormatch', '/productcolormatch', 'Couleur fidèle', 'productcolormatch', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'preparation'), 'Corrige dominante et balance des blancs selon une référence de couleur.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['preparation', 'produit-et-e-commerce', 'commande-image']::text[], array['couleur fidele', 'preparation', 'produit et e commerce']::text[], 'Couleur fidèle | RaccourcIA', 'Corrige dominante et balance des blancs selon une référence de couleur.', 88, 445, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-productcolormatch',
   command = '/productcolormatch',
   name = 'Couleur fidèle',
@@ -1540,7 +1540,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-productupscale', 'img-productupscale', '/productupscale', 'Définition renforcée', 'productupscale', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'preparation'), 'Augmente lisibilité et netteté sans inventer logos ni petits textes.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['preparation', 'produit-et-e-commerce', 'commande-image']::text[], array['definition renforcee', 'preparation', 'produit et e commerce']::text[], 'Définition renforcée | RaccourcIA', 'Augmente lisibilité et netteté sans inventer logos ni petits textes.', 88, 446, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-productupscale',
   command = '/productupscale',
   name = 'Définition renforcée',
@@ -1574,7 +1574,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-cleancutout', 'img-cleancutout', '/cleancutout', 'Détourage propre', 'cleancutout', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'preparation'), 'Isole précisément l’objet avec contours naturels, y compris cheveux ou transparences.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['preparation', 'produit-et-e-commerce', 'commande-image']::text[], array['detourage propre', 'preparation', 'produit et e commerce']::text[], 'Détourage propre | RaccourcIA', 'Isole précisément l’objet avec contours naturels, y compris cheveux ou transparences.', 88, 447, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-cleancutout',
   command = '/cleancutout',
   name = 'Détourage propre',
@@ -1608,7 +1608,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-productcleanup', 'img-productcleanup', '/productcleanup', 'Nettoyage produit', 'productcleanup', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'preparation'), 'Supprime poussières, traces et défauts photographiques sans modifier le produit.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['preparation', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['nettoyage produit', 'preparation', 'produit et e commerce']::text[], 'Nettoyage produit | RaccourcIA', 'Supprime poussières, traces et défauts photographiques sans modifier le produit.', 88, 448, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-productcleanup',
   command = '/productcleanup',
   name = 'Nettoyage produit',
@@ -1642,7 +1642,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-ecomcrop', 'img-ecomcrop', '/ecomcrop', 'Recadrage e-commerce', 'ecomcrop', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'preparation'), 'Adapte marges et centrage aux standards d’une fiche produit.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['preparation', 'produit-et-e-commerce', 'commande-image', 'produit']::text[], array['recadrage e commerce', 'preparation', 'produit et e commerce']::text[], 'Recadrage e-commerce | RaccourcIA', 'Adapte marges et centrage aux standards d’une fiche produit.', 88, 449, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-ecomcrop',
   command = '/ecomcrop',
   name = 'Recadrage e-commerce',
@@ -1676,7 +1676,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-glarecontrol', 'img-glarecontrol', '/glarecontrol', 'Reflets contrôlés', 'glarecontrol', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'preparation'), 'Réduit reflets brûlés sur verre, métal ou plastique sans rendre la matière plate.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['preparation', 'produit-et-e-commerce', 'commande-image']::text[], array['reflets controles', 'preparation', 'produit et e commerce']::text[], 'Reflets contrôlés | RaccourcIA', 'Réduit reflets brûlés sur verre, métal ou plastique sans rendre la matière plate.', 88, 450, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-glarecontrol',
   command = '/glarecontrol',
   name = 'Reflets contrôlés',
