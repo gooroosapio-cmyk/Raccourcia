@@ -5,11 +5,12 @@ import { getAliasDestination, getPromptDetail, getPublicConfig } from '@/lib/cat
 import { getAccessState } from '@/lib/access/entitlement';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
-import { ChoixMoteur } from '@/components/detail/choix-moteur';
+import { BlocDeCopie } from '@/components/detail/bloc-de-copie';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
 import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
 import { GenreDeFiche } from '@/components/detail/genre-fiche';
 import { InputExampleList } from '@/components/detail/input-example-list';
+import { MotsCles } from '@/components/detail/mots-cles';
 import { ModesCommande } from '@/components/detail/modes-commande';
 import { Section } from '@/components/detail/section-fiche';
 import { NiveauExecution } from '@/components/detail/niveau-execution';
@@ -185,6 +186,11 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
         </Section>
       ) : null}
 
+      {/* La sortie de la page : quelqu'un qui ouvre ce lien depuis une
+          conversation cherche souvent « quelque chose de ce genre » plutot
+          que cette commande precise. */}
+      <MotsCles mots={prompt.motsCles} />
+
       <section className="mt-8 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
         {prompt.isFree ? (
           /*
@@ -202,12 +208,10 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
                 liste. Lui servir le texte d'une autre etait une erreur
                 silencieuse — la commande marchait moins bien, sans qu'il
                 puisse savoir pourquoi. */}
-            <ChoixMoteur
-              promptId={prompt.id}
-              pret={prompt.payloadReady}
+            <BlocDeCopie
+              prompt={prompt}
               providers={compatibles}
               surface="page-publique"
-              locked={false}
               proposerOuverture
             />
             {!hasFullAccess ? (

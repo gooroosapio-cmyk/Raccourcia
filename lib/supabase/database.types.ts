@@ -1730,6 +1730,11 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
       };
+      tags_explorables: { Args: Record<PropertyKey, never>; Returns: Json };
+      tags_voisins: {
+        Args: { p_limite?: number; p_tags: string[] };
+        Returns: Json;
+      };
       texte_normalise: { Args: { v: string }; Returns: string };
       track_prompt_view: { Args: { p_prompt_id: string }; Returns: undefined };
     };

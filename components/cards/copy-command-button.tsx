@@ -15,6 +15,7 @@ function demanderLaCommande(corps: {
   promptId: string;
   provider: string;
   surface: string;
+  champs?: { cle: string; valeur: string }[];
 }): Promise<string> {
   return fetch('/api/resolve-prompt', {
     method: 'POST',
@@ -82,6 +83,9 @@ export function CopyCommandButton({
   compact = false,
   forme = 'bouton',
   genre = null,
+  champs,
+  aPersonnaliser = false,
+  onPersonnaliser,
   onLockedClick,
   proposerOuverture = false,
 }: {
@@ -119,6 +123,22 @@ export function CopyCommandButton({
    * disent, sinon rien n'apprend le geste a faire ensuite.
    */
   genre?: PromptCard['entityType'];
+  /**
+   * Ce qui a ete saisi dans le formulaire de la fiche.
+   *
+   * Transmis tel quel : c'est le serveur qui decide de ce qu'il en fait,
+   * apres avoir relu les champs reellement declares pour la commande.
+   */
+  champs?: { cle: string; valeur: string }[];
+  /**
+   * Vrai quand la commande attend des champs qu'on ne peut pas remplir ici.
+   *
+   * Depuis une carte de galerie, il n'y a pas de formulaire : copier
+   * livrerait un texte ampute de ce qui fait sa personnalisation, sans que
+   * rien ne le dise. Le bouton mene donc a la fiche, ou les champs existent.
+   */
+  aPersonnaliser?: boolean;
+  onPersonnaliser?: () => void;
   onLockedClick?: () => void;
   /**
    * Propose d'ouvrir l'IA choisie une fois la commande copiee.
@@ -140,13 +160,19 @@ export function CopyCommandButton({
       onLockedClick?.();
       return;
     }
+    // Rien a copier tant que la personnalisation n'a pas eu lieu : le geste
+    // ouvre la fiche plutot que de livrer un texte incomplet en silence.
+    if (aPersonnaliser && onPersonnaliser) {
+      onPersonnaliser();
+      return;
+    }
     // Rien a copier : le bouton est deja desactive, ce filet tient si un
     // rendu le laissait passer.
     if (!pret) return;
 
     setEtat('chargement');
 
-    const texte = demanderLaCommande({ promptId, provider, surface });
+    const texte = demanderLaCommande({ promptId, provider, surface, champs });
     // Sans ce filet, un refus du serveur remonterait aussi comme rejet non
     // gere : la promesse est lue deux fois, une seule lecture la traite.
     texte.catch(() => {});
@@ -186,7 +212,20 @@ export function CopyCommandButton({
         }
       },
     );
-  }, [genre, locked, onLockedClick, pret, promptId, proposerOuverture, provider, show, surface]);
+  }, [
+    aPersonnaliser,
+    champs,
+    genre,
+    locked,
+    onLockedClick,
+    onPersonnaliser,
+    pret,
+    promptId,
+    proposerOuverture,
+    provider,
+    show,
+    surface,
+  ]);
 
   const cle = provider as ProviderKey;
   const nomIA = PROVIDER_LABELS[cle];
@@ -202,17 +241,21 @@ export function CopyCommandButton({
       ? compact
         ? 'Bientôt'
         : 'Texte bientôt disponible'
-      : etat === 'copie'
-        ? 'Copie'
-        : compact
-          ? 'Copier'
-          : genre === 'mode_ia'
-            ? 'Copier le mode'
-            : genre === 'parcours'
-              ? 'Copier le parcours'
-              : nomIA
-                ? `Copier le prompt pour ${nomIA}`
-                : 'Copier le prompt';
+      : aPersonnaliser && onPersonnaliser
+        ? compact
+          ? 'Personnaliser'
+          : 'Personnaliser avant de copier'
+        : etat === 'copie'
+          ? 'Copie'
+          : compact
+            ? 'Copier'
+            : genre === 'mode_ia'
+              ? 'Copier le mode'
+              : genre === 'parcours'
+                ? 'Copier le parcours'
+                : nomIA
+                  ? `Copier le prompt pour ${nomIA}`
+                  : 'Copier le prompt';
 
   const ton = locked
     ? 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'

@@ -1,5 +1,25 @@
 import type { ExecutionLevel, InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import type { Moteur } from '@/lib/catalog/moteur';
+import type { GenreDeChamp } from '@/lib/prompt/personnalisation';
+
+/**
+ * Un champ a remplir avant de copier, tel que la fiche l'affiche.
+ *
+ * Plus riche que ce dont la substitution a besoin : le formulaire a besoin
+ * d'un libelle, d'une indication et du libelle de chaque choix ; le serveur,
+ * lui, ne relit que la clef, le genre et les valeurs acceptees.
+ */
+export type ChampDeCommande = {
+  /** La clef employee dans le texte de la commande : {{chiffre_affaires}}. */
+  cle: string;
+  libelle: string;
+  /** Ce qu'on attend, en quelques mots. `null` quand le libelle suffit. */
+  indication: string | null;
+  genre: GenreDeChamp;
+  requis: boolean;
+  /** Les choix d'un champ « liste ». Vide pour les autres genres. */
+  choix: { valeur: string; libelle: string }[];
+};
 import type { Enums } from '@/lib/supabase/database.types';
 
 /**
@@ -109,6 +129,32 @@ export type PromptCard = {
    * chaque palier de galerie sans rien afficher de plus.
    */
   moteur: Moteur | null;
+  /**
+   * Les champs a remplir avant de copier. Trois au plus, vide pour la
+   * plupart des commandes.
+   *
+   * Embarques avec la carte, comme le reste de la fiche : ouvrir un detail
+   * ne doit declencher aucun aller-retour, et l'immense majorite des
+   * commandes n'en declare aucun — le tableau est alors vide et ne pese
+   * rien.
+   *
+   * Ce que le formulaire renvoie n'est jamais ce qui decide : le serveur
+   * relit les champs declares avant d'appliquer quoi que ce soit.
+   */
+  champs: ChampDeCommande[];
+  /**
+   * Les tags de la commande, tels que la fiche les montre.
+   *
+   * Ceux du referentiel, pas ceux de l'ancienne colonne `tags` — celle-ci
+   * comptait 443 valeurs libres dont « mode-ia » et « modes-ia » pour une
+   * meme idee, et rien ne pouvait les reconcilier.
+   *
+   * Six au plus, et sans les groupes « bibliotheque » ni « IA » : la fiche
+   * dit deja l'un et l'autre ailleurs, et une commande en porte neuf en
+   * moyenne — les transporter tous ferait grossir chaque page de galerie
+   * pour un bloc qui ne se lit qu'une fois la fiche ouverte.
+   */
+  motsCles: { slug: string; nom: string }[];
 };
 
 /** Ce que la page publique ajoute. Toujours sans le prompt complet. */

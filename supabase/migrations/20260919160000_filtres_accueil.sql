@@ -77,9 +77,10 @@ begin
     group by f.slug, f.name, f.sort_order
   ) s;
 
-  -- Les tags du groupe « bibliotheque » sont ecartes : ils repetent la
-  -- premiere facette, et proposer deux fois le meme choix a deux endroits
-  -- du meme panneau donne un filtre qui se contredit lui-meme.
+  -- Les groupes « bibliotheque » et « IA » sont ecartes : ce sont la
+  -- premiere et la derniere facette du meme panneau, et proposer deux fois
+  -- le meme choix a deux endroits donne un filtre qui se contredit
+  -- lui-meme.
   --
   -- Vingt-quatre au plus, les plus portes d'abord. Un nuage de quatre-vingt
   -- dix-huit tags n'est pas un filtre, c'est une seconde bibliotheque.
@@ -95,7 +96,7 @@ begin
     join public.prompts p on p.id = pt.prompt_id
     where p.status = 'published'
       and t.is_active
-      and t.groupe <> 'bibliotheque'
+      and t.groupe not in ('bibliotheque', 'ia')
       and (p_library is null or p.library = p_library)
     group by t.slug, t.name, t.groupe
     order by count(*) desc, t.name
@@ -136,9 +137,15 @@ comment on function public.filtres_accueil(public.app_library) is
 -- La jointure sur `prompts` n'est pas decorative. `prompt_tags` se lit sans
 -- restriction — c'est une table de liaison, et ses lignes ne disent rien
 -- par elles-memes — mais la liste d'identifiants qui en sortirait, elle,
--- trahirait l'existence des brouillons. En passant par `prompts`, la
--- fonction herite de la politique de cette table : un visiteur n'obtient
--- que du publie, un administrateur voit ce qu'il a le droit de voir.
+-- trahirait l'existence des brouillons.
+--
+-- Et le filtre sur `published` est explicite, en plus de la politique de
+-- `prompts`. S'en remettre a la seule politique donnait deux reponses
+-- differentes selon le lecteur : un administrateur, pour qui elle ne
+-- s'applique pas, obtenait aussi les brouillons et les archives — donc un
+-- croisement de tags qui ne correspondait plus aux comptes annonces a cote.
+-- Cette fonction sert le catalogue public ; l'administration a ses propres
+-- listes.
 create or replace function public.prompts_avec_tous_les_tags(p_tags text[])
 returns setof uuid
 language sql
@@ -151,6 +158,7 @@ as $$
   join public.tags t on t.id = pt.tag_id
   join public.prompts p on p.id = pt.prompt_id
   where t.slug = any (p_tags)
+    and p.status = 'published'
   group by pt.prompt_id
   having count(distinct t.slug) = (
     select count(distinct valeur) from unnest(p_tags) as valeur

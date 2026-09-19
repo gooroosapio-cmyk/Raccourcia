@@ -39,14 +39,14 @@ type LigneDecouverte = {
   like_count: number;
   discover_rank: number;
   prompt_media: { kind: string; storage_path: string; alt: string | null; sort_order: number }[];
-  prompt_tags: { tags: { slug: string; name: string } | null }[];
+  prompt_tags: { tags: { slug: string; name: string; groupe: string } | null }[];
 };
 
 const COLONNES = `
   id, slug, command, name, short_description, result_summary, is_free,
   like_count, discover_rank,
   prompt_media!inner(kind, storage_path, alt, sort_order),
-  prompt_tags(tags(slug, name))
+  prompt_tags(tags(slug, name, groupe))
 `;
 
 /**
@@ -117,10 +117,16 @@ function versCarte(ligne: LigneDecouverte, aimees: Set<string>): CarteDecouverte
     // que pour satisfaire le typage.
     visuelUrl: visuel ? urlVisuel(visuel.storage_path, LARGEURS_VISUEL.comparaison) : '',
     visuelAlt: visuel?.alt ?? `Résultat obtenu avec ${ligne.name}`,
+    // Ni la bibliotheque ni l'IA : la premiere se lit deja dans le rayon,
+    // la seconde dans le selecteur de la fiche, et toutes deux reviennent
+    // sur chaque carte — trois etiquettes identiques d'un bout a l'autre du
+    // feed n'apprennent rien.
     tags: (ligne.prompt_tags ?? [])
       .map((entree) => entree.tags)
-      .filter((tag): tag is { slug: string; name: string } => tag !== null)
-      .slice(0, 3),
+      .filter((tag): tag is { slug: string; name: string; groupe: string } => tag !== null)
+      .filter((tag) => tag.groupe !== 'bibliotheque' && tag.groupe !== 'ia')
+      .slice(0, 3)
+      .map((tag) => ({ slug: tag.slug, name: tag.name })),
     likeCount: ligne.like_count ?? 0,
     aime: aimees.has(ligne.id),
     isFree: ligne.is_free,

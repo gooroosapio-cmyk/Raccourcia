@@ -94,6 +94,39 @@ export const LIBRARY_LABELS: Record<Library, string> = {
   reflexions: 'Réflexions',
 };
 
+/**
+ * Les familles de tags, telles que la Bibliotheque les annonce.
+ *
+ * Les valeurs sont celles de l'enum `tag_group` ; les libelles disent ce que
+ * le groupe regroupe, sans reprendre le mot de la base. « usage » range par
+ * metier, on l'annonce « Domaine » ; « resultat » dit ce qui sort, on
+ * l'annonce « Ce que vous obtenez ».
+ */
+export const TAG_GROUPS = [
+  'bibliotheque',
+  'ia',
+  'fonction',
+  'style',
+  'contexte',
+  'usage',
+  'resultat',
+  'experience',
+  'autre',
+] as const;
+export type TagGroup = (typeof TAG_GROUPS)[number];
+
+export const TAG_GROUP_LABELS: Record<TagGroup, string> = {
+  bibliotheque: 'Bibliothèque',
+  ia: 'IA compatible',
+  fonction: 'Ce que ça fait',
+  style: 'Style',
+  contexte: 'Contexte',
+  usage: 'Domaine',
+  resultat: 'Ce que vous obtenez',
+  experience: 'Expérience',
+  autre: 'Autres',
+};
+
 export const PROVIDER_KEYS = ['chatgpt', 'claude', 'gemini'] as const;
 export type ProviderKey = (typeof PROVIDER_KEYS)[number];
 

@@ -17,6 +17,27 @@ export const resolvePromptInput = z.object({
   promptId: z.string().uuid(),
   provider: z.enum(PROVIDER_KEYS),
   surface: z.enum(SURFACES).default('detail'),
+  /**
+   * Ce que la fiche a fait saisir, avant la copie.
+   *
+   * Trois au plus, comme la base le borne. Les clefs sont acceptees ici mais
+   * ne decident de rien : le serveur relit les champs reellement declares
+   * pour la commande et ignore tout le reste. Une clef inventee ne peut donc
+   * atteindre aucune partie du texte.
+   *
+   * La borne de longueur est large — le nettoyage fin appartient a
+   * `lib/prompt/personnalisation`, qui connait le genre de chaque champ.
+   * Elle n'est la que pour refuser une charge qui n'aurait rien d'un champ.
+   */
+  champs: z
+    .array(
+      z.object({
+        cle: z.string().trim().min(1).max(60),
+        valeur: z.string().max(1000),
+      }),
+    )
+    .max(3)
+    .optional(),
 });
 
 export type ResolvePromptInput = z.infer<typeof resolvePromptInput>;

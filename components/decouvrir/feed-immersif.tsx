@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useCallback, useRef, useState } from 'react';
 import { PromptDetailSheet } from '@/components/detail/prompt-detail';
 import { Sentinelle } from '@/components/feed/sentinelle';
@@ -230,14 +231,19 @@ function CarteImmersive({
               </p>
             ) : null}
 
+            {/* Les tags sont des sorties : « pas celle-la, mais quelque
+                chose de ce genre » se joue ici, et non en remontant tout le
+                feed. */}
             {carte.tags.length > 0 ? (
               <ul className="mt-2.5 flex flex-wrap gap-1.5">
                 {carte.tags.map((tag) => (
-                  <li
-                    key={tag.slug}
-                    className="rounded-full border border-white/25 px-2.5 py-1 text-[12px] font-medium text-white/85"
-                  >
-                    {tag.name}
+                  <li key={tag.slug}>
+                    <Link
+                      href={`/app/bibliotheque/tag/${tag.slug}`}
+                      className="inline-flex min-h-[30px] items-center rounded-full border border-white/25 px-2.5 text-[12px] font-medium text-white/85"
+                    >
+                      {tag.name}
+                    </Link>
                   </li>
                 ))}
               </ul>

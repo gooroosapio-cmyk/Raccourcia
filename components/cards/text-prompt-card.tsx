@@ -160,6 +160,12 @@ export function TextPromptCard({
             locked={locked}
             compact
             genre={prompt.entityType}
+            // Une commande a personnaliser ne se copie pas depuis la
+            // galerie : il n'y a pas de formulaire ici, et livrer le texte
+            // sans ses valeurs reviendrait a le livrer incomplet sans le
+            // dire. Le bouton ouvre la fiche, ou les champs existent.
+            aPersonnaliser={prompt.champs.length > 0}
+            onPersonnaliser={() => onOpen(prompt)}
             onLockedClick={ouvrirOffre}
           />
         </span>

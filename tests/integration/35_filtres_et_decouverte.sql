@@ -114,11 +114,15 @@ begin
   select count(*) into v_croise
   from public.prompts_avec_tous_les_tags(array[v_a, v_b]);
 
+  -- « Publiee » comme la fonction : elle sert le catalogue public, et un
+  -- attendu qui compterait les brouillons ne mesurerait pas la meme chose.
   select count(*) into v_attendu
   from public.prompt_tags pa
   join public.tags ta on ta.id = pa.tag_id and ta.slug = v_a
   join public.prompt_tags pb on pb.prompt_id = pa.prompt_id
-  join public.tags tb on tb.id = pb.tag_id and tb.slug = v_b;
+  join public.tags tb on tb.id = pb.tag_id and tb.slug = v_b
+  join public.prompts p on p.id = pa.prompt_id
+  where p.status = 'published';
 
   perform tests_assert(
     v_croise = v_attendu,
@@ -222,6 +226,15 @@ begin
   from public.prompt_tags pt
   join public.prompts p on p.id = pt.prompt_id
   where pt.tag_id = v_tag and p.status = 'published';
+
+  -- Meme pour le proprietaire des tables, a qui les politiques ne
+  -- s'appliquent pas : le filtre sur « publie » est ecrit dans la fonction,
+  -- sinon les comptes annonces a cote du croisement ne correspondraient
+  -- plus a ce que le croisement rend.
+  perform tests_assert(
+    (select count(*) from public.prompts_avec_tous_les_tags(array[v_slug]) as trouve
+     where trouve = v_prompt) = 0,
+    'Une commande en brouillon remonte dans le croisement de tags.');
 end $$;
 
 -- Le changement de role se fait hors du bloc : `set local role` pose depuis

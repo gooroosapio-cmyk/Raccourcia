@@ -398,6 +398,10 @@ jobs:
       # comptees, et le croisement de plusieurs tags en ET — ce que PostgREST
       # ne sait pas exprimer.
       #
+      # `tags_explorables` et `tags_voisins` servent la Bibliotheque, qui
+      # s'ouvre desormais sur les tags : ce qui est reellement porte, et ce
+      # qui se croise encore avec la selection en cours.
+      #
       # Les deux lisent a travers les politiques du lecteur. Aucune n'est
       # contournee ni assouplie, et rien de ce que les membres voient ne
       # change tant que les ecrans ne sont pas deployes : le mot « basculer »
@@ -417,6 +421,9 @@ jobs:
           echo '  Migration : filtres_accueil / prompts_avec_tous_les_tags'
           psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
             < supabase/migrations/20260919160000_filtres_accueil.sql
+          echo '  Migration : tags_explorables / tags_voisins'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260919180000_exploration_par_tags.sql
           echo '  Etat du feed :'
           psql "$PGURL" -At -c "
             select '    ' || count(*) || ' commande(s) publiee(s) avec un visuel apres, ' ||
@@ -433,6 +440,10 @@ jobs:
                    jsonb_array_length(f -> 'tags') || ' tag(s), ' ||
                    jsonb_array_length(f -> 'ias') || ' IA'
             from public.filtres_accueil() as f;"
+          echo '  Exploration par tags :'
+          psql "$PGURL" -At -c "
+            select '    ' || jsonb_array_length(public.tags_explorables()) ||
+                   ' tag(s) porte(s) par au moins une commande publiee';"
 
       # Les actions groupees de l'administration.
       #
