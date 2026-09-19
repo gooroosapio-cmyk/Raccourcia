@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  LIBRARIES,
   MODES,
   OUTPUT_FORMAT_KINDS,
   PROVIDER_KEYS,
@@ -23,6 +24,13 @@ export type ResolvePromptInput = z.infer<typeof resolvePromptInput>;
 export const catalogQuery = z.object({
   mode: z.enum(MODES).default('image'),
   categorySlug: z.string().min(1).max(80).optional(),
+  // La bibliotheque : Images, Textes, Reflexions. Elle ne remplace pas le
+  // mode — elle range autrement, et l'administration peut la corriger
+  // commande par commande.
+  library: z.enum(LIBRARIES).optional(),
+  // Les tags coches, croises en ET. Cinq au plus : au-dela, la liste est
+  // toujours vide et la requete ne sert plus qu'a le prouver.
+  tags: z.array(z.string().trim().min(1).max(60)).max(5).optional(),
   provider: z.enum(PROVIDER_KEYS).optional(),
   search: z.string().trim().max(80).optional(),
   sort: z.enum(['populaires', 'nouveaux', 'alpha']).default('populaires'),

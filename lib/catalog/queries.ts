@@ -559,6 +559,26 @@ async function resoudreCategorie(client: Client, slug?: string): Promise<string[
 }
 
 /**
+ * Identifiants des commandes portant tous les tags demandes.
+ *
+ * `null` quand aucun tag n'est coche. Un tableau vide quand aucune commande
+ * ne les porte tous : l'appelant rend alors une liste vide au lieu du
+ * catalogue entier — une erreur silencieuse qui ferait passer un filtre
+ * trop etroit pour un filtre sans effet.
+ */
+async function resoudreLesTags(client: Client, tags?: string[]): Promise<string[] | null> {
+  if (!tags || tags.length === 0) return null;
+
+  const { data, error } = await client.rpc('prompts_avec_tous_les_tags', { p_tags: tags });
+
+  // Une base qui refuse la question n'est pas une selection vide : on remonte
+  // l'incident plutot que d'afficher « aucun resultat » pour une panne.
+  if (error) throw new CatalogUnavailableError(error);
+
+  return data ?? [];
+}
+
+/**
  * Familles dont le nom ou la description repond au terme cherche.
  *
  * Sans elles, taper « portrait » ne ramenait que les commandes portant le mot
@@ -611,6 +631,17 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     return { items: [], hasMore: false, total: 0 };
   }
 
+  // Les tags se croisent en ET, et le croisement se fait dans la base.
+  //
+  // Une jointure filtree donne un OU : la liste s'allongerait a chaque tag
+  // coche, c'est-a-dire l'inverse d'un filtre. L'intersection passe donc par
+  // `prompts_avec_tous_les_tags`, qui travaille sur l'index inverse plutot
+  // que de rapatrier toutes les associations pour les recouper ici.
+  const tagIds = await resoudreLesTags(supabase, query.tags);
+  if (tagIds && tagIds.length === 0) {
+    return { items: [], hasMore: false, total: 0 };
+  }
+
   // Une recherche porte aussi sur le nom des familles : taper « portrait »
   // doit ramener la famille entiere, pas seulement les commandes dont le
   // titre contient le mot.
@@ -634,7 +665,11 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
     if (!transverse) requete = requete.eq('mode', query.mode);
 
+    if (query.library) requete = requete.eq('library', query.library);
+
     if (categorieIds) requete = requete.in('category_id', categorieIds);
+
+    if (tagIds) requete = requete.in('id', tagIds);
 
     if (terme) requete = requete.or(portesDeRecherche(terme, famillesTrouvees));
 

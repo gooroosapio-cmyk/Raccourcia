@@ -77,6 +77,23 @@ export type EntitlementStatus = (typeof ENTITLEMENT_STATUS)[number];
 export const PURCHASE_STATUS = ['pending', 'completed', 'refunded', 'cancelled'] as const;
 export type PurchaseStatus = (typeof PURCHASE_STATUS)[number];
 
+/**
+ * Les trois bibliotheques du catalogue V3.
+ *
+ * Elles ne se deduisent pas du mode : les quatre-vingt-deux commandes
+ * `texte` d'aujourd'hui sont toutes des Modes IA, donc des Reflexions, mais
+ * un /businessplan sera `texte` sans en etre un. La bibliotheque est une
+ * donnee de la commande — ces valeurs ne font que nommer l'enum de la base.
+ */
+export const LIBRARIES = ['images', 'textes', 'reflexions'] as const;
+export type Library = (typeof LIBRARIES)[number];
+
+export const LIBRARY_LABELS: Record<Library, string> = {
+  images: 'Images',
+  textes: 'Textes',
+  reflexions: 'Réflexions',
+};
+
 export const PROVIDER_KEYS = ['chatgpt', 'claude', 'gemini'] as const;
 export type ProviderKey = (typeof PROVIDER_KEYS)[number];
 

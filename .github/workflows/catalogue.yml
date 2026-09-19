@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - ecrans-v3
           - taxonomie-v3
           - actions-groupees
           - menage-taxonomie
@@ -123,7 +124,8 @@ jobs:
           inputs.dossier != 'kit-ui' &&
           inputs.dossier != 'menage-taxonomie' &&
           inputs.dossier != 'actions-groupees' &&
-          inputs.dossier != 'taxonomie-v3'
+          inputs.dossier != 'taxonomie-v3' &&
+          inputs.dossier != 'ecrans-v3'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -382,6 +384,55 @@ jobs:
                    (select count(*) from public.prompts
                     where status = 'published' and library is null) ||
                    ' commande(s) publiee(s) sans bibliotheque';"
+
+      # Ce dont les ecrans V3 ont besoin : l'ordre de Decouvrir et les
+      # facettes de l'accueil.
+      #
+      # `discover_rank` est l'index de pagination du feed Decouvrir. Un rang
+      # stable tire de l'identifiant : stable, donc le feed ne repasse jamais
+      # deux fois la meme carte entre deux paliers ; tire du hachage, donc les
+      # rayons s'entremelent au lieu de defiler par familles de soixante.
+      #
+      # `filtres_accueil` et `prompts_avec_tous_les_tags` servent le filtre
+      # depliant qui remplace la barre de recherche : les quatre facettes deja
+      # comptees, et le croisement de plusieurs tags en ET — ce que PostgREST
+      # ne sait pas exprimer.
+      #
+      # Les deux lisent a travers les politiques du lecteur. Aucune n'est
+      # contournee ni assouplie, et rien de ce que les membres voient ne
+      # change tant que les ecrans ne sont pas deployes : le mot « basculer »
+      # n'a donc pas de sens ici.
+      #
+      # Idempotentes (`add column if not exists`, `create or replace`) : les
+      # rejouer ne coute rien.
+      - name: Installer le socle des ecrans V3 (decouverte, filtres)
+        if: inputs.dossier == 'ecrans-v3'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : discover_rank'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260919140000_ordre_de_decouverte.sql
+          echo '  Migration : filtres_accueil / prompts_avec_tous_les_tags'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260919160000_filtres_accueil.sql
+          echo '  Etat du feed :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) || ' commande(s) publiee(s) avec un visuel apres, ' ||
+                   count(*) filter (where p.discover_rank is null) || ' sans rang'
+            from public.prompts p
+            where p.status = 'published'
+              and exists (select 1 from public.prompt_media m
+                          where m.prompt_id = p.id and m.kind = 'after');"
+          echo '  Facettes du filtre :'
+          psql "$PGURL" -At -c "
+            select '    ' ||
+                   jsonb_array_length(f -> 'bibliotheques') || ' bibliotheque(s), ' ||
+                   jsonb_array_length(f -> 'familles') || ' famille(s), ' ||
+                   jsonb_array_length(f -> 'tags') || ' tag(s), ' ||
+                   jsonb_array_length(f -> 'ias') || ' IA'
+            from public.filtres_accueil() as f;"
 
       # Les actions groupees de l'administration.
       #

@@ -24,11 +24,21 @@ import { useEffect, useRef } from 'react';
 export function Sentinelle({
   onVisible,
   libelle,
+  racine,
 }: {
   /** Memorise par l'appelant : il decide de l'observateur. */
   onVisible: () => void;
   /** Ce que le bouton de repli annonce. */
   libelle: string;
+  /**
+   * Le conteneur qui defile, quand ce n'est pas la page.
+   *
+   * Sans lui, la marge d'avance ne sert a rien dans une liste logee dans sa
+   * propre zone de defilement : l'observateur etend la fenetre, mais le
+   * conteneur decoupe quand meme, et la suite n'est demandee qu'une fois le
+   * bas atteint — c'est-a-dire trop tard.
+   */
+  racine?: React.RefObject<HTMLElement | null>;
 }) {
   const cible = useRef<HTMLDivElement>(null);
 
@@ -44,11 +54,11 @@ export function Sentinelle({
         for (const entree of entrees) if (entree.isIntersecting) onVisible();
       },
       // Une hauteur d'ecran d'avance : la suite arrive avant le bas.
-      { rootMargin: '100% 0px' },
+      { root: racine?.current ?? null, rootMargin: '100% 0px' },
     );
     observateur.observe(noeud);
     return () => observateur.disconnect();
-  }, [onVisible]);
+  }, [onVisible, racine]);
 
   return (
     <div ref={cible} className="mt-3">

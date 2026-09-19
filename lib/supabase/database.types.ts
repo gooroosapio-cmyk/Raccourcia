@@ -35,6 +35,7 @@
  * `postgres-meta` est le generateur que le CLI pilote ; l'appeler en direct
  * donne exactement la meme sortie.
  */
+
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
@@ -541,6 +542,105 @@ export type Database = {
           },
         ];
       };
+      prompt_field_choices: {
+        Row: {
+          field_id: string;
+          id: string;
+          libelle: string;
+          position: number;
+          valeur: string;
+        };
+        Insert: {
+          field_id: string;
+          id?: string;
+          libelle: string;
+          position?: number;
+          valeur: string;
+        };
+        Update: {
+          field_id?: string;
+          id?: string;
+          libelle?: string;
+          position?: number;
+          valeur?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'prompt_field_choices_field_id_fkey';
+            columns: ['field_id'];
+            referencedRelation: 'prompt_fields';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      prompt_fields: {
+        Row: {
+          cle: string;
+          created_at: string;
+          id: string;
+          indication: string | null;
+          kind: Database['public']['Enums']['prompt_field_kind'];
+          libelle: string;
+          position: number;
+          prompt_id: string;
+          requis: boolean;
+        };
+        Insert: {
+          cle: string;
+          created_at?: string;
+          id?: string;
+          indication?: string | null;
+          kind?: Database['public']['Enums']['prompt_field_kind'];
+          libelle: string;
+          position: number;
+          prompt_id: string;
+          requis?: boolean;
+        };
+        Update: {
+          cle?: string;
+          created_at?: string;
+          id?: string;
+          indication?: string | null;
+          kind?: Database['public']['Enums']['prompt_field_kind'];
+          libelle?: string;
+          position?: number;
+          prompt_id?: string;
+          requis?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'prompt_fields_prompt_id_fkey';
+            columns: ['prompt_id'];
+            referencedRelation: 'prompts';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      prompt_likes: {
+        Row: {
+          created_at: string;
+          prompt_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          prompt_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          prompt_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'prompt_likes_prompt_id_fkey';
+            columns: ['prompt_id'];
+            referencedRelation: 'prompts';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       prompt_media: {
         Row: {
           alt: string | null;
@@ -632,6 +732,37 @@ export type Database = {
             foreignKeyName: 'prompt_questions_prompt_id_fkey';
             columns: ['prompt_id'];
             referencedRelation: 'prompts';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      prompt_tags: {
+        Row: {
+          created_at: string;
+          prompt_id: string;
+          tag_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          prompt_id: string;
+          tag_id: string;
+        };
+        Update: {
+          created_at?: string;
+          prompt_id?: string;
+          tag_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'prompt_tags_prompt_id_fkey';
+            columns: ['prompt_id'];
+            referencedRelation: 'prompts';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'prompt_tags_tag_id_fkey';
+            columns: ['tag_id'];
+            referencedRelation: 'tags';
             referencedColumns: ['id'];
           },
         ];
@@ -771,6 +902,7 @@ export type Database = {
           default_image_path: string | null;
           default_ratio: string | null;
           default_values: string | null;
+          discover_rank: number | null;
           entity_type: string | null;
           erreurs: string | null;
           expected_input: string | null;
@@ -791,6 +923,8 @@ export type Database = {
           legacy_category: string | null;
           legacy_subcategory: string | null;
           level: Database['public']['Enums']['execution_level'] | null;
+          library: Database['public']['Enums']['app_library'] | null;
+          like_count: number;
           limitations: string | null;
           livrables: string | null;
           max_questions: number | null;
@@ -873,6 +1007,7 @@ export type Database = {
           default_image_path?: string | null;
           default_ratio?: string | null;
           default_values?: string | null;
+          discover_rank?: number | null;
           entity_type?: string | null;
           erreurs?: string | null;
           expected_input?: string | null;
@@ -893,6 +1028,8 @@ export type Database = {
           legacy_category?: string | null;
           legacy_subcategory?: string | null;
           level?: Database['public']['Enums']['execution_level'] | null;
+          library?: Database['public']['Enums']['app_library'] | null;
+          like_count?: number;
           limitations?: string | null;
           livrables?: string | null;
           max_questions?: number | null;
@@ -975,6 +1112,7 @@ export type Database = {
           default_image_path?: string | null;
           default_ratio?: string | null;
           default_values?: string | null;
+          discover_rank?: number | null;
           entity_type?: string | null;
           erreurs?: string | null;
           expected_input?: string | null;
@@ -995,6 +1133,8 @@ export type Database = {
           legacy_category?: string | null;
           legacy_subcategory?: string | null;
           level?: Database['public']['Enums']['execution_level'] | null;
+          library?: Database['public']['Enums']['app_library'] | null;
+          like_count?: number;
           limitations?: string | null;
           livrables?: string | null;
           max_questions?: number | null;
@@ -1229,6 +1369,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      tags: {
+        Row: {
+          created_at: string;
+          description: string | null;
+          groupe: Database['public']['Enums']['tag_group'];
+          id: string;
+          image_path: string | null;
+          is_active: boolean;
+          name: string;
+          slug: string;
+          sort_order: number;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string | null;
+          groupe?: Database['public']['Enums']['tag_group'];
+          id?: string;
+          image_path?: string | null;
+          is_active?: boolean;
+          name: string;
+          slug: string;
+          sort_order?: number;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          description?: string | null;
+          groupe?: Database['public']['Enums']['tag_group'];
+          id?: string;
+          image_path?: string | null;
+          is_active?: boolean;
+          name?: string;
+          slug?: string;
+          sort_order?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       user_roles: {
         Row: {
           granted_at: string;
@@ -1446,6 +1625,10 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: boolean;
       };
+      filtres_accueil: {
+        Args: { p_library?: Database['public']['Enums']['app_library'] };
+        Returns: Json;
+      };
       has_active_entitlement: { Args: { p_user_id?: string }; Returns: boolean };
       has_role: {
         Args: { p_role: Database['public']['Enums']['app_role'] };
@@ -1477,6 +1660,10 @@ export type Database = {
       prompt_payload_ready_refresh: {
         Args: { p_prompt_id: string };
         Returns: undefined;
+      };
+      prompts_avec_tous_les_tags: {
+        Args: { p_tags: string[] };
+        Returns: string[];
       };
       prompts_champ_recherche: {
         Args: {
@@ -1549,6 +1736,7 @@ export type Database = {
     Enums: {
       access_type: 'lifetime' | 'subscription';
       account_status: 'active' | 'suspended';
+      app_library: 'images' | 'textes' | 'reflexions';
       app_mode: 'image' | 'texte' | 'analyse';
       app_role: 'user' | 'admin' | 'super_admin';
       card_image_mode: 'before_after' | 'editorial_cover';
@@ -1581,9 +1769,20 @@ export type Database = {
         | 'audio'
         | 'video';
       output_type: 'image' | 'text' | 'analysis';
+      prompt_field_kind: 'texte' | 'texte_long' | 'nombre' | 'liste';
       purchase_status: 'pending' | 'completed' | 'refunded' | 'cancelled';
       risk_level: 'faible' | 'moyen' | 'eleve';
       session_status: 'active' | 'revoked' | 'expired';
+      tag_group:
+        | 'bibliotheque'
+        | 'ia'
+        | 'fonction'
+        | 'style'
+        | 'contexte'
+        | 'usage'
+        | 'resultat'
+        | 'experience'
+        | 'autre';
       version_status: 'draft' | 'published' | 'retired';
     };
     CompositeTypes: {
@@ -1708,6 +1907,7 @@ export const Constants = {
     Enums: {
       access_type: ['lifetime', 'subscription'],
       account_status: ['active', 'suspended'],
+      app_library: ['images', 'textes', 'reflexions'],
       app_mode: ['image', 'texte', 'analyse'],
       app_role: ['user', 'admin', 'super_admin'],
       card_image_mode: ['before_after', 'editorial_cover'],
@@ -1745,9 +1945,21 @@ export const Constants = {
         'video',
       ],
       output_type: ['image', 'text', 'analysis'],
+      prompt_field_kind: ['texte', 'texte_long', 'nombre', 'liste'],
       purchase_status: ['pending', 'completed', 'refunded', 'cancelled'],
       risk_level: ['faible', 'moyen', 'eleve'],
       session_status: ['active', 'revoked', 'expired'],
+      tag_group: [
+        'bibliotheque',
+        'ia',
+        'fonction',
+        'style',
+        'contexte',
+        'usage',
+        'resultat',
+        'experience',
+        'autre',
+      ],
       version_status: ['draft', 'published', 'retired'],
     },
   },

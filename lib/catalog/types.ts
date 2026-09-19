@@ -176,3 +176,37 @@ export type LibraryFamily = {
   apercus: string[];
   collections: CollectionTile[];
 };
+
+/**
+ * Une carte du feed Decouvrir. Jamais le prompt, comme partout ailleurs.
+ *
+ * Elle porte beaucoup moins qu'une `PromptCard` : un visuel, un nom, trois
+ * tags. Le feed se parcourt longtemps et sans fin — embarquer les trente
+ * champs d'une fiche dans chacune de ses cartes reviendrait a telecharger le
+ * catalogue entier pour en regarder huit. La fiche complete est demandee au
+ * moment ou on l'ouvre, et seulement alors.
+ */
+export type CarteDecouverte = {
+  id: string;
+  slug: string;
+  command: string;
+  name: string;
+  description: string;
+  visuelUrl: string;
+  visuelAlt: string;
+  /** Trois au plus : au-dela, la zone basse mange le visuel. */
+  tags: { slug: string; name: string }[];
+  likeCount: number;
+  /** Vrai quand le membre courant a deja aime. Faux pour un visiteur. */
+  aime: boolean;
+  isFree: boolean;
+};
+
+/** Le curseur du feed : le rang et l'identifiant de la derniere carte rendue. */
+export type CurseurDecouverte = { rang: number; id: string };
+
+export type PageDecouverte = {
+  cartes: CarteDecouverte[];
+  /** `null` quand il n'y a plus rien apres. */
+  suite: CurseurDecouverte | null;
+};
