@@ -182,7 +182,7 @@ export function FeedDecouverte({
       />
 
       {montrees < retenues.length || (chargerLaSuite && !fini) ? (
-        <Sentinelle onVisible={allonger} libelle="Voir plus d’idées" />
+        <Sentinelle onVisible={allonger} libelle="Voir plus d’idées" charge={charge} />
       ) : null}
 
       {selection ? (

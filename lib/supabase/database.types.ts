@@ -369,6 +369,31 @@ export type Database = {
           },
         ];
       };
+      category_favorites: {
+        Row: {
+          category_id: string;
+          created_at: string;
+          user_id: string;
+        };
+        Insert: {
+          category_id: string;
+          created_at?: string;
+          user_id: string;
+        };
+        Update: {
+          category_id?: string;
+          created_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'category_favorites_category_id_fkey';
+            columns: ['category_id'];
+            referencedRelation: 'categories';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       tag_favorites: {
         Row: {
           created_at: string;

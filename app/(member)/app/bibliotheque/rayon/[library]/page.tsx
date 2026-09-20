@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSommaireDeBibliotheque } from '@/lib/catalog/sommaire';
-import { getTagsFavoris } from '@/lib/catalog/tags-favoris';
+import { getCollectionsFavorites, getTagsFavoris } from '@/lib/catalog/tags-favoris';
 import { getVisuelsTournants, visuelDeCarte } from '@/lib/catalog/visuels';
 import { getAccessState } from '@/lib/access/entitlement';
 import { Mosaique, type CarteDeMosaique } from '@/components/library/mosaique';
@@ -44,18 +44,21 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
   let sommaire: Awaited<ReturnType<typeof getSommaireDeBibliotheque>>;
   let tirage: Awaited<ReturnType<typeof getVisuelsTournants>>;
   let epingles: Awaited<ReturnType<typeof getTagsFavoris>>;
+  let rayonsEpingles: Awaited<ReturnType<typeof getCollectionsFavorites>>;
   let membre: boolean;
   try {
-    const [acces, lot, visuels, favoris] = await Promise.all([
+    const [acces, lot, visuels, favoris, collectionsFavorites] = await Promise.all([
       getAccessState(),
       getSommaireDeBibliotheque(library),
       getVisuelsTournants(),
       getTagsFavoris(),
+      getCollectionsFavorites(),
     ]);
     membre = acces.isMember;
     sommaire = lot;
     tirage = visuels;
     epingles = favoris;
+    rayonsEpingles = collectionsFavorites;
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -73,21 +76,33 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
     .sort((a, b) => Number(epingles.has(b.slug)) - Number(epingles.has(a.slug)))
     .slice(0, 24);
 
+  sommaire.collections.sort(
+    (a, b) => Number(rayonsEpingles.has(b.slug)) - Number(rayonsEpingles.has(a.slug)),
+  );
+
+  const compter = (total: number) => `${total} commande${total > 1 ? 's' : ''}`;
+
   const cartes: CarteDeMosaique[] = [
     ...sommaire.collections.map((collection) => ({
       cle: `c-${collection.slug}`,
       slug: collection.slug,
+      genre: 'collection' as const,
       href: `/app/bibliotheque/${collection.slug}`,
       titre: collection.nom,
-      detail: `${collection.total} commande${collection.total > 1 ? 's' : ''}`,
+      // La phrase du rayon quand elle existe, son compte sinon : sur les
+      // Textes, il n'y a pas d'image a emprunter et un compteur seul ne
+      // fait choisir personne.
+      detail: collection.description ?? compter(collection.total),
       imageUrl: visuelDeCarte(collection.apercuUrl, `collection:${collection.slug}`, tirage),
+      ...(membre ? { epingle: rayonsEpingles.has(collection.slug) } : {}),
     })),
     ...tags.map((tag) => ({
       cle: `t-${tag.slug}`,
       slug: tag.slug,
+      genre: 'tag' as const,
       href: `/app/bibliotheque/tag/${tag.slug}`,
       titre: tag.nom,
-      detail: `${tag.total} commande${tag.total > 1 ? 's' : ''}`,
+      detail: tag.description ?? compter(tag.total),
       imageUrl: visuelDeCarte(tag.imageUrl, `tag:${tag.slug}`, tirage),
       ...(membre ? { epingle: epingles.has(tag.slug) } : {}),
     })),

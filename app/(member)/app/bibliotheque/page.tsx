@@ -1,5 +1,5 @@
 import { getTagsExplorables } from '@/lib/catalog/tags';
-import { getTagsFavoris } from '@/lib/catalog/tags-favoris';
+import { getCollectionsFavorites, getTagsFavoris } from '@/lib/catalog/tags-favoris';
 import { getVisuelsTournants, visuelDeCarte } from '@/lib/catalog/visuels';
 import { getCollectionsPopulaires } from '@/lib/catalog/accueil';
 import { getAccessState } from '@/lib/access/entitlement';
@@ -37,24 +37,27 @@ export default async function BibliothequePage() {
   let rayonsDeTags: Awaited<ReturnType<typeof getTagsExplorables>>;
   let tirage: Awaited<ReturnType<typeof getVisuelsTournants>>;
   let epingles: Awaited<ReturnType<typeof getTagsFavoris>>;
+  let rayonsEpingles: Awaited<ReturnType<typeof getCollectionsFavorites>>;
   let membre: boolean;
 
   try {
     // Trente collections : de quoi tenir un sommaire sans le rendre
     // interminable. Les autres s'atteignent par la porte de leur
     // bibliotheque, qui les montre toutes.
-    const [acces, lot, rayons, visuels, favoris] = await Promise.all([
+    const [acces, lot, rayons, visuels, favoris, collectionsFavorites] = await Promise.all([
       getAccessState(),
       getCollectionsPopulaires(30),
       getTagsExplorables(),
       getVisuelsTournants(),
       getTagsFavoris(),
+      getCollectionsFavorites(),
     ]);
     membre = acces.isMember;
     collections = lot;
     rayonsDeTags = rayons;
     tirage = visuels;
     epingles = favoris;
+    rayonsEpingles = collectionsFavorites;
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -85,17 +88,20 @@ export default async function BibliothequePage() {
     collections.map((collection) => ({
       cle: `c-${collection.slug}`,
       slug: collection.slug,
+      genre: 'collection' as const,
       href: `/app/bibliotheque/${collection.slug}`,
       titre: collection.nom,
-      detail: `${collection.total} commande${collection.total > 1 ? 's' : ''}`,
+      detail: collection.description ?? compter(collection.total),
       imageUrl: visuelDeCarte(collection.apercuUrl, `collection:${collection.slug}`, tirage),
+      ...(membre ? { epingle: rayonsEpingles.has(collection.slug) } : {}),
     })),
     tags.map((tag) => ({
       cle: `t-${tag.slug}`,
       slug: tag.slug,
+      genre: 'tag' as const,
       href: `/app/bibliotheque/tag/${tag.slug}`,
       titre: tag.nom,
-      detail: `${tag.total} commande${tag.total > 1 ? 's' : ''}`,
+      detail: tag.description ?? compter(tag.total),
       imageUrl: visuelDeCarte(tag.imageUrl, `tag:${tag.slug}`, tirage),
       // L'etoile n'existe que pour un compte : un visiteur n'a pas de
       // rayon a lui, et la lui montrer serait promettre un geste qui
@@ -140,6 +146,11 @@ function entrelacer(premieres: CarteDeMosaique[], secondes: CarteDeMosaique[]): 
   }
 
   return melange;
+}
+
+/** « 32 commandes ». Le repli quand le rayon n'a pas encore de phrase. */
+function compter(total: number): string {
+  return `${total} commande${total > 1 ? 's' : ''}`;
 }
 
 function Titre() {

@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FondDeRayon } from '@/components/library/fond-de-rayon';
 import { EtoileDeRayon } from '@/components/library/etoile-de-rayon';
+import type { GenreDeRayon } from '@/lib/actions/tags-favoris';
 
 /**
  * Une mosaique de cartes illustrees, de tailles inegales.
@@ -34,10 +35,12 @@ export type CarteDeMosaique = {
   imageUrl: string | null;
   /** Le slug du rayon, dont se deduit sa teinte de repli. */
   slug: string;
+  /** Un tag ou une collection : l'etoile s'en sert pour savoir ou ecrire. */
+  genre: GenreDeRayon;
   /**
-   * Presente sur un tag, et seulement pour un membre : l'etoile qui
-   * l'epingle. Une collection n'en a pas — on epingle un sujet, pas un
-   * tiroir de classement.
+   * Presente pour un membre seulement : l'etoile qui epingle le rayon. Un
+   * visiteur n'a pas de rayon a lui, et la lui montrer serait promettre
+   * un geste qui echoue.
    */
   epingle?: boolean;
 };
@@ -74,6 +77,7 @@ export function Mosaique({
             <CarteIllustree carte={carte} large={large} priority={rang < prioritaires} />
             {carte.epingle === undefined ? null : (
               <EtoileDeRayon
+                genre={carte.genre}
                 slug={carte.slug}
                 nom={carte.titre}
                 epingleAuDepart={carte.epingle}
@@ -136,9 +140,15 @@ function CarteIllustree({
         >
           {carte.titre}
         </span>
+        {/* UNE PHRASE PLUTOT QU'UN COMPTEUR, QUAND ELLE EXISTE.
+            « 32 commandes » ne dit pas si ce qu'on cherche est derriere.
+            La description, elle, le dit — et c'est la seule chose qu'une
+            carte de rayon de Textes a a montrer, faute d'image a
+            emprunter. Deux lignes au plus : au-dela, elle deborde du
+            cadre et pousse le titre hors de la carte. */}
         {carte.detail ? (
           <span
-            className={`block text-[length:var(--texte-meta)] ${
+            className={`mt-0.5 line-clamp-2 block text-[length:var(--texte-meta)] leading-snug ${
               carte.imageUrl ? 'text-white/80' : 'text-[color:var(--color-muted)]'
             }`}
           >

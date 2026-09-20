@@ -20,6 +20,15 @@ export type TagExplorable = {
   groupe: TagGroup;
   /** Le visuel du tag, quand l'administration en a depose un. */
   imageUrl: string | null;
+  /**
+   * Ce qu'on trouve derriere, en une phrase.
+   *
+   * Un rayon d'Images emprunte le visuel d'une de ses commandes ; un
+   * rayon de Textes n'a rien a emprunter, et sa carte se reduisait a deux
+   * mots sur un aplat. Une phrase tient cette place mieux qu'un compteur :
+   * « 32 commandes » ne dit pas si ce qu'on cherche est derriere.
+   */
+  description: string | null;
   /** Combien de commandes publiees le portent. */
   total: number;
 };
@@ -98,6 +107,7 @@ function lireLesTags(brut: unknown): TagExplorable[] {
         nom: texte(entree.nom),
         groupe: texte(entree.groupe) as TagGroup,
         imageUrl: image ? urlVisuel(image, LARGEURS_VISUEL.vignette) : null,
+        description: texte(entree.description) || null,
         total: entier(entree.total),
       };
     })

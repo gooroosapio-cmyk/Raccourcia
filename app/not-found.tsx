@@ -3,7 +3,7 @@ import Link from 'next/link';
 /** Jamais d'ecran mort : on propose toujours une sortie (Spec UX/UI, 3.3). */
 export default function NotFound() {
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col justify-center px-5">
+    <main className="coquille mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col justify-center px-[var(--marge-coquille)]">
       <h1 className="text-2xl font-semibold text-[color:var(--color-night)]">Page introuvable</h1>
       <p className="mt-2 text-[15px] text-[color:var(--color-muted)]">
         Cette commande n’existe pas ou n’est plus disponible.

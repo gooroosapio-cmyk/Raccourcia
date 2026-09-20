@@ -18,11 +18,12 @@ import type { AdminPromptDetail } from '@/lib/admin/queries';
 /**
  * Editeur des visuels d'un raccourci.
  *
- * Deux emplacements nommes, jamais un menu de types. Il n'y a que deux images
- * a fournir et chacune a une place a l'ecran : l'image resultat illustre la
- * carte dans la bibliotheque, la paire s'ouvre cote a cote sur la fiche. Un
- * selecteur « Avant / Apres / Miniature / Exemple / Couverture » demandait a
- * l'administrateur de savoir laquelle alimente quoi.
+ * Des emplacements nommes, jamais un menu de types. Chaque image a une
+ * place a l'ecran : le resultat illustre la carte dans la bibliotheque, la
+ * paire s'ouvre cote a cote sur la fiche, l'illustration habille une carte
+ * qui ne produit pas d'image. Un selecteur « Avant / Apres / Miniature /
+ * Exemple / Couverture » demandait a l'administrateur de savoir laquelle
+ * alimente quoi.
  *
  * Deux apercus montrent le rendu reel avant d'enregistrer : sans eux, il faut
  * quitter l'administration, retrouver la commande dans la bibliotheque, puis
@@ -69,16 +70,43 @@ export function PromptMediaManager({
   const manquants = [!avant && 'Avant', !apres && 'Résultat'].filter(Boolean);
 
   /*
-   * Un Mode IA n'a rien a montrer, et n'aura jamais rien : ce qu'il produit
-   * est une conversation. Lui offrir des emplacements reviendrait a promettre
-   * qu'un visuel changera quelque chose a sa carte.
+   * UNE ILLUSTRATION, ET NON UN RESULTAT.
+   *
+   * L'ecran refusait tout visuel a un Mode IA — « ce qu'il produit est une
+   * conversation, rien a deposer ici » — et proposait a une commande Texte
+   * un couple « Avant / Resultat » qu'elle ne produira jamais. Les deux
+   * partaient du meme raisonnement : un visuel de carte PROMET un
+   * resultat.
+   *
+   * C'est vrai d'une image « apres », pas d'une illustration. Trois cent
+   * cinquante cartes de Textes et de Reflexions se ressemblaient toutes
+   * dans la galerie, et rien ne permettait d'en distinguer une. Une
+   * illustration deposee ici les separe — et l'intitule dit ce qu'elle
+   * est, pour qu'on n'y depose pas une capture d'ecran de sortie.
+   *
+   * Tant qu'il n'y en a pas, la carte garde son motif et sa promesse
+   * ecrite : rien n'est casse par une absence.
    */
-  if (entityType === 'mode_ia') {
+  if (entityType === 'mode_ia' || entityType === null) {
     return (
-      <p className="rounded-[color:var(--radius-control)] bg-[color:var(--color-sky)] px-3 py-2.5 text-[length:var(--texte-carte)] leading-relaxed text-[color:var(--color-night)]">
-        Un Mode IA ne porte pas de visuel : ce qu’il produit est une conversation, et sa carte
-        l’annonce par son texte. Rien à déposer ici.
-      </p>
+      <div className="space-y-3">
+        <p className="rounded-[color:var(--radius-control)] bg-[color:var(--color-sky)] px-3 py-2.5 text-[length:var(--texte-carte)] leading-relaxed text-[color:var(--color-night)]">
+          Cette commande ne rend pas d’image : pas d’avant/après ici. Une illustration est possible
+          — elle habille la carte et la distingue des autres, sans annoncer un résultat. Sans elle,
+          la carte garde son motif et sa phrase.
+        </p>
+        <div className="grid grid-cols-1 gap-3 min-[560px]:grid-cols-2">
+          <Emplacement
+            promptId={promptId}
+            kind="thumbnail"
+            titre="Illustration de la carte"
+            role="Habille la carte. Jamais une capture de ce que la commande produit."
+            media={vignette}
+            onDelete={deleteAction}
+          />
+        </div>
+        <AdminFeedback state={deleteState} />
+      </div>
     );
   }
 

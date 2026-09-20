@@ -22,7 +22,7 @@ export function CollectionsPopulaires({ collections }: { collections: Collection
   if (collections.length === 0) return null;
 
   return (
-    <div className="rail -mx-5 px-5">
+    <div className="rail pleine-largeur">
       <ul className="flex w-max gap-2 pb-1 min-[400px]:gap-[var(--gouttiere-carte)]">
         {collections.map((collection, rang) => (
           <li key={collection.slug} className="w-[168px] shrink-0 min-[400px]:w-[184px]">

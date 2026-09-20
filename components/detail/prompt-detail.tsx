@@ -7,6 +7,7 @@ import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-af
 import { ChampsDeCommande } from '@/components/detail/champs-de-commande';
 import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { FavoriteButton } from '@/components/cards/favorite-button';
+import { BoutonJaime } from '@/components/cards/bouton-jaime';
 import { AFournir } from '@/components/detail/a-fournir';
 import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
 import { ModesCommande } from '@/components/detail/modes-commande';
@@ -199,6 +200,15 @@ export function PromptDetailSheet({
             <SheetCloseButton ref={fermerRef} onClose={onClose} libelle="Fermer la fiche" />
 
             <div className="flex items-center">
+              {/* Le coeur et son compte, a cote de l'etoile : la fiche est
+                  l'endroit ou l'on decide, donc celui ou un signal d'usage
+                  compte le plus. */}
+              <BoutonJaime
+                promptId={prompt.id}
+                likeCount={prompt.likeCount}
+                aime={prompt.aime}
+                visiteur={visiteur}
+              />
               <FavoriteButton
                 promptId={prompt.id}
                 initial={prompt.isFavorite}

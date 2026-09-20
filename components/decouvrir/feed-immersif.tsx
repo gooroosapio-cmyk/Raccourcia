@@ -9,9 +9,8 @@ import { openPaywall } from '@/components/paywall/paywall-provider';
 import { showToast } from '@/components/ui/toast';
 import { chargerLaSuite, ouvrirLaFiche } from '@/lib/actions/decouverte';
 import { trackPromptView } from '@/lib/actions/catalog';
-import { basculerLeLike } from '@/lib/actions/likes';
+import { BoutonJaime } from '@/components/cards/bouton-jaime';
 import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
-import { compteCourt } from '@/lib/format/nombre';
 import type { CarteDecouverte, CurseurDecouverte, PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -100,10 +99,17 @@ export function FeedImmersif({
     <>
       <div
         ref={zone}
-        // Hauteur de l'ecran moins l'en-tete et la barre basse : la carte
-        // occupe tout ce qui reste, et rien de plus. Les deux reperes de
-        // navigation restent donc visibles pendant toute la lecture.
-        className="h-[calc(100dvh-7.25rem-env(safe-area-inset-bottom))] snap-y snap-mandatory overflow-y-auto overscroll-contain"
+        // PLEIN ECRAN MOINS LA SEULE BARRE QUI RESTE.
+        //
+        // L'en-tete a disparu sous cette page : la carte prend donc toute
+        // la hauteur sauf la barre basse, qui est le seul moyen d'en
+        // sortir. Retirer aussi celle-la enfermerait dans le feed.
+        //
+        // `une-carte-a-la-fois` pose `scroll-snap-stop: always` sur chaque
+        // carte : `snap-mandatory` seul replace bien la carte, mais un
+        // geste ample en traverse trois d'un coup et l'on arrive quatre
+        // cartes plus loin sans avoir vu les deux du milieu.
+        className="une-carte-a-la-fois h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] snap-y snap-mandatory overflow-y-auto overscroll-contain"
       >
         {cartes.map((carte, rang) => (
           <CarteImmersive
@@ -120,7 +126,7 @@ export function FeedImmersif({
         ))}
 
         {curseur ? (
-          <Sentinelle onVisible={allonger} libelle="Voir la suite" racine={zone} />
+          <Sentinelle onVisible={allonger} libelle="Voir la suite" racine={zone} charge={charge} />
         ) : (
           <p className="px-5 py-6 text-center text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
             Vous avez tout vu.
@@ -181,6 +187,13 @@ function CarteImmersive({
 }) {
   const illustree = carte.genre === 'image' && carte.visuelUrl !== '';
 
+  // Toucher l'image ouvre la fiche. C'est ce qu'on essaie d'abord : on
+  // regarde un resultat, on veut le faire. Le bouton du bas reste — il
+  // nomme l'action — mais il ne doit plus etre le seul chemin.
+  const ouvrir = () => {
+    if (!ouverture) onUtiliser(carte);
+  };
+
   return (
     // UNE COLONNE, ET NON UNE PILE DE COUCHES.
     //
@@ -196,6 +209,17 @@ function CarteImmersive({
         illustree ? 'h-full' : 'flex h-full flex-col'
       }`}
     >
+      {/* La couche qui recoit le toucher. Posee sous les informations, donc
+          un doigt sur un tag, sur le coeur ou sur le rail des voisines
+          touche ce qu'il vise ; partout ailleurs, il ouvre la fiche. */}
+      <button
+        type="button"
+        onClick={ouvrir}
+        disabled={ouverture}
+        aria-label={`Ouvrir ${carte.name}`}
+        className={`absolute inset-0 z-0 ${illustree ? '' : 'pointer-events-none'}`}
+      />
+
       {illustree ? (
         <>
           {/* 1. Le fond. Agrandi au-dela du cadre : un flou laisse sinon
@@ -293,7 +317,13 @@ function CarteImmersive({
             ) : null}
           </div>
 
-          <BoutonJaime carte={carte} visiteur={visiteur} />
+          <BoutonJaime
+            promptId={carte.id}
+            likeCount={carte.likeCount}
+            aime={carte.aime}
+            visiteur={visiteur}
+            surVisuel
+          />
         </div>
 
         {/* LE GESTE LATERAL : LA MEME COLLECTION.
@@ -343,7 +373,7 @@ function RailDeCollection({
         {carte.collection ? `Dans ${carte.collection.nom}` : 'Dans la même collection'}
       </p>
 
-      <ul className="rail -mx-5 mt-1.5 flex snap-x snap-mandatory gap-2 px-5 pb-0.5">
+      <ul className="rail pleine-largeur mt-1.5 flex snap-x snap-mandatory gap-2 pb-0.5">
         {carte.voisines.map((voisine) => (
           <li key={voisine.id} className="w-[74px] shrink-0 snap-start">
             <button
@@ -453,90 +483,4 @@ function teinteDe(commande: string): { haut: string; bas: string } {
     haut: `hsl(${empreinte} 46% 32%)`,
     bas: `hsl(${(empreinte + 38) % 360} 52% 16%)`,
   };
-}
-
-/**
- * Le cœur, et son compteur.
- *
- * Le compteur n'apparait qu'a partir de deux. « 1 » sous un cœur ne dit rien
- * d'autre que « quelqu'un a clique », et sur un catalogue qui vient d'ouvrir
- * il afficherait surtout la solitude de chaque carte. A partir de deux, le
- * chiffre devient une information.
- *
- * L'etat bascule avant la reponse du serveur : un cœur qui attend un
- * aller-retour donne l'impression de ne pas avoir compris le geste. Il revient
- * en arriere si l'ecriture echoue, et le total affiche est alors celui que la
- * base a reellement compte.
- */
-function BoutonJaime({ carte, visiteur }: { carte: CarteDecouverte; visiteur: boolean }) {
-  const [aime, setAime] = useState(carte.aime);
-  const [total, setTotal] = useState(carte.likeCount);
-  const [envoi, setEnvoi] = useState(false);
-
-  const basculer = () => {
-    if (envoi) return;
-
-    // Un visiteur ne peut pas aimer : la politique de la table le refuse, et
-    // fabriquer un like d'appareil reviendrait a compter les navigateurs.
-    if (visiteur) {
-      showToast('Connectez-vous pour aimer une commande.', 'erreur');
-      return;
-    }
-
-    const vise = !aime;
-    setAime(vise);
-    setTotal((n) => Math.max(0, n + (vise ? 1 : -1)));
-    setEnvoi(true);
-
-    void basculerLeLike(carte.id, vise)
-      .then((etat) => {
-        if (etat.ok) {
-          setAime(etat.aime);
-          setTotal(etat.total);
-          return;
-        }
-        setAime(!vise);
-        setTotal(carte.likeCount);
-        showToast(
-          etat.raison === 'connexion'
-            ? 'Connectez-vous pour aimer une commande.'
-            : 'Votre « j’aime » n’a pas été enregistré.',
-          'erreur',
-        );
-      })
-      .catch(() => {
-        setAime(!vise);
-        setTotal(carte.likeCount);
-        showToast('Votre « j’aime » n’a pas été enregistré.', 'erreur');
-      })
-      .finally(() => setEnvoi(false));
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={basculer}
-      aria-pressed={aime}
-      aria-label={aime ? 'Retirer mon « j’aime »' : 'Aimer cette commande'}
-      className="flex min-h-[44px] min-w-[44px] shrink-0 flex-col items-center justify-center gap-0.5 rounded-full px-1 text-white"
-    >
-      <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13Z"
-          fill={aime ? 'currentColor' : 'none'}
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-          className={
-            aime
-              ? 'text-[color:var(--color-brand)] transition-transform duration-[var(--duration-fast)]'
-              : 'transition-transform duration-[var(--duration-fast)]'
-          }
-        />
-      </svg>
-      {total >= 2 ? (
-        <span className="text-[12px] font-semibold tabular-nums">{compteCourt(total)}</span>
-      ) : null}
-    </button>
-  );
 }

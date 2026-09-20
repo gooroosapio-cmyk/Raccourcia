@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toast';
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col px-5 pb-10 lg:max-w-3xl">
+    <div className="coquille mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col px-[var(--marge-coquille)] pb-10 lg:max-w-3xl">
       <header className="flex items-center justify-between py-4">
         {/* Meme raison qu'au pied de page : la zone touchee atteint la
             hauteur d'un doigt sans que l'en-tete ne grandisse. */}

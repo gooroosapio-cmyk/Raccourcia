@@ -4,6 +4,8 @@ import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { VisualSlot } from '@/components/cards/visual-slot';
+import { ResultThumbnail } from '@/components/cards/result-thumbnail';
+import { BoutonJaime } from '@/components/cards/bouton-jaime';
 import { IllustrationThematique } from '@/components/cards/illustration-thematique';
 import { motifDeLaCarte } from '@/lib/ui/motifs';
 import { usePaywall } from '@/components/paywall/paywall-provider';
@@ -27,6 +29,19 @@ import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
  * Le genre se lit en haut du cadre — « Mode IA », « Parcours » — parce que
  * c'est la seule chose qu'on ne devine pas d'un coup d'oeil quand il n'y a
  * pas d'image.
+ *
+ * DEUX VISAGES, ET C'EST L'ADMINISTRATION QUI DECIDE LEQUEL.
+ *
+ * Tant qu'aucun visuel n'est depose, la carte garde celui-ci : le motif,
+ * et la promesse de la commande posee dans le cadre. C'est le seul moyen
+ * de remplir la zone haute quand il n'y a rien a montrer.
+ *
+ * Des qu'un visuel arrive, la carte bascule sur le visage des commandes
+ * image : la photo occupe le cadre, le titre vient dessous, et
+ * l'explication sous le titre. Rien ne se pose plus SUR la photo — un
+ * texte sur une image se lit mal, il la couvre, et le bas de la carte
+ * restait vide pendant ce temps. Deux zones distinctes valent mieux
+ * qu'une superposition : chacune a sa place, et l'espace se remplit.
  */
 export function TextPromptCard({
   prompt,
@@ -84,6 +99,11 @@ export function TextPromptCard({
   // garde alors sa composition typographique plutot qu'un dessin au hasard.
   const motif = motifDeLaCarte(prompt.motsCles);
 
+  // Le visage de la carte. `thumbnailUrl` est rempli des qu'un visuel est
+  // depose en administration : rien d'autre a basculer, la carte change
+  // seule au rechargement suivant.
+  const illustree = prompt.thumbnailUrl !== null;
+
   return (
     <article className="anim-apparition relative flex h-full flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
@@ -93,34 +113,47 @@ export function TextPromptCard({
           pleineLargeur ? 'grid grid-cols-[104px_1fr] items-stretch' : 'flex flex-col'
         }`}
       >
-        <VisualSlot ton="texte" mission={niveau?.mission ?? false}>
-          {motif ? <IllustrationThematique motif={motif} /> : null}
-          <span
-            /* Le texte passe au-dessus du motif : le dessin habille le
-               cadre, il ne prend pas la place de ce qu'on lit. */
-            style={{ position: 'relative' }}
-            className={`flex h-full w-full flex-col justify-center gap-1.5 px-3 pt-3 ${
-              niveau?.mission ? 'pb-8' : 'pb-3'
-            }`}
-          >
-            {/* Le guillemet ouvrant fait lire ce qui suit comme un extrait :
-                sans lui, une phrase seule au milieu d'un cadre ressemble a une
-                legende manquante. */}
+        {illustree ? (
+          /* Le visuel depose en administration, au meme cadre et au meme
+             rendu que sur une commande image : la galerie ne doit pas
+             faire deux familles de cartes la ou il n'y a qu'un catalogue. */
+          <ResultThumbnail
+            url={prompt.thumbnailUrl}
+            alt={prompt.thumbnailAlt}
+            libelle={prompt.name}
+            mission={niveau?.mission ?? false}
+            rayon={prompt.collectionSlug}
+          />
+        ) : (
+          <VisualSlot ton="texte" mission={niveau?.mission ?? false}>
+            {motif ? <IllustrationThematique motif={motif} /> : null}
             <span
-              aria-hidden="true"
-              className="text-[26px] font-bold leading-none text-[color:var(--color-brand)]/30"
-            >
-              “
-            </span>
-            <span
-              className={`text-[length:var(--texte-carte)] italic leading-[1.4] text-[color:var(--color-night)]/80 ${
-                niveau?.mission ? 'line-clamp-4' : 'line-clamp-5'
+              /* Le texte passe au-dessus du motif : le dessin habille le
+                 cadre, il ne prend pas la place de ce qu'on lit. */
+              style={{ position: 'relative' }}
+              className={`flex h-full w-full flex-col justify-center gap-1.5 px-3 pt-3 ${
+                niveau?.mission ? 'pb-8' : 'pb-3'
               }`}
             >
-              {apercu}
+              {/* Le guillemet ouvrant fait lire ce qui suit comme un extrait :
+                  sans lui, une phrase seule au milieu d'un cadre ressemble a une
+                  legende manquante. */}
+              <span
+                aria-hidden="true"
+                className="text-[26px] font-bold leading-none text-[color:var(--color-brand)]/30"
+              >
+                “
+              </span>
+              <span
+                className={`text-[length:var(--texte-carte)] italic leading-[1.4] text-[color:var(--color-night)]/80 ${
+                  niveau?.mission ? 'line-clamp-4' : 'line-clamp-5'
+                }`}
+              >
+                {apercu}
+              </span>
             </span>
-          </span>
-        </VisualSlot>
+          </VisualSlot>
+        )}
 
         <span className={`block ${pleineLargeur ? 'px-3 pb-1 pt-3' : 'px-2.5 pb-1 pt-2'}`}>
           <span className="flex min-w-0 flex-col">
@@ -139,6 +172,20 @@ export function TextPromptCard({
             >
               {prompt.name}
             </span>
+            {/* L'EXPLICATION SOUS LE TITRE, ET SEULEMENT SUR UNE CARTE
+                ILLUSTREE. Sans visuel, la promesse est deja dans le cadre
+                du haut et la repeter ferait deux fois la meme phrase. Avec
+                un visuel, le cadre ne dit plus rien de ce que la commande
+                fait — et le bas de la carte, lui, etait vide. */}
+            {illustree ? (
+              <span
+                className={`mt-0.5 text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-muted)] ${
+                  pleineLargeur ? 'line-clamp-3' : 'line-clamp-2 min-h-[2.4em]'
+                }`}
+              >
+                {apercu}
+              </span>
+            ) : null}
             {repere ? (
               <span className="mt-0.5 text-[length:var(--texte-meta)] font-semibold text-[color:var(--color-brand-strong)]">
                 {repere}
@@ -176,10 +223,18 @@ export function TextPromptCard({
         />
       </div>
 
-      {/* La copie ferme la carte, en bas, la ou se prend la decision — et
-          seule sur sa ligne, donc jamais coupee. */}
-      <div className="mt-auto px-2.5 pb-2.5">
-        <span className="block w-full">
+      {/* La copie ferme la carte, en bas, la ou se prend la decision. Le
+          coeur l'accompagne : c'est la seule ligne de la carte ou une
+          action a sa place, et le compte sous l'icone tient dans la
+          hauteur du bouton sans rien pousser. */}
+      <div className="mt-auto flex items-center gap-1 px-2.5 pb-2.5">
+        <BoutonJaime
+          promptId={prompt.id}
+          likeCount={prompt.likeCount}
+          aime={prompt.aime}
+          visiteur={visiteur}
+        />
+        <span className="block min-w-0 flex-1">
           <CopyCommandButton
             promptId={prompt.id}
             provider={actif?.key ?? 'chatgpt'}

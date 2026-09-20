@@ -140,21 +140,42 @@ body {
 }
 
 body {
-  /* Aucun debordement lateral : la regle vaut pour toute la page. */
-  overflow-x: hidden;
   padding-bottom: env(safe-area-inset-bottom);
 }
 
 /*
- * La meme regle sur `html`, et le defilement lateral verrouille.
+ * L'ECRAN EST FIGE HORIZONTALEMENT. `clip`, ET SURTOUT PAS `hidden`.
  *
- * `overflow-x: hidden` pose sur `body` seul ne suffit pas : le navigateur
- * remonte alors la responsabilite du defilement a `html`, qui n'a aucune
- * borne. La page pouvait donc glisser lateralement meme avec un `body`
- * cense ne pas deborder.
+ * C'est la troisieme tentative sur le meme defaut, et les deux premieres
+ * ont echoue pour la meme raison. Symptome : l'interface entiere parquee
+ * quarante pixels a droite, titres coupes au bord gauche, sans aucun
+ * geste pour revenir — la page n'a pas de barre de defilement laterale,
+ * donc rien a ramener.
+ *
+ * `overflow-x: hidden` ne fige rien. Il fait de l'element un CONTENEUR DE
+ * DEFILEMENT dont on masque la barre : le contenu reste deplacable, et
+ * tout ce qui fait defiler sans geste de l'utilisateur y parvient encore —
+ * un enfant `snap-x` qui recoit le focus, un `scrollIntoView`, le saut
+ * vers une ancre, la restauration de position au retour arriere. C'est
+ * exactement ce qui se passait : quelque chose poussait la page de
+ * quarante pixels, et plus rien ne la ramenait.
+ *
+ * `overflow-x: clip` ne cree aucun conteneur de defilement. Il n'y a plus
+ * de position laterale a deplacer : ni le focus, ni l'aimantation, ni un
+ * script ne peuvent bouger la page. C'est ce que « figer » veut dire.
+ *
+ * ET IL NE CASSE PAS LA VERTICALE. `overflow-x: hidden` force
+ * `overflow-y` a passer de `visible` a `auto` — un second conteneur de
+ * defilement, qui met en peril l'en-tete collant et les hauteurs en
+ * `dvh`. `clip` fait partie des valeurs qui laissent `visible` tranquille.
+ *
+ * `overscroll-behavior-x: none` reste, pour le geste lui-meme : sur
+ * certains navigateurs, un balayage lateral au bord declenche encore la
+ * navigation arriere du systeme.
  */
-html {
-  overflow-x: hidden;
+html,
+body {
+  overflow-x: clip;
   overscroll-behavior-x: none;
 }
 
@@ -186,6 +207,66 @@ html {
  * droite, logo coupe, sans rien pour revenir. `contain` arrete le geste au
  * bord du rail : il ne se propage plus.
  */
+/*
+ * TOUT CE QUI DEFILE HORIZONTALEMENT RETIENT LE GESTE.
+ *
+ * `.rail` le faisait deja ; il restait une demi-douzaine de conteneurs
+ * poses directement en `overflow-x-auto` — la navigation de
+ * l'administration, les periodes des statistiques, les filtres. Chacun
+ * rouvrait le meme defaut : arrive au bout, le navigateur enchaine le
+ * geste sur l'ancetre qui peut encore defiler, et comme ces conteneurs
+ * debordent des marges par `-mx-5`, c'est le document entier qui glisse.
+ * On se retrouve avec l'interface decalee a droite, logo coupe, sans rien
+ * pour revenir.
+ *
+ * La regle porte donc sur la classe utilitaire elle-meme : un conteneur
+ * ajoute demain est couvert sans qu'on ait a y penser.
+ */
+.overflow-x-auto,
+.overflow-x-scroll {
+  overscroll-behavior-x: contain;
+}
+
+/*
+ * LA MARGE DE LA COQUILLE, DECLAREE UNE SEULE FOIS.
+ *
+ * Les rails sortent des marges pour defiler d'un bord a l'autre. Ils le
+ * faisaient avec `-mx-5` ecrit a la main dans huit composants, alors que
+ * la coquille passe a `px-4` sous 360 px : sous cette largeur, chaque
+ * rail depassait de huit pixels et c'est le document qui s'elargissait.
+ * Un ecart de huit pixels ne se voit pas ; une page qui glisse, si.
+ *
+ * Une variable, deux valeurs, un seul endroit ou les changer.
+ */
+:root {
+  --marge-coquille: 1rem;
+}
+
+@media (min-width: 360px) {
+  :root {
+    --marge-coquille: 1.25rem;
+  }
+}
+
+/** Sortir des marges de la coquille, et les rendre en rembourrage. */
+.pleine-largeur {
+  margin-inline: calc(var(--marge-coquille) * -1);
+  padding-inline: var(--marge-coquille);
+}
+
+/**
+ * La coquille elle-meme ne deborde pas.
+ *
+ * Deuxieme verrou, sous celui de `html` : `clip` ici arrete un enfant
+ * trop large a la largeur de la coquille, donc au bord de l'ecran sur un
+ * telephone. Sans lui, `html` clipperait bien, mais la mise en page aurait
+ * deja ete calculee sur un document trop large — et les elements
+ * `position: fixed` s'y referent.
+ */
+.coquille {
+  overflow-x: clip;
+}
+
 .rail {
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -379,4 +460,56 @@ html {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/*
+ * Le chargement du palier suivant : trois points, une seconde en boucle.
+ *
+ * La galerie s'allonge toute seule, et jusqu'ici elle le faisait en
+ * silence : entre la sentinelle et l'arrivee des cartes, l'ecran ne
+ * disait rien. Sur un reseau lent, on croit etre arrive au bout.
+ *
+ * Trois points plutot qu'un tourniquet : un tourniquet occupe le centre
+ * de l'ecran et se lit comme une attente longue. Les points tiennent sur
+ * une ligne, disparaissent des que les cartes arrivent, et l'animation
+ * est assez rapide pour ne pas devenir le sujet.
+ */
+@keyframes point-de-chargement {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+.point-de-chargement {
+  animation: point-de-chargement 0.9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Le mouvement disparait, le signal reste : les points clignotent au
+     lieu de sauter. Retirer l'animation entiere laisserait trois points
+     figes, qu'on ne lit plus comme un chargement. */
+  .point-de-chargement {
+    animation-name: none;
+    opacity: 0.6;
+  }
+}
+
+/*
+ * UNE CARTE A LA FOIS DANS DECOUVRIR.
+ *
+ * `snap-mandatory` pose la carte au bon endroit, mais n'empeche pas un
+ * geste ample d'en traverser trois d'un coup : on arrive quatre cartes
+ * plus loin sans avoir vu les deux du milieu, et le feed devient une
+ * loterie. `scroll-snap-stop: always` oblige le defilement a s'arreter a
+ * chaque point d'ancrage — un geste, une carte, quelle que soit sa force.
+ */
+.une-carte-a-la-fois > * {
+  scroll-snap-stop: always;
 }

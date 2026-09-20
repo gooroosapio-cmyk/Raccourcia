@@ -38,7 +38,7 @@ export default async function LandingPage() {
   ];
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col px-4 pb-4 pt-3 lg:max-w-4xl">
+    <main className="coquille mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col px-[var(--marge-coquille)] pb-4 pt-3 lg:max-w-4xl">
       <header className="flex items-center justify-between">
         <Logo className="text-[19px]" />
         <Link

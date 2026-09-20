@@ -37,7 +37,10 @@ export default async function MemberLayout({ children }: { children: React.React
   const [acces, config] = await Promise.all([getAccessState(), getPublicConfig()]);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col lg:max-w-[46rem]">
+    // `coquille` : `overflow-x: clip` sur l'enveloppe. Second verrou sous
+    // celui de `html` — il arrete un enfant trop large a la largeur de la
+    // coquille, donc au bord de l'ecran sur un telephone.
+    <div className="coquille mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col lg:max-w-[46rem]">
       {/* L'en-tete est une feuille cliente : elle doit savoir sur quelle
           page elle se trouve pour s'effacer au-dessus de Decouvrir. Une
           feuille, jamais une enveloppe — voir le commentaire de tete. */}
@@ -45,8 +48,12 @@ export default async function MemberLayout({ children }: { children: React.React
 
       {/* Seize pixels de marge sous 360 px au lieu de vingt : sur un ecran
           de 320 px, les huit pixels rendus a la grille font la difference
-          entre deux colonnes lisibles et deux colonnes etroites. */}
-      <main className="flex-1 px-4 pb-24 min-[360px]:px-5">{children}</main>
+          entre deux colonnes lisibles et deux colonnes etroites.
+          La valeur vient de `--marge-coquille`, que les rails reprennent
+          pour en sortir : ecrite deux fois, elle finissait par diverger —
+          les rails sortaient de vingt pixels la ou la coquille n'en
+          rentrait que seize, et le document s'elargissait d'autant. */}
+      <main className="flex-1 px-[var(--marge-coquille)] pb-24">{children}</main>
 
       <BottomNav />
 

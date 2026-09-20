@@ -103,7 +103,7 @@ export function ListeDesFacons({
         /* La rangee defile dans son cadre et non avec la page : sept familles
            ne tiennent pas sur 360 px, et les tronquer en cacherait la moitie
            sans le dire. */
-        <div className="rail -mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
+        <div className="rail pleine-largeur flex gap-2 overflow-x-auto pb-1">
           <Puce active={actif === null} onClick={() => setRayon(null)}>
             Tous
           </Puce>
