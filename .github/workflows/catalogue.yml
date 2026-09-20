@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - catalogue-final
           - offre-2026-09
           - exploration-v4
           - fusion-2026-09
@@ -135,7 +136,8 @@ jobs:
           inputs.dossier != 'catalogue-2026-09' &&
           inputs.dossier != 'fusion-2026-09' &&
           inputs.dossier != 'offre-2026-09' &&
-          inputs.dossier != 'exploration-v4'
+          inputs.dossier != 'exploration-v4' &&
+          inputs.dossier != 'catalogue-final'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -402,6 +404,67 @@ jobs:
       # de la bibliotheque, deja comptes et deja illustres.
       #
       # `security invoker`, donc lecture a travers les politiques du
+      # Le catalogue final : 1 595 cartes, 624 commandes.
+      #
+      # C'est le meme referentiel que `catalogue-2026-09`, augmente de 585
+      # cartes. Les 1 010 deja en ligne gardent leur statut, leurs visuels,
+      # leurs favoris et — c'est le point delicat — LEUR ADRESSE : le slug
+      # public ne figure pas dans la clause de mise a jour du lot, parce
+      # qu'une regle de fabrication qui s'ameliore ne doit jamais reecrire
+      # l'adresse d'une page deja partagee.
+      #
+      # Les 585 nouvelles arrivent en brouillon, dans leur collection et
+      # avec leurs tags. Elles ne deviennent visibles que sur le mot
+      # « basculer » : installer un catalogue et le montrer sont deux
+      # decisions, et la seconde se voit par tout le monde.
+      #
+      # Aucune URL de visuel dans le fichier d'import : la regle du
+      # referentiel est explicite — conserver les medias existants quand
+      # les nouvelles URL sont vides. Rien de ce qui a ete depose ne bouge.
+      #
+      # Rejouable : upserts sur `card_id`, verifie sur une base montee de
+      # zero puis rejouee deux fois.
+      - name: Installer le catalogue final (1 595 cartes)
+        if: inputs.dossier == 'catalogue-final'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          total=$(ls supabase/seed/catalogue-final/*.sql | grep -vc '900_publication.sql')
+          n=0
+          for fichier in supabase/seed/catalogue-final/*.sql; do
+            # La publication est un geste a part : elle attend « basculer ».
+            case "$fichier" in *900_publication.sql) continue;; esac
+            n=$((n + 1))
+            printf '  [%3d/%3d] %s\n' "$n" "$total" "$(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Etat du catalogue :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) || ' carte(s), dont ' ||
+                   count(*) filter (where status = 'published') || ' en ligne et ' ||
+                   count(*) filter (where status = 'draft') || ' en brouillon'
+            from public.prompts where external_ref like 'V2-%';"
+
+      - name: Publier les cartes du catalogue final
+        if: inputs.dossier == 'catalogue-final' && inputs.bascule == 'basculer'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
+            < supabase/seed/catalogue-final/900_publication.sql
+          echo '  Rayons apres publication :'
+          psql "$PGURL" -At -c "
+            select '    Images : ' || jsonb_array_length(public.collections_de_bibliotheque('images')) ||
+                   ' collection(s), ' || jsonb_array_length(public.tags_de_bibliotheque('images')) || ' tag(s)';"
+          psql "$PGURL" -At -c "
+            select '    Textes : ' || jsonb_array_length(public.collections_de_bibliotheque('textes')) ||
+                   ' collection(s), ' || jsonb_array_length(public.tags_de_bibliotheque('textes')) || ' tag(s)';"
+          psql "$PGURL" -At -c "
+            select '    Reflexions : ' || jsonb_array_length(public.collections_de_bibliotheque('reflexions')) ||
+                   ' collection(s), ' || jsonb_array_length(public.tags_de_bibliotheque('reflexions')) || ' tag(s)';"
+
       # lecteur. Rejouable : `create or replace` seul.
       - name: Installer l'exploration par bibliotheque (V4)
         if: inputs.dossier == 'exploration-v4'

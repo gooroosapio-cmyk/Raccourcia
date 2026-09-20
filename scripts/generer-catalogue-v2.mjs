@@ -38,7 +38,12 @@ if (!SOURCE) {
 // l'import precedent, celui qui a produit le catalogue en ligne. Deux lots
 // dans le meme dossier s'appliqueraient l'un apres l'autre sans que rien
 // ne dise lequel fait foi.
-const DESTINATION = 'supabase/seed/catalogue-2026-09';
+//
+// `DESTINATION_LOT` permet d'en viser un autre. Un lot deja applique en
+// production ne se reecrit pas : le relire plus tard ne dirait plus ce qui
+// a reellement tourne. Une nouvelle version du catalogue va donc dans un
+// nouveau dossier.
+const DESTINATION = process.env.DESTINATION_LOT ?? 'supabase/seed/catalogue-2026-09';
 
 /* ------------------------------------------------------------------ */
 /* Lecture du CSV                                                      */
@@ -366,12 +371,22 @@ end $rapport$;`;
  * deux commandes differentes. On prefixe donc par la commande, ce qui
  * donne une adresse qui se lit — /p/vintageportrait-annees-folles — et qui
  * reste unique sans compteur.
+ *
+ * SAUF QUAND LE REFERENTIEL A DEJA PREFIXE. Le catalogue final ecrit 285
+ * de ses `carte_slug` sous la forme « commande-variante » ; prefixer une
+ * seconde fois donnerait « unboxing-unboxing-vue-du-dessus ». Ce n'est pas
+ * qu'une laideur : cinq de ces cartes sont EN LIGNE sous leur adresse
+ * courte, et les reprefixer changerait l'adresse d'une page deja partagee.
+ * On reconnait le prefixe plutot que de le reposer.
  */
 const slugsVus = new Set();
 function slugDeCarte(l) {
   const base = slugifier(l.commande.replace(/^\//, ''));
   const variante = slugifier(l.carte_slug);
-  let slug = variante && variante !== base ? `${base}-${variante}` : base;
+  let slug = base;
+  if (variante && variante !== base) {
+    slug = variante.startsWith(`${base}-`) ? variante : `${base}-${variante}`;
+  }
   if (slugsVus.has(slug)) {
     const empreinte = createHash('sha1').update(l.carte_id).digest('hex').slice(0, 6);
     slug = `${slug}-${empreinte}`;
@@ -435,6 +450,23 @@ create temporary table lot_v2_cartes (
 insert into lot_v2_cartes values
 ${valeurs.join(',\n')};
 
+-- Avant d'inserer : aucun slug neuf ne doit percuter l'adresse d'une
+-- AUTRE carte. Sans ce controle, la collision remonterait comme une
+-- violation d'unicite anonyme au milieu d'un lot de cent vingt, et il
+-- faudrait relire le fichier pour savoir laquelle.
+do $collision$
+declare v_liste text;
+begin
+  select string_agg(l.slug, ', ') into v_liste
+  from lot_v2_cartes l
+  join public.prompts p on p.slug = l.slug
+  where p.card_id is distinct from l.carte_id;
+
+  if v_liste is not null then
+    raise exception 'Slugs deja pris par une autre carte : %', v_liste;
+  end if;
+end $collision$;
+
 -- Les cartes arrivent en brouillon, comme le fichier d'import le declare.
 -- Rien de ce qui est en ligne ne bouge : on installe a cote, on publie
 -- ensuite, carte par carte ou par lot, depuis l'administration.
@@ -457,6 +489,14 @@ from lot_v2_cartes l
 left join public.categories c on c.external_ref = 'V2COL-' || l.collection_id
 -- L'index de \`card_id\` est partiel : l'inference doit reprendre sa
 -- condition, sans quoi Postgres ne sait pas quel index viser.
+-- LE SLUG PUBLIC N'EST PAS DANS CETTE LISTE, ET C'EST LE POINT.
+-- C'est l'adresse de la fiche : /p/unboxing-vue-du-dessus. Une carte
+-- deja en ligne a ete partagee, mise en favori, peut-etre indexee. La
+-- regle de fabrication des slugs peut s'ameliorer — elle vient de le
+-- faire — mais elle ne doit jamais reecrire l'adresse d'une page qui
+-- existe : un reimport casserait silencieusement quinze liens que
+-- personne ne saurait relier a ce lot. Les nouvelles cartes recoivent
+-- leur slug a l'insertion, les anciennes gardent le leur.
 on conflict (card_id) where card_id is not null do update
 set external_ref = excluded.external_ref,
     command = excluded.command,
