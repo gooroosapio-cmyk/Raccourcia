@@ -4,7 +4,7 @@ import { getPublicConfig } from '@/lib/catalog/queries';
 import { UpgradePanel } from '@/components/paywall/upgrade-panel';
 
 export const metadata = {
-  title: 'Accès à vie',
+  title: 'Accès complet',
   description: 'Toutes les commandes RaccourcIA, en un seul paiement.',
 };
 

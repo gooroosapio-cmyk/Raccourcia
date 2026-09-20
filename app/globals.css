@@ -358,3 +358,37 @@ body {
   width: 100%;
   height: 100%;
 }
+
+/*
+ * L'en-tete s'efface au-dessus d'un ecran plein.
+ *
+ * La coquille pose un bandeau opaque et flou en haut de chaque page. Sur
+ * Decouvrir, ou chaque carte occupe tout l'ecran, ce bandeau coupait
+ * l'image en deux et defaisait exactement ce que la page promet.
+ *
+ * Il devient transparent, et un voile sombre prend sa place : sans lui, le
+ * logo passerait du noir sur un fond clair au noir sur un fond noir selon
+ * la carte affichee. Le voile garantit un contraste quelle que soit
+ * l'image dessous.
+ *
+ * `:has()` plutot qu'un drapeau porte par la coquille : c'est la page qui
+ * sait qu'elle est plein ecran, et elle le dit par un attribut. La
+ * coquille n'a pas a connaitre la liste de ses pages.
+ */
+body:has([data-plein-ecran]) > div > header {
+  background-color: transparent;
+  backdrop-filter: none;
+  color: #fff;
+}
+
+body:has([data-plein-ecran]) > div > header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), transparent);
+  pointer-events: none;
+}
+
+body:has([data-plein-ecran]) > div > header > * {
+  position: relative;
+}

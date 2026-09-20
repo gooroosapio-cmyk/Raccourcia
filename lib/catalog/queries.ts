@@ -68,6 +68,7 @@ export const getPublicConfig = cache(async () => {
         CONFIG_KEYS.PRICE_CURRENCY,
         CONFIG_FALLBACKS[CONFIG_KEYS.PRICE_CURRENCY],
       ),
+      periode: read<string>(CONFIG_KEYS.PRICE_PERIOD, CONFIG_FALLBACKS[CONFIG_KEYS.PRICE_PERIOD]),
     },
   };
 });

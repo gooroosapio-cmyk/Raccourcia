@@ -43,8 +43,13 @@ export function FiltresDeGalerie({
 
   return (
     <div className="mb-3 flex items-center gap-2">
-      {/* La rangee defile dans son cadre, pas avec la page. */}
-      <div className="rail -ml-5 flex flex-1 gap-2 pl-5">
+      {/* La rangee defile dans son cadre, pas avec la page.
+          Le fondu a droite remplace la coupe nette : la derniere puce etait
+          tranchee net au bord du bouton « Filtres », ce qui se lit comme un
+          defaut d'affichage plutot que comme « il y en a d'autres ». Le
+          fondu dit la meme chose sans avoir l'air casse, et la marge
+          empeche la puce de toucher le bouton. */}
+      <div className="rail -ml-5 flex flex-1 gap-2 pl-5 pr-3 [mask-image:linear-gradient(to_right,black_calc(100%-20px),transparent)]">
         <Puce active={!valeurs.sujet} onClick={() => onChange({ ...valeurs, sujet: undefined })}>
           Tout
         </Puce>

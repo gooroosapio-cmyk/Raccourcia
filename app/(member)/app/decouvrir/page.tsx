@@ -2,6 +2,7 @@ import { getAccessState } from '@/lib/access/entitlement';
 import { compterLesVisuels, getDecouverte } from '@/lib/catalog/decouverte';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
 import { FeedImmersif } from '@/components/decouvrir/feed-immersif';
+import { PremiereVisite } from '@/components/decouvrir/premiere-visite';
 import { NetworkError } from '@/components/ui/network-error';
 import { EmptyState } from '@/components/ui/states';
 
@@ -70,8 +71,12 @@ export default async function DecouvrirPage() {
     // vingt pixels de chaque cote n'est plus plein ecran. La marge basse de
     // la coquille — celle qui degage la barre de navigation — est reprise de
     // la meme facon, la zone de defilement calculant sa propre hauteur.
-    <div className="-mx-4 -mb-24 min-[360px]:-mx-5">
+    // `data-plein-ecran` : la coquille s'en sert pour effacer le fond de
+    // son en-tete. Un bandeau opaque au-dessus d'un feed plein ecran coupe
+    // l'image en deux et defait ce que la page promet.
+    <div data-plein-ecran className="-mx-4 -mb-24 min-[360px]:-mx-5">
       <h1 className="sr-only">Découvrir</h1>
+      <PremiereVisite />
       <FeedImmersif
         initiales={page.cartes}
         suite={page.suite}

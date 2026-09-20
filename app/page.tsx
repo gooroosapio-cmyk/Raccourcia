@@ -51,7 +51,7 @@ export default async function LandingPage() {
 
       <section className="relative mt-5">
         <p className="text-[length:var(--texte-carte)] font-semibold text-[color:var(--color-brand)]">
-          Accès à vie, paiement unique
+          Accès complet aux trois bibliothèques
         </p>
         <h1 className="mt-1.5 text-[length:var(--texte-heros)] font-bold leading-[1.12] tracking-tight text-[color:var(--color-night)]">
           Le bon prompt,
@@ -111,7 +111,7 @@ export default async function LandingPage() {
       <p className="mt-4 text-[length:var(--texte-meta)] text-[color:var(--color-muted)]">
         Rien à configurer, rien à retenir.{' '}
         <Link href="/offre" className="font-medium text-[color:var(--color-brand)]">
-          Voir l’accès à vie
+          Voir l’offre
           {config.price.current > 0
             ? ` — ${new Intl.NumberFormat('fr-FR').format(config.price.current)} ${config.price.currency}`
             : ''}

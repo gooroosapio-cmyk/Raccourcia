@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export type Offre = {
   purchaseUrl: string;
-  price: { current: number; regular: number | null; currency: string };
+  price: { current: number; regular: number | null; currency: string; periode: string };
 };
 
 /**
@@ -31,18 +31,33 @@ export function UpgradePanel({
   /** Vrai lorsque ce panneau porte le titre de la page qui l'affiche. */
   titrePrincipal?: boolean;
 }) {
+  // L'argumentaire dit les TROIS BIBLIOTHEQUES, et non « Image et Texte ».
+  //
+  // La promesse tenait en une ligne — « le catalogue entier » — qui ne
+  // donne aucune raison d'acheter : on ne sait pas ce qu'il y a dedans.
+  // Trois bibliotheques, trois usages differents, et c'est la variete qui
+  // justifie un abonnement plutot qu'un achat a l'unite.
+  //
+  // Aucun chiffre : annoncer « 1 500 commandes » engage a les avoir et
+  // oblige a corriger la phrase a chaque publication.
   const avantages = [
     {
-      titre: 'Toutes les commandes',
-      corps: 'Le catalogue entier, en Image et en Texte, sans exception.',
+      titre: 'Images',
+      corps:
+        'Portraits, produits, matières, scènes : des centaines de rendus, chacun avec son avant/après.',
+    },
+    {
+      titre: 'Réflexions',
+      corps:
+        'Des modes qui changent la façon dont l’IA vous répond — débat, décision, enquête, immersion.',
+    },
+    {
+      titre: 'Textes',
+      corps: 'Écrire, reformuler, synthétiser : on remplit deux champs, on copie, c’est prêt.',
     },
     {
       titre: 'Nouveautés incluses',
       corps: 'Les commandes ajoutées ensuite sont comprises, sans rien repayer.',
-    },
-    {
-      titre: 'Accès immédiat',
-      corps: 'Jusqu’à 3 appareils avec le même compte, favoris et historique compris.',
     },
   ];
 
@@ -67,8 +82,8 @@ export function UpgradePanel({
           compact ? 'text-[14px]' : 'mx-auto max-w-[38ch] text-[16px]'
         }`}
       >
-        Certaines commandes se copient librement. L’accès à vie ouvre tout le catalogue, en un seul
-        paiement.
+        Certaines commandes se copient librement. L’accès complet ouvre les trois bibliothèques —
+        Images, Réflexions et Textes.
       </p>
 
       <ul className={`mt-5 space-y-3 ${compact ? '' : 'text-left'}`}>
@@ -139,7 +154,9 @@ function PriceTag({ price }: { price: Offre['price'] }) {
       <span className="text-[26px] font-semibold text-[color:var(--color-night)]">
         {format(price.current)} {price.currency}
       </span>
-      <span className="text-[13px] text-[color:var(--color-muted)]">une fois</span>
+      {/* La periode vient de la configuration : annoncer « une fois » sous
+          un prix annuel serait un engagement qu'on ne tiendrait pas. */}
+      <span className="text-[13px] text-[color:var(--color-muted)]">{price.periode}</span>
     </div>
   );
 }

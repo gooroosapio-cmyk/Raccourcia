@@ -38,5 +38,17 @@ export function ExitButton() {
   );
 }
 
+/**
+ * Sortir tient sa place, sans la prendre toute.
+ *
+ * Le bouton faisait toute la largeur, en rouge plein, a la meme hauteur
+ * que « Se connecter » : deux actions de poids egal, dont l'une defait ce
+ * que l'autre fait. Sur une page de reglages ou l'on vient surtout lire
+ * ses informations, c'est le geste de sortie qui attirait l'oeil en
+ * premier.
+ *
+ * Il reste rouge — c'est bien une sortie — mais contenu : la cible garde
+ * ses 44 px, la largeur suit le mot.
+ */
 const STYLE_SORTIE =
-  'flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-danger)]/35 bg-[color:var(--color-danger-soft)] text-[length:var(--texte-corps)] font-semibold text-[color:var(--color-danger)] transition-colors duration-[var(--duration-fast)] active:bg-[color:var(--color-danger)]/15';
+  'inline-flex h-11 items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-danger)]/30 px-5 text-[length:var(--texte-carte)] font-semibold text-[color:var(--color-danger)] transition-colors duration-[var(--duration-fast)] active:bg-[color:var(--color-danger-soft)]';

@@ -91,7 +91,12 @@ export default async function LandingPage() {
 
       <main id="haut" className="bg-[color:var(--color-surface)]">
         <Hero purchaseUrl={boutique} prix={prix} />
-        <Chiffres total={totalRaccourcis} categories={categories.length} prix={prix} />
+        <Chiffres
+          total={totalRaccourcis}
+          categories={categories.length}
+          prix={prix}
+          periode={config.price.periode}
+        />
         <Probleme />
         <Difference />
         <Systeme />
@@ -171,7 +176,7 @@ function Hero({ purchaseUrl, prix }: { purchaseUrl: string; prix: string }) {
           </div>
 
           <div className="mt-8">
-            <BlocAchat purchaseUrl={purchaseUrl} prix={prix} libelle="Accès à vie" />
+            <BlocAchat purchaseUrl={purchaseUrl} prix={prix} libelle="Accès complet" />
           </div>
         </div>
 
@@ -200,10 +205,12 @@ function Chiffres({
   total,
   categories,
   prix,
+  periode,
 }: {
   total: number;
   categories: number;
   prix: string;
+  periode: string;
 }) {
   const chiffres = [
     // « + » parce que le catalogue s'agrandit : un compte exact vieillit
@@ -211,7 +218,7 @@ function Chiffres({
     { valeur: total > 0 ? `+${total}` : '—', libelle: 'commandes prêtes à utiliser' },
     { valeur: categories > 0 ? `${categories}` : '—', libelle: 'catégories classées par besoin' },
     { valeur: '3', libelle: 'IA compatibles : ChatGPT, Claude, Gemini' },
-    { valeur: prix, libelle: 'une seule fois, accès à vie' },
+    { valeur: prix, libelle: `${periode}, tout le catalogue` },
   ];
 
   return (
@@ -798,7 +805,7 @@ function CtaFinal({ purchaseUrl, prix }: { purchaseUrl: string; prix: string }) 
         {/* Le bloc porte deja les moyens de paiement : les repeter juste en
             dessous ferait deux fois la meme rangee. */}
         <div className="mt-8">
-          <BlocAchat purchaseUrl={purchaseUrl} prix={prix} libelle="Accès à vie" sombre />
+          <BlocAchat purchaseUrl={purchaseUrl} prix={prix} libelle="Accès complet" sombre />
         </div>
       </div>
     </Section>
