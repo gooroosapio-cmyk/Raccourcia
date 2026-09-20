@@ -4,10 +4,11 @@ import { useActionState } from 'react';
 
 import { setPromptFree, setPromptPinned, setPromptStatus } from '@/lib/actions/admin';
 import type { AdminActionState } from '@/lib/actions/admin';
+import { CopierLePayload } from '@/components/admin/copier-le-payload';
 
 /**
- * Les trois gestes qu'on fait sans ouvrir la fiche : offrir, remonter,
- * masquer.
+ * Les quatre gestes qu'on fait sans ouvrir la fiche : copier le texte,
+ * offrir, remonter, masquer.
  *
  * Ils vivent dans la liste parce que c'est la qu'on les decide — en
  * parcourant le catalogue, pas en editant un raccourci. Ouvrir la fiche pour
@@ -30,6 +31,10 @@ export function PromptRowActions({
 }) {
   return (
     <span className="flex shrink-0 items-center gap-1">
+      {/* En tete des quatre : c'est le seul qui lit, les trois autres
+          ecrivent. Le separer par la position evite d'en declencher un par
+          erreur en visant celui-la. */}
+      <CopierLePayload promptId={promptId} />
       <Offert promptId={promptId} free={free} />
       <Etoile promptId={promptId} pinned={pinned} />
       <Masquer promptId={promptId} status={status} />

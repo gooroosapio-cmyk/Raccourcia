@@ -165,6 +165,9 @@ export function ImagePromptCard({
             pret={prompt.payloadReady}
             locked={locked}
             compact
+            // Sur une demi-carte, « Copier » s'affichait « Copi… » : on
+            // n'ecrit que ce qui tient en entier, l'icone dit le reste.
+            iconeSeule
             genre={prompt.entityType}
             // Une commande a personnaliser ne se copie pas depuis la
             // galerie : il n'y a pas de formulaire ici, et livrer le texte

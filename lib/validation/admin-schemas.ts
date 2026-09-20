@@ -106,6 +106,11 @@ export const promptFreeInput = z.object({
   free: z.coerce.boolean(),
 });
 
+/** Une commande designee, et rien d'autre : lecture d'un texte a copier. */
+export const promptIdInput = z.object({
+  promptId: z.string().uuid(),
+});
+
 /**
  * Une action groupee : des identifiants, et ce qu'on leur fait.
  *

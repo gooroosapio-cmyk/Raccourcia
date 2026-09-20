@@ -88,6 +88,7 @@ export function CopyCommandButton({
   onPersonnaliser,
   onLockedClick,
   proposerOuverture = false,
+  iconeSeule = false,
 }: {
   promptId: string;
   provider: string;
@@ -147,6 +148,25 @@ export function CopyCommandButton({
    * copie souvent plusieurs commandes de suite avant d'aller les coller.
    */
   proposerOuverture?: boolean;
+  /**
+   * Le bouton se reduit a son icone.
+   *
+   * POURQUOI. Sur une carte de galerie — 42 % de la largeur d'un telephone
+   * moins ses marges, moins le coeur —, il reste une centaine de pixels au
+   * bouton. « Copier » s'y affichait « Copi… » et « Personnaliser »
+   * « Pe… ». Un mot coupe n'informe pas : il se lit comme un defaut
+   * d'affichage, et « Pe… » ne dit meme pas de quelle action il s'agit.
+   *
+   * Deux carres pour copier, une fleche vers le haut pour ouvrir la fiche :
+   * ces deux dessins se reconnaissent sans legende, et la carte gagne la
+   * place que le mot tronque occupait pour rien. Le nom complet reste dans
+   * `aria-label` et dans l'infobulle — rien n'est perdu pour qui ne voit
+   * pas l'icone.
+   *
+   * La regle est : on n'ecrit que ce qui tient en entier. Les cartes
+   * pleine largeur gardent donc leur libelle, qui s'y affiche complet.
+   */
+  iconeSeule?: boolean;
 }) {
   const { show } = useToast();
   const [etat, setEtat] = useState<Etat>('repos');
@@ -257,6 +277,21 @@ export function CopyCommandButton({
                   ? `Copier le prompt pour ${nomIA}`
                   : 'Copier le prompt';
 
+  // L'icone dit l'action quand le mot n'est pas la. « Bientot » avait une
+  // icone vide — un bouton grise sans dessin ne se distingue pas d'un
+  // bouton casse.
+  const icone = locked ? (
+    <LockIcon />
+  ) : !pret ? (
+    <HorlogeIcon />
+  ) : aPersonnaliser && onPersonnaliser ? (
+    <FlecheOuvrir />
+  ) : etat === 'copie' ? (
+    <CheckIcon />
+  ) : (
+    <CopyIcon />
+  );
+
   const ton = locked
     ? 'bg-[color:var(--color-sky)] text-[color:var(--color-night)]'
     : !pret
@@ -271,9 +306,13 @@ export function CopyCommandButton({
     ? 'Débloquer RaccourcIA pour copier ce prompt'
     : !pret
       ? 'Le texte de ce prompt n’est pas encore disponible'
-      : nomIA
-        ? `Copier le prompt pour ${nomIA}`
-        : 'Copier le prompt';
+      : // Sans le mot, l'intitule est la seule chose qui distingue « copier »
+        // de « ouvrir pour personnaliser ». Il doit donc le dire.
+        aPersonnaliser && onPersonnaliser
+        ? 'Ouvrir la fiche pour personnaliser avant de copier'
+        : nomIA
+          ? `Copier le prompt pour ${nomIA}`
+          : 'Copier le prompt';
 
   // Pastille ronde sur la vignette : pas de libelle, donc pas de fond colore
   // non plus. Un rond bleu vif sur chaque carte d'une grille de vingt tirerait
@@ -306,12 +345,15 @@ export function CopyCommandButton({
         // mais le bouton paraitrait casse. On garde l'etat visible a la place.
         aria-busy={etat === 'chargement'}
         aria-label={intitule}
+        title={intitule}
         className={`touch-target inline-flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] font-semibold transition-[background-color,transform] duration-[var(--duration-fast)] active:scale-[0.98] ${
           compact ? 'h-11 px-3 text-[13px]' : 'h-13 px-4 text-[15px]'
         } ${ton} disabled:cursor-not-allowed`}
       >
-        {locked ? <LockIcon /> : !pret ? null : etat === 'copie' ? <CheckIcon /> : <CopyIcon />}
-        <span className="truncate">{libelle}</span>
+        {icone}
+        {/* Le libelle n'apparait que s'il tient : voir `iconeSeule`. Pas de
+            `truncate` ici — c'etait lui qui fabriquait les « Copi… ». */}
+        {iconeSeule ? null : <span className="whitespace-nowrap">{libelle}</span>}
       </button>
 
       {/* Action secondaire, discrete et seulement une fois la copie faite :
@@ -351,6 +393,37 @@ function CopyIcon() {
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/** Ouvrir la fiche : elle monte depuis le bas de l'ecran. */
+function FlecheOuvrir() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 20V5m0 0-6 6m6-6 6 6"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Le texte n'est pas encore la. */
+function HorlogeIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M12 7.5V12l3 2"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

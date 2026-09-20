@@ -3,9 +3,9 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 
-import type { AdminCategory } from '@/lib/admin/queries';
+import { oublierLaListe } from '@/components/admin/memoire-des-filtres';
 import type { TagAdmin } from '@/lib/admin/tags';
-import { CONTENT_STATUS, LIBRARIES, LIBRARY_LABELS, MODE_LABELS } from '@/lib/constants';
+import { CONTENT_STATUS, LIBRARIES, LIBRARY_LABELS } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 const STATUS_LABELS: Record<Enums<'content_status'>, string> = {
@@ -32,28 +32,33 @@ const VISUELS = [
   { valeur: 'sans' as const, libelle: 'Sans visuel' },
 ];
 
-/** Filtres de la liste admin. Ils passent par l'URL, comme cote membre. */
+/**
+ * Filtres de la liste admin. Ils passent par l'URL, comme cote membre.
+ *
+ * LE FILTRE PAR CATEGORIE A ETE RETIRE. Vingt-sept familles dans un menu
+ * deroulant, au-dessus de quatre rangees de puces qui disent deja la
+ * bibliotheque, l'etat, l'acces et le visuel : c'etait le seul filtre qui
+ * demandait d'ouvrir une liste pour choisir, et le seul dont la valeur ne
+ * se lisait pas d'un coup d'oeil une fois posee. Les puces de bibliotheque
+ * repondent a la meme question d'un geste, et la recherche fait le reste.
+ */
 export function AdminPromptFilters({
   search,
   mode,
   status,
-  categoryId,
   access,
   media,
   library,
   tagId,
-  categories,
   tags,
 }: {
   search?: string;
   mode?: Enums<'app_mode'>;
   status?: Enums<'content_status'>;
-  categoryId?: string;
   access?: 'gratuit' | 'premium';
   media?: 'avec' | 'sans';
   library?: Enums<'app_library'>;
   tagId?: string;
-  categories: AdminCategory[];
   tags: TagAdmin[];
 }) {
   const router = useRouter();
@@ -87,13 +92,6 @@ export function AdminPromptFilters({
     push(next);
   };
 
-  const choisirCategorie = (value: string) => {
-    const next = new URLSearchParams(params.toString());
-    if (value) next.set('categorie', value);
-    else next.delete('categorie');
-    push(next);
-  };
-
   const choisirTag = (value: string) => {
     const next = new URLSearchParams(params.toString());
     if (value) next.set('tag', value);
@@ -108,7 +106,6 @@ export function AdminPromptFilters({
     (search ? 1 : 0) +
     (mode ? 1 : 0) +
     (status ? 1 : 0) +
-    (categoryId ? 1 : 0) +
     (access ? 1 : 0) +
     (media ? 1 : 0) +
     (library ? 1 : 0) +
@@ -116,22 +113,12 @@ export function AdminPromptFilters({
 
   const reinitialiser = () => {
     setTerm('');
+    // La liste retenue part avec les filtres : sans cela, la restauration
+    // les reposerait au rechargement suivant et le bouton n'aurait servi
+    // qu'a les faire disparaitre une seconde.
+    oublierLaListe();
     startTransition(() => router.replace('/admin/raccourcis', { scroll: false }));
   };
-
-  // Le filtre de mode restreint la liste des familles : proposer une famille
-  // texte alors que seuls les raccourcis image sont affiches ne renverrait
-  // jamais rien.
-  //
-  // Les familles masquees sortent de la liste pour la meme raison : leurs
-  // raccourcis n'atteignent aucun membre, filtrer dessus ne repond a aucune
-  // question qu'on se pose en parcourant le catalogue. La seule exception
-  // est celle deja choisie — la retirer viderait le champ sans rien dire.
-  const racines = categories.filter((categorie) => categorie.parentId === null);
-  const famillesDuMode = mode ? racines.filter((c) => c.mode === mode) : racines;
-  const famillesVisibles = famillesDuMode.filter(
-    (categorie) => categorie.isVisible || categorie.id === categoryId,
-  );
 
   return (
     <div className="space-y-3">
@@ -144,23 +131,6 @@ export function AdminPromptFilters({
           placeholder="Rechercher une commande ou un titre..."
           className="h-11 w-full rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 text-[15px] outline-none placeholder:text-[color:var(--color-muted)]"
         />
-      </label>
-
-      <label className="block">
-        <span className="sr-only">Filtrer par catégorie</span>
-        <select
-          value={categoryId ?? ''}
-          onChange={(event) => choisirCategorie(event.target.value)}
-          className="h-11 w-full rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 text-[15px] text-[color:var(--color-night)] outline-none"
-        >
-          <option value="">Toutes les catégories</option>
-          {famillesVisibles.map((categorie) => (
-            <option key={categorie.id} value={categorie.id}>
-              {MODE_LABELS[categorie.mode]} — {categorie.name}
-              {categorie.isVisible ? '' : ' (masquée)'}
-            </option>
-          ))}
-        </select>
       </label>
 
       {tags.length > 0 ? (
