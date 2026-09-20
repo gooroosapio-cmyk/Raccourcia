@@ -358,6 +358,27 @@ if compgen -G "$ROOT/supabase/seed/catalogue-2026-09/*.sql" > /dev/null; then
     from public.prompts where external_ref like 'V2-%';"
 fi
 
+# La fusion des deux catalogues : reaffectation, retrait, publication.
+#
+# Deux passes, comme les autres lots. Le controle final refuse si une
+# commande publiee reste dans l'ancienne arborescence ou se retrouve sans
+# texte a copier — une fusion a moitie faite laisse une bibliotheque qui
+# parait rangee et deux cents commandes introuvables.
+if compgen -G "$ROOT/supabase/seed/fusion-2026-09/*.sql" > /dev/null; then
+  echo "==> Fusion 2026-09 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/fusion-2026-09/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) filter (where status = 'published') || ' commande(s) publiee(s), ' ||
+           (select count(*) from public.categories
+            where status <> 'archived' and external_ref like 'V2-%') ||
+           ' ancien(s) rayon(s) encore ouvert(s)'
+    from public.prompts;"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

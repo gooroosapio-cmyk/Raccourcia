@@ -61,16 +61,29 @@ begin
   where catalog_v2 and entity_type not in ('commande_image', 'mode_ia', 'parcours');
   perform tests_assert(v_n = 0, format('%s cartes V2 avec un type inconnu.', v_n));
 
-  -- --- Les deux experiences a part existent bien --------------------------
+  -- --- Les deux experiences a part : presentes, ou remplacees --------------
   --
-  -- L'Accueil leur donne une entree distincte des familles d'images. Si
-  -- elles disparaissaient du catalogue, ces entrees pointeraient dans le
-  -- vide plutot que de ne pas s'afficher.
+  -- L'Accueil leur donnait une entree distincte des familles d'images. Le
+  -- catalogue de septembre 2026 les remplace par la bibliotheque
+  -- Reflexions — Modes de reflexion, Assistants professionnels,
+  -- Personnages immersifs, Jeux et simulations — et la fusion les archive.
+  --
+  -- Ce qui compte dans les deux cas : l'entree ne doit jamais pointer dans
+  -- le vide. Soit les deux familles sont la, soit aucune ne l'est et les
+  -- Reflexions ont pris le relais.
   select count(*) into v_n
   from public.categories
   where slug in ('modes-ia', 'parcours-guides') and is_visible;
-  perform tests_assert(v_n = 2,
-    format('%s familles speciales visibles au lieu de 2 (Modes IA, Parcours).', v_n));
+
+  if v_n <> 2 then
+    perform tests_assert(v_n = 0,
+      format('%s famille speciale visible sur 2 : l''entree de l''Accueil pointe a moitie dans le vide.', v_n));
+
+    perform tests_assert(
+      exists (select 1 from public.prompts
+              where library = 'reflexions' and status = 'published'),
+      'Les Modes IA et les Parcours sont fermes sans que les Reflexions les remplacent.');
+  end if;
 end $$;
 
 rollback;

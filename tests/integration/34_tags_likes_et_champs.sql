@@ -80,7 +80,13 @@ declare
   v_prompt uuid;
   v_champ uuid;
 begin
-  select id into v_prompt from public.prompts where status = 'published' limit 1;
+  -- Une commande qui ne porte encore aucun champ : depuis le catalogue de
+  -- septembre 2026, la plupart en declarent un ou trois, et reprendre la
+  -- premiere venue buterait sur l'unicite de la position.
+  select id into v_prompt from public.prompts p
+  where p.status = 'published'
+    and not exists (select 1 from public.prompt_fields f where f.prompt_id = p.id)
+  limit 1;
 
   insert into public.prompt_fields (prompt_id, cle, libelle, position)
   values (v_prompt, 'Chiffre d''affaires', 'Chiffre d''affaires', 1)

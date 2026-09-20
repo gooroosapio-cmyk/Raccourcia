@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - fusion-2026-09
           - catalogue-2026-09
           - administration-v3
           - ecrans-v3
@@ -129,7 +130,8 @@ jobs:
           inputs.dossier != 'taxonomie-v3' &&
           inputs.dossier != 'ecrans-v3' &&
           inputs.dossier != 'administration-v3' &&
-          inputs.dossier != 'catalogue-2026-09'
+          inputs.dossier != 'catalogue-2026-09' &&
+          inputs.dossier != 'fusion-2026-09'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -388,6 +390,53 @@ jobs:
                    (select count(*) from public.prompts
                     where status = 'published' and library is null) ||
                    ' commande(s) publiee(s) sans bibliotheque';"
+
+      # La fusion des deux catalogues, et la mise en ligne.
+      #
+      # A lancer APRES `catalogue-2026-09`, jamais avant : elle deplace les
+      # commandes existantes vers des collections que l'import vient de
+      # creer.
+      #
+      # Elle fait quatre choses, dans cet ordre :
+      #   1. les 484 commandes image deja en ligne rejoignent les nouvelles
+      #      collections, avec leurs visuels, leurs favoris et leurs
+      #      identifiants — rien n'est recree, tout est deplace ;
+      #   2. les Modes IA, les Parcours guides et les rayons d'essai sont
+      #      archives : la bibliotheque Reflexions les remplace ;
+      #   3. les 1 010 cartes V2 passent en ligne ;
+      #   4. les anciens rayons vides ferment.
+      #
+      # ARCHIVER, PAS SUPPRIMER : une commande archivee garde sa ligne, son
+      # identifiant, ses visuels et son historique, et se rouvre d'un geste.
+      # Aucun visuel n'est touche.
+      #
+      # C'est le lot qui change ce que les membres voient : il demande donc
+      # le mot « basculer ».
+      - name: Fusionner les catalogues et publier
+        if: inputs.dossier == 'fusion-2026-09'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          if [ "${{ inputs.bascule }}" != "basculer" ]; then
+            echo 'Ce lot change la navigation des membres. Taper "basculer" pour confirmer.'
+            exit 1
+          fi
+          for fichier in supabase/seed/fusion-2026-09/*.sql; do
+            echo "  $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Etat du catalogue :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) filter (where status = 'published') || ' commande(s) publiee(s), ' ||
+                   count(*) filter (where status = 'published' and media_ready) || ' avec un visuel'
+            from public.prompts;"
+          psql "$PGURL" -At -c "
+            select '    visuels conserves : ' || count(*) from public.prompt_media;"
+          psql "$PGURL" -At -c "
+            select '    ancien(s) rayon(s) encore ouvert(s) : ' || count(*)
+            from public.categories
+            where status <> 'archived' and external_ref like 'V2-%';"
 
       # Le catalogue de septembre 2026 : la taxonomie V2 de la bibliotheque.
       #

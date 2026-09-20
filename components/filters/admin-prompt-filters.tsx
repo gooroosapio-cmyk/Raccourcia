@@ -4,7 +4,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 
 import type { AdminCategory } from '@/lib/admin/queries';
-import { CONTENT_STATUS, MODES, MODE_LABELS } from '@/lib/constants';
+import type { TagAdmin } from '@/lib/admin/tags';
+import { CONTENT_STATUS, LIBRARIES, LIBRARY_LABELS, MODE_LABELS } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 const STATUS_LABELS: Record<Enums<'content_status'>, string> = {
@@ -39,7 +40,10 @@ export function AdminPromptFilters({
   categoryId,
   access,
   media,
+  library,
+  tagId,
   categories,
+  tags,
 }: {
   search?: string;
   mode?: Enums<'app_mode'>;
@@ -47,7 +51,10 @@ export function AdminPromptFilters({
   categoryId?: string;
   access?: 'gratuit' | 'premium';
   media?: 'avec' | 'sans';
+  library?: Enums<'app_library'>;
+  tagId?: string;
   categories: AdminCategory[];
+  tags: TagAdmin[];
 }) {
   const router = useRouter();
   const params = useSearchParams();
@@ -85,6 +92,31 @@ export function AdminPromptFilters({
     if (value) next.set('categorie', value);
     else next.delete('categorie');
     push(next);
+  };
+
+  const choisirTag = (value: string) => {
+    const next = new URLSearchParams(params.toString());
+    if (value) next.set('tag', value);
+    else next.delete('tag');
+    push(next);
+  };
+
+  // Tout remettre a zero d'un geste. A huit filtres empilables, defaire un
+  // par un pour revenir a la liste complete est un aller-retour par filtre,
+  // et on finit par recharger la page a la main.
+  const actifs =
+    (search ? 1 : 0) +
+    (mode ? 1 : 0) +
+    (status ? 1 : 0) +
+    (categoryId ? 1 : 0) +
+    (access ? 1 : 0) +
+    (media ? 1 : 0) +
+    (library ? 1 : 0) +
+    (tagId ? 1 : 0);
+
+  const reinitialiser = () => {
+    setTerm('');
+    startTransition(() => router.replace('/admin/raccourcis', { scroll: false }));
   };
 
   // Le filtre de mode restreint la liste des familles : proposer une famille
@@ -131,14 +163,35 @@ export function AdminPromptFilters({
         </select>
       </label>
 
+      {tags.length > 0 ? (
+        <label className="block">
+          <span className="sr-only">Filtrer par tag</span>
+          <select
+            value={tagId ?? ''}
+            onChange={(event) => choisirTag(event.target.value)}
+            className="h-11 w-full rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 text-[15px] text-[color:var(--color-night)] outline-none"
+          >
+            <option value="">Tous les tags</option>
+            {tags.map((tag) => (
+              <option key={tag.id} value={tag.id}>
+                {tag.nom} ({tag.total}){tag.actif ? '' : ' — désactivé'}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
+
       <div className="-mx-5 overflow-x-auto px-5">
         <div className="flex w-max gap-2">
-          {MODES.map((value) => (
+          {/* La bibliotheque en tete : c'est le premier axe du catalogue
+              depuis la V2, et celui qui separe vraiment le travail — une
+              carte image attend un visuel, une carte texte une relecture. */}
+          {LIBRARIES.map((value) => (
             <Chip
               key={value}
-              label={MODE_LABELS[value]}
-              active={mode === value}
-              onClick={() => toggle('mode', value, mode)}
+              label={LIBRARY_LABELS[value]}
+              active={library === value}
+              onClick={() => toggle('bibliotheque', value, library)}
             />
           ))}
           <span aria-hidden="true" className="w-px bg-[color:var(--color-line)]" />
@@ -170,6 +223,16 @@ export function AdminPromptFilters({
           ))}
         </div>
       </div>
+
+      {actifs > 0 ? (
+        <button
+          type="button"
+          onClick={reinitialiser}
+          className="touch-target inline-flex items-center text-[13px] font-medium text-[color:var(--color-muted)] underline underline-offset-2"
+        >
+          Réinitialiser les {actifs} filtre{actifs > 1 ? 's' : ''}
+        </button>
+      ) : null}
     </div>
   );
 }

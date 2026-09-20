@@ -8,10 +8,11 @@ import {
   type TriAdmin,
 } from '@/lib/admin/queries';
 import type { AdminPromptFilters as FiltresListe } from '@/lib/admin/queries';
+import { listAdminTags } from '@/lib/admin/tags';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
 import { AdminPromptRowItem } from '@/components/admin/prompt-row';
 import { CaseDeSelection, SelectionEnMasse } from '@/components/admin/selection-en-masse';
-import { CONTENT_STATUS, MODES, type Mode } from '@/lib/constants';
+import { CONTENT_STATUS, LIBRARIES, MODES, type Library, type Mode } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 export const metadata = { title: 'Raccourcis' };
@@ -40,6 +41,7 @@ export default async function AdminPromptsPage({
   const acces = asString(params.acces);
   const visuel = asString(params.visuel);
   const tri = asString(params.tri);
+  const bibliotheque = asString(params.bibliotheque);
 
   // Le type contextuel garde les litteraux : sans lui, « gratuit » redevient
   // `string` dans l'objet et ne correspond plus a la liste fermee.
@@ -54,13 +56,16 @@ export default async function AdminPromptsPage({
     // jamais transmise a la requete.
     access: acces === 'gratuit' || acces === 'premium' ? acces : undefined,
     media: visuel === 'avec' || visuel === 'sans' ? visuel : undefined,
+    library: LIBRARIES.includes(bibliotheque as Library) ? (bibliotheque as Library) : undefined,
+    tagId: asString(params.tag),
     tri: tri && tri in TRIS_ADMIN ? (tri as TriAdmin) : undefined,
     page: Math.max(Number(asString(params.page) ?? 1) || 1, 1),
   };
 
-  const [{ items, hasMore, total, parPage }, categories] = await Promise.all([
+  const [{ items, hasMore, total, parPage }, categories, tags] = await Promise.all([
     listAdminPrompts(filters),
     listAdminCategories(),
+    listAdminTags(),
   ]);
 
   /** L'adresse de la meme liste, a une page ou un tri pres. */
@@ -72,6 +77,8 @@ export default async function AdminPromptsPage({
     if (filters.categoryId) suite.set('categorie', filters.categoryId);
     if (filters.access) suite.set('acces', filters.access);
     if (filters.media) suite.set('visuel', filters.media);
+    if (filters.library) suite.set('bibliotheque', filters.library);
+    if (filters.tagId) suite.set('tag', filters.tagId);
     const triRetenu = changements.tri ?? filters.tri;
     if (triRetenu) suite.set('tri', triRetenu);
     const page = changements.page ?? filters.page;
@@ -113,7 +120,10 @@ export default async function AdminPromptsPage({
         categoryId={filters.categoryId}
         access={filters.access}
         media={filters.media}
+        library={filters.library}
+        tagId={filters.tagId}
         categories={categoriesDeRangement(categories)}
+        tags={tags}
       />
 
       {/* Combien, et ou l'on en est. Le tri se change sans perdre les filtres :

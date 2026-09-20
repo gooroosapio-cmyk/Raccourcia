@@ -24,6 +24,16 @@ export type AdminPromptRow = {
   /** Remonte en tete de sa categorie. Outil d'administration, jamais affiche. */
   isPinned: boolean;
   categoryName: string | null;
+  /** La bibliotheque de rangement. `null` pour un contenu anterieur a la V2. */
+  library: Enums<'app_library'> | null;
+  /**
+   * Ce qui distingue cette carte des autres de la meme commande.
+   *
+   * `null` pour une commande a carte unique. Affiche a cote du titre :
+   * depuis la V2, une liste peut contenir cinq lignes commençant par
+   * /vintageportrait, et sans ce mot on ne sait pas laquelle on ouvre.
+   */
+  cardSlug: string | null;
   /** Visuel « avant » envoye depuis l'administration. */
   hasBefore: boolean;
   /** Visuel « apres » : celui que la carte montre dans la grille. */
@@ -63,6 +73,8 @@ function toRow(row: {
   is_free: boolean;
   is_pinned: boolean;
   updated_at: string;
+  library: Enums<'app_library'> | null;
+  card_slug: string | null;
   categories: { name: string } | null;
   prompt_media: { kind: Enums<'media_kind'>; storage_path: string; sort_order: number }[] | null;
 }): AdminPromptRow {
@@ -79,6 +91,8 @@ function toRow(row: {
     isFree: row.is_free,
     isPinned: row.is_pinned,
     categoryName: row.categories?.name ?? null,
+    library: row.library,
+    cardSlug: row.card_slug,
     hasBefore: visuels.some((media) => media.kind === 'before'),
     hasAfter: Boolean(apres),
     afterUrl: apres ? urlVisuel(apres.storage_path, LARGEURS_VISUEL.apercu) : null,
@@ -87,7 +101,20 @@ function toRow(row: {
 }
 
 const ROW_COLUMNS =
-  'id, command, name, mode, status, is_free, is_pinned, updated_at, categories(name), prompt_media(kind, storage_path, sort_order)';
+  'id, command, name, mode, status, is_free, is_pinned, updated_at, library, card_slug, ' +
+  'categories(name), prompt_media(kind, storage_path, sort_order)';
+
+/**
+ * Les colonnes du comptage, et la jointure quand — et seulement quand — un
+ * filtre porte dessus.
+ *
+ * Ecrite en dur, la jointure sur les tags ne compterait que les cartes
+ * taguees : le total annoncerait un chiffre plus petit que la liste
+ * montree, et rien ne dirait pourquoi.
+ */
+function colonnesDuComptageAdmin(filtreTag: boolean): string {
+  return filtreTag ? 'id, prompt_tags!inner(tag_id)' : 'id';
+}
 
 export async function getAdminDashboard(): Promise<AdminDashboard> {
   const supabase = await createClient();
@@ -192,6 +219,17 @@ export type AdminPromptFilters = {
    * question « que reste-t-il a produire ? ».
    */
   media?: 'avec' | 'sans';
+  /**
+   * La bibliotheque de rangement : Images, Textes ou Reflexions.
+   *
+   * C'est le premier axe du catalogue depuis la V2, et celui qui separe
+   * vraiment le travail : une carte image attend un visuel, une carte texte
+   * attend une relecture. Filtrer par mode ne repondait plus a cette
+   * question — « texte » y melange les Textes et les Reflexions.
+   */
+  library?: Enums<'app_library'>;
+  /** Un tag pose sur la carte. Filtre le catalogue par usage transversal. */
+  tagId?: string;
   /** Par quoi la liste est triee. Voir `TRIS_ADMIN`. */
   tri?: TriAdmin;
   page: number;
@@ -252,6 +290,8 @@ export async function listAdminPrompts(
     if (filters.categoryId) requete = requete.eq('category_id', filters.categoryId);
     if (filters.access) requete = requete.eq('is_free', filters.access === 'gratuit');
     if (filters.media) requete = requete.eq('media_ready', filters.media === 'avec');
+    if (filters.library) requete = requete.eq('library', filters.library);
+    if (filters.tagId) requete = requete.eq('prompt_tags.tag_id', filters.tagId);
     if (terme) requete = requete.ilike('search_norm', `%${terme}%`);
 
     return requete;
@@ -259,14 +299,19 @@ export async function listAdminPrompts(
 
   const tri = TRIS_ADMIN[filters.tri ?? 'modifie'];
 
+  // La jointure sur les tags entre dans les colonnes lues quand le filtre
+  // est actif : sans elle, PostgREST rejette le `eq` sur la ressource
+  // imbriquee.
+  const colonnes = filters.tagId ? `${ROW_COLUMNS}, prompt_tags!inner(tag_id)` : ROW_COLUMNS;
+
   const [lecture, comptage] = await Promise.all([
-    construire(ROW_COLUMNS)
+    construire(colonnes)
       .order(tri.colonne, { ascending: tri.ascendant })
       // Derniere cle unique : sans elle, deux ex aequo s'echangent d'une page
       // a l'autre et la meme ligne peut apparaitre deux fois ou disparaitre.
       .order('id', { ascending: true })
       .range(from, from + ADMIN_PAGE_SIZE),
-    construire('id', true),
+    construire(colonnesDuComptageAdmin(Boolean(filters.tagId)), true),
   ]);
 
   const rows = (lecture.data ?? []) as unknown as Parameters<typeof toRow>[0][];

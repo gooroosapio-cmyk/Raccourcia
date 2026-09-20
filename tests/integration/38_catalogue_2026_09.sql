@@ -66,16 +66,24 @@ begin
   select count(*) into v_publiees_v2
   from public.prompts where external_ref like 'V2-%' and status = 'published';
 
-  perform tests_assert(
-    v_publiees_v2 = 0,
-    format('%s carte(s) V2 sont publiees : le lot doit installer en brouillon.', v_publiees_v2));
+  -- Le lot d'import installe en brouillon ; c'est la fusion qui publie, et
+  -- elle ferme les anciens rayons en meme temps. Tant qu'aucun n'est ferme,
+  -- rien ne doit etre en ligne.
+  if not exists (
+    select 1 from public.categories
+    where external_ref like 'V2-%' and status = 'archived'
+  ) then
+    perform tests_assert(
+      v_publiees_v2 = 0,
+      format('%s carte(s) V2 sont publiees : le lot doit installer en brouillon.', v_publiees_v2));
+  end if;
 
-  -- Le catalogue en ligne ne doit pas avoir bouge. Le seuil est volontairement
-  -- bas : ce qui compte est qu'il reste un catalogue, pas son compte exact.
+  -- Le catalogue anterieur ne doit pas avoir ete efface. Apres la fusion,
+  -- ses commandes image sont toujours publiees — deplacees, pas remplacees.
   perform tests_assert(
     (select count(*) from public.prompts
      where status = 'published' and external_ref not like 'V2-%') > 0,
-    'Plus aucune commande anterieure n''est publiee : l''import a efface le catalogue en ligne.');
+    'Plus aucune commande anterieure n''est publiee : le catalogue en ligne a ete efface.');
 end $$;
 
 -- --- Aucune carte orpheline, aucun texte manquant ------------------------

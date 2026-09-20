@@ -41,30 +41,44 @@ begin
 
   -- Une vedette de musique n'est pas un personnage de cinema : elle est
   -- editoriale, et le regroupement ne l'a pas renvoyee au cinema.
+  --
+  -- Deux noms possibles selon l'etat de la base : « editorial » tant que
+  -- seul le rangement des rayons a eu lieu, « portrait-et-editorial » une
+  -- fois la fusion de septembre 2026 passee. C'est l'intention qui est
+  -- verifiee — pas le cinema —, pas le libelle du moment.
   select c.slug into v_collection
   from public.prompts p
   join public.categories c on c.id = p.category_id
   where p.command = '/afrobeatsstar';
-  if v_collection is distinct from 'editorial' then
+  if v_collection is null or v_collection not in ('editorial', 'portrait-et-editorial') then
     raise exception 'Rangement : /afrobeatsstar est range dans %.', coalesce(v_collection, 'nulle part');
   end if;
 
   -- Le cinema tient dans un seul rayon : affiches, personnages, ambiances et
   -- espionnage, qui separes donnaient des collections de trois cartes.
+  --
+  -- Deux noms possibles selon l'etat de la base : « cinema » tant que seul
+  -- le rangement des rayons a eu lieu, « cinema-et-pop-culture » une fois la
+  -- fusion de septembre 2026 passee. C'est le regroupement qui est verifie,
+  -- pas le libelle du moment — et la fusion en amene d'autres, donc on
+  -- controle un plancher, pas un compte exact.
   select count(*) into v_n
   from public.prompts p
   join public.categories c on c.id = p.category_id
-  where c.slug = 'cinema' and p.status = 'published';
-  if v_n <> 19 then
-    raise exception 'Rangement : % cartes de cinema au lieu de 19.', v_n;
+  where c.slug in ('cinema', 'cinema-et-pop-culture') and p.status = 'published';
+  if v_n < 19 then
+    raise exception 'Rangement : % cartes de cinema au lieu de 19 au minimum.', v_n;
   end if;
 
+  -- Meme raison que pour le cinema : « editorial » avant la fusion,
+  -- « portrait-et-editorial » apres, et un plancher plutot qu'un compte
+  -- exact puisque la fusion y amene aussi les portraits professionnels.
   select count(*) into v_n
   from public.prompts p
   join public.categories c on c.id = p.category_id
-  where c.slug = 'editorial' and p.status = 'published';
-  if v_n <> 10 then
-    raise exception 'Rangement : % cartes editoriales au lieu de 10.', v_n;
+  where c.slug in ('editorial', 'portrait-et-editorial') and p.status = 'published';
+  if v_n < 10 then
+    raise exception 'Rangement : % cartes editoriales au lieu de 10 au minimum.', v_n;
   end if;
 
   -- Une collection vidée par le regroupement se referme au lieu de rester
