@@ -1,68 +1,66 @@
 import { getAccessState } from '@/lib/access/entitlement';
 import {
-  getAvailableModes,
   getBibliotheque,
   getCatalogPage,
-  getCategories,
   getDernieresCopies,
   getVivierDuFeed,
 } from '@/lib/catalog/queries';
+import { getFacettes } from '@/lib/catalog/filtres';
+import { getCollectionsPopulaires } from '@/lib/catalog/accueil';
 import { ordonnerLeFeed } from '@/lib/catalog/feed';
 import type { PromptCard } from '@/lib/catalog/types';
 import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
-import { porteeDeRecherche } from '@/lib/catalog/recherche';
-import { DiscoveryConsole } from '@/components/discovery/discovery-console';
+import { FiltreDepliant, type SelectionAccueil } from '@/components/discovery/filtre-depliant';
 import { VoirPlus } from '@/components/discovery/voir-plus';
 import { AucunResultat } from '@/components/discovery/aucun-resultat';
 import { PromptGrid } from '@/components/cards/prompt-grid';
 import { PaywallAutoOpen } from '@/components/paywall/paywall-provider';
-import { EmptyState } from '@/components/ui/states';
 import { catalogQuery } from '@/lib/validation/schemas';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
-import type { FiltresAvances } from '@/components/discovery/filter-sheet';
-import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE, type Mode } from '@/lib/constants';
+import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE, LIBRARIES, type Library } from '@/lib/constants';
 
-export const metadata = { title: 'Découvrir' };
+export const metadata = { title: 'Accueil' };
+
+/** Cinq tags au plus : au-dela, le croisement ne rend plus jamais rien. */
+const TAGS_MAX = 5;
 
 /**
- * Bibliotheque des commandes. Rendue cote serveur : le client ne recoit que
- * les metadonnees publiques, jamais le contenu complet d'une commande.
+ * L'accueil : une galerie, et un filtre replie au-dessus.
+ *
+ * Rendu au serveur. Le client ne recoit que les metadonnees publiques,
+ * jamais le contenu complet d'une commande.
+ *
+ * Deux etats pour un seul ecran. Tant que rien n'est filtre, l'accueil
+ * presente : selection du moment, collections, reprise. Des qu'une facette
+ * est cochee, il redevient une liste de resultats. Le meme filtre coiffe les
+ * deux, et c'est lui qui fait passer de l'un a l'autre.
  */
-export default async function DiscoverPage({
+export default async function AccueilPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const modes = getAvailableModes();
-
   const lire = (cle: string) => (typeof params[cle] === 'string' ? params[cle] : undefined);
 
-  // « text » est accepte comme « texte » : les liens partages hors de
-  // l'application emploient souvent la forme anglaise, et retomber en
-  // silence sur Image donnerait a l'auteur du lien une page qu'il n'a pas
-  // voulu partager.
-  const demande = lire('mode') === 'text' ? 'texte' : lire('mode');
-  const mode: Mode = modes.includes(demande as Mode) ? (demande as Mode) : modes[0]!;
+  // La bibliotheque remplace l'ancien selecteur Image/Texte. Une valeur
+  // inconnue arrivant par l'URL est ignoree, jamais transmise a la requete.
+  const demandee = lire('bibliotheque');
+  const library = LIBRARIES.includes(demandee as Library) ? (demandee as Library) : undefined;
 
-  // La bibliotheque s'ouvre sur une famille, jamais sur le domaine entier.
-  //
-  // Quatre cents commandes image d'un coup ne se parcourent pas : la premiere
-  // famille du domaine — les portraits — est celle par laquelle on entre, et
-  // les puces font le reste. Elle vient de la base et de son `sort_order` :
-  // aucune famille n'est nommee ici, changer l'ordre en administration change
-  // la porte d'entree.
-  //
-  // Une recherche, elle, traverse tout le domaine : chercher « logo » depuis
-  // les portraits et ne rien trouver, alors que la commande existe deux puces
-  // plus loin, serait un cul-de-sac. Sauf si une famille a ete choisie
-  // expressement — la puce active le dit a l'ecran, et l'ecran vide propose
-  // alors d'elargir.
-  let categories: Awaited<ReturnType<typeof getCategories>>;
+  // Les tags voyagent separes par des virgules : c'est la forme la plus
+  // courte, et elle se relit a l'oeil dans une adresse partagee.
+  const tags = (lire('tags') ?? '')
+    .split(',')
+    .map((entree) => entree.trim())
+    .filter(Boolean)
+    .slice(0, TAGS_MAX);
+
   let acces: Awaited<ReturnType<typeof getAccessState>>;
+  let facettes: Awaited<ReturnType<typeof getFacettes>>;
   try {
-    [acces, categories] = await Promise.all([getAccessState(), getCategories(mode)]);
+    [acces, facettes] = await Promise.all([getAccessState(), getFacettes(library ?? null)]);
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -76,100 +74,72 @@ export default async function DiscoverPage({
 
   // Une famille demandee qui n'existe plus — un lien partage avant une
   // refonte, un favori du navigateur — ne doit pas rendre un ecran vide qui
-  // parle de filtres que personne n'a poses. On retombe sur la porte
-  // d'entree, et la puce active dit ou l'on a atterri.
-  const connues = new Set(categories.flatMap((f) => [f.slug, ...f.children.map((c) => c.slug)]));
-  const demandee = lire('categorie');
-  const familleDemandee = demandee && connues.has(demandee) ? demandee : undefined;
-  const familleParDefaut = categories[0]?.slug;
+  // parle d'un rayon que personne ne voit. Elle est simplement ignoree.
+  const connues = new Set(facettes.familles.map((famille) => famille.slug));
+  const demandeeCategorie = lire('categorie');
+  const categorie =
+    demandeeCategorie && connues.has(demandeeCategorie) ? demandeeCategorie : undefined;
 
-  // Deux etats pour un seul ecran.
-  //
-  // Tant que rien n'est cherche ni choisi, l'Accueil presente : selection du
-  // moment, collections, nouveautes, reprise. Des qu'une recherche, une
-  // famille ou un filtre entre en jeu, il redevient une liste de resultats.
-  //
-  // Le meme bandeau — recherche, domaine, puces — coiffe les deux : c'est lui
-  // qui fait passer de l'un a l'autre, et le deplacer ferait perdre le fil.
+  const ia = facettes.ias.some((entree) => entree.cle === lire('ia')) ? lire('ia') : undefined;
+  const recherche = lire('q');
+
+  const selection: SelectionAccueil = { library, categorie, tags, ia, recherche };
+
   const editorial =
-    !lire('q') &&
-    !familleDemandee &&
-    !lire('acces') &&
-    !lire('ia') &&
-    !lire('sortie') &&
-    !lire('page');
-
-  const famille = familleDemandee ?? (editorial || lire('q') ? undefined : familleParDefaut);
+    !library && !categorie && tags.length === 0 && !ia && !recherche && !lire('page');
 
   // Zod filtre les valeurs inconnues : un parametre d'URL bricole ne peut ni
   // atteindre la requete, ni faire echouer la page.
-  const portee = porteeDeRecherche({ recherche: lire('q'), familleChoisie: familleDemandee });
-
+  //
+  // `portee: 'catalogue'` toujours : la bibliotheque a remplace le domaine
+  // comme premier niveau de rangement, et borner en plus au mode ferait
+  // disparaitre les Modes IA d'une recherche lancee depuis les Images.
   const query = catalogQuery.parse({
-    mode,
-    portee,
-    categorySlug: famille,
-    search: lire('q'),
-    access: ['gratuit', 'membre'].includes(lire('acces') ?? '') ? lire('acces') : undefined,
-    provider: ['chatgpt', 'claude', 'gemini'].includes(lire('ia') ?? '') ? lire('ia') : undefined,
-    output: ['image', 'texte', 'pdf'].includes(lire('sortie') ?? '') ? lire('sortie') : undefined,
+    portee: 'catalogue',
+    library,
+    categorySlug: categorie,
+    tags: tags.length > 0 ? tags : undefined,
+    search: recherche,
+    provider: ia,
     page: lire('page') ?? 1,
   });
 
-  // La bibliotheque s'affiche par lots cumules : « Voir plus » n'ouvre pas une
-  // page suivante, il rallonge la liste. Une pagination numerotee ferait
-  // perdre les cartes deja parcourues a chaque clic, et sur un telephone
-  // personne ne revient en arriere pour les retrouver.
+  // La liste s'affiche par lots cumules : « Voir plus » n'ouvre pas une page
+  // suivante, il rallonge la liste. Une pagination numerotee ferait perdre
+  // les cartes deja parcourues a chaque clic, et sur un telephone personne ne
+  // revient en arriere pour les retrouver.
   const lots = Math.min(query.page, CATALOG_MAX_LOTS);
   const requete = { ...query, page: 1, pageSize: CATALOG_PAGE_SIZE * lots };
 
-  // La famille par defaut n'est pas un filtre : un ecran vide qui invite a
-  // « retirer un filtre » alors que l'utilisateur n'en a pose aucun ne dit
-  // rien d'utile.
-  const filtre = Boolean(
-    query.search || familleDemandee || query.access || query.provider || query.output,
-  );
-
-  // L'Accueil est le catalogue, sans rangee thematique au-dessus. « Recents »
-  // et « Favoris » ont leurs propres pages : les repeter ici repoussait la
-  // liste hors de l'ecran, et un membre qui ouvre l'Accueil vient chercher
-  // une commande, pas relire celles qu'il connait deja.
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
   let accueil: {
     feed: PromptCard[];
     reprendre: Awaited<ReturnType<typeof getDernieresCopies>>;
     familles: Awaited<ReturnType<typeof getBibliotheque>>;
+    collections: Awaited<ReturnType<typeof getCollectionsPopulaires>>;
   } | null = null;
 
   try {
     if (editorial) {
       // L'historique n'existe que pour un compte : le demander a un visiteur
       // revient a interroger une table qui lui est fermee.
-      const [vivier, familles, reprendre] = await Promise.all([
+      const [vivier, familles, reprendre, collections] = await Promise.all([
         getVivierDuFeed(),
         getBibliotheque(),
         acces.isMember ? getDernieresCopies() : Promise.resolve([]),
+        // Dix collections : de quoi remplir une rangee qui defile sans en
+        // faire un sommaire.
+        getCollectionsPopulaires(10),
       ]);
 
       accueil = {
-        // Une seule galerie, et non une vitrine puis une galerie.
-        //
-        // L'Accueil montrait un carrousel « A decouvrir » de vingt cartes,
-        // puis une galerie qui en retirait ces vingt-la. Les deux montraient
-        // les memes cartes sous deux formes, a deux ecrans d'intervalle : on
-        // parcourait la premiere sans savoir qu'on parcourrait la seconde, et
-        // le catalogue paraissait plus court qu'il n'est.
-        //
-        // La selection occupe donc la tete de la galerie. C'est `ordonnerLeFeed`
-        // qui s'en charge : il alterne deja les rayons et glisse un mode ou un
-        // parcours toutes les quatre cartes — ce que la vitrine faisait de son
-        // cote, en double.
+        // Une seule galerie, et non une vitrine puis une galerie : c'est
+        // `ordonnerLeFeed` qui alterne les rayons et glisse un mode ou un
+        // parcours toutes les quatre cartes.
         feed: ordonnerLeFeed(vivier),
         familles,
-        // Trois, et ce sont des copies : ouvrir une fiche ne veut rien dire,
-        // on en ouvre dix pour en retenir une. Au-dela de trois, ce n'est
-        // plus une reprise mais un historique, et il a sa page.
         reprendre,
+        collections,
       };
       page = { items: [], hasMore: false, total: 0 };
     } else {
@@ -187,47 +157,28 @@ export default async function DiscoverPage({
     throw error;
   }
 
-  const filtres: FiltresAvances = {
-    acces: query.access,
-    ia: query.provider,
-    sortie: query.output as FiltresAvances['sortie'],
-  };
-
   // Renvoi depuis un espace reserve : c'est le serveur qui a pose le
-  // parametre, c'est donc lui qui decide d'ouvrir la fenetre. Le composant
-  // client n'a plus a lire l'URL, et la coquille evite une frontiere
-  // Suspense qui affaiblirait la garde des pages reservees.
+  // parametre, c'est donc lui qui decide d'ouvrir la fenetre.
   const renvoye = lire('offre') === '1' && !acces.hasFullAccess;
 
-  // Le lot suivant reprend les filtres en cours : « Voir plus » ne doit jamais
-  // reouvrir un catalogue different de celui qu'on regarde.
-  //
-  // La famille par defaut n'y figure pas : le serveur la redonne, et l'ecrire
-  // dans l'adresse ferait passer pour un choix ce qui n'est qu'une porte
-  // d'entree. Une recherche lancee ensuite s'en trouverait bornee sans que
-  // personne l'ait demande.
+  // Le lot suivant reprend la selection en cours : « Voir plus » ne doit
+  // jamais reouvrir un catalogue different de celui qu'on regarde.
   const suivante = new URLSearchParams();
-  suivante.set('mode', mode);
-  if (familleDemandee) suivante.set('categorie', familleDemandee);
-  if (query.search) suivante.set('q', query.search);
-  if (query.access) suivante.set('acces', query.access);
-  if (query.provider) suivante.set('ia', query.provider);
-  if (query.output) suivante.set('sortie', query.output);
+  if (library) suivante.set('bibliotheque', library);
+  if (categorie) suivante.set('categorie', categorie);
+  if (tags.length > 0) suivante.set('tags', tags.join(','));
+  if (ia) suivante.set('ia', ia);
+  if (recherche) suivante.set('q', recherche);
   suivante.set('page', String(lots + 1));
 
   return (
     <div className="space-y-3 pt-1">
       {renvoye ? <PaywallAutoOpen /> : null}
 
-      {/* En-tete de l'Accueil : une affirmation, pas une question.
-          La question est passee dans le champ de recherche, juste dessous,
-          ou elle appelle une reponse — la lire deux fois de suite a deux
-          endroits ne demandait rien de plus, mais occupait une ligne de plus
-          sur un ecran qui en compte peu.
-
-          Hors Accueil, le titre reste invisible : la liste de resultats se
-          lit d'un coup d'oeil, mais un lecteur d'ecran a besoin d'un premier
-          repere qui dise ou l'on se trouve. */}
+      {/* Une affirmation, pas une question : la question appelait une reponse
+          dans un champ qui n'est plus la. Hors accueil d'arrivee, le titre
+          reste invisible — la liste se lit d'un coup d'oeil, mais un lecteur
+          d'ecran a besoin d'un premier repere. */}
       {editorial ? (
         <div>
           <h1 className="text-[26px] font-bold leading-tight text-[color:var(--color-night)]">
@@ -241,21 +192,10 @@ export default async function DiscoverPage({
         <h1 className="sr-only">Bibliothèque de commandes RaccourcIA</h1>
       )}
 
-      {/* Le meme bandeau coiffe les deux etats, mais pas sous la meme forme :
-          sur l'Accueil il se reduit au champ de recherche. Il n'y a rien a
-          filtrer avant d'avoir cherche, et les controles de filtrage
-          reprennent leur place des la premiere liste de resultats. */}
-      <DiscoveryConsole
-        modes={modes}
-        mode={mode}
-        categories={categories}
-        categorySlug={query.categorySlug}
-        transverse={portee === 'catalogue'}
-        simple={editorial}
-        placeholder={editorial ? 'Rechercher une idée, un style…' : undefined}
-        search={query.search}
-        filtres={filtres}
-        resultCount={page.total}
+      <FiltreDepliant
+        facettes={facettes}
+        selection={selection}
+        resultats={editorial ? null : page.total}
       />
 
       {accueil ? (
@@ -263,6 +203,7 @@ export default async function DiscoverPage({
           feed={accueil.feed}
           reprendre={accueil.reprendre}
           familles={accueil.familles}
+          collections={accueil.collections}
           locked={!acces.hasFullAccess}
           visiteur={!acces.isMember}
         />
@@ -272,25 +213,18 @@ export default async function DiscoverPage({
           locked={!acces.hasFullAccess}
           visiteur={!acces.isMember}
           emptyState={
-            filtre ? (
-              <AucunResultat
-                terme={query.search}
-                mode={mode}
-                // Une recherche qui ne rend rien dans une famille choisie peut
-                // rendre quelque chose ailleurs : on propose d'elargir plutot
-                // que de laisser croire que la commande n'existe pas.
-                famille={
-                  familleDemandee
-                    ? (categories.find((c) => c.slug === familleDemandee)?.name ?? null)
-                    : null
-                }
-              />
-            ) : (
-              <EmptyState
-                title="Rien à afficher ici"
-                body="Ce mode ne contient pas encore de commande publiée."
-              />
-            )
+            <AucunResultat
+              terme={query.search}
+              bibliotheque={library}
+              // Une selection qui ne rend rien dans un rayon peut rendre
+              // quelque chose ailleurs : on propose d'elargir plutot que de
+              // laisser croire que la commande n'existe pas.
+              famille={
+                categorie
+                  ? (facettes.familles.find((f) => f.slug === categorie)?.nom ?? null)
+                  : null
+              }
+            />
           }
         />
       )}
@@ -302,7 +236,7 @@ export default async function DiscoverPage({
           </div>
         ) : (
           <p className="pt-1 text-center text-[13px] text-[color:var(--color-muted)]">
-            Affinez la recherche ou changez de catégorie pour réduire la liste.
+            Affinez la sélection pour réduire la liste.
           </p>
         )
       ) : null}

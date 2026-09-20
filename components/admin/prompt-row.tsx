@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { MediaBadge } from '@/components/ui/media-badge';
 import { PromptRowActions } from '@/components/admin/prompt-row-actions';
 import { StatusBadge } from '@/components/ui/status-badge';
-import { MODE_LABELS } from '@/lib/constants';
+import { LIBRARY_LABELS, MODE_LABELS } from '@/lib/constants';
 import type { AdminPromptRow } from '@/lib/admin/queries';
 
 /**
@@ -54,13 +54,24 @@ export function AdminPromptRowItem({ prompt }: { prompt: AdminPromptRow }) {
             <StatusBadge status={prompt.status} />
           </span>
 
-          <span className="commande truncate text-[13px] text-[color:var(--color-brand)]">
-            {prompt.command}
+          {/* La commande, et ce qui distingue cette carte des autres qui la
+              partagent. Depuis la V2, une liste peut contenir cinq lignes
+              commencant par /vintageportrait : sans le nom de carte, on ne
+              sait pas laquelle on ouvre. */}
+          <span className="flex min-w-0 items-baseline gap-1.5">
+            <span className="commande truncate text-[13px] text-[color:var(--color-brand)]">
+              {prompt.command}
+            </span>
+            {prompt.cardSlug ? (
+              <span className="truncate text-[12px] text-[color:var(--color-muted)]">
+                · {prompt.cardSlug}
+              </span>
+            ) : null}
           </span>
 
           <span className="truncate text-[12px] text-[color:var(--color-muted)]">
-            {MODE_LABELS[prompt.mode]}
-            {prompt.categoryName ? ` · ${prompt.categoryName}` : ' · sans catégorie'}
+            {prompt.library ? LIBRARY_LABELS[prompt.library] : MODE_LABELS[prompt.mode]}
+            {prompt.categoryName ? ` · ${prompt.categoryName}` : ' · sans collection'}
           </span>
         </Link>
       </div>

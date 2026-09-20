@@ -1,5 +1,25 @@
 import type { ExecutionLevel, InputExampleKind, OutputFormatKind } from '@/lib/constants';
 import type { Moteur } from '@/lib/catalog/moteur';
+import type { GenreDeChamp } from '@/lib/prompt/personnalisation';
+
+/**
+ * Un champ a remplir avant de copier, tel que la fiche l'affiche.
+ *
+ * Plus riche que ce dont la substitution a besoin : le formulaire a besoin
+ * d'un libelle, d'une indication et du libelle de chaque choix ; le serveur,
+ * lui, ne relit que la clef, le genre et les valeurs acceptees.
+ */
+export type ChampDeCommande = {
+  /** La clef employee dans le texte de la commande : {{chiffre_affaires}}. */
+  cle: string;
+  libelle: string;
+  /** Ce qu'on attend, en quelques mots. `null` quand le libelle suffit. */
+  indication: string | null;
+  genre: GenreDeChamp;
+  requis: boolean;
+  /** Les choix d'un champ « liste ». Vide pour les autres genres. */
+  choix: { valeur: string; libelle: string }[];
+};
 import type { Enums } from '@/lib/supabase/database.types';
 
 /**
@@ -109,6 +129,32 @@ export type PromptCard = {
    * chaque palier de galerie sans rien afficher de plus.
    */
   moteur: Moteur | null;
+  /**
+   * Les champs a remplir avant de copier. Trois au plus, vide pour la
+   * plupart des commandes.
+   *
+   * Embarques avec la carte, comme le reste de la fiche : ouvrir un detail
+   * ne doit declencher aucun aller-retour, et l'immense majorite des
+   * commandes n'en declare aucun — le tableau est alors vide et ne pese
+   * rien.
+   *
+   * Ce que le formulaire renvoie n'est jamais ce qui decide : le serveur
+   * relit les champs declares avant d'appliquer quoi que ce soit.
+   */
+  champs: ChampDeCommande[];
+  /**
+   * Les tags de la commande, tels que la fiche les montre.
+   *
+   * Ceux du referentiel, pas ceux de l'ancienne colonne `tags` — celle-ci
+   * comptait 443 valeurs libres dont « mode-ia » et « modes-ia » pour une
+   * meme idee, et rien ne pouvait les reconcilier.
+   *
+   * Six au plus, et sans les groupes « bibliotheque » ni « IA » : la fiche
+   * dit deja l'un et l'autre ailleurs, et une commande en porte neuf en
+   * moyenne — les transporter tous ferait grossir chaque page de galerie
+   * pour un bloc qui ne se lit qu'une fois la fiche ouverte.
+   */
+  motsCles: { slug: string; nom: string }[];
 };
 
 /** Ce que la page publique ajoute. Toujours sans le prompt complet. */
@@ -175,4 +221,67 @@ export type LibraryFamily = {
   /** Les apercus de sa propre couverture, distincts de ceux des autres familles. */
   apercus: string[];
   collections: CollectionTile[];
+};
+
+/**
+ * Une carte du feed Decouvrir. Jamais le prompt, comme partout ailleurs.
+ *
+ * Elle porte beaucoup moins qu'une `PromptCard` : un visuel, un nom, trois
+ * tags. Le feed se parcourt longtemps et sans fin — embarquer les trente
+ * champs d'une fiche dans chacune de ses cartes reviendrait a telecharger le
+ * catalogue entier pour en regarder huit. La fiche complete est demandee au
+ * moment ou on l'ouvre, et seulement alors.
+ */
+export type CarteDecouverte = {
+  id: string;
+  slug: string;
+  command: string;
+  name: string;
+  description: string;
+  /**
+   * Ce que la carte montre.
+   *
+   * « image » : le resultat, plein cadre. « texte » : une carte
+   * typographique, parce qu'une commande de redaction n'a pas de resultat
+   * a montrer et qu'un cadre vide ne donne envie de rien. Ce qu'elle a a la
+   * place, c'est ce qu'elle fait — donc on l'ecrit.
+   */
+  genre: 'image' | 'texte';
+  /**
+   * Ce que la commande fait, en detail. Rempli pour une carte texte, ou
+   * c'est le contenu principal ; vide pour une image, ou le visuel parle.
+   */
+  detail: string;
+  /** La bibliotheque d'ou vient la carte : le sur-titre d'une carte texte. */
+  bibliotheque: string | null;
+  /** Vide pour une carte texte. */
+  visuelUrl: string;
+  visuelAlt: string;
+  /** Trois au plus : au-dela, la zone basse mange le visuel. */
+  tags: { slug: string; name: string }[];
+  likeCount: number;
+  /** Vrai quand le membre courant a deja aime. Faux pour un visiteur. */
+  aime: boolean;
+  isFree: boolean;
+};
+
+/**
+ * Le curseur du feed. Deux marque-pages, un par vivier.
+ *
+ * Decouvrir melange deux catalogues qui n'ont ni la meme taille ni le meme
+ * rythme : sept cent soixante-cinq cartes image, deux cent quarante-cinq
+ * cartes texte et reflexion. Un seul curseur les epuiserait a des vitesses
+ * differentes et le melange se deferait au bout de quelques paliers.
+ */
+export type CurseurDecouverte = {
+  /** Ou l'on en est dans les images. */
+  image: { rang: number; id: string } | null;
+  /** Ou l'on en est dans les textes et les modes. */
+  texte: { rang: number; id: string } | null;
+};
+
+export type PageDecouverte = {
+  cartes: CarteDecouverte[];
+  /** `null` quand il n'y a plus rien apres. */
+  suite: CurseurDecouverte | null;
 };

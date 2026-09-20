@@ -77,6 +77,70 @@ export type EntitlementStatus = (typeof ENTITLEMENT_STATUS)[number];
 export const PURCHASE_STATUS = ['pending', 'completed', 'refunded', 'cancelled'] as const;
 export type PurchaseStatus = (typeof PURCHASE_STATUS)[number];
 
+/**
+ * Les trois bibliotheques du catalogue V3.
+ *
+ * Elles ne se deduisent pas du mode : les quatre-vingt-deux commandes
+ * `texte` d'aujourd'hui sont toutes des Modes IA, donc des Reflexions, mais
+ * un /businessplan sera `texte` sans en etre un. La bibliotheque est une
+ * donnee de la commande — ces valeurs ne font que nommer l'enum de la base.
+ */
+export const LIBRARIES = ['images', 'textes', 'reflexions'] as const;
+export type Library = (typeof LIBRARIES)[number];
+
+export const LIBRARY_LABELS: Record<Library, string> = {
+  images: 'Images',
+  textes: 'Textes',
+  reflexions: 'Réflexions',
+};
+
+/**
+ * Ce que chaque bibliotheque promet, en une ligne.
+ *
+ * Trois phrases et non une description de rayon : ce sont les libelles de
+ * l'enum, au meme titre que leur nom. Elles tiennent ici parce qu'il n'y a
+ * pas de ligne en base pour une bibliotheque — c'est une valeur d'enum,
+ * pas un enregistrement qu'on ouvre ou qu'on ferme.
+ */
+export const LIBRARY_PROMESSES: Record<Library, string> = {
+  images: 'Générez, éditez et transformez vos images.',
+  textes: 'Rédigez, reformulez et trouvez l’inspiration en un instant.',
+  reflexions: 'Apprenez, explorez et approfondissez avec l’IA.',
+};
+
+/**
+ * Les familles de tags, telles que la Bibliotheque les annonce.
+ *
+ * Les valeurs sont celles de l'enum `tag_group` ; les libelles disent ce que
+ * le groupe regroupe, sans reprendre le mot de la base. « usage » range par
+ * metier, on l'annonce « Domaine » ; « resultat » dit ce qui sort, on
+ * l'annonce « Ce que vous obtenez ».
+ */
+export const TAG_GROUPS = [
+  'bibliotheque',
+  'ia',
+  'fonction',
+  'style',
+  'contexte',
+  'usage',
+  'resultat',
+  'experience',
+  'autre',
+] as const;
+export type TagGroup = (typeof TAG_GROUPS)[number];
+
+export const TAG_GROUP_LABELS: Record<TagGroup, string> = {
+  bibliotheque: 'Bibliothèque',
+  ia: 'IA compatible',
+  fonction: 'Ce que ça fait',
+  style: 'Style',
+  contexte: 'Contexte',
+  usage: 'Domaine',
+  resultat: 'Ce que vous obtenez',
+  experience: 'Expérience',
+  autre: 'Autres',
+};
+
 export const PROVIDER_KEYS = ['chatgpt', 'claude', 'gemini'] as const;
 export type ProviderKey = (typeof PROVIDER_KEYS)[number];
 

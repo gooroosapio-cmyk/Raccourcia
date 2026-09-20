@@ -113,8 +113,14 @@ begin
   where catalog_version = 'v2.1' and coalesce(default_image_path, '') = '';
   perform tests_assert(v_n = 0, format('%s raccourcis sans chemin de visuel.', v_n));
 
+  -- Borne aux categories de cet import-ci. Le catalogue de septembre 2026
+  -- installe cent rayons de plus, sous les prefixes V2CAT- et V2COL- : ils
+  -- attendent leurs visuels et ne relevent pas des regles de ce lot.
   select count(*) into v_n from public.categories
-  where external_ref is not null and coalesce(fallback_image_path, '') = '';
+  where external_ref is not null
+    and external_ref not like 'V2CAT-%'
+    and external_ref not like 'V2COL-%'
+    and coalesce(fallback_image_path, '') = '';
   perform tests_assert(v_n = 0, format('%s categories sans visuel de repli.', v_n));
 end $$;
 

@@ -79,12 +79,18 @@ begin
   -- Borne aux contenus actifs, comme les index uniques du schema : une
   -- ligne archivee garde son nom et son adresse en trace, sans les
   -- reserver.
+  --
+  -- C'est le couple (commande, carte) qui doit etre unique, et non la
+  -- commande seule : depuis le catalogue V2, /vintageportrait porte trois
+  -- cartes — « Annees folles », « Studio 1940 », « Carte postale 1900 ».
+  -- Ce qui reste interdit, c'est deux cartes indistinguables sous une meme
+  -- commande.
   select count(*) into v_n from (
-    select command from public.prompts
+    select command, coalesce(card_slug, '') from public.prompts
     where status <> 'archived'
-    group by command having count(*) > 1
+    group by command, coalesce(card_slug, '') having count(*) > 1
   ) doublons;
-  perform tests_assert(v_n = 0, format('%s noms de commande actifs en double.', v_n));
+  perform tests_assert(v_n = 0, format('%s carte(s) actives en double sous une meme commande.', v_n));
 
   -- Borne aux contenus actifs, comme l'index unique du schema : une ligne
   -- archivee garde son adresse en trace, sans la reserver.

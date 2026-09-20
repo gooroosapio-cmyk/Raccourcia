@@ -20,6 +20,7 @@ import { normaliserRecherche, portesDeRecherche } from '@/lib/catalog/recherche'
 import type {
   BeforeAfter,
   CategoryNode,
+  ChampDeCommande,
   LibraryFamily,
   PromptCard,
   PromptDetail,
@@ -315,7 +316,10 @@ const CARD_COLUMNS = `
   categories(slug, name),
   prompt_variants(compatibility, status, ai_providers(key, name, is_active)),
   prompt_media(kind, storage_path, alt, sort_order),
-  prompt_aliases!prompt_aliases_canonical_prompt_id_fkey(preset)
+  prompt_aliases!prompt_aliases_canonical_prompt_id_fkey(preset),
+  prompt_fields(cle, libelle, indication, kind, requis, position,
+                prompt_field_choices(valeur, libelle, position)),
+  prompt_tags(tags(slug, name, groupe))
 `;
 
 type CardRow = {
@@ -345,6 +349,18 @@ type CardRow = {
   level: Enums<'execution_level'> | null;
   max_questions: number | null;
   prompt_aliases: { preset: unknown }[] | null;
+  prompt_fields:
+    | {
+        cle: string;
+        libelle: string;
+        indication: string | null;
+        kind: Enums<'prompt_field_kind'>;
+        requis: boolean;
+        position: number;
+        prompt_field_choices: { valeur: string; libelle: string; position: number }[] | null;
+      }[]
+    | null;
+  prompt_tags: { tags: { slug: string; name: string; groupe: Enums<'tag_group'> } | null }[] | null;
   intention: string | null;
   expected_input: string | null;
   limitations: string | null;
@@ -455,7 +471,58 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     // l'affichent, et une galerie de vingt-quatre commandes image le
     // transporterait pour rien.
     moteur: genre === 'mode_ia' || genre === 'parcours' ? lireLeMoteur(row) : null,
+    champs: lireLesChamps(row),
+    motsCles: lireLesMotsCles(row),
   };
+}
+
+/**
+ * Les tags qu'une fiche affiche.
+ *
+ * Les groupes « bibliotheque » et « ia » sont ecartes : la fiche annonce
+ * deja la bibliotheque par son rayon et les IA par le selecteur du pied.
+ * Les repeter en bas sous forme de puces donnerait trois fois la meme
+ * information a trois endroits.
+ *
+ * Six au plus. Une commande en porte neuf en moyenne ; au-dela de six, la
+ * rangee se replie sur trois lignes dans la fiche et pese sur chaque page de
+ * galerie pour un bloc qu'on ne lit qu'apres ouverture.
+ */
+function lireLesMotsCles(row: CardRow): { slug: string; nom: string }[] {
+  return (row.prompt_tags ?? [])
+    .map((entree) => entree.tags)
+    .filter((tag): tag is { slug: string; name: string; groupe: Enums<'tag_group'> } =>
+      Boolean(tag),
+    )
+    .filter((tag) => tag.groupe !== 'bibliotheque' && tag.groupe !== 'ia')
+    .slice(0, 6)
+    .map((tag) => ({ slug: tag.slug, nom: tag.name }));
+}
+
+/**
+ * Les champs a remplir avant de copier, dans l'ordre pose en administration.
+ *
+ * La base borne deja leur nombre a trois et leur position a l'unicite ; on
+ * ne refait pas ce controle ici. On ne garde que ce qui est utilisable : un
+ * champ « liste » sans aucun choix ne se remplirait pas, et l'afficher
+ * donnerait un formulaire dont un champ n'attend rien.
+ */
+function lireLesChamps(row: CardRow): ChampDeCommande[] {
+  return (row.prompt_fields ?? [])
+    .slice()
+    .sort((a, b) => a.position - b.position)
+    .map((champ) => ({
+      cle: champ.cle,
+      libelle: champ.libelle,
+      indication: champ.indication,
+      genre: champ.kind,
+      requis: champ.requis,
+      choix: (champ.prompt_field_choices ?? [])
+        .slice()
+        .sort((a, b) => a.position - b.position)
+        .map((choix) => ({ valeur: choix.valeur, libelle: choix.libelle })),
+    }))
+    .filter((champ) => champ.genre !== 'liste' || champ.choix.length > 0);
 }
 
 /** Favoris du membre courant, sous forme d'ensemble pour un rendu direct. */
@@ -520,6 +587,12 @@ function masquerCommande(card: PromptCard): PromptCard {
     // aucune. Ses sept champs citent la commande dans leurs phrases : les
     // laisser voyager reviendrait a publier le nom qu'on vient de retirer.
     moteur: null,
+    // Une carte masquee n'ouvre pas de fiche, donc aucun formulaire. Les
+    // libelles des champs decrivent la commande : ils n'ont pas a voyager.
+    champs: [],
+    // Meme raison pour les tags : ils nomment ce que fait la commande, et
+    // une carte masquee ne dit rien de ce qu'elle fait.
+    motsCles: [],
     shortDescription: nettoyer(card.shortDescription),
     resultSummary: nettoyer(card.resultSummary),
     useCases: card.useCases.map(nettoyer),
@@ -556,6 +629,41 @@ async function resoudreCategorie(client: Client, slug?: string): Promise<string[
     .eq('parent_id', categorie.id);
 
   return [categorie.id, ...(enfants ?? []).map((enfant) => enfant.id)];
+}
+
+/**
+ * Identifiants des commandes portant tous les tags demandes.
+ *
+ * `null` quand aucun tag n'est coche. Un tableau vide quand aucune commande
+ * ne les porte tous : l'appelant rend alors une liste vide au lieu du
+ * catalogue entier — une erreur silencieuse qui ferait passer un filtre
+ * trop etroit pour un filtre sans effet.
+ *
+ * LA LISTE PART DANS L'ADRESSE de la requete suivante, sous forme d'un
+ * `in(id, ...)`. Chaque identifiant y pese trente-huit caracteres : au-dela
+ * de quelques centaines, l'adresse depasse ce qu'une passerelle accepte et
+ * la requete est refusee — pas lentement, pas partiellement : refusee.
+ *
+ * Deux choses la bornent aujourd'hui. Les tags des groupes « bibliotheque »
+ * et « IA », seuls a porter quatre a six cents commandes, ne sont proposes
+ * nulle part comme tags — ce sont deux facettes distinctes du filtre. Et
+ * croiser un second tag ne peut que reduire. Le plus gros tag proposable en
+ * compte cent vingt-sept, soit moins de cinq kilo-octets.
+ *
+ * Un test d'integration surveille cette borne : si elle cede, c'est le
+ * filtre entier qu'il faudra passer en SQL, et non cette fonction qu'il
+ * faudra tronquer — tronquer rendrait une liste fausse sans le dire.
+ */
+async function resoudreLesTags(client: Client, tags?: string[]): Promise<string[] | null> {
+  if (!tags || tags.length === 0) return null;
+
+  const { data, error } = await client.rpc('prompts_avec_tous_les_tags', { p_tags: tags });
+
+  // Une base qui refuse la question n'est pas une selection vide : on remonte
+  // l'incident plutot que d'afficher « aucun resultat » pour une panne.
+  if (error) throw new CatalogUnavailableError(error);
+
+  return data ?? [];
 }
 
 /**
@@ -611,6 +719,17 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     return { items: [], hasMore: false, total: 0 };
   }
 
+  // Les tags se croisent en ET, et le croisement se fait dans la base.
+  //
+  // Une jointure filtree donne un OU : la liste s'allongerait a chaque tag
+  // coche, c'est-a-dire l'inverse d'un filtre. L'intersection passe donc par
+  // `prompts_avec_tous_les_tags`, qui travaille sur l'index inverse plutot
+  // que de rapatrier toutes les associations pour les recouper ici.
+  const tagIds = await resoudreLesTags(supabase, query.tags);
+  if (tagIds && tagIds.length === 0) {
+    return { items: [], hasMore: false, total: 0 };
+  }
+
   // Une recherche porte aussi sur le nom des familles : taper « portrait »
   // doit ramener la famille entiere, pas seulement les commandes dont le
   // titre contient le mot.
@@ -634,7 +753,11 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
 
     if (!transverse) requete = requete.eq('mode', query.mode);
 
+    if (query.library) requete = requete.eq('library', query.library);
+
     if (categorieIds) requete = requete.in('category_id', categorieIds);
+
+    if (tagIds) requete = requete.in('id', tagIds);
 
     if (terme) requete = requete.or(portesDeRecherche(terme, famillesTrouvees));
 

@@ -4,19 +4,24 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 /**
- * Barre basse : quatre destinations, libelles toujours visibles
- * (Spec UX/UI, 5). Les actions recurrentes restent a portee de pouce.
+ * Barre basse : cinq destinations, libelles toujours visibles.
  *
- * Accueil porte la recherche, les acces rapides, la reprise et le feed ;
- * Bibliotheque la totalite du catalogue par familles. Le premier onglet
- * s'appelait « Decouvrir » et portait une loupe : deux facons de dire
- * « cherche ici », alors que c'est la page d'arrivee. Recents quitte la barre et revient dans Decouvrir sous
- * « Reprendre » : c'est une liste qu'on relit, pas une destination qu'on
- * vise, et la Bibliotheque avait besoin de sa place.
+ * Accueil dit ce que RaccourcIA sait faire ; Decouvrir montre ce qu'il
+ * produit ; Bibliotheque range ; Favoris garde ; Profil administre.
+ *
+ * « Decouvrir » se place au milieu, et pas au bout. C'est la page qu'on
+ * vise le plus souvent apres l'Accueil, et le centre d'une barre a cinq est
+ * l'endroit le plus court pour un pouce, quelle que soit la main.
+ *
+ * Cinq tient sur 360 px : chaque destination dispose de 72 px, soit bien
+ * au-dela des 44 px de cible confortable. Les libelles restent — une barre
+ * d'icones muettes se devine, elle ne se lit pas — et se resserrent d'un
+ * pixel plutot que de disparaitre.
  */
 const ITEMS = [
   { href: '/app', label: 'Accueil', icon: HomeIcon },
   { href: '/app/bibliotheque', label: 'Bibliothèque', icon: LibraryIcon },
+  { href: '/app/decouvrir', label: 'Découvrir', icon: CompassIcon },
   { href: '/app/favoris', label: 'Favoris', icon: HeartIcon },
   { href: '/compte', label: 'Profil', icon: AccountIcon },
 ] as const;
@@ -39,12 +44,14 @@ export function BottomNav() {
               <Link
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
-                className={`touch-target flex flex-col items-center justify-center gap-0.5 py-2 text-[11px] font-medium ${
+                className={`touch-target flex flex-col items-center justify-center gap-0.5 px-0.5 py-2 text-center text-[10.5px] font-medium leading-tight ${
                   active ? 'text-[color:var(--color-brand)]' : 'text-[color:var(--color-muted)]'
                 }`}
               >
                 <Icon />
-                <span>{item.label}</span>
+                {/* Le libelle ne se coupe pas : « Bibliothèque » tient sur
+                    une ligne a 10,5 px dans 72 px de large. */}
+                <span className="whitespace-nowrap">{item.label}</span>
               </Link>
             </li>
           );
@@ -95,6 +102,27 @@ function AccountIcon() {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="8.5" r="3.5" stroke="currentColor" strokeWidth="2" />
       <path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/**
+ * Une boussole pour Decouvrir.
+ *
+ * Ni loupe ni etoile : la loupe dit « cherche », or on ne cherche pas ici —
+ * on regarde ce qui vient. L'aiguille dit l'exploration sans promettre un
+ * champ de saisie.
+ */
+function CompassIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="m15.5 8.5-2 5-5 2 2-5 5-2Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

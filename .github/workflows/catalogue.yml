@@ -32,6 +32,11 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - fusion-2026-09
+          - catalogue-2026-09
+          - administration-v3
+          - ecrans-v3
+          - taxonomie-v3
           - actions-groupees
           - menage-taxonomie
           - kit-ui
@@ -121,7 +126,12 @@ jobs:
           inputs.dossier != 'moteur-v3' &&
           inputs.dossier != 'kit-ui' &&
           inputs.dossier != 'menage-taxonomie' &&
-          inputs.dossier != 'actions-groupees'
+          inputs.dossier != 'actions-groupees' &&
+          inputs.dossier != 'taxonomie-v3' &&
+          inputs.dossier != 'ecrans-v3' &&
+          inputs.dossier != 'administration-v3' &&
+          inputs.dossier != 'catalogue-2026-09' &&
+          inputs.dossier != 'fusion-2026-09'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -350,6 +360,229 @@ jobs:
             select '    ' || count(*) filter (where coalesce(short_description, '') <> '') ||
                    ' rayons decrits sur ' || count(*) || ' ouverts'
             from public.categories where is_visible and external_ref like 'V2-%';"
+
+      # Le socle V3 : tags relationnels, likes, champs personnalisables.
+      #
+      # La migration cree les tables et leurs politiques ; les lots creent la
+      # taxonomie et posent les tags que la base sait justifier — bibliotheque
+      # et IA declarees. Aucun tag de style ou de contexte n'est attribue : on
+      # ne les deduit pas d'un nom de commande.
+      #
+      # Rien de ce que les membres voient ne change tant qu'aucun ecran ne lit
+      # ces tables. Le mot « basculer » n'a donc pas de sens ici.
+      - name: Installer le socle V3 (tags, likes, champs)
+        if: inputs.dossier == 'taxonomie-v3'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : tags, likes, champs personnalisables'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260919090000_tags_likes_et_champs.sql
+          for fichier in supabase/seed/taxonomie-v3/*.sql; do
+            echo "  $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Etat de la taxonomie :'
+          psql "$PGURL" -At -c "
+            select '    ' || (select count(*) from public.tags) || ' tags, ' ||
+                   (select count(*) from public.prompt_tags) || ' associations, ' ||
+                   (select count(*) from public.prompts
+                    where status = 'published' and library is null) ||
+                   ' commande(s) publiee(s) sans bibliotheque';"
+
+      # La fusion des deux catalogues, et la mise en ligne.
+      #
+      # A lancer APRES `catalogue-2026-09`, jamais avant : elle deplace les
+      # commandes existantes vers des collections que l'import vient de
+      # creer.
+      #
+      # Elle fait quatre choses, dans cet ordre :
+      #   1. les 484 commandes image deja en ligne rejoignent les nouvelles
+      #      collections, avec leurs visuels, leurs favoris et leurs
+      #      identifiants — rien n'est recree, tout est deplace ;
+      #   2. les Modes IA, les Parcours guides et les rayons d'essai sont
+      #      archives : la bibliotheque Reflexions les remplace ;
+      #   3. les 1 010 cartes V2 passent en ligne ;
+      #   4. les anciens rayons vides ferment.
+      #
+      # ARCHIVER, PAS SUPPRIMER : une commande archivee garde sa ligne, son
+      # identifiant, ses visuels et son historique, et se rouvre d'un geste.
+      # Aucun visuel n'est touche.
+      #
+      # C'est le lot qui change ce que les membres voient : il demande donc
+      # le mot « basculer ».
+      - name: Fusionner les catalogues et publier
+        if: inputs.dossier == 'fusion-2026-09'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          if [ "${{ inputs.bascule }}" != "basculer" ]; then
+            echo 'Ce lot change la navigation des membres. Taper "basculer" pour confirmer.'
+            exit 1
+          fi
+          for fichier in supabase/seed/fusion-2026-09/*.sql; do
+            echo "  $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Etat du catalogue :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) filter (where status = 'published') || ' commande(s) publiee(s), ' ||
+                   count(*) filter (where status = 'published' and media_ready) || ' avec un visuel'
+            from public.prompts;"
+          psql "$PGURL" -At -c "
+            select '    visuels conserves : ' || count(*) from public.prompt_media;"
+          psql "$PGURL" -At -c "
+            select '    ancien(s) rayon(s) encore ouvert(s) : ' || count(*)
+            from public.categories
+            where status <> 'archived' and external_ref like 'V2-%';"
+
+      # Le catalogue de septembre 2026 : la taxonomie V2 de la bibliotheque.
+      #
+      # 1 010 cartes pour 429 commandes, rangees en 73 collections et 27
+      # categories, avec leurs payloads, leurs tags et leurs champs de fiche.
+      # Une commande porte desormais plusieurs cartes : /vintageportrait rend
+      # « Annees folles », « Studio 1940 » et « Carte postale 1900 » — trois
+      # compositions pour un seul nom a retenir.
+      #
+      # CE LOT NE PUBLIE RIEN ET N'EFFACE RIEN. Le fichier d'import declare
+      # lui-meme ses 1 010 lignes en brouillon, sans visuel et sans media a
+      # produire : le catalogue en ligne continue de fonctionner pendant que
+      # le nouveau s'installe a cote. Aucun visuel n'est touche — la regle
+      # d'import du referentiel est explicite sur ce point.
+      #
+      # Publier, archiver l'ancien et reaffecter se decident ensuite, en
+      # regardant ce que l'import a produit. Le mot « basculer » n'a donc pas
+      # de sens ici.
+      #
+      # Idempotent : les lots s'appuient sur card_id et external_ref, et les
+      # rejouer ne cree ni doublon ni version d'historique supplementaire.
+      - name: Importer le catalogue de septembre 2026
+        if: inputs.dossier == 'catalogue-2026-09'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : plusieurs cartes par commande'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260920140000_cartes_par_commande.sql
+          for fichier in supabase/seed/catalogue-2026-09/*.sql; do
+            echo "  $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Etat du catalogue :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) || ' carte(s) V2 en ' ||
+                   count(*) filter (where status = 'draft') || ' brouillon(s), ' ||
+                   count(distinct command_id) || ' commande(s)'
+            from public.prompts where external_ref like 'V2-%';"
+          psql "$PGURL" -At -c "
+            select '    catalogue en ligne inchange : ' || count(*) || ' commande(s) publiee(s)'
+            from public.prompts where status = 'published' and external_ref not like 'V2-%';"
+          psql "$PGURL" -At -c "
+            select '    visuels conserves : ' || count(*) from public.prompt_media;"
+
+      # Ce dont les ecrans V3 ont besoin : l'ordre de Decouvrir et les
+      # facettes de l'accueil.
+      #
+      # `discover_rank` est l'index de pagination du feed Decouvrir. Un rang
+      # stable tire de l'identifiant : stable, donc le feed ne repasse jamais
+      # deux fois la meme carte entre deux paliers ; tire du hachage, donc les
+      # rayons s'entremelent au lieu de defiler par familles de soixante.
+      #
+      # `filtres_accueil` et `prompts_avec_tous_les_tags` servent le filtre
+      # depliant qui remplace la barre de recherche : les quatre facettes deja
+      # comptees, et le croisement de plusieurs tags en ET — ce que PostgREST
+      # ne sait pas exprimer.
+      #
+      # `tags_explorables` et `tags_voisins` servent la Bibliotheque, qui
+      # s'ouvre desormais sur les tags : ce qui est reellement porte, et ce
+      # qui se croise encore avec la selection en cours.
+      #
+      # `collections_populaires` sert l'accueil, ou les collections
+      # remplacent les categories : une categorie est un tiroir, une
+      # collection est une intention de recherche. La meme migration donne
+      # aux tuiles de tag le visuel d'une de leurs cartes, faute de quoi la
+      # grille reste vide tant que l'administration n'a rien depose.
+      #
+      # Les deux lisent a travers les politiques du lecteur. Aucune n'est
+      # contournee ni assouplie, et rien de ce que les membres voient ne
+      # change tant que les ecrans ne sont pas deployes : le mot « basculer »
+      # n'a donc pas de sens ici.
+      #
+      # Idempotentes (`add column if not exists`, `create or replace`) : les
+      # rejouer ne coute rien.
+      - name: Installer le socle des ecrans V3 (decouverte, filtres)
+        if: inputs.dossier == 'ecrans-v3'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : discover_rank'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260919140000_ordre_de_decouverte.sql
+          echo '  Migration : filtres_accueil / prompts_avec_tous_les_tags'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260919160000_filtres_accueil.sql
+          echo '  Migration : tags_explorables / tags_voisins'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260919180000_exploration_par_tags.sql
+          echo '  Migration : collections_populaires, visuel des tuiles de tag'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260920160000_accueil_et_tuiles.sql
+          echo '  Etat du feed :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) || ' commande(s) publiee(s) avec un visuel apres, ' ||
+                   count(*) filter (where p.discover_rank is null) || ' sans rang'
+            from public.prompts p
+            where p.status = 'published'
+              and exists (select 1 from public.prompt_media m
+                          where m.prompt_id = p.id and m.kind = 'after');"
+          echo '  Facettes du filtre :'
+          psql "$PGURL" -At -c "
+            select '    ' ||
+                   jsonb_array_length(f -> 'bibliotheques') || ' bibliotheque(s), ' ||
+                   jsonb_array_length(f -> 'familles') || ' famille(s), ' ||
+                   jsonb_array_length(f -> 'tags') || ' tag(s), ' ||
+                   jsonb_array_length(f -> 'ias') || ' IA'
+            from public.filtres_accueil() as f;"
+          echo '  Exploration par tags :'
+          psql "$PGURL" -At -c "
+            select '    ' || jsonb_array_length(public.tags_explorables()) ||
+                   ' tag(s) porte(s) par au moins une commande publiee';"
+
+      # L'administration V3 : suppression definitive controlee.
+      #
+      # Trois apercus et trois suppressions — commande, rayon, tag — plus la
+      # liste des tags telle que l'administration la voit. Chacune verifie
+      # `is_admin()` en premiere ligne, journalise l'etat d'avant dans
+      # `admin_audit_logs`, et refuse de laisser un orphelin : une commande
+      # rend les chemins de ses visuels pour que le stockage soit nettoye, un
+      # rayon qui porte encore des commandes exige de dire ou elles vont.
+      #
+      # Archiver reste le geste par defaut. Ces fonctions ajoutent un geste,
+      # elles n'en retirent aucun et n'assouplissent aucune politique. Rien
+      # de ce que les membres voient ne change : le mot « basculer » n'a donc
+      # pas de sens ici.
+      - name: Installer l'administration V3 (suppressions controlees)
+        if: inputs.dossier == 'administration-v3'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : apercus et suppressions controlees'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260920090000_suppression_controlee.sql
+          echo '  Fonctions en place :'
+          psql "$PGURL" -At -c "
+            select '    ' || p.proname
+            from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+            where n.nspname = 'public'
+              and (p.proname like 'admin_supprimer_%'
+                or p.proname like 'admin_apercu_%'
+                or p.proname = 'admin_liste_tags')
+            order by p.proname;"
 
       # Les actions groupees de l'administration.
       #

@@ -9,7 +9,12 @@ Contexte produit et decisions : `docs/ARCHITECTURE.md`, `docs/SECURITY.md`.
 - Desactiver une policy RLS pour faire passer une fonctionnalite.
 - Exposer `prompt_versions` a une requete client.
 - Coder en dur une categorie, un prompt ou un ordre d'affichage dans le frontend.
-- Supprimer physiquement un prompt, une version ou une categorie.
+- Supprimer sans confirmation ni bilan. La suppression definitive d'une
+  commande, d'une categorie ou d'un tag est desormais permise a un
+  administrateur (RaccourcIA V3, partie XII), mais elle demande une
+  confirmation, annonce ce qu'elle emporte, propose une reaffectation quand
+  une categorie porte encore des commandes, et ne laisse aucun enregistrement
+  orphelin. Archiver reste le geste par defaut.
 - Construire le desktop au detriment du parcours mobile.
 
 ## Conventions de code

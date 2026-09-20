@@ -325,6 +325,60 @@ if compgen -G "$ROOT/supabase/seed/menage-taxonomie/*.sql" > /dev/null; then
        or exists (select 1 from public.prompts p where p.category_id = c.id);"
 fi
 
+# La taxonomie V3 : les tags, puis leur attribution. Deux passes — le lot
+# n'insere que sur conflit ignore, la seconde ne doit rien ajouter.
+if compgen -G "$ROOT/supabase/seed/taxonomie-v3/*.sql" > /dev/null; then
+  echo "==> Taxonomie V3 (x2)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/taxonomie-v3/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || (select count(*) from public.tags) || ' tags, ' ||
+           (select count(*) from public.prompt_tags) || ' associations';"
+fi
+
+# Le catalogue de septembre 2026 : 1 010 cartes pour 429 commandes.
+#
+# Deux passes, comme les autres lots : l'import s'appuie sur card_id et
+# doit pouvoir etre rejoue sans creer de doublon ni gonfler l'historique
+# des payloads. C'est le seul controle qui attrape un `on conflict` pose de
+# travers, et un import a moitie idempotent ne se voit qu'en production.
+if compgen -G "$ROOT/supabase/seed/catalogue-2026-09/*.sql" > /dev/null; then
+  echo "==> Catalogue 2026-09 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/catalogue-2026-09/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) || ' cartes, ' || count(distinct command_id) ||
+           ' commandes, ' || count(*) filter (where status = 'draft') || ' en brouillon'
+    from public.prompts where external_ref like 'V2-%';"
+fi
+
+# La fusion des deux catalogues : reaffectation, retrait, publication.
+#
+# Deux passes, comme les autres lots. Le controle final refuse si une
+# commande publiee reste dans l'ancienne arborescence ou se retrouve sans
+# texte a copier — une fusion a moitie faite laisse une bibliotheque qui
+# parait rangee et deux cents commandes introuvables.
+if compgen -G "$ROOT/supabase/seed/fusion-2026-09/*.sql" > /dev/null; then
+  echo "==> Fusion 2026-09 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/fusion-2026-09/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) filter (where status = 'published') || ' commande(s) publiee(s), ' ||
+           (select count(*) from public.categories
+            where status <> 'archived' and external_ref like 'V2-%') ||
+           ' ancien(s) rayon(s) encore ouvert(s)'
+    from public.prompts;"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

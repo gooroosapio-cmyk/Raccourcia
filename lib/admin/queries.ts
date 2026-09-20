@@ -24,6 +24,16 @@ export type AdminPromptRow = {
   /** Remonte en tete de sa categorie. Outil d'administration, jamais affiche. */
   isPinned: boolean;
   categoryName: string | null;
+  /** La bibliotheque de rangement. `null` pour un contenu anterieur a la V2. */
+  library: Enums<'app_library'> | null;
+  /**
+   * Ce qui distingue cette carte des autres de la meme commande.
+   *
+   * `null` pour une commande a carte unique. Affiche a cote du titre :
+   * depuis la V2, une liste peut contenir cinq lignes commençant par
+   * /vintageportrait, et sans ce mot on ne sait pas laquelle on ouvre.
+   */
+  cardSlug: string | null;
   /** Visuel « avant » envoye depuis l'administration. */
   hasBefore: boolean;
   /** Visuel « apres » : celui que la carte montre dans la grille. */
@@ -63,6 +73,8 @@ function toRow(row: {
   is_free: boolean;
   is_pinned: boolean;
   updated_at: string;
+  library: Enums<'app_library'> | null;
+  card_slug: string | null;
   categories: { name: string } | null;
   prompt_media: { kind: Enums<'media_kind'>; storage_path: string; sort_order: number }[] | null;
 }): AdminPromptRow {
@@ -79,6 +91,8 @@ function toRow(row: {
     isFree: row.is_free,
     isPinned: row.is_pinned,
     categoryName: row.categories?.name ?? null,
+    library: row.library,
+    cardSlug: row.card_slug,
     hasBefore: visuels.some((media) => media.kind === 'before'),
     hasAfter: Boolean(apres),
     afterUrl: apres ? urlVisuel(apres.storage_path, LARGEURS_VISUEL.apercu) : null,
@@ -87,7 +101,20 @@ function toRow(row: {
 }
 
 const ROW_COLUMNS =
-  'id, command, name, mode, status, is_free, is_pinned, updated_at, categories(name), prompt_media(kind, storage_path, sort_order)';
+  'id, command, name, mode, status, is_free, is_pinned, updated_at, library, card_slug, ' +
+  'categories(name), prompt_media(kind, storage_path, sort_order)';
+
+/**
+ * Les colonnes du comptage, et la jointure quand — et seulement quand — un
+ * filtre porte dessus.
+ *
+ * Ecrite en dur, la jointure sur les tags ne compterait que les cartes
+ * taguees : le total annoncerait un chiffre plus petit que la liste
+ * montree, et rien ne dirait pourquoi.
+ */
+function colonnesDuComptageAdmin(filtreTag: boolean): string {
+  return filtreTag ? 'id, prompt_tags!inner(tag_id)' : 'id';
+}
 
 export async function getAdminDashboard(): Promise<AdminDashboard> {
   const supabase = await createClient();
@@ -192,6 +219,17 @@ export type AdminPromptFilters = {
    * question « que reste-t-il a produire ? ».
    */
   media?: 'avec' | 'sans';
+  /**
+   * La bibliotheque de rangement : Images, Textes ou Reflexions.
+   *
+   * C'est le premier axe du catalogue depuis la V2, et celui qui separe
+   * vraiment le travail : une carte image attend un visuel, une carte texte
+   * attend une relecture. Filtrer par mode ne repondait plus a cette
+   * question — « texte » y melange les Textes et les Reflexions.
+   */
+  library?: Enums<'app_library'>;
+  /** Un tag pose sur la carte. Filtre le catalogue par usage transversal. */
+  tagId?: string;
   /** Par quoi la liste est triee. Voir `TRIS_ADMIN`. */
   tri?: TriAdmin;
   page: number;
@@ -252,6 +290,8 @@ export async function listAdminPrompts(
     if (filters.categoryId) requete = requete.eq('category_id', filters.categoryId);
     if (filters.access) requete = requete.eq('is_free', filters.access === 'gratuit');
     if (filters.media) requete = requete.eq('media_ready', filters.media === 'avec');
+    if (filters.library) requete = requete.eq('library', filters.library);
+    if (filters.tagId) requete = requete.eq('prompt_tags.tag_id', filters.tagId);
     if (terme) requete = requete.ilike('search_norm', `%${terme}%`);
 
     return requete;
@@ -259,14 +299,19 @@ export async function listAdminPrompts(
 
   const tri = TRIS_ADMIN[filters.tri ?? 'modifie'];
 
+  // La jointure sur les tags entre dans les colonnes lues quand le filtre
+  // est actif : sans elle, PostgREST rejette le `eq` sur la ressource
+  // imbriquee.
+  const colonnes = filters.tagId ? `${ROW_COLUMNS}, prompt_tags!inner(tag_id)` : ROW_COLUMNS;
+
   const [lecture, comptage] = await Promise.all([
-    construire(ROW_COLUMNS)
+    construire(colonnes)
       .order(tri.colonne, { ascending: tri.ascendant })
       // Derniere cle unique : sans elle, deux ex aequo s'echangent d'une page
       // a l'autre et la meme ligne peut apparaitre deux fois ou disparaitre.
       .order('id', { ascending: true })
       .range(from, from + ADMIN_PAGE_SIZE),
-    construire('id', true),
+    construire(colonnesDuComptageAdmin(Boolean(filters.tagId)), true),
   ]);
 
   const rows = (lecture.data ?? []) as unknown as Parameters<typeof toRow>[0][];
@@ -317,6 +362,19 @@ export type AdminPromptDetail = {
     payload: string | null;
   }[];
   media: { id: string; kind: Enums<'media_kind'>; url: string; alt: string | null }[];
+  /**
+   * La bibliotheque de rangement : Images, Textes, Reflexions.
+   *
+   * Elle ne se deduit pas du mode — les quatre-vingt-deux commandes `texte`
+   * d'aujourd'hui sont toutes des Modes IA, donc des Reflexions, mais un
+   * /businessplan sera `texte` sans en etre un. Un declencheur pose une
+   * valeur par defaut ; celle-ci se corrige ici.
+   */
+  library: Enums<'app_library'> | null;
+  /** Les tags poses sur la commande, par identifiant. */
+  tagIds: string[];
+  /** Les champs a remplir avant de copier. Trois au plus. */
+  champs: AdminChamp[];
 };
 
 export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | null> {
@@ -329,8 +387,11 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
        entity_type, univers, search_keywords,
        intention, use_cases, tags, show_image_card, is_free, is_featured, is_new,
        expected_input, limitations, admin_notes,
-       result_summary, input_examples, output_formats,
-       prompt_media(id, kind, storage_path, alt, sort_order)`,
+       result_summary, input_examples, output_formats, library,
+       prompt_media(id, kind, storage_path, alt, sort_order),
+       prompt_tags(tag_id),
+       prompt_fields(id, cle, libelle, indication, kind, requis, position,
+                     prompt_field_choices(valeur, libelle, position))`,
     )
     .eq('id', id)
     .maybeSingle();
@@ -368,6 +429,7 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
     result_summary: string | null;
     input_examples: Enums<'input_example_kind'>[] | null;
     output_formats: Enums<'output_format_kind'>[] | null;
+    library: Enums<'app_library'> | null;
     prompt_media: {
       id: string;
       kind: Enums<'media_kind'>;
@@ -375,6 +437,19 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
       alt: string | null;
       sort_order: number;
     }[];
+    prompt_tags: { tag_id: string }[] | null;
+    prompt_fields:
+      | {
+          id: string;
+          cle: string;
+          libelle: string;
+          indication: string | null;
+          kind: Enums<'prompt_field_kind'>;
+          requis: boolean;
+          position: number;
+          prompt_field_choices: { valeur: string; libelle: string; position: number }[] | null;
+        }[]
+      | null;
   };
 
   return {
@@ -420,8 +495,38 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
         url: urlVisuel(media.storage_path, LARGEURS_VISUEL.comparaison),
         alt: media.alt,
       })),
+    library: row.library,
+    tagIds: (row.prompt_tags ?? []).map((entree) => entree.tag_id),
+    champs: (row.prompt_fields ?? [])
+      .slice()
+      .sort((a, b) => a.position - b.position)
+      .map((champ) => ({
+        id: champ.id,
+        cle: champ.cle,
+        libelle: champ.libelle,
+        indication: champ.indication,
+        kind: champ.kind,
+        requis: champ.requis,
+        position: champ.position,
+        choix: (champ.prompt_field_choices ?? [])
+          .slice()
+          .sort((a, b) => a.position - b.position)
+          .map((choix) => ({ valeur: choix.valeur, libelle: choix.libelle })),
+      })),
   };
 }
+
+/** Un champ de personnalisation, tel que l'administration le regle. */
+export type AdminChamp = {
+  id: string;
+  cle: string;
+  libelle: string;
+  indication: string | null;
+  kind: Enums<'prompt_field_kind'>;
+  requis: boolean;
+  position: number;
+  choix: { valeur: string; libelle: string }[];
+};
 
 export type AdminCategory = {
   id: string;

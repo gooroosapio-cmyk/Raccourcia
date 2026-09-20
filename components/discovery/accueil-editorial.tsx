@@ -1,80 +1,99 @@
-import { RailExplorer } from '@/components/discovery/rail-explorer';
-import { CarteEditoriale } from '@/components/feed/carte-editoriale';
-import { FeedDecouverte, type Intercalaire } from '@/components/feed/feed-decouverte';
+import { CollectionsPopulaires } from '@/components/accueil/collections-populaires';
+import { NosBibliotheques } from '@/components/accueil/nos-bibliotheques';
+import {
+  IconeBibliotheques,
+  IconeCollections,
+  IconeRecemment,
+  IconeTendances,
+  TitreDeSection,
+} from '@/components/accueil/titre-de-section';
+import { FeedDecouverte } from '@/components/feed/feed-decouverte';
 import { PromptGrid } from '@/components/cards/prompt-grid';
-import { collectionsAProposer } from '@/lib/catalog/suggestions';
+import { chargerLesTendances } from '@/lib/actions/tendances';
 import { traitsDesRayons } from '@/lib/catalog/rayons';
+import type { CollectionPopulaire } from '@/lib/catalog/accueil';
 import type { LibraryFamily, PromptCard } from '@/lib/catalog/types';
 
 /**
- * L'Accueil quand rien n'est encore cherche.
+ * L'accueil quand rien n'est encore filtre.
  *
- * Trois etages, dans l'ordre ou l'on s'en sert : par ou entrer, ce qu'on a
- * copie en dernier, puis la galerie.
+ * Quatre etages, dans l'ordre ou l'on s'en sert :
  *
- * Il y en avait quatre. Un carrousel « A decouvrir » de vingt cartes
- * s'intercalait avant la galerie, qui retirait ensuite ces vingt-la. Les deux
- * montraient les memes cartes sous deux formes, a deux ecrans d'intervalle :
- * on parcourait la premiere sans savoir qu'on parcourrait la seconde, et le
- * catalogue paraissait plus court qu'il n'est. La selection occupe desormais
- * la tete de la galerie — c'est la meme chose, en un seul geste.
+ *   1. par quelle bibliotheque entrer — image, texte ou conversation ;
+ *   2. quelles collections valent le detour ;
+ *   3. ce qu'on a copie en dernier, pour y revenir sans chercher ;
+ *   4. la galerie, qui ne s'arrete plus.
+ *
+ * Les collections ont remplace les categories. Une categorie est un
+ * tiroir : « Portraits et photographie » ne fait choisir personne, parce
+ * qu'elle contient tout et son contraire. Une collection est une intention
+ * de recherche — « Portrait et editorial », « Liens et souvenirs » — et
+ * c'est a ce niveau qu'on sait si ce qu'on cherche est derriere.
+ *
+ * Chaque titre porte un signe. L'accueil empile quatre sections de formes
+ * proches, et sur un telephone on les parcourt au pouce sans lire les
+ * titres : un signe en tete de ligne se reconnait plus vite qu'un mot.
  */
 export function AccueilEditorial({
   feed,
   reprendre,
   familles,
+  collections,
   locked,
   visiteur,
 }: {
   feed: PromptCard[];
   reprendre: PromptCard[];
   familles: LibraryFamily[];
+  collections: CollectionPopulaire[];
   locked: boolean;
   visiteur: boolean;
 }) {
-  // Une carte connait sa collection, jamais sa famille. L'Accueil charge deja
-  // la bibliotheque entiere : il resout le trait de chaque rayon une fois et
-  // le passe aux galeries, plutot qu'une jointure a deux etages par lecture —
-  // et plutot que de faire entrer les soixante-douze traits du kit dans le
-  // navigateur pour en dessiner six.
+  // Une carte connait sa collection, jamais sa famille. L'accueil charge
+  // deja la bibliotheque entiere : il resout le trait de chaque rayon une
+  // fois et le passe aux galeries, plutot qu'une jointure a deux etages par
+  // lecture.
   const rayons = traitsDesRayons(familles);
 
-  // Deux invitations au plus, posees loin l'une de l'autre. Interrompre plus
-  // souvent une galerie qu'on parcourt au pouce revient a la decouper en
-  // blocs.
-  const intercalaires: Intercalaire[] = collectionsAProposer(familles).map((collection, index) => ({
-    cle: collection.slug,
-    apres: index === 0 ? 8 : 20,
-    noeud: (
-      <CarteEditoriale
-        surtitre={collection.famille}
-        titre={collection.name}
-        action="Voir la collection"
-        href={`/app/bibliotheque/${collection.slug}`}
-        apercus={collection.apercus}
-      />
-    ),
-  }));
-
   return (
-    <div className="space-y-5 pt-1">
-      <RailExplorer familles={familles} />
+    <div className="space-y-6 pt-1">
+      <section className="space-y-2.5">
+        <TitreDeSection
+          titre="Nos bibliothèques"
+          icone={<IconeBibliotheques />}
+          href="/app/bibliotheque"
+        />
+        <NosBibliotheques />
+      </section>
+
+      {collections.length > 0 ? (
+        <section className="space-y-2.5">
+          <TitreDeSection
+            titre="Collections populaires"
+            icone={<IconeCollections />}
+            href="/app/bibliotheque"
+          />
+          <CollectionsPopulaires collections={collections} />
+        </section>
+      ) : null}
 
       {reprendre.length > 0 ? (
-        <section className="space-y-1.5">
-          {/* « Copiees recemment », et non « Reprendre ».
-              Rien n'est repris : l'application ne sait pas ou en est la
-              conversation qu'on a menee ailleurs, et un titre qui le laisse
-              croire promet une continuite qui n'existe pas. Ce qu'elle sait,
-              c'est ce qu'on a copie — et c'est deja ce qu'on revient chercher. */}
-          <h2 className="text-[length:var(--texte-carte)] font-semibold text-[color:var(--color-muted)]">
-            Copiées récemment
-          </h2>
+        <section className="space-y-2">
+          {/* « Copiees recemment », et non « Reprendre ». Rien n'est repris :
+              l'application ne sait pas ou en est la conversation qu'on a
+              menee ailleurs, et un titre qui le laisse croire promet une
+              continuite qui n'existe pas. Ce qu'elle sait, c'est ce qu'on a
+              copie — et c'est deja ce qu'on revient chercher. */}
+          <TitreDeSection
+            titre="Copiées récemment"
+            icone={<IconeRecemment />}
+            href="/app/recents"
+            action="Tout l’historique"
+          />
           {/* Les dix dernieres commandes copiees, et non ouvertes : on ouvre
               dix fiches pour en retenir une, mais on ne copie que ce dont on
-              s'est servi. En carrousel — dix cartes en colonne pousseraient la
-              galerie hors de l'ecran, tandis qu'une rangee qui defile se
-              parcourt d'un pouce et s'arrete quand on veut. */}
+              s'est servi. En carrousel — dix cartes en colonne pousseraient
+              la galerie hors de l'ecran. */}
           <PromptGrid
             prompts={reprendre}
             locked={locked}
@@ -89,27 +108,21 @@ export function AccueilEditorial({
 
       {feed.length > 0 ? (
         <section className="space-y-2">
-          <h2 className="text-[length:var(--texte-section)] font-bold leading-tight text-[color:var(--color-night)]">
-            À vous de créer
-          </h2>
+          <TitreDeSection titre="Tendances du moment" icone={<IconeTendances />} />
+          {/* La galerie ne s'arrete plus au vivier de la page. Elle bornait
+              a soixante cartes, et rien ne disait qu'il en existait six
+              cents de plus : on croyait avoir fait le tour du catalogue au
+              bout de deux ecrans. */}
           <FeedDecouverte
             prompts={feed}
             locked={locked}
             visiteur={visiteur}
-            intercalaires={intercalaires}
             rayons={rayons}
+            chargerLaSuite={chargerLesTendances}
             filtrable
           />
         </section>
-      ) : (
-        // Une galerie vide ne doit pas emporter avec elle les invitations :
-        // elles se posent alors les unes sous les autres, a la place des idees.
-        <div className="flex flex-col gap-3">
-          {intercalaires.map((element) => (
-            <div key={element.cle}>{element.noeud}</div>
-          ))}
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }

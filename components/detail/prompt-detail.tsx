@@ -1,15 +1,17 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
+import { ChampsDeCommande } from '@/components/detail/champs-de-commande';
 import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { InputExampleList } from '@/components/detail/input-example-list';
 import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
 import { GenreDeFiche } from '@/components/detail/genre-fiche';
 import { ModesCommande } from '@/components/detail/modes-commande';
+import { MotsCles } from '@/components/detail/mots-cles';
 import { ListePuces, Section } from '@/components/detail/section-fiche';
 import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { OutputFormatList } from '@/components/detail/output-format-list';
@@ -59,6 +61,29 @@ export function PromptDetailSheet({
   const panneauRef = useRef<HTMLDivElement>(null);
   const contenuRef = useRef<HTMLDivElement>(null);
   const [agrandi, setAgrandi] = useState(false);
+
+  // Ce que le formulaire a recueilli, quand la commande en demande.
+  //
+  // L'etat vit ici et non dans le formulaire : le bouton de copie est dans
+  // le pied de la fiche, a l'autre bout de l'arbre, et c'est lui qui envoie.
+  // Il se perd a la fermeture, comme le reste de la fiche — une saisie
+  // retenue d'une ouverture a l'autre ferait copier, sans le dire, des
+  // valeurs posees pour une autre occasion.
+  const [valeurs, setValeurs] = useState<Record<string, string>>({});
+
+  const renseigner = useCallback((cle: string, valeur: string) => {
+    setValeurs((actuelles) => ({ ...actuelles, [cle]: valeur }));
+  }, []);
+
+  // Seules les clefs declarees partent, et dans l'ordre du formulaire : le
+  // serveur les reverifiera, mais rien ne sert d'envoyer ce qu'il ecartera.
+  const saisies = useMemo(
+    () =>
+      prompt.champs
+        .map((champ) => ({ cle: champ.cle, valeur: valeurs[champ.cle] ?? '' }))
+        .filter((champ) => champ.valeur !== ''),
+    [prompt.champs, valeurs],
+  );
   const glissement = useSheetDrag({ onClose, contenuRef });
 
   useEffect(() => {
@@ -134,25 +159,26 @@ export function PromptDetailSheet({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center">
-      {/* Le fond referme au toucher, mais il n'est pas annonce : la croix
-          porte deja ce nom, et deux commandes homonymes se suivant dans la
-          lecture vocale ne disent pas laquelle fait quoi. Le clavier a la
-          croix et la touche Echap. */}
-      <div
-        aria-hidden="true"
-        onClick={onClose}
-        style={{ opacity: glissement.opaciteFond }}
-        className="anim-fondu absolute inset-0 bg-[color:var(--color-night)]/45"
-      />
-
+    // La fiche occupe l'ecran entier.
+    //
+    // Elle s'ouvrait aux neuf dixiemes, sur un fond assombri : une fenetre
+    // posee par-dessus la galerie. Ce reste de galerie visible en haut
+    // invitait a remonter au lieu de lire, et la fiche est ce qu'on est venu
+    // voir — elle porte l'avant/apres, ce qu'il faut fournir, les champs a
+    // remplir et le bouton de copie. Elle prend donc toute la place.
+    //
+    // Elle reste une couche et non une page : la galerie garde sa position
+    // de defilement et ses filtres derriere, et refermer rend exactement
+    // l'ecran qu'on avait quitte. Le bouton Retour du telephone la referme,
+    // comme avant.
+    <div className="fixed inset-0 z-50 flex justify-center bg-[color:var(--color-surface)]">
       <div
         ref={panneauRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="fiche-commande"
         style={glissement.style}
-        className="anim-sheet relative flex max-h-[92dvh] w-full max-w-screen-sm flex-col lg:max-w-4xl overflow-hidden rounded-t-[color:var(--radius-sheet)] bg-[color:var(--color-surface)] shadow-[var(--shadow-sheet)] transition-transform duration-[var(--duration-sheet)] ease-[var(--ease-out)]"
+        className="anim-sheet relative flex h-dvh w-full max-w-screen-sm flex-col overflow-hidden bg-[color:var(--color-surface)] transition-transform duration-[var(--duration-sheet)] ease-[var(--ease-out)] lg:max-w-4xl"
       >
         {/* La zone de prise couvre la poignee et la barre d'actions : c'est la
             qu'un pouce se pose naturellement pour repousser la fiche. */}
@@ -306,6 +332,24 @@ export function PromptDetailSheet({
                   <ModesCommande modes={prompt.modes} />
                 </Section>
               ) : null}
+
+              {/* Les tags sortent de la fiche : « pas celle-la, mais
+                  quelque chose de ce genre » n'avait aucune reponse — il
+                  fallait fermer, remonter et relancer une recherche. Ils ne
+                  s'affichent pas pour un visiteur devant une commande
+                  reservee : la carte est masquee, elle ne porte rien. */}
+              <MotsCles mots={prompt.motsCles} />
+
+              {/* Le formulaire ferme la fiche, juste au-dessus du bouton :
+                  c'est le dernier geste avant la copie, et le lire apres
+                  avoir compris ce que fait la commande vaut mieux que de le
+                  trouver avant d'en connaitre l'usage. */}
+              <ChampsDeCommande
+                champs={prompt.champs}
+                valeurs={valeurs}
+                onChange={renseigner}
+                desactive={locked}
+              />
             </div>
           </div>
 
@@ -314,6 +358,7 @@ export function PromptDetailSheet({
 
         <div className="shrink-0 border-t border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
           <ChoixMoteur
+            champs={saisies}
             promptId={prompt.id}
             pret={prompt.payloadReady}
             providers={compatibles}

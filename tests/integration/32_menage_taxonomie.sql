@@ -66,10 +66,17 @@ begin
   -- l'on range vraiment, plus ceux qui portent encore quelque chose a en
   -- sortir. Le seuil n'est pas une regle produit : c'est un garde-fou qui
   -- leve si une refonte future oublie son menage.
+  -- Le compte exclut la taxonomie de septembre 2026, qui s'installe a cote
+  -- de l'ancienne pendant que ses 1 010 cartes attendent leurs visuels.
+  -- Deux arborescences cohabitent donc, et c'est voulu : la seconde ne
+  -- remplace la premiere qu'une fois publiee. Compter les deux ensemble
+  -- ferait lever ce garde-fou pour une raison qui n'est pas la sienne.
   select count(*) into v_total
   from public.categories c
-  where c.status <> 'archived'
-     or exists (select 1 from public.prompts p where p.category_id = c.id);
+  where (c.external_ref is null
+         or (c.external_ref not like 'V2CAT-%' and c.external_ref not like 'V2COL-%'))
+    and (c.status <> 'archived'
+         or exists (select 1 from public.prompts p where p.category_id = c.id));
 
   if v_total > 90 then
     raise exception 'Ménage : % catégories proposées au rangement, le ménage a été oublié.', v_total;

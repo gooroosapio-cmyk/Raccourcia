@@ -32,6 +32,7 @@ export function ChoixMoteur({
   onLockedClick,
   proposerOuverture = false,
   pret = true,
+  champs,
 }: {
   promptId: string;
   /** Deja filtrees : une IA non supportee n'a pas a etre proposee. */
@@ -55,6 +56,8 @@ export function ChoixMoteur({
    * promet pas une copie qui n'arriverait pas.
    */
   pret?: boolean;
+  /** Ce que le formulaire de la fiche a fait saisir, s'il y en avait un. */
+  champs?: { cle: string; valeur: string }[];
 }) {
   const [interne, setInterne] = useState<string | undefined>(undefined);
   const choisi = selected ?? interne ?? providers[0]?.key;
@@ -99,6 +102,7 @@ export function ChoixMoteur({
         surface={surface}
         locked={locked}
         pret={pret}
+        champs={champs}
         onLockedClick={onLockedClick}
         proposerOuverture={proposerOuverture}
       />

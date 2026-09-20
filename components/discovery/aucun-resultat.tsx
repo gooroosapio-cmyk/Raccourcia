@@ -16,18 +16,24 @@ import { useRouter } from 'next/navigation';
  */
 export function AucunResultat({
   terme,
-  mode,
+  bibliotheque,
   famille = null,
 }: {
   terme?: string;
-  mode: string;
+  /**
+   * La bibliotheque en cours, quand il y en a une.
+   *
+   * « Elargir » la garde et abandonne le rayon : on cherchait dans les
+   * Images, on continue d'y chercher. C'est le filtre le plus large, et
+   * celui qu'on a le moins de chances d'avoir pose par erreur.
+   */
+  bibliotheque?: string;
   /**
    * Le nom de la famille choisie, quand il y en a une.
    *
-   * La bibliotheque s'ouvre toujours sur une famille : une recherche qui ne
-   * rend rien dedans peut tres bien rendre quelque chose deux puces plus
-   * loin. Le dire, et proposer le geste, vaut mieux que de laisser croire
-   * que la commande n'existe pas.
+   * Un rayon choisi borne la recherche : ce qu'on cherche existe peut-etre
+   * dans le rayon d'a cote. Le dire, et proposer le geste, vaut mieux que de
+   * laisser croire que la commande n'existe pas.
    */
   famille?: string | null;
 }) {
@@ -44,7 +50,7 @@ export function AucunResultat({
         {elargir ? (
           <>
             Rien ne correspond à «&nbsp;{terme}&nbsp;» dans {famille}. La commande existe peut-être
-            dans une autre catégorie.
+            dans un autre rayon.
           </>
         ) : terme ? (
           <>
@@ -62,25 +68,28 @@ export function AucunResultat({
       {elargir ? (
         <button
           type="button"
-          onClick={() =>
-            router.replace(`/app?mode=${mode}&q=${encodeURIComponent(terme!)}`, { scroll: false })
-          }
+          onClick={() => {
+            const suivants = new URLSearchParams();
+            if (bibliotheque) suivants.set('bibliotheque', bibliotheque);
+            suivants.set('q', terme!);
+            router.replace(`/app?${suivants.toString()}`, { scroll: false });
+          }}
           className="touch-target mt-5 inline-flex w-full items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] px-5 text-[length:var(--texte-corps)] font-semibold text-white"
         >
-          Chercher dans toutes les catégories
+          Chercher dans tous les rayons
         </button>
       ) : null}
 
       <button
         type="button"
-        onClick={() => router.replace(`/app?mode=${mode}`, { scroll: false })}
+        onClick={() => router.replace('/app', { scroll: false })}
         className={`touch-target mt-3 inline-flex items-center justify-center rounded-[color:var(--radius-control)] px-5 text-[length:var(--texte-corps)] font-semibold ${
           elargir
             ? 'text-[color:var(--color-brand)]'
             : 'mt-5 bg-[color:var(--color-brand)] text-white'
         }`}
       >
-        Réinitialiser la recherche et les filtres
+        Réinitialiser les filtres
       </button>
     </div>
   );

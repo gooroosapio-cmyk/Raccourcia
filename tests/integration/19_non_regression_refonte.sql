@@ -124,17 +124,24 @@ begin
   -- que le reste, et le catalogue V2 en compte 113 — « /1990sflash »,
   -- « /mariage-bengali ». Les refuser aurait voulu dire les renommer, donc
   -- casser des identifiants que le classeur fournit.
+  -- Deux caracteres suffisent depuis le catalogue de septembre 2026 : /cv
+  -- est une commande legitime, et exiger trois lettres obligerait a la
+  -- renommer en /curriculum — plus long a taper pour rien.
   select count(*) into v_n
   from public.prompts
-  where status = 'published' and command::text !~ '^/[a-z0-9][a-z0-9_-]{2,39}$';
+  where status = 'published' and command::text !~ '^/[a-z0-9][a-z0-9_-]{1,39}$';
   perform tests_assert(v_n = 0, format('%s commandes publiees hors du motif R02.', v_n));
 
-  -- Deux commandes homonymes rendraient la copie imprevisible.
+  -- Deux cartes indistinguables sous une meme commande rendraient la copie
+  -- imprevisible. La commande, elle, peut porter plusieurs cartes depuis le
+  -- catalogue de septembre 2026 : /vintageportrait en compte trois, et
+  -- c'est le couple (commande, carte) qui doit etre unique.
   select count(*) into v_n from (
-    select command from public.prompts where status = 'published'
-    group by command having count(*) > 1
+    select command, coalesce(card_slug, '') from public.prompts
+    where status = 'published'
+    group by command, coalesce(card_slug, '') having count(*) > 1
   ) doublons;
-  perform tests_assert(v_n = 0, format('%s noms de commande en double.', v_n));
+  perform tests_assert(v_n = 0, format('%s carte(s) en double sous une meme commande.', v_n));
 
   -- Deux adresses identiques rendraient une fiche inatteignable.
   -- Borne aux contenus actifs, comme l'index unique du schema : une ligne

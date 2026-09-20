@@ -1,484 +1,773 @@
 #!/usr/bin/env node
 /**
- * Genere les lots SQL du catalogue V2 a partir du manifeste.
+ * Transforme le CSV du catalogue V2 en lots SQL rejouables.
  *
- *   node scripts/generer-catalogue-v2.mjs
+ *   node scripts/generer-catalogue-v2.mjs <chemin-du-csv>
  *
- * Le manifeste `data/catalogue-v2/catalogue.json` est extrait du classeur de
- * migration et vit dans le depot : c'est lui qui fait foi, et le SQL genere
- * se relit a cote de lui. Regenerer produit exactement les memes fichiers —
- * aucune date, aucun identifiant tire au sort.
+ * CE QUE LE LOT FAIT. Il pose la taxonomie (27 categories, 73 collections),
+ * le referentiel de tags, puis les 1 010 cartes avec leurs payloads, leurs
+ * tags et leurs champs de fiche.
  *
- * Ce que les lots font, et ce qu'ils ne font pas :
+ * CE QU'IL NE FAIT PAS, ET C'EST DELIBERE :
  *
- * - Ils posent la taxonomie et les cartes, toutes en brouillon. Rien
- *   n'apparait a l'ecran tant que la bascule n'a pas ete appliquee.
- * - Ils ne suppriment rien et ne deplacent aucune commande hors du V2.
- * - Ils ne creent aucun payload : le catalogue V2 arrive sans texte, et
- *   `payload_ready` le dit. Les commandes reprises gardent le leur.
+ *   * il ne publie rien. Le fichier d'import declare lui-meme ses 1 010
+ *     lignes en `brouillon`, `visible_galerie = false`, `statut_media =
+ *     a_produire`. Le catalogue en ligne continue donc de fonctionner
+ *     pendant que le nouveau s'installe a cote ;
+ *   * il ne touche a aucun visuel. Les 1 010 lignes arrivent sans URL —
+ *     la regle d'import du referentiel est explicite : « conserver les
+ *     medias existants lorsque les nouvelles URL sont vides » ;
+ *   * il ne supprime rien. Archiver, reaffecter et fermer les anciens
+ *     rayons est un second geste, qui se decide en regardant ce que
+ *     l'import a produit.
  *
- * Une carte dont la commande existe deja et n'est pas archivee reprend la
- * ligne existante plutot que d'en creer une seconde. C'est ce qui sauve les
- * favoris et l'historique de copie des 79 commandes que le classeur
- * conserve — et l'index unique partiel sur `command` l'exige de toute facon.
+ * Tout est idempotent : rejouer un lot ne cree pas de doublon.
  */
 
-import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const MANIFESTE = 'data/catalogue-v2/catalogue.json';
-const DOSSIER = 'supabase/seed/catalogue-v2';
-const PAR_LOT = 50;
-const VERSION = '2.0';
+const SOURCE = process.argv[2];
+if (!SOURCE) {
+  console.error('Usage : node scripts/generer-catalogue-v2.mjs <chemin-du-csv>');
+  process.exit(1);
+}
 
-const manifeste = JSON.parse(readFileSync(MANIFESTE, 'utf8'));
+// Un dossier date, et non « catalogue-v2 » : ce nom est deja pris par
+// l'import precedent, celui qui a produit le catalogue en ligne. Deux lots
+// dans le meme dossier s'appliqueraient l'un apres l'autre sans que rien
+// ne dise lequel fait foi.
+const DESTINATION = 'supabase/seed/catalogue-2026-09';
 
-/** Litteral SQL, ou `null`. Les apostrophes francaises abondent ici. */
-const t = (v) =>
-  v === null || v === undefined || v === '' ? 'null' : `'${String(v).replaceAll("'", "''")}'`;
-const b = (v) => (v ? 'true' : 'false');
-const n = (v) => (v === null || v === undefined ? 'null' : String(v));
-const tableau = (v) => (v && v.length ? `array[${v.map(t).join(', ')}]::text[]` : `'{}'::text[]`);
+/* ------------------------------------------------------------------ */
+/* Lecture du CSV                                                      */
+/* ------------------------------------------------------------------ */
 
-const entete = (titre, corps) =>
-  [
-    '-- =====================================================================',
-    `-- ${titre}`,
-    '--',
-    ...corps.map((l) => `-- ${l}`),
-    '-- =====================================================================',
-    '',
-  ].join('\n');
+/**
+ * Lit un CSV conforme a la RFC 4180.
+ *
+ * Ecrit ici plutot qu'emprunte : les payloads contiennent des guillemets,
+ * des retours a la ligne et des points-virgules, et une lecture naive par
+ * `split` les couperait au milieu d'une phrase.
+ */
+function lireCsv(texte) {
+  const lignes = [];
+  let champ = '';
+  let ligne = [];
+  let entreGuillemets = false;
 
-// --- Taxonomie -------------------------------------------------------------
+  for (let i = 0; i < texte.length; i += 1) {
+    const c = texte[i];
 
-function taxonomie() {
-  const lignes = [
-    entete('Catalogue V2 : les huit categories et leurs 53 collections', [
-      "Deux niveaux, comme le schema le permet depuis l'origine : la",
-      'categorie porte la collection. Tout arrive en brouillon et invisible —',
-      'la bascule ouvre les rayons quand les cartes y sont.',
-      '',
-      "La cle du classeur devient le slug : c'est l'identifiant que le",
-      "classeur fournit, il n'est pas renomme en chemin.",
-      '',
-      'Rejouable : reconnaissance par `external_ref`.',
-    ]),
-  ];
-
-  for (const cat of manifeste.categories) {
-    const ref = `V2-CAT-${String(cat.ordre).padStart(2, '0')}`;
-    lignes.push(`-- --- ${cat.nom} (${cat.collections.length} collections) ---`);
-    lignes.push(
-      `insert into public.categories (external_ref, mode, slug, name, sort_order, status, is_visible, fallback_image_path)`,
-    );
-    lignes.push(
-      `select ${t(ref)}, ${t(cat.mode)}::public.app_mode, ${t(cat.cle)}, ${t(cat.nom)}, ${n(cat.ordre)}, 'draft'::public.content_status, false, ${t(`prompt-media/families/${cat.mode}/${cat.cle}.webp`)}`,
-    );
-    lignes.push(
-      `where not exists (select 1 from public.categories c where c.external_ref = ${t(ref)});`,
-    );
-    lignes.push(
-      `update public.categories set slug = ${t(cat.cle)}, name = ${t(cat.nom)}, sort_order = ${n(cat.ordre)}, mode = ${t(cat.mode)}::public.app_mode, fallback_image_path = ${t(`prompt-media/families/${cat.mode}/${cat.cle}.webp`)} where external_ref = ${t(ref)};`,
-    );
-    lignes.push('');
-
-    for (const col of cat.collections) {
-      const refCol = `V2-COL-${String(cat.ordre).padStart(2, '0')}-${String(col.ordre).padStart(2, '0')}`;
-      lignes.push(
-        `insert into public.categories (external_ref, parent_id, mode, slug, name, sort_order, status, is_visible, fallback_image_path)`,
-      );
-      lignes.push(
-        `select ${t(refCol)}, (select id from public.categories where external_ref = ${t(ref)}), ${t(cat.mode)}::public.app_mode, ${t(col.cle)}, ${t(col.nom)}, ${n(col.ordre)}, 'draft'::public.content_status, false, ${t(`prompt-media/families/${cat.mode}/${col.cle}.webp`)}`,
-      );
-      lignes.push(
-        `where not exists (select 1 from public.categories c where c.external_ref = ${t(refCol)});`,
-      );
-      lignes.push(
-        `update public.categories set slug = ${t(col.cle)}, name = ${t(col.nom)}, sort_order = ${n(col.ordre)}, parent_id = (select id from public.categories where external_ref = ${t(ref)}), fallback_image_path = ${t(`prompt-media/families/${cat.mode}/${col.cle}.webp`)} where external_ref = ${t(refCol)};`,
-      );
+    if (entreGuillemets) {
+      if (c === '"') {
+        if (texte[i + 1] === '"') {
+          champ += '"';
+          i += 1;
+        } else {
+          entreGuillemets = false;
+        }
+      } else {
+        champ += c;
+      }
+      continue;
     }
-    lignes.push('');
+
+    if (c === '"') entreGuillemets = true;
+    else if (c === ',') {
+      ligne.push(champ);
+      champ = '';
+    } else if (c === '\n') {
+      ligne.push(champ);
+      lignes.push(ligne);
+      ligne = [];
+      champ = '';
+    } else if (c !== '\r') {
+      champ += c;
+    }
   }
 
-  const attendu =
-    manifeste.categories.length +
-    manifeste.categories.reduce((s, c) => s + c.collections.length, 0);
-  lignes.push(`do $ctrl$`);
-  lignes.push(`declare v_n integer;`);
-  lignes.push(`begin`);
-  lignes.push(`  select count(*) into v_n from public.categories where external_ref like 'V2-%';`);
-  lignes.push(`  if v_n <> ${attendu} then`);
-  lignes.push(`    raise exception 'Taxonomie V2 : % rayons au lieu de ${attendu}.', v_n;`);
-  lignes.push(`  end if;`);
-  lignes.push(`end $ctrl$;`);
-  lignes.push('');
-  return lignes.join('\n');
-}
-
-// --- Cartes ----------------------------------------------------------------
-
-function carte(c) {
-  const collection = `(select id from public.categories where slug = ${t(c.collection)})`;
-  const colonnes = [
-    ['external_ref', t(c.card_id)],
-    ['card_id', t(c.card_id)],
-    ['command', t(c.commande)],
-    ['name', t(c.titre)],
-    ['slug', t(c.slug)],
-    ['mode', `${t(c.mode)}::public.app_mode`],
-    ['entity_type', t(c.type)],
-    ['category_id', collection],
-    ['short_description', t(c.description)],
-    ['expected_input', t(c.entree_attendue)],
-    ['expected_output', t(c.sortie)],
-    ['cta_label', t(c.cta)],
-    ['images_min', n(c.images_min)],
-    ['images_max', n(c.images_max)],
-    ['witness_type', t(c.image_temoin)],
-    ['default_ratio', t(c.ratio)],
-    ['allow_ratio_override', b(c.ratio_modifiable)],
-    ['identity_policy', t(c.identite)],
-    ['text_in_image_policy', t(c.texte_image)],
-    ['questionnaire_policy', t(c.questionnaire)],
-    ['online_lookup_policy', t(c.recherche_en_ligne)],
-    ['reality_policy', t(c.realite)],
-    ['tags', tableau(c.tags)],
-    ['search_keywords', tableau(c.mots_cles)],
-    ['seo_title', t(c.seo_titre)],
-    ['seo_description', t(c.seo_description)],
-    ['priority_score', n(c.score)],
-    ['sort_order', n(c.ordre)],
-    ['is_featured', b(c.mise_en_avant)],
-    ['show_image_card', b(c.type === 'commande_image')],
-    ['catalog_version', t(VERSION)],
-    ['catalog_v2', 'true'],
-    ['status', `'draft'::public.content_status`],
-  ];
-
-  // Deux colonnes ne sont jamais reecrites sur une commande reprise :
-  //
-  // `status`, parce que la bascule decide de ce qui s'ouvre et non le lot —
-  // rejouer un lot sur un catalogue publie ne doit rien refermer.
-  //
-  // `catalog_version` et `external_ref`, parce qu'elles disent d'ou vient la
-  // commande. Trois des commandes que le classeur conserve viennent des
-  // extensions V5.1 et V5.2, et l'empreinte des payloads V5 se calcule sur
-  // `external_ref` : leur effacer cette origine ferait mentir les controles
-  // d'import. L'appartenance au V2 se lit dans `catalog_v2`, et
-  // l'identifiant du classeur dans `card_id`.
-  const fige = new Set(['status', 'catalog_version', 'external_ref']);
-  const maj = colonnes.filter(([k]) => !fige.has(k)).map(([k, v]) => `  ${k} = ${v}`);
-
-  return [
-    `insert into public.prompts (${colonnes.map(([k]) => k).join(', ')})`,
-    `values (${colonnes.map(([, v]) => v).join(', ')})`,
-    `on conflict (command) where status <> 'archived' do update set`,
-    maj.join(',\n') + ';',
-    '',
-  ].join('\n');
-}
-
-function lots() {
-  const cartes = manifeste.cartes;
-  const fichiers = [];
-  for (let i = 0; i < cartes.length; i += PAR_LOT) {
-    const tranche = cartes.slice(i, i + PAR_LOT);
-    const numero = String(Math.floor(i / PAR_LOT) + 10).padStart(3, '0');
-    const corps = [
-      entete(`Catalogue V2 — lot ${numero} : ${tranche.length} cartes`, [
-        'Cartes en brouillon, sans payload. Une carte dont la commande existe',
-        "deja et n'est pas archivee reprend sa ligne : ses favoris, son",
-        'historique de copie et ses visuels restent attaches.',
-        '',
-        "Le statut n'est jamais reecrit ici : la bascule seule ouvre un rayon.",
-      ]),
-      ...tranche.map(carte),
-    ].join('\n');
-    fichiers.push([`${numero}_cartes.sql`, corps]);
+  if (champ !== '' || ligne.length > 0) {
+    ligne.push(champ);
+    lignes.push(ligne);
   }
-  return fichiers;
+
+  const entetes = lignes.shift();
+  return lignes
+    .filter((l) => l.length === entetes.length)
+    .map((l) => Object.fromEntries(entetes.map((nom, i) => [nom, l[i]])));
 }
 
-// --- Adresses liberees -----------------------------------------------------
-//
-// Le slug d'une commande active reserve son adresse. Une carte V2 peut donc
-// buter sur une commande de l'ancien catalogue qui detient son slug sous un
-// autre nom : `/presskit` occupait `pressrelease`, que la carte
-// `/pressrelease` reclame.
-//
-// La regle est etroite : on n'archive que ce qui detient une adresse du
-// catalogue V2 sans en porter la commande. Une commande que le classeur
-// conserve garde son slug et sa ligne — la bascule s'occupe du reste.
+/* ------------------------------------------------------------------ */
+/* Outils SQL                                                          */
+/* ------------------------------------------------------------------ */
 
-function adresses() {
-  const slugs = manifeste.cartes.map((c) => c.slug);
-  return `${entete('Catalogue V2 — liberer les adresses reclamees par les cartes', [
-    "Le slug d'une commande active reserve son adresse. Une carte V2 peut",
-    "buter sur une commande de l'ancien catalogue qui detient son slug sous",
-    'un autre nom.',
-    '',
-    'Seul ce cas precis est traite : la ligne detient une adresse du',
-    "catalogue V2 mais n'en porte pas la commande. Une commande que le",
-    'classeur conserve garde sa ligne, son slug, ses favoris et son',
-    "historique — c'est la bascule qui decide du reste.",
-    '',
-    'Archivage, jamais suppression. Rejouable : au second passage il ne',
-    'reste rien a archiver.',
-  ])}
-begin;
+/** Une chaine SQL. `null` pour une valeur vide : la base n'aime pas les ''. */
+const txt = (valeur) => {
+  const v = (valeur ?? '').trim();
+  return v === '' ? 'null' : `'${v.replace(/'/g, "''")}'`;
+};
 
-create temporary table adresses_v2 (slug text primary key) on commit drop;
-insert into adresses_v2 (slug) values
-${slugs.map((x) => `  (${t(x)})`).join(',\n')};
+/** Une chaine SQL qui ne peut pas etre nulle. */
+const txtObligatoire = (valeur) => `'${String(valeur ?? '').replace(/'/g, "''")}'`;
 
-update public.prompts p
-set status = 'archived'::public.content_status
-where p.status <> 'archived'
-  and coalesce(p.catalog_version, '') <> '${VERSION}'
-  and exists (select 1 from adresses_v2 a where a.slug = p.slug)
-  -- La commande d'une carte V2 est son slug precede d'une barre. Une ligne
-  -- qui porte les deux est une commande que le classeur conserve.
-  and p.command <> ('/' || p.slug);
+const nombre = (valeur, defaut = 'null') => {
+  const n = Number.parseInt(valeur, 10);
+  return Number.isFinite(n) ? String(n) : defaut;
+};
 
-commit;
-`;
+/** Minuscules, sans accent, tirets : la forme des slugs du catalogue. */
+function slugifier(valeur) {
+  return String(valeur ?? '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 70);
 }
 
-// --- Bascule ---------------------------------------------------------------
-//
-// La decision de publication vit ici et nulle part ailleurs : les lots
-// posent les cartes, la bascule ouvre les rayons. Elle porte donc la liste
-// des cartes que le classeur declare visibles — 594 sur 692.
+function lireJson(valeur, repli) {
+  try {
+    const v = JSON.parse(valeur);
+    return v ?? repli;
+  } catch {
+    return repli;
+  }
+}
 
-function bascule() {
-  const visibles = manifeste.cartes.filter((c) => c.visible).map((c) => c.commande);
-  const total = manifeste.cartes.length;
-  const rayons =
-    manifeste.categories.length +
-    manifeste.categories.reduce((s, c) => s + c.collections.length, 0);
+/* ------------------------------------------------------------------ */
+/* Correspondances vers le schema                                      */
+/* ------------------------------------------------------------------ */
 
-  return `-- =====================================================================
--- Bascule du catalogue V2.
+/**
+ * Le domaine historique d'une bibliotheque.
+ *
+ * `mode` precede la V2 et ne disparait pas : des index, des filtres
+ * d'administration et la recherche s'y appuient encore. Les Reflexions
+ * rejoignent « texte » plutot que « analyse » : cette derniere valeur reste
+ * dans l'enum mais n'est plus un domaine public depuis la V2 du catalogue.
+ */
+const MODE_PAR_BIBLIOTHEQUE = { images: 'image', textes: 'texte', reflexions: 'texte' };
+
+/**
+ * Le genre d'experience, qui decide de la forme de la fiche.
+ *
+ * Une commande image se juge sur son avant/apres ; une Reflexion ouvre une
+ * conversation, donc se lit comme un Mode IA. Une commande Texte n'est ni
+ * l'un ni l'autre : elle prend la fiche generique, et `null` est la bonne
+ * reponse plutot qu'un genre invente.
+ */
+const GENRE_PAR_BIBLIOTHEQUE = { images: 'commande_image', textes: null, reflexions: 'mode_ia' };
+
+/** Les familles de tags du referentiel, vers celles de la base. */
+const FAMILLE_DE_TAG = {
+  bibliotheque: 'bibliotheque',
+  usage: 'usage',
+  style: 'style',
+  rendu: 'resultat',
+  capacite: 'capacite',
+  contexte: 'contexte',
+  'public/contexte': 'contexte',
+  public: 'contexte',
+};
+
+/** Les genres de champ de fiche, vers l'enum `prompt_field_kind`. */
+function genreDeChamp(type) {
+  const t = String(type ?? '').toLowerCase();
+  if (t.includes('nombre') || t.includes('montant') || t.includes('chiffre')) return 'nombre';
+  if (t.includes('liste') || t.includes('choix')) return 'liste';
+  if (t.includes('fichier') || t.includes('long') || t.includes('document')) return 'texte_long';
+  return 'texte';
+}
+
+/* ------------------------------------------------------------------ */
+/* Generation                                                          */
+/* ------------------------------------------------------------------ */
+
+const lignes = lireCsv(readFileSync(SOURCE, 'utf8').replace(/^﻿/, ''));
+mkdirSync(DESTINATION, { recursive: true });
+
+const fichiers = [];
+const ecrire = (nom, contenu) => {
+  writeFileSync(join(DESTINATION, nom), contenu);
+  fichiers.push(nom);
+};
+
+const enTete = (titre, corps) =>
+  `-- =====================================================================\n` +
+  `-- ${titre}\n` +
+  `--\n` +
+  `-- Genere par scripts/generer-catalogue-v2.mjs. Ne pas modifier a la main :\n` +
+  `-- la source est le CSV du catalogue V2, et une correction faite ici\n` +
+  `-- disparaitrait a la prochaine generation.\n` +
+  `-- =====================================================================\n\n` +
+  corps;
+
+/* --- 1. La taxonomie : categories puis collections -------------------- */
+
+const categories = new Map();
+const collections = new Map();
+
+for (const l of lignes) {
+  const bib = l.bibliotheque;
+  if (!categories.has(l.categorie_id)) {
+    categories.set(l.categorie_id, {
+      id: l.categorie_id,
+      slug: l.categorie_slug,
+      nom: l.categorie,
+      bibliotheque: bib,
+      ordre: nombre(l.ordre_categorie, '0'),
+    });
+  }
+  if (!collections.has(l.collection_id)) {
+    collections.set(l.collection_id, {
+      id: l.collection_id,
+      slug: l.collection_slug,
+      nom: l.collection,
+      parent: l.categorie_id,
+      bibliotheque: bib,
+    });
+  }
+}
+
+{
+  const corps = [];
+  corps.push('begin;\n');
+  corps.push(`create temporary table lot_v2_taxonomie (
+  ref text, slug text, nom text, parent_ref text, mode text, ordre integer
+) on commit drop;\n`);
+
+  const valeurs = [];
+  for (const c of categories.values()) {
+    valeurs.push(
+      `  (${txtObligatoire(`V2CAT-${c.id}`)}, ${txtObligatoire(c.slug)}, ${txtObligatoire(c.nom)}, null, ` +
+        `${txtObligatoire(MODE_PAR_BIBLIOTHEQUE[c.bibliotheque] ?? 'texte')}, ${c.ordre})`,
+    );
+  }
+  let rang = 0;
+  for (const c of collections.values()) {
+    rang += 1;
+    valeurs.push(
+      `  (${txtObligatoire(`V2COL-${c.id}`)}, ${txtObligatoire(c.slug)}, ${txtObligatoire(c.nom)}, ` +
+        `${txtObligatoire(`V2CAT-${c.parent}`)}, ${txtObligatoire(MODE_PAR_BIBLIOTHEQUE[c.bibliotheque] ?? 'texte')}, ${rang})`,
+    );
+  }
+  corps.push(
+    `insert into lot_v2_taxonomie (ref, slug, nom, parent_ref, mode, ordre) values\n${valeurs.join(',\n')};\n`,
+  );
+
+  corps.push(`-- Les categories d'abord : une collection a besoin de sa parente.
 --
--- Les lots ont pose la taxonomie et les 692 cartes, en brouillon. Celle-ci
--- ouvre les rayons, publie les cartes que le classeur declare visibles, et
--- archive tout ce qui appartenait au catalogue precedent.
+-- La cle d'upsert est \`external_ref\`, pas le slug : deux refontes ont
+-- deja reutilise un meme slug pour deux rayons differents, et la
+-- reference stable est la seule chose qui ne bouge pas.
 --
--- Rien n'est supprime. Les commandes et les categories d'avant passent en
--- archive : leurs lignes restent, les favoris et l'historique de copie qui
--- les designent restent valides, et republier une categorie suffit a
--- defaire le regroupement. C'est la regle du projet, et c'est de toute
--- facon la seule facon de revenir en arriere.
---
--- Les commandes que le classeur conserve ne sont pas archivees puis
--- recreees : les lots ont repris leur ligne. Elles gardent donc leur
--- identifiant, leurs favoris, leur historique et leurs visuels.
---
--- Tout tient dans une transaction, avec ses controles de sortie. Rejouable.
--- =====================================================================
+-- Un rayon qui porte le slug visé mais une autre reference est libere de
+-- son slug plutot que de faire echouer le lot : il garde ses commandes et
+-- son identifiant, il perd seulement une adresse qu'il ne peut pas
+-- partager.
+update public.categories c
+set slug = c.slug || '-avant-v2'
+where c.slug in (select slug from lot_v2_taxonomie)
+  and (c.external_ref is null or c.external_ref not in (select ref from lot_v2_taxonomie));
 
-begin;
+insert into public.categories (external_ref, slug, name, mode, sort_order, status)
+select l.ref, l.slug, l.nom, l.mode::public.app_mode, l.ordre, 'published'::public.content_status
+from lot_v2_taxonomie l
+where l.parent_ref is null
+-- L'index de \`external_ref\` est partiel, comme celui des cartes :
+-- l'inference doit reprendre sa condition.
+on conflict (external_ref) where external_ref is not null do update
+set slug = excluded.slug, name = excluded.name, mode = excluded.mode,
+    sort_order = excluded.sort_order, updated_at = now();
 
--- --- Sauvegardes --------------------------------------------------------
+insert into public.categories (external_ref, slug, name, mode, sort_order, status, parent_id)
+select l.ref, l.slug, l.nom, l.mode::public.app_mode, l.ordre,
+       'published'::public.content_status, p.id
+from lot_v2_taxonomie l
+join public.categories p on p.external_ref = l.parent_ref
+where l.parent_ref is not null
+on conflict (external_ref) where external_ref is not null do update
+set slug = excluded.slug, name = excluded.name, mode = excluded.mode,
+    sort_order = excluded.sort_order, parent_id = excluded.parent_id, updated_at = now();
 
-create table if not exists public.prompts_avant_v2 as
-select p.id, p.command, p.name, p.slug, p.mode, p.category_id, p.status,
-       p.catalog_version, p.is_free, p.is_featured
-from public.prompts p;
-
-alter table public.prompts_avant_v2 enable row level security;
-revoke all on table public.prompts_avant_v2 from anon, authenticated;
-
-create table if not exists public.categories_avant_v2 as
-select c.id, c.external_ref, c.slug, c.name, c.mode, c.parent_id, c.status, c.sort_order
-from public.categories c;
-
-alter table public.categories_avant_v2 enable row level security;
-revoke all on table public.categories_avant_v2 from anon, authenticated;
-
--- --- Garde : le catalogue V2 doit etre la --------------------------------
-
-do $garde$
-declare
-  v_rayons integer;
-  v_cartes integer;
+do $rapport$
+declare v_cat integer; v_col integer;
 begin
-  select count(*) into v_rayons from public.categories where external_ref like 'V2-%';
-  if v_rayons <> ${rayons} then
-    raise exception 'Bascule V2 : % rayons au lieu de ${rayons}. Appliquer d abord les lots.', v_rayons;
+  select count(*) into v_cat from public.categories where external_ref like 'V2CAT-%';
+  select count(*) into v_col from public.categories where external_ref like 'V2COL-%';
+  if v_cat <> ${categories.size} or v_col <> ${collections.size} then
+    raise exception 'Taxonomie V2 : % categories et % collections au lieu de ${categories.size} et ${collections.size}.', v_cat, v_col;
   end if;
+  raise notice 'Taxonomie V2 : % categories, % collections.', v_cat, v_col;
+end $rapport$;
 
-  select count(*) into v_cartes from public.prompts where catalog_v2;
-  if v_cartes <> ${total} then
-    raise exception 'Bascule V2 : % cartes au lieu de ${total}. Appliquer d abord les lots.', v_cartes;
-  end if;
-end $garde$;
+commit;`);
 
--- --- Publication des cartes ---------------------------------------------
+  ecrire(
+    '000_taxonomie.sql',
+    enTete(
+      `Taxonomie V2 : ${categories.size} categories, ${collections.size} collections`,
+      corps.join('\n'),
+    ),
+  );
+}
+
+/* --- 2. Le referentiel de tags ---------------------------------------- */
+
+const tagsV2 = new Map();
+for (const l of lignes) {
+  for (const t of lireJson(l.tags_json, [])) {
+    if (!t?.slug) continue;
+    if (!tagsV2.has(t.slug)) {
+      tagsV2.set(t.slug, { slug: t.slug, famille: FAMILLE_DE_TAG[t.famille] ?? 'autre' });
+    }
+  }
+}
+
+{
+  const valeurs = [...tagsV2.values()].map((t, i) => {
+    const nom = t.slug
+      .split('-')
+      .map((m) => m.charAt(0).toUpperCase() + m.slice(1))
+      .join(' ');
+    return `  (${txtObligatoire(t.slug)}, ${txtObligatoire(nom)}, ${txtObligatoire(t.famille)}::public.tag_group, ${i + 1})`;
+  });
+
+  const corps = `-- Le vocabulaire du referentiel V2 : ${tagsV2.size} slugs, six familles.
 --
--- Le classeur declare ${visibles.length} cartes visibles sur ${total}. Les autres restent
--- en brouillon : elles existent, elles ne s'affichent pas.
+-- Le nom affiche se deduit du slug et se corrige ensuite en administration :
+-- ce lot le pose, il ne l'ecrase pas. Le visuel, l'ordre et l'activation
+-- appartiennent a l'administration et ne sont jamais touches ici — sans
+-- quoi rejouer le lot effacerait les tuiles posees a la main.
+insert into public.tags (slug, name, groupe, sort_order) values
+${valeurs.join(',\n')}
+on conflict (slug) do update
+set groupe = excluded.groupe, updated_at = now();
 
--- Par la commande, seul identifiant que partagent une carte du classeur et
--- une ligne reprise du catalogue precedent : celle-ci garde son
--- external_ref d'origine.
-create temporary table cartes_visibles (command text primary key) on commit drop;
-insert into cartes_visibles (command) values
-${visibles.map((r) => `  (${t(r)})`).join(',\n')};
-
-update public.prompts p
-set status = 'published'::public.content_status,
-    published_at = coalesce(p.published_at, now())
-where p.catalog_v2
-  and exists (select 1 from cartes_visibles v where v.command = p.command::text)
-  and p.status <> 'published';
-
-update public.prompts p
-set status = 'draft'::public.content_status
-where p.catalog_v2
-  and not exists (select 1 from cartes_visibles v where v.command = p.command::text)
-  and p.status = 'published';
-
--- --- Ouverture des rayons -------------------------------------------------
---
--- Une collection ne s'ouvre que si elle a une carte publiee, une categorie
--- que si une de ses collections s'ouvre. Un rayon vide est un cul-de-sac :
--- cinq collections du classeur n'ont aucune carte visible et restent donc
--- fermees, sans qu'il faille les nommer ici.
-
-update public.categories c
-set status = 'published'::public.content_status
-where c.external_ref like 'V2-COL-%'
-  and exists (
-    select 1 from public.prompts p
-    where p.category_id = c.id and p.status = 'published'
-  );
-
--- Et se referme si elle s'est videe. Un regroupement deplace des cartes
--- d'une collection vers une autre : celle qui se vide restait ouverte sur
--- un rayon sans rien dedans, parce que l'ouverture ne savait que publier.
--- Fermee, pas supprimee — sa ligne demeure, et lui rendre une carte la
--- rouvre.
-update public.categories c
-set status = 'draft'::public.content_status
-where c.external_ref like 'V2-COL-%'
-  and c.status = 'published'
-  and not exists (
-    select 1 from public.prompts p
-    where p.category_id = c.id and p.status = 'published'
-  );
-
-update public.categories c
-set status = 'published'::public.content_status
-where c.external_ref like 'V2-CAT-%'
-  and exists (
-    select 1 from public.categories f
-    where f.parent_id = c.id and f.status = 'published'
-  );
-
--- --- Archivage de l'ancien catalogue --------------------------------------
-
--- Borne au catalogue : une commande posee a la main — un jeu de recette,
--- un essai en administration — n'a ete rangee par aucun import et n'a pas a
--- etre emportee par celui-ci. La colonne catalog_version marque un import.
-update public.prompts p
-set status = 'archived'::public.content_status
-where not p.catalog_v2
-  and p.catalog_version is not null
-  and p.status <> 'archived';
-
-update public.categories c
-set status = 'archived'::public.content_status
-where c.external_ref is distinct from null
-  and c.external_ref not like 'V2-%'
-  and c.status <> 'archived';
-
--- Les categories heritees des taxonomies precedentes portent toutes une
--- reference externe ou plus rien du tout. Celles qui n'en portent pas et qui
--- gardent une commande active ont ete posees a la main : on les laisse.
-update public.categories c
-set status = 'archived'::public.content_status
-where c.external_ref is null
-  and c.status <> 'archived'
-  and not exists (
-    select 1 from public.prompts p
-    where p.category_id = c.id and p.status <> 'archived'
-  );
-
--- --- Controles de sortie ---------------------------------------------------
-
-do $ctrl$
-declare
-  v_publiees integer;
-  v_hors integer;
-  v_desertes integer;
-  v_perdues integer;
-  v_cat integer;
+do $rapport$
+declare v_n integer;
 begin
-  select count(*) into v_publiees
-  from public.prompts where catalog_v2 and status = 'published';
-  if v_publiees <> ${visibles.length} then
-    raise exception 'Catalogue V2 : % cartes publiees au lieu de ${visibles.length}.', v_publiees;
-  end if;
+  select count(*) into v_n from public.tags;
+  raise notice 'Referentiel de tags : % au total.', v_n;
+end $rapport$;`;
 
-  -- Plus rien du catalogue precedent ne doit rester actif.
-  select count(*) into v_hors
-  from public.prompts
-  where not catalog_v2 and catalog_version is not null and status <> 'archived';
-  if v_hors > 0 then
-    raise exception 'Catalogue V2 : % commandes de l ancien catalogue encore actives.', v_hors;
-  end if;
-
-  -- Aucun rayon ouvert et vide.
-  select count(*) into v_desertes
-  from public.categories c
-  where c.is_visible
-    and not exists (select 1 from public.categories f where f.parent_id = c.id and f.is_visible)
-    and not exists (select 1 from public.prompts p where p.category_id = c.id and p.status = 'published');
-  if v_desertes > 0 then
-    raise exception 'Catalogue V2 : % rayons ouverts sans aucune carte.', v_desertes;
-  end if;
-
-  -- Aucune carte publiee hors d'un rayon visible : elle existerait sans exister.
-  select count(*) into v_perdues
-  from public.prompts p
-  where p.status = 'published'
-    and (p.category_id is null
-         or not exists (select 1 from public.categories c where c.id = p.category_id and c.is_visible));
-  if v_perdues > 0 then
-    raise exception 'Catalogue V2 : % cartes publiees hors d un rayon visible.', v_perdues;
-  end if;
-
-  -- Rien n'a disparu : ce qui n'est plus actif est archive.
-  if (select count(*) from public.prompts) < (select count(*) from public.prompts_avant_v2) then
-    raise exception 'Catalogue V2 : des commandes ont disparu de la base.';
-  end if;
-
-  select count(*) into v_cat from public.categories where external_ref like 'V2-CAT-%' and is_visible;
-  raise notice 'Catalogue V2 : % cartes publiees, % categories ouvertes.', v_publiees, v_cat;
-end $ctrl$;
-
-commit;
-`;
+  ecrire('001_tags.sql', enTete(`Referentiel de tags V2 (${tagsV2.size} slugs)`, corps));
 }
 
-// --- Ecriture --------------------------------------------------------------
+/* --- 3. Les cartes ----------------------------------------------------- */
 
-if (existsSync(DOSSIER)) rmSync(DOSSIER, { recursive: true });
-mkdirSync(DOSSIER, { recursive: true });
-
-writeFileSync(join(DOSSIER, '000_adresses.sql'), adresses());
-writeFileSync(join(DOSSIER, '001_taxonomie.sql'), taxonomie());
-writeFileSync('supabase/seed/bascule-catalogue-v2.sql', bascule());
-let cartes = 0;
-for (const [nom, corps] of lots()) {
-  writeFileSync(join(DOSSIER, nom), corps);
-  cartes += (corps.match(/^insert into public\.prompts /gm) ?? []).length;
+/**
+ * Le slug public d'une carte.
+ *
+ * Le slug de carte seul ne suffit pas : « annees-folles » peut servir a
+ * deux commandes differentes. On prefixe donc par la commande, ce qui
+ * donne une adresse qui se lit — /p/vintageportrait-annees-folles — et qui
+ * reste unique sans compteur.
+ */
+const slugsVus = new Set();
+function slugDeCarte(l) {
+  const base = slugifier(l.commande.replace(/^\//, ''));
+  const variante = slugifier(l.carte_slug);
+  let slug = variante && variante !== base ? `${base}-${variante}` : base;
+  if (slugsVus.has(slug)) {
+    const empreinte = createHash('sha1').update(l.carte_id).digest('hex').slice(0, 6);
+    slug = `${slug}-${empreinte}`;
+  }
+  slugsVus.add(slug);
+  return slug;
 }
 
-console.log(
-  `${manifeste.categories.length} categories, ` +
-    `${manifeste.categories.reduce((s, c) => s + c.collections.length, 0)} collections, ` +
-    `${cartes} cartes ecrites dans ${DOSSIER}.`,
+const cartes = lignes.map((l) => ({ ligne: l, slug: slugDeCarte(l) }));
+
+const PAR_LOT_CARTES = 120;
+let lot = 0;
+for (let i = 0; i < cartes.length; i += PAR_LOT_CARTES) {
+  lot += 1;
+  const tranche = cartes.slice(i, i + PAR_LOT_CARTES);
+  const valeurs = tranche.map(({ ligne: l, slug }) => {
+    const bib = l.bibliotheque;
+    const genre = GENRE_PAR_BIBLIOTHEQUE[bib];
+    const cadrage = lireJson(l.cadrage_json, {});
+    const parametres = lireJson(l.parametres_json, {});
+    const casUsage = (l.cas_usage ?? '')
+      .split(';')
+      .map((x) => x.trim())
+      .filter(Boolean);
+
+    return [
+      `  (${txtObligatoire(`V2-${l.carte_id}`)}`,
+      txtObligatoire(l.carte_id),
+      txtObligatoire(l.commande.trim().toLowerCase()),
+      txt(l.commande_id),
+      txt(l.commande_objectif),
+      txt(l.carte_slug),
+      txtObligatoire(slug),
+      txtObligatoire(l.carte_titre),
+      txtObligatoire(MODE_PAR_BIBLIOTHEQUE[bib] ?? 'texte'),
+      txtObligatoire(bib),
+      genre ? txtObligatoire(genre) : 'null',
+      txtObligatoire(l.description_courte || l.commande_objectif || l.carte_titre),
+      txt(l.description_detaillee),
+      txt(l.specification_carte),
+      `array[${casUsage.map((c) => txtObligatoire(c)).join(', ')}]::text[]`,
+      txt(typeof cadrage?.politique_manque === 'string' ? cadrage.politique_manque : ''),
+      txt(parametres?.ratio),
+      nombre(l.champs_fiche_max),
+      nombre(l.ordre_carte, '0'),
+      `${bib === 'images'}`,
+      `${txt(l.collection_id)})`,
+    ].join(', ');
+  });
+
+  const corps = `begin;
+
+create temporary table lot_v2_cartes (
+  ref text, carte_id text, commande text, commande_id text, objectif text,
+  card_slug text, slug text, titre text, mode text, bibliotheque text,
+  genre text, courte text, detaillee text, specification text,
+  cas_usage text[], politique text, ratio text, champs_max integer,
+  ordre integer, image boolean, collection_id text
+) on commit drop;
+
+insert into lot_v2_cartes values
+${valeurs.join(',\n')};
+
+-- Les cartes arrivent en brouillon, comme le fichier d'import le declare.
+-- Rien de ce qui est en ligne ne bouge : on installe a cote, on publie
+-- ensuite, carte par carte ou par lot, depuis l'administration.
+--
+-- \`card_id\` est la cle d'upsert : c'est l'identifiant stable du
+-- referentiel, celui qui survit a un renommage de commande ou de titre.
+insert into public.prompts (
+  external_ref, card_id, command, command_id, command_objectif, card_slug,
+  slug, name, mode, library, entity_type, short_description,
+  intention, specification, use_cases, limitations, default_ratio,
+  fiche_champs_max, sort_order, show_image_card, status, category_id
+)
+select l.ref, l.carte_id, l.commande, l.commande_id::uuid, l.objectif, l.card_slug,
+       l.slug, l.titre, l.mode::public.app_mode, l.bibliotheque::public.app_library,
+       nullif(l.genre, ''), l.courte,
+       l.detaillee, l.specification, l.cas_usage, l.politique, l.ratio,
+       l.champs_max, l.ordre, l.image, 'draft'::public.content_status,
+       c.id
+from lot_v2_cartes l
+left join public.categories c on c.external_ref = 'V2COL-' || l.collection_id
+-- L'index de \`card_id\` est partiel : l'inference doit reprendre sa
+-- condition, sans quoi Postgres ne sait pas quel index viser.
+on conflict (card_id) where card_id is not null do update
+set external_ref = excluded.external_ref,
+    command = excluded.command,
+    command_id = excluded.command_id,
+    command_objectif = excluded.command_objectif,
+    card_slug = excluded.card_slug,
+    name = excluded.name,
+    mode = excluded.mode,
+    library = excluded.library,
+    entity_type = excluded.entity_type,
+    short_description = excluded.short_description,
+    intention = excluded.intention,
+    specification = excluded.specification,
+    use_cases = excluded.use_cases,
+    limitations = excluded.limitations,
+    default_ratio = excluded.default_ratio,
+    fiche_champs_max = excluded.fiche_champs_max,
+    sort_order = excluded.sort_order,
+    show_image_card = excluded.show_image_card,
+    category_id = excluded.category_id,
+    updated_at = now();
+
+-- Une variante par IA declaree, prete a recevoir son payload. La
+-- compatibilite vient de \`filtres_ia\` : les 765 cartes Images n'ont pas
+-- de variante Claude en V2, et lui en fabriquer une vide reviendrait a
+-- promettre une compatibilite que le referentiel ne declare pas.
+insert into public.prompt_variants (prompt_id, provider_id, status)
+select p.id, f.id, 'published'::public.content_status
+from lot_v2_cartes l
+join public.prompts p on p.card_id = l.carte_id
+join public.ai_providers f on f.is_active
+  and (f.key <> 'claude' or l.bibliotheque <> 'images')
+on conflict (prompt_id, provider_id) do nothing;
+
+commit;`;
+
+  ecrire(
+    `100_cartes_${String(lot).padStart(2, '0')}.sql`,
+    enTete(`Cartes V2, lot ${lot} (${tranche.length} cartes)`, corps),
+  );
+}
+
+/* --- 4. Les payloads --------------------------------------------------- */
+
+const MOTEURS = [
+  ['chatgpt', 'payload_chatgpt'],
+  ['gemini', 'payload_gemini'],
+  ['claude', 'payload_claude'],
+];
+
+const payloads = [];
+for (const l of lignes) {
+  for (const [moteur, colonne] of MOTEURS) {
+    const texte = (l[colonne] ?? '').trim();
+    if (texte) payloads.push({ carte: l.carte_id, moteur, texte });
+  }
+}
+
+const PAR_LOT_PAYLOADS = 40;
+lot = 0;
+for (let i = 0; i < payloads.length; i += PAR_LOT_PAYLOADS) {
+  lot += 1;
+  const tranche = payloads.slice(i, i + PAR_LOT_PAYLOADS);
+  const valeurs = tranche.map(
+    (p) =>
+      `  (${txtObligatoire(p.carte)}, ${txtObligatoire(p.moteur)}, ${txtObligatoire(p.texte)})`,
+  );
+
+  const corps = `begin;
+
+create temporary table lot_v2_payloads (
+  carte_id text, moteur text, payload text
+) on commit drop;
+
+insert into lot_v2_payloads (carte_id, moteur, payload) values
+${valeurs.join(',\n')};
+
+-- La version courante ne cede la place que si le texte change reellement :
+-- reposer un payload identique le compterait deux fois dans l'historique,
+-- et l'historique sert precisement a retrouver ce qui a change.
+update public.prompt_versions pv
+set is_current = false, status = 'retired'::public.version_status
+from lot_v2_payloads l
+join public.prompts p on p.card_id = l.carte_id
+join public.prompt_variants v on v.prompt_id = p.id
+join public.ai_providers f on f.id = v.provider_id and f.key = l.moteur
+where pv.variant_id = v.id
+  and pv.is_current
+  and pv.payload is distinct from l.payload;
+
+insert into public.prompt_versions (variant_id, version_label, payload, status, is_current, published_at)
+select v.id, 'catalogue-v2', l.payload, 'published'::public.version_status, true, now()
+from lot_v2_payloads l
+join public.prompts p on p.card_id = l.carte_id
+join public.prompt_variants v on v.prompt_id = p.id
+join public.ai_providers f on f.id = v.provider_id and f.key = l.moteur
+where not exists (
+  select 1 from public.prompt_versions pv where pv.variant_id = v.id and pv.is_current
 );
+
+-- Une carte n'est copiable que lorsqu'elle porte un texte.
+update public.prompts p
+set payload_ready = true
+from lot_v2_payloads l
+where p.card_id = l.carte_id and not p.payload_ready;
+
+commit;`;
+
+  ecrire(
+    `500_payloads_${String(lot).padStart(3, '0')}.sql`,
+    enTete(`Payloads V2, lot ${lot} (${tranche.length} textes)`, corps),
+  );
+}
+
+/* --- 5. Les tags poses sur les cartes ---------------------------------- */
+
+{
+  const liens = [];
+  for (const l of lignes) {
+    for (const t of lireJson(l.tags_json, [])) {
+      if (t?.slug) liens.push([l.carte_id, t.slug]);
+    }
+  }
+
+  const valeurs = liens.map(
+    ([carte, slug]) => `  (${txtObligatoire(carte)}, ${txtObligatoire(slug)})`,
+  );
+
+  const corps = `begin;
+
+create temporary table lot_v2_tags (carte_id text, slug text) on commit drop;
+
+insert into lot_v2_tags (carte_id, slug) values
+${valeurs.join(',\n')};
+
+-- Les associations du fichier d'import, et elles seules. Un tag pose a la
+-- main en administration sur une carte V2 n'est pas retire : le lot ajoute,
+-- il ne fait pas le menage a la place de qui range.
+insert into public.prompt_tags (prompt_id, tag_id)
+select p.id, t.id
+from lot_v2_tags l
+join public.prompts p on p.card_id = l.carte_id
+join public.tags t on t.slug = l.slug
+on conflict do nothing;
+
+do $rapport$
+declare v_n integer;
+begin
+  select count(*) into v_n
+  from public.prompt_tags pt
+  join public.prompts p on p.id = pt.prompt_id
+  where p.external_ref like 'V2-%';
+  raise notice 'Tags V2 : % association(s) sur les cartes du lot.', v_n;
+end $rapport$;
+
+commit;`;
+
+  ecrire(
+    '700_tags.sql',
+    enTete(`Tags poses sur les cartes V2 (${liens.length} associations)`, corps),
+  );
+}
+
+/* --- 6. Les champs a pre-remplir sur la fiche -------------------------- */
+
+/**
+ * Ce que la fiche demande avant de copier.
+ *
+ * `entrees_json` decrit toutes les informations qu'une carte peut utiliser ;
+ * `champs_fiche_max` dit combien la fiche en montre. La difference compte :
+ * la fiche n'est pas un questionnaire, et ce qui n'est pas demande ici sera
+ * demande par l'IA — une seule question, et seulement si elle bloque.
+ *
+ * Un champ laisse vide n'est donc pas une erreur : le payload porte la
+ * marque [cle], et le cadrage de la carte sait quoi faire de son absence.
+ * Aucun champ n'est donc marque obligatoire.
+ */
+{
+  const champs = [];
+  for (const l of lignes) {
+    const maximum = Math.min(Number.parseInt(l.champs_fiche_max, 10) || 0, 3);
+    if (maximum === 0) continue;
+
+    const entrees = lireJson(l.entrees_json, []);
+    if (!Array.isArray(entrees)) continue;
+
+    entrees.slice(0, maximum).forEach((e, rang) => {
+      const cle = slugifier(e?.cle ?? '').replace(/-/g, '_');
+      if (!cle) return;
+      champs.push({
+        carte: l.carte_id,
+        cle,
+        libelle: (e?.libelle || e?.cle || cle).replace(/_/g, ' '),
+        indication: typeof e?.requis_si === 'string' ? e.requis_si.slice(0, 160) : '',
+        genre: genreDeChamp(e?.type),
+        position: rang + 1,
+      });
+    });
+  }
+
+  const valeurs = champs.map(
+    (c) =>
+      `  (${txtObligatoire(c.carte)}, ${txtObligatoire(c.cle)}, ${txtObligatoire(c.libelle)}, ` +
+      `${txt(c.indication)}, ${txtObligatoire(c.genre)}, ${c.position})`,
+  );
+
+  const corps = `begin;
+
+create temporary table lot_v2_champs (
+  carte_id text, cle text, libelle text, indication text, genre text, position integer
+) on commit drop;
+
+insert into lot_v2_champs (carte_id, cle, libelle, indication, genre, position) values
+${valeurs.join(',\n')};
+
+-- Aucun champ n'est obligatoire, et c'est la regle du referentiel : la
+-- fiche montre au plus \`champs_fiche_max\` informations utiles, jamais une
+-- liste de questions figees. Ce qui reste vide est demande par l'IA, une
+-- seule question a la fois, et seulement si elle bloque reellement.
+insert into public.prompt_fields (prompt_id, cle, libelle, indication, kind, requis, position)
+select p.id, l.cle, l.libelle, nullif(l.indication, ''),
+       l.genre::public.prompt_field_kind, false, l.position
+from lot_v2_champs l
+join public.prompts p on p.card_id = l.carte_id
+on conflict (prompt_id, position) do update
+set cle = excluded.cle, libelle = excluded.libelle,
+    indication = excluded.indication, kind = excluded.kind;
+
+do $rapport$
+declare v_n integer; v_cartes integer;
+begin
+  select count(*), count(distinct prompt_id) into v_n, v_cartes
+  from public.prompt_fields pf
+  join public.prompts p on p.id = pf.prompt_id
+  where p.external_ref like 'V2-%';
+  raise notice 'Champs de fiche : % champ(s) sur % carte(s).', v_n, v_cartes;
+end $rapport$;
+
+commit;`;
+
+  ecrire('800_champs.sql', enTete(`Champs de fiche V2 (${champs.length} champs)`, corps));
+}
+
+/* --- 7. Le controle de completude -------------------------------------- */
+
+{
+  const corps = `-- Ce lot ne modifie rien : il refuse si l'import n'est pas complet.
+--
+-- Un import a moitie passe est pire qu'un import refuse : la bibliotheque
+-- parait remplie, et il manque cent commandes que personne ne cherchera.
+do $controle$
+declare
+  v_cartes integer;
+  v_commandes integer;
+  v_collections integer;
+  v_categories integer;
+  v_sans_collection integer;
+  v_sans_payload integer;
+  v_publiees integer;
+begin
+  select count(*), count(distinct command_id)
+  into v_cartes, v_commandes
+  from public.prompts where external_ref like 'V2-%';
+
+  select count(*) into v_categories from public.categories where external_ref like 'V2CAT-%';
+  select count(*) into v_collections from public.categories where external_ref like 'V2COL-%';
+
+  select count(*) into v_sans_collection
+  from public.prompts where external_ref like 'V2-%' and category_id is null;
+
+  select count(*) into v_sans_payload
+  from public.prompts p
+  where p.external_ref like 'V2-%'
+    and not exists (
+      select 1 from public.prompt_variants v
+      join public.prompt_versions pv on pv.variant_id = v.id and pv.is_current
+      where v.prompt_id = p.id);
+
+  select count(*) into v_publiees
+  from public.prompts where external_ref like 'V2-%' and status = 'published';
+
+  if v_cartes <> ${lignes.length} then
+    raise exception 'Catalogue V2 : % cartes importees au lieu de ${lignes.length}.', v_cartes;
+  end if;
+  if v_categories <> ${categories.size} or v_collections <> ${collections.size} then
+    raise exception 'Catalogue V2 : % categories et % collections au lieu de ${categories.size} et ${collections.size}.',
+      v_categories, v_collections;
+  end if;
+  if v_sans_collection > 0 then
+    raise exception 'Catalogue V2 : % carte(s) sans collection.', v_sans_collection;
+  end if;
+  if v_sans_payload > 0 then
+    raise exception 'Catalogue V2 : % carte(s) sans texte a copier.', v_sans_payload;
+  end if;
+
+  -- Le lot n'a rien publie, et il le verifie : ce qui est en ligne
+  -- aujourd'hui doit continuer de l'etre, et le nouveau catalogue attend
+  -- ses visuels avant de se montrer.
+  if v_publiees > 0 then
+    raise notice 'Catalogue V2 : % carte(s) deja publiee(s) — publication faite en administration.', v_publiees;
+  end if;
+
+  raise notice 'Catalogue V2 : % cartes, % commandes, % collections, % categories.',
+    v_cartes, v_commandes, v_collections, v_categories;
+end $controle$;`;
+
+  ecrire('900_controle.sql', enTete('Controle de completude du catalogue V2', corps));
+}
+
+console.log(`${fichiers.length} fichiers ecrits dans ${DESTINATION}`);
+console.log(
+  `  ${lignes.length} cartes, ${categories.size} categories, ${collections.size} collections`,
+);
+console.log(`  ${tagsV2.size} tags, ${payloads.length} payloads`);

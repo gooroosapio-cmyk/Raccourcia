@@ -10,7 +10,7 @@
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-rimlightportrait', 'img-rimlightportrait', '/rimlightportrait', 'Contour lumineux', 'rimlightportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Détache la personne du fond par une lumière de liseré précise.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['contour lumineux', 'portrait pro', 'style et identite']::text[], 'Contour lumineux | RaccourcIA', 'Détache la personne du fond par une lumière de liseré précise.', 82, 101, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-rimlightportrait',
   command = '/rimlightportrait',
   name = 'Contour lumineux',
@@ -44,7 +44,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-lowangleportrait', 'img-lowangleportrait', '/lowangleportrait', 'Contre-plongée héroïque', 'lowangleportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Renforce présence et stature grâce à un angle bas maîtrisé.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['contre plongee heroique', 'portrait pro', 'style et identite']::text[], 'Contre-plongée héroïque | RaccourcIA', 'Renforce présence et stature grâce à un angle bas maîtrisé.', 82, 102, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-lowangleportrait',
   command = '/lowangleportrait',
   name = 'Contre-plongée héroïque',
@@ -78,7 +78,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-hardflashportrait', 'img-hardflashportrait', '/hardflashportrait', 'Flash frontal', 'hardflashportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Produit un rendu éditorial spontané avec ombres franches contrôlées.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['portrait-pro', 'style-et-identite', 'commande-image', 'produit']::text[], array['flash frontal', 'portrait pro', 'style et identite']::text[], 'Flash frontal | RaccourcIA', 'Produit un rendu éditorial spontané avec ombres franches contrôlées.', 82, 103, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-hardflashportrait',
   command = '/hardflashportrait',
   name = 'Flash frontal',
@@ -112,7 +112,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-headshot', 'img-headshot', '/headshot', 'Headshot professionnel', 'headshot', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Transforme une photo simple en portrait professionnel fidèle, naturel et crédible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['headshot professionnel', 'portrait pro', 'style et identite']::text[], 'Headshot professionnel | RaccourcIA', 'Transforme une photo simple en portrait professionnel fidèle, naturel et crédible.', 82, 104, true, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-headshot',
   command = '/headshot',
   name = 'Headshot professionnel',
@@ -146,7 +146,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-bluehourportrait', 'img-bluehourportrait', '/bluehourportrait', 'Heure bleue', 'bluehourportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Place la personne dans une atmosphère bleue calme après le coucher du soleil.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['heure bleue', 'portrait pro', 'style et identite']::text[], 'Heure bleue | RaccourcIA', 'Place la personne dans une atmosphère bleue calme après le coucher du soleil.', 82, 105, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-bluehourportrait',
   command = '/bluehourportrait',
   name = 'Heure bleue',
@@ -180,7 +180,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-goldenhourportrait', 'img-goldenhourportrait', '/goldenhourportrait', 'Heure dorée', 'goldenhourportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Donne au portrait une lumière chaude de fin de journée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['heure doree', 'portrait pro', 'style et identite']::text[], 'Heure dorée | RaccourcIA', 'Donne au portrait une lumière chaude de fin de journée.', 82, 106, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-goldenhourportrait',
   command = '/goldenhourportrait',
   name = 'Heure dorée',
@@ -214,7 +214,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-windowlightportrait', 'img-windowlightportrait', '/windowlightportrait', 'Lumière de fenêtre', 'windowlightportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Recrée une lumière latérale douce et naturelle d’intérieur.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['lumiere de fenetre', 'portrait pro', 'style et identite']::text[], 'Lumière de fenêtre | RaccourcIA', 'Recrée une lumière latérale douce et naturelle d’intérieur.', 82, 107, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-windowlightportrait',
   command = '/windowlightportrait',
   name = 'Lumière de fenêtre',
@@ -248,7 +248,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-personalbrand', 'img-personalbrand', '/personalbrand', 'Marque personnelle', 'personalbrand', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Construit un portrait signature cohérent avec métier, ton et couleurs de marque.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['marque personnelle', 'portrait pro', 'style et identite']::text[], 'Marque personnelle | RaccourcIA', 'Construit un portrait signature cohérent avec métier, ton et couleurs de marque.', 82, 108, true, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-personalbrand',
   command = '/personalbrand',
   name = 'Marque personnelle',
@@ -282,7 +282,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-motionportrait', 'img-motionportrait', '/motionportrait', 'Mouvement figé', 'motionportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Ajoute tissus, cheveux ou gestes dynamiques tout en gardant le visage net.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['mouvement fige', 'portrait pro', 'style et identite']::text[], 'Mouvement figé | RaccourcIA', 'Ajoute tissus, cheveux ou gestes dynamiques tout en gardant le visage net.', 82, 109, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-motionportrait',
   command = '/motionportrait',
   name = 'Mouvement figé',
@@ -316,7 +316,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-overshoulderportrait', 'img-overshoulderportrait', '/overshoulderportrait', 'Par-dessus l’épaule', 'overshoulderportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Produit une pose tournée avec regard arrière et profondeur cinématographique.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['portrait-pro', 'style-et-identite', 'commande-image', 'produit']::text[], array['par dessus lepaule', 'portrait pro', 'style et identite']::text[], 'Par-dessus l’épaule | RaccourcIA', 'Produit une pose tournée avec regard arrière et profondeur cinématographique.', 82, 110, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-overshoulderportrait',
   command = '/overshoulderportrait',
   name = 'Par-dessus l’épaule',
@@ -350,7 +350,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-musicianpress', 'img-musicianpress', '/musicianpress', 'Photo presse musicale', 'musicianpress', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Compose un portrait promotionnel exploitable pour dossier de presse et streaming.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['photo presse musicale', 'portrait pro', 'style et identite']::text[], 'Photo presse musicale | RaccourcIA', 'Compose un portrait promotionnel exploitable pour dossier de presse et streaming.', 82, 111, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-musicianpress',
   command = '/musicianpress',
   name = 'Photo presse musicale',
@@ -384,7 +384,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-bustportrait', 'img-bustportrait', '/bustportrait', 'Plan poitrine', 'bustportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Recompose le portrait en cadrage professionnel du buste.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['plan poitrine', 'portrait pro', 'style et identite']::text[], 'Plan poitrine | RaccourcIA', 'Recompose le portrait en cadrage professionnel du buste.', 82, 112, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-bustportrait',
   command = '/bustportrait',
   name = 'Plan poitrine',
@@ -418,7 +418,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-highangleportrait', 'img-highangleportrait', '/highangleportrait', 'Plongée douce', 'highangleportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Crée un angle légèrement supérieur pour une image intime et graphique.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['plongee douce', 'portrait pro', 'style et identite']::text[], 'Plongée douce | RaccourcIA', 'Crée un angle légèrement supérieur pour une image intime et graphique.', 82, 113, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-highangleportrait',
   command = '/highangleportrait',
   name = 'Plongée douce',
@@ -452,7 +452,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-campaignportrait', 'img-campaignportrait', '/campaignportrait', 'Portrait de campagne', 'campaignportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Crée un portrait porteur de message pour campagne associative ou publique.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait de campagne', 'portrait pro', 'style et identite']::text[], 'Portrait de campagne | RaccourcIA', 'Crée un portrait porteur de message pour campagne associative ou publique.', 82, 114, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-campaignportrait',
   command = '/campaignportrait',
   name = 'Portrait de campagne',
@@ -486,7 +486,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-chefportrait', 'img-chefportrait', '/chefportrait', 'Portrait de chef', 'chefportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Met en scène un professionnel de cuisine dans un environnement maîtrisé.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait de chef', 'portrait pro', 'style et identite']::text[], 'Portrait de chef | RaccourcIA', 'Met en scène un professionnel de cuisine dans un environnement maîtrisé.', 82, 115, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-chefportrait',
   command = '/chefportrait',
   name = 'Portrait de chef',
@@ -520,7 +520,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-speakerportrait', 'img-speakerportrait', '/speakerportrait', 'Portrait de conférencier', 'speakerportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Crée un visuel adapté à une affiche, un programme ou une scène professionnelle.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait de conferencier', 'portrait pro', 'style et identite']::text[], 'Portrait de conférencier | RaccourcIA', 'Crée un visuel adapté à une affiche, un programme ou une scène professionnelle.', 82, 116, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-speakerportrait',
   command = '/speakerportrait',
   name = 'Portrait de conférencier',
@@ -554,7 +554,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-creatorportrait', 'img-creatorportrait', '/creatorportrait', 'Portrait de créateur', 'creatorportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Produit une identité visuelle expressive pour influenceur, artiste ou créatif.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait', 'produit']::text[], array['portrait de createur', 'portrait pro', 'style et identite']::text[], 'Portrait de créateur | RaccourcIA', 'Produit une identité visuelle expressive pour influenceur, artiste ou créatif.', 82, 117, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-creatorportrait',
   command = '/creatorportrait',
   name = 'Portrait de créateur',
@@ -588,7 +588,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-executiveportrait', 'img-executiveportrait', '/executiveportrait', 'Portrait dirigeant', 'executiveportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Donne une présence décisionnelle sobre pour direction, conseil ou gouvernance.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait dirigeant', 'portrait pro', 'style et identite']::text[], 'Portrait dirigeant | RaccourcIA', 'Donne une présence décisionnelle sobre pour direction, conseil ou gouvernance.', 82, 118, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-executiveportrait',
   command = '/executiveportrait',
   name = 'Portrait dirigeant',
@@ -622,7 +622,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-artisanportrait', 'img-artisanportrait', '/artisanportrait', 'Portrait d’artisan', 'artisanportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Valorise une personne dans son atelier avec outils et savoir-faire visibles.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait dartisan', 'portrait pro', 'style et identite']::text[], 'Portrait d’artisan | RaccourcIA', 'Valorise une personne dans son atelier avec outils et savoir-faire visibles.', 82, 119, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-artisanportrait',
   command = '/artisanportrait',
   name = 'Portrait d’artisan',
@@ -656,7 +656,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-authorportrait', 'img-authorportrait', '/authorportrait', 'Portrait d’auteur', 'authorportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Installe une atmosphère éditoriale littéraire pour biographie ou couverture.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Texte fourni uniquement; ne jamais inventer', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait dauteur', 'portrait pro', 'style et identite']::text[], 'Portrait d’auteur | RaccourcIA', 'Installe une atmosphère éditoriale littéraire pour biographie ou couverture.', 82, 120, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-authorportrait',
   command = '/authorportrait',
   name = 'Portrait d’auteur',
@@ -690,7 +690,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-fullbodyportrait', 'img-fullbodyportrait', '/fullbodyportrait', 'Portrait en pied', 'fullbodyportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Étend ou adapte la scène pour montrer une silhouette complète crédible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait en pied', 'portrait pro', 'style et identite']::text[], 'Portrait en pied | RaccourcIA', 'Étend ou adapte la scène pour montrer une silhouette complète crédible.', 82, 121, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-fullbodyportrait',
   command = '/fullbodyportrait',
   name = 'Portrait en pied',
@@ -724,7 +724,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-teacherportrait', 'img-teacherportrait', '/teacherportrait', 'Portrait enseignant', 'teacherportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Valorise pédagogie et proximité dans un environnement éducatif crédible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait enseignant', 'portrait pro', 'style et identite']::text[], 'Portrait enseignant | RaccourcIA', 'Valorise pédagogie et proximité dans un environnement éducatif crédible.', 82, 122, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-teacherportrait',
   command = '/teacherportrait',
   name = 'Portrait enseignant',
@@ -758,7 +758,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-founderportrait', 'img-founderportrait', '/founderportrait', 'Portrait fondateur', 'founderportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Présente un entrepreneur avec personnalité, confiance et proximité de marque.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Recherche autorisée pour faits publics et caractéristiques connues', 'Séparer les faits trouvés des hypothèses visuelles', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait fondateur', 'portrait pro', 'style et identite']::text[], 'Portrait fondateur | RaccourcIA', 'Présente un entrepreneur avec personnalité, confiance et proximité de marque.', 82, 123, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-founderportrait',
   command = '/founderportrait',
   name = 'Portrait fondateur',
@@ -792,7 +792,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-realtorportrait', 'img-realtorportrait', '/realtorportrait', 'Portrait immobilier', 'realtorportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Associe la personne à un univers immobilier lumineux et professionnel.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait immobilier', 'portrait pro', 'style et identite']::text[], 'Portrait immobilier | RaccourcIA', 'Associe la personne à un univers immobilier lumineux et professionnel.', 82, 124, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-realtorportrait',
   command = '/realtorportrait',
   name = 'Portrait immobilier',
@@ -826,7 +826,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-legalportrait', 'img-legalportrait', '/legalportrait', 'Portrait juridique', 'legalportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Crée une image formelle et rassurante pour avocat, juriste ou notaire.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait juridique', 'portrait pro', 'style et identite']::text[], 'Portrait juridique | RaccourcIA', 'Crée une image formelle et rassurante pour avocat, juriste ou notaire.', 82, 125, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-legalportrait',
   command = '/legalportrait',
   name = 'Portrait juridique',
@@ -860,7 +860,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-medicalportrait', 'img-medicalportrait', '/medicalportrait', 'Portrait médical', 'medicalportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Présente un professionnel de santé dans un cadre propre sans simuler d’acte médical.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait medical', 'portrait pro', 'style et identite']::text[], 'Portrait médical | RaccourcIA', 'Présente un professionnel de santé dans un cadre propre sans simuler d’acte médical.', 82, 126, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-medicalportrait',
   command = '/medicalportrait',
   name = 'Portrait médical',
@@ -894,7 +894,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-neonportrait', 'img-neonportrait', '/neonportrait', 'Portrait néon', 'neonportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Mélange lumières colorées latérales et ambiance nocturne urbaine.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image', 'portrait']::text[], array['portrait neon', 'portrait pro', 'style et identite']::text[], 'Portrait néon | RaccourcIA', 'Mélange lumières colorées latérales et ambiance nocturne urbaine.', 82, 127, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-neonportrait',
   command = '/neonportrait',
   name = 'Portrait néon',
@@ -928,7 +928,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-profileportrait', 'img-profileportrait', '/profileportrait', 'Profil net', 'profileportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Transforme le cadrage en profil latéral élégant à partir de références suffisantes.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['profil net', 'portrait pro', 'style et identite']::text[], 'Profil net | RaccourcIA', 'Transforme le cadrage en profil latéral élégant à partir de références suffisantes.', 82, 128, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-profileportrait',
   command = '/profileportrait',
   name = 'Profil net',
@@ -962,7 +962,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-silhouetteportrait', 'img-silhouetteportrait', '/silhouetteportrait', 'Silhouette contre-jour', 'silhouetteportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Dessine le profil du corps face à une source lumineuse forte.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['silhouette contre jour', 'portrait pro', 'style et identite']::text[], 'Silhouette contre-jour | RaccourcIA', 'Dessine le profil du corps face à une source lumineuse forte.', 82, 129, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-silhouetteportrait',
   command = '/silhouetteportrait',
   name = 'Silhouette contre-jour',
@@ -996,7 +996,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-threequarterportrait', 'img-threequarterportrait', '/threequarterportrait', 'Portrait trois-quarts', 'threequarterportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Crée un angle trois-quarts flatteur avec volume naturel du visage.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['trois quarts', 'portrait pro', 'style et identite']::text[], 'Trois-quarts | RaccourcIA', 'Crée un angle trois-quarts flatteur avec volume naturel du visage.', 82, 130, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-threequarterportrait',
   command = '/threequarterportrait',
   name = 'Portrait trois-quarts',
@@ -1030,7 +1030,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-closeupportrait', 'img-closeupportrait', '/closeupportrait', 'Très gros plan', 'closeupportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Cadre le visage avec intensité tout en préservant perspective et proportions.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['tres gros plan', 'portrait pro', 'style et identite']::text[], 'Très gros plan | RaccourcIA', 'Cadre le visage avec intensité tout en préservant perspective et proportions.', 82, 131, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-closeupportrait',
   command = '/closeupportrait',
   name = 'Très gros plan',
@@ -1064,7 +1064,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-splitlighting', 'img-splitlighting', '/splitlighting', 'Visage partagé', 'splitlighting', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Divise le visage entre ombre et lumière pour un rendu dramatique.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['visage partage', 'portrait pro', 'style et identite']::text[], 'Visage partagé | RaccourcIA', 'Divise le visage entre ombre et lumière pour un rendu dramatique.', 82, 132, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-splitlighting',
   command = '/splitlighting',
   name = 'Visage partagé',
@@ -1098,7 +1098,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-butterflylighting', 'img-butterflylighting', '/butterflylighting', 'Éclairage papillon', 'butterflylighting', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Centre une lumière beauté avec ombre délicate sous le nez.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['eclairage papillon', 'portrait pro', 'style et identite']::text[], 'Éclairage papillon | RaccourcIA', 'Centre une lumière beauté avec ombre délicate sous le nez.', 82, 133, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-butterflylighting',
   command = '/butterflylighting',
   name = 'Éclairage papillon',
@@ -1132,7 +1132,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-rembrandtlighting', 'img-rembrandtlighting', '/rembrandtlighting', 'Éclairage Rembrandt', 'rembrandtlighting', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Applique un triangle lumineux classique sur la joue opposée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['eclairage rembrandt', 'portrait pro', 'style et identite']::text[], 'Éclairage Rembrandt | RaccourcIA', 'Applique un triangle lumineux classique sur la joue opposée.', 82, 134, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-rembrandtlighting',
   command = '/rembrandtlighting',
   name = 'Éclairage Rembrandt',
@@ -1166,7 +1166,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-teamportrait', 'img-teamportrait', '/teamportrait', 'Équipe harmonisée', 'teamportrait', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'portrait-pro'), 'Uniformise lumière, cadrage et arrière-plan d’un groupe professionnel.', 'Photos des personnes concernées', '1 image HD', 'Créer ce visuel', 2, 8, 'Photos des personnes concernées', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['portrait-pro', 'style-et-identite', 'commande-image']::text[], array['equipe harmonisee', 'portrait pro', 'style et identite']::text[], 'Équipe harmonisée | RaccourcIA', 'Uniformise lumière, cadrage et arrière-plan d’un groupe professionnel.', 82, 135, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-teamportrait',
   command = '/teamportrait',
   name = 'Équipe harmonisée',
@@ -1200,7 +1200,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-portraitexpand', 'img-portraitexpand', '/portraitexpand', 'Cadre étendu', 'portraitexpand', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'retouche'), 'Étend proprement le décor pour adapter le portrait à un nouveau format.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['retouche', 'style-et-identite', 'commande-image', 'portrait']::text[], array['cadre etendu', 'retouche', 'style et identite']::text[], 'Cadre étendu | RaccourcIA', 'Étend proprement le décor pour adapter le portrait à un nouveau format.', 82, 136, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-portraitexpand',
   command = '/portraitexpand',
   name = 'Cadre étendu',
@@ -1234,7 +1234,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-colorrestore', 'img-colorrestore', '/colorrestore', 'Couleurs restaurées', 'colorrestore', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'retouche'), 'Redonne des couleurs plausibles à une photo ancienne ou fortement délavée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['retouche', 'style-et-identite', 'commande-image']::text[], array['couleurs restaurees', 'retouche', 'style et identite']::text[], 'Couleurs restaurées | RaccourcIA', 'Redonne des couleurs plausibles à une photo ancienne ou fortement délavée.', 82, 137, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-colorrestore',
   command = '/colorrestore',
   name = 'Couleurs restaurées',
@@ -1268,7 +1268,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-backgroundclean', 'img-backgroundclean', '/backgroundclean', 'Fond nettoyé', 'backgroundclean', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'retouche'), 'Retire les distractions derrière la personne en conservant un environnement crédible.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['retouche', 'style-et-identite', 'commande-image']::text[], array['fond nettoye', 'retouche', 'style et identite']::text[], 'Fond nettoyé | RaccourcIA', 'Retire les distractions derrière la personne en conservant un environnement crédible.', 82, 138, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-backgroundclean',
   command = '/backgroundclean',
   name = 'Fond nettoyé',
@@ -1302,7 +1302,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-oldphotoheal', 'img-oldphotoheal', '/oldphotoheal', 'Photo ancienne réparée', 'oldphotoheal', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'retouche'), 'Répare plis, taches et petites déchirures sans réinventer les personnes.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['retouche', 'style-et-identite', 'commande-image']::text[], array['photo ancienne reparee', 'retouche', 'style et identite']::text[], 'Photo ancienne réparée | RaccourcIA', 'Répare plis, taches et petites déchirures sans réinventer les personnes.', 82, 139, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-oldphotoheal',
   command = '/oldphotoheal',
   name = 'Photo ancienne réparée',
@@ -1336,7 +1336,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-portraitcrop', 'img-portraitcrop', '/portraitcrop', 'Recadrage portrait', 'portraitcrop', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'retouche'), 'Recompose la photo pour profil, CV, story ou publication carrée.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['retouche', 'style-et-identite', 'commande-image', 'portrait']::text[], array['recadrage portrait', 'retouche', 'style et identite']::text[], 'Recadrage portrait | RaccourcIA', 'Recompose la photo pour profil, CV, story ou publication carrée.', 82, 140, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-portraitcrop',
   command = '/portraitcrop',
   name = 'Recadrage portrait',
@@ -1370,7 +1370,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-portraitclean', 'img-portraitclean', '/portraitclean', 'Retouche naturelle', 'portraitclean', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'retouche'), 'Nettoie le portrait tout en préservant texture de peau, traits et expression.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['retouche', 'style-et-identite', 'commande-image', 'portrait']::text[], array['retouche naturelle', 'retouche', 'style et identite']::text[], 'Retouche naturelle | RaccourcIA', 'Nettoie le portrait tout en préservant texture de peau, traits et expression.', 82, 141, true, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-portraitclean',
   command = '/portraitclean',
   name = 'Retouche naturelle',
@@ -1404,7 +1404,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-friendlycaricature', 'img-friendlycaricature', '/friendlycaricature', 'Caricature bienveillante', 'friendlycaricature', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Exagère quelques traits choisis tout en gardant la personne sympathique et immédiatement reconnaissable.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'QCM ciblé court', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour', 'creations-et-vfx', 'commande-image']::text[], array['caricature bienveillante', 'humour', 'creations et vfx']::text[], 'Caricature bienveillante | RaccourcIA', 'Exagère quelques traits choisis tout en gardant la personne sympathique et immédiatement reconnaissable.', 94, 142, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-friendlycaricature',
   command = '/friendlycaricature',
   name = 'Caricature bienveillante',
@@ -1438,7 +1438,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-bigheadcaricature', 'img-bigheadcaricature', '/bigheadcaricature', 'Caricature grosse tête', 'bigheadcaricature', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Transforme la personne en personnage à tête surdimensionnée et corps miniature dans une scène narrative.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour', 'creations-et-vfx', 'commande-image']::text[], array['caricature grosse tete', 'humour', 'creations et vfx']::text[], 'Caricature grosse tête | RaccourcIA', 'Transforme la personne en personnage à tête surdimensionnée et corps miniature dans une scène narrative.', 93, 143, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-bigheadcaricature',
   command = '/bigheadcaricature',
   name = 'Caricature grosse tête',
@@ -1472,7 +1472,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-editorialcaricature', 'img-editorialcaricature', '/editorialcaricature', 'Caricature éditoriale', 'editorialcaricature', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Met en image une situation professionnelle ou personnelle sous forme de dessin de presse original.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour', 'creations-et-vfx', 'commande-image']::text[], array['caricature editoriale', 'humour', 'creations et vfx']::text[], 'Caricature éditoriale | RaccourcIA', 'Met en image une situation professionnelle ou personnelle sous forme de dessin de presse original.', 100, 144, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-editorialcaricature',
   command = '/editorialcaricature',
   name = 'Caricature éditoriale',
@@ -1506,7 +1506,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-candidchaos', 'img-candidchaos', '/candidchaos', 'Chaos, mais avec style', 'candidchaos', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Mettez en scène une catastrophe domestique purement comique.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour', 'creations-et-vfx', 'commande-image']::text[], array['chaos mais avec style', 'humour', 'creations et vfx']::text[], 'Chaos, mais avec style | RaccourcIA', 'Mettez en scène une catastrophe domestique purement comique.', 72, 145, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-candidchaos',
   command = '/candidchaos',
   name = 'Chaos, mais avec style',
@@ -1540,7 +1540,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-everydayhero', 'img-everydayhero', '/everydayhero', 'Héros du quotidien', 'everydayhero', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Célébrez une petite victoire avec un traitement de blockbuster.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour', 'creations-et-vfx', 'commande-image']::text[], array['heros du quotidien', 'humour', 'creations et vfx']::text[], 'Héros du quotidien | RaccourcIA', 'Célébrez une petite victoire avec un traitement de blockbuster.', 90, 146, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-everydayhero',
   command = '/everydayhero',
   name = 'Héros du quotidien',
@@ -1574,7 +1574,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-pocketcrew', 'img-pocketcrew', '/pocketcrew', 'Mes petits assistants', 'pocketcrew', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Trois versions miniatures de vous s’activent autour d’un objet.', 'Une photo du produit ou de l’objet', '1 image HD', 'Créer ce visuel', 1, 4, 'Une photo du produit ou de l’objet', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour', 'creations-et-vfx', 'commande-image']::text[], array['mes petits assistants', 'humour', 'creations et vfx']::text[], 'Mes petits assistants | RaccourcIA', 'Trois versions miniatures de vous s’activent autour d’un objet.', 69, 147, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-pocketcrew',
   command = '/pocketcrew',
   name = 'Mes petits assistants',
@@ -1608,7 +1608,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-miniceo', 'img-miniceo', '/miniceo', 'Mini CEO', 'miniceo', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Transforme la personne en dirigeant miniature dans un bureau surdimensionné, avec visage fidèle et humour premium.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour', 'creations-et-vfx', 'commande-image']::text[], array['mini ceo', 'humour', 'creations et vfx']::text[], 'Mini CEO | RaccourcIA', 'Transforme la personne en dirigeant miniature dans un bureau surdimensionné, avec visage fidèle et humour premium.', 75, 148, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-miniceo',
   command = '/miniceo',
   name = 'Mini CEO',
@@ -1642,7 +1642,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-petboss', 'img-petboss', '/petboss', 'Mon animal dirige la réunion', 'petboss', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Votre compagnon prend le bureau, vous gardez le sourire.', 'Une photo nette de la personne', '1 image HD', 'Créer ce visuel', 1, 3, 'Une photo nette de la personne', '4:5', true, 'Oui', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour', 'creations-et-vfx', 'commande-image']::text[], array['mon animal dirige la reunion', 'humour', 'creations et vfx']::text[], 'Mon animal dirige la réunion | RaccourcIA', 'Votre compagnon prend le bureau, vous gardez le sourire.', 72, 149, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-petboss',
   command = '/petboss',
   name = 'Mon animal dirige la réunion',
@@ -1676,7 +1676,7 @@ on conflict (command) where status <> 'archived' do update set
 
 insert into public.prompts (external_ref, card_id, command, name, slug, mode, entity_type, category_id, short_description, expected_input, expected_output, cta_label, images_min, images_max, witness_type, default_ratio, allow_ratio_override, identity_policy, text_in_image_policy, questionnaire_policy, online_lookup_policy, reality_policy, tags, search_keywords, seo_title, seo_description, priority_score, sort_order, is_featured, show_image_card, catalog_version, catalog_v2, status)
 values ('img-shadowbuddy', 'img-shadowbuddy', '/shadowbuddy', 'Mon ombre a une idée', 'shadowbuddy', 'image'::public.app_mode, 'commande_image', (select id from public.categories where slug = 'humour'), 'Donnez à votre ombre une personnalité inattendue.', 'Une image de départ ou un sujet décrit', '1 image HD', 'Créer ce visuel', 0, 4, 'Une image de départ ou un sujet décrit', '4:5', true, 'Selon l’entrée', 'Sans texte sauf demande explicite', 'Aucune question si le contexte suffit', 'Optionnelle; ne bloque pas l’exécution', 'Ne pas présenter une invention comme un fait', array['humour', 'creations-et-vfx', 'commande-image']::text[], array['mon ombre a une idee', 'humour', 'creations et vfx']::text[], 'Mon ombre a une idée | RaccourcIA', 'Donnez à votre ombre une personnalité inattendue.', 72, 150, false, true, '2.0', true, 'draft'::public.content_status)
-on conflict (command) where status <> 'archived' do update set
+on conflict (command, coalesce(card_slug, '')) where status <> 'archived' do update set
   card_id = 'img-shadowbuddy',
   command = '/shadowbuddy',
   name = 'Mon ombre a une idée',

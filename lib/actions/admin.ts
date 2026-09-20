@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { assertAdmin } from '@/lib/admin/guard';
 import { STORAGE_BUCKETS } from '@/lib/constants';
+import { lireLesChoix } from '@/lib/admin/choix';
 import {
   accessInput,
   categoryInput,
@@ -22,6 +23,13 @@ import {
   promptVersionInput,
   variantCompatibilityInput,
   promptsEnMasseInput,
+  tagInput,
+  tagDeleteInput,
+  promptFieldInput,
+  promptFieldDeleteInput,
+  promptDeleteInput,
+  categoryDeleteInput,
+  promptTagsInput,
 } from '@/lib/validation/admin-schemas';
 
 export type AdminActionState = { error?: string; success?: string };
@@ -65,6 +73,34 @@ function readableError(message: string): string {
   }
   if (message.includes('sa propre parente')) {
     return 'Une catégorie ne peut pas être sa propre parente.';
+  }
+  // Les refus de suppression portent leur compte : le dire evite d'aller
+  // le chercher ailleurs avant de decider.
+  const liens = message.match(/LIENS_ANCIENS:(\d+)/);
+  if (liens) {
+    return `${liens[1]} ancien(s) lien(s) mènent à cette commande. Cochez « emporter les anciens liens » pour les supprimer aussi : ils cesseront de fonctionner.`;
+  }
+  const reaffectation = message.match(/REAFFECTATION_REQUISE:(\d+)/);
+  if (reaffectation) {
+    return `Ce rayon porte encore ${reaffectation[1]} commande(s). Choisissez où elles vont avant de le supprimer.`;
+  }
+  if (message.includes('REAFFECTATION_INVALIDE')) {
+    return 'Ce rayon part avec celui que vous supprimez : choisissez-en un autre.';
+  }
+  if (message.includes('REAFFECTATION_INCONNUE')) {
+    return 'Le rayon de destination n’existe plus.';
+  }
+  if (message.includes('TAG_SLUG_VIDE')) {
+    return 'Ce tag n’a pas de nom utilisable : ajoutez au moins une lettre ou un chiffre.';
+  }
+  if (message.includes('CHAMP_CLE_VIDE')) {
+    return 'La clé du champ n’a pas de nom utilisable : ajoutez au moins une lettre ou un chiffre.';
+  }
+  if (message.includes('prompt_fields_position_check')) {
+    return 'Trois champs au maximum, aux positions 1, 2 et 3.';
+  }
+  if (message.includes('NOT_FOUND')) {
+    return 'Cet élément n’existe plus.';
   }
   return 'Action impossible. Vérifiez les informations saisies.';
 }
@@ -146,6 +182,7 @@ export async function updatePromptIdentity(
     shortDescription: formData.get('shortDescription'),
     mode: formData.get('mode'),
     categoryId: formData.get('categoryId') || undefined,
+    library: formData.get('library') || undefined,
     intention: formData.get('intention') ?? undefined,
     useCases: formData.get('useCases') ?? undefined,
     tags: formData.get('tags') ?? undefined,
@@ -177,6 +214,9 @@ export async function updatePromptIdentity(
       short_description: parsed.data.shortDescription,
       mode: parsed.data.mode,
       category_id: parsed.data.categoryId ?? null,
+      // Jamais remise a `null` : le declencheur la recalculerait aussitot,
+      // ce qui defairait silencieusement une correction faite ici.
+      ...(parsed.data.library ? { library: parsed.data.library } : {}),
       intention: parsed.data.intention ?? null,
       use_cases: parsed.data.useCases,
       tags: parsed.data.tags,
@@ -720,21 +760,6 @@ export async function appliquerEnMasse(
   const { ids, operation } = parsed.data;
   const supabase = await createClient();
 
-  /*
-   * Les types de la base sont generes depuis le schema deploye. Ces deux
-   * fonctions arrivent avec la migration de ce meme commit : elles n'y
-   * figurent pas encore, et le typage genere refuse leur nom.
-   *
-   * Le pont est etroit — deux noms, une forme de retour — plutot qu'un
-   * relachement du typage sur tout le client. Le contrat reel est verifie par
-   * le test d'integration, qui appelle les fonctions pour de vrai.
-   */
-  type ResultatEnMasse = { traites: number; refuses: number; motifs: string[] };
-  const appeler = supabase.rpc as unknown as (
-    nom: 'admin_set_prompts_status' | 'admin_set_prompts_free',
-    args: Record<string, unknown>,
-  ) => Promise<{ data: ResultatEnMasse[] | null; error: { message: string } | null }>;
-
   const statuts = {
     publier: 'published',
     brouillon: 'draft',
@@ -743,11 +768,11 @@ export async function appliquerEnMasse(
 
   const { data, error } =
     operation === 'offrir' || operation === 'reserver'
-      ? await appeler('admin_set_prompts_free', {
+      ? await supabase.rpc('admin_set_prompts_free', {
           p_prompt_ids: ids,
           p_free: operation === 'offrir',
         })
-      : await appeler('admin_set_prompts_status', {
+      : await supabase.rpc('admin_set_prompts_status', {
           p_prompt_ids: ids,
           p_status: statuts[operation],
         });
@@ -783,4 +808,362 @@ export async function appliquerEnMasse(
     success: fait,
     error: `${refuses} refusé${refuses > 1 ? 's' : ''}. ${motifs}`.trim(),
   };
+}
+
+// --- Tags (V3) --------------------------------------------------------------
+
+/**
+ * Cree ou met a jour un tag.
+ *
+ * Passe par la table et non par une fonction : la politique
+ * `tags_administration` n'ouvre l'ecriture qu'a un administrateur, et il n'y
+ * a ici aucune regle croisee a faire respecter. Le slug, lui, est normalise
+ * par un declencheur — deux ecritures d'une meme idee ne peuvent pas creer
+ * deux tags.
+ */
+export async function enregistrerTag(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = tagInput.safeParse({
+    id: formData.get('id') || undefined,
+    slug: formData.get('slug'),
+    name: formData.get('name'),
+    groupe: formData.get('groupe'),
+    description: formData.get('description') ?? undefined,
+    imagePath: formData.get('imagePath') ?? undefined,
+    isActive: checked(formData, 'isActive'),
+    sortOrder: formData.get('sortOrder') ?? 0,
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? 'Vérifiez les informations saisies.' };
+  }
+
+  const supabase = await createClient();
+  const valeurs = {
+    slug: parsed.data.slug,
+    name: parsed.data.name,
+    groupe: parsed.data.groupe,
+    description: parsed.data.description ?? null,
+    image_path: parsed.data.imagePath ?? null,
+    is_active: parsed.data.isActive,
+    sort_order: parsed.data.sortOrder,
+  };
+
+  const { error } = parsed.data.id
+    ? await supabase.from('tags').update(valeurs).eq('id', parsed.data.id)
+    : await supabase.from('tags').insert(valeurs);
+
+  if (error) return { error: readableError(error.message) };
+
+  revalidatePath('/admin/tags');
+  revalidatePath('/app');
+  revalidatePath('/app/bibliotheque');
+  return { success: parsed.data.id ? 'Tag enregistré.' : 'Tag créé.' };
+}
+
+/**
+ * Supprime un tag, definitivement.
+ *
+ * Le moins lourd des trois gestes de suppression : un tag qualifie, il ne
+ * porte rien. Aucune commande ne disparait — elles perdent une etiquette, et
+ * le bilan rendu par la base dit combien.
+ */
+export async function supprimerTag(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = tagDeleteInput.safeParse({ tagId: formData.get('tagId') });
+  if (!parsed.success) return { error: 'Tag introuvable.' };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc('admin_supprimer_tag', {
+    p_tag_id: parsed.data.tagId,
+  });
+
+  if (error) return { error: readableError(error.message) };
+
+  revalidatePath('/admin/tags');
+  revalidatePath('/app');
+  revalidatePath('/app/bibliotheque');
+
+  const bilan = (data ?? {}) as { nom?: string; commandes?: number };
+  const touchees = bilan.commandes ?? 0;
+  return {
+    success:
+      touchees > 0
+        ? `Tag « ${bilan.nom} » supprimé. ${touchees} commande(s) ont perdu cette étiquette.`
+        : `Tag « ${bilan.nom} » supprimé.`,
+  };
+}
+
+// --- Champs de personnalisation (V3) ----------------------------------------
+
+/**
+ * Cree ou met a jour un champ, et remplace ses choix.
+ *
+ * Les choix sont reecrits entierement plutot que rapproches un a un : un
+ * champ en porte trois ou quatre, et un rapprochement partiel laisserait des
+ * valeurs orphelines qu'aucun formulaire ne propose plus.
+ *
+ * Une ligne de choix s'ecrit « valeur | Libelle », ou simplement « Libelle » —
+ * la valeur est alors le libelle. C'est la valeur qui entre dans le texte
+ * copie, le libelle n'existe que pour le menu.
+ */
+export async function enregistrerChamp(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = promptFieldInput.safeParse({
+    id: formData.get('id') || undefined,
+    promptId: formData.get('promptId'),
+    cle: formData.get('cle'),
+    libelle: formData.get('libelle'),
+    indication: formData.get('indication') ?? undefined,
+    kind: formData.get('kind'),
+    requis: checked(formData, 'requis'),
+    position: formData.get('position'),
+    choix: formData.get('choix') ?? undefined,
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? 'Vérifiez les informations saisies.' };
+  }
+
+  // Un champ « liste » sans choix ne se remplit pas : la fiche l'ecarterait
+  // en silence, et l'administration croirait l'avoir pose.
+  if (parsed.data.kind === 'liste' && parsed.data.choix.length === 0) {
+    return { error: 'Un champ à choix demande au moins une option, une par ligne.' };
+  }
+
+  const supabase = await createClient();
+  const valeurs = {
+    prompt_id: parsed.data.promptId,
+    cle: parsed.data.cle,
+    libelle: parsed.data.libelle,
+    indication: parsed.data.indication ?? null,
+    kind: parsed.data.kind,
+    requis: parsed.data.requis,
+    position: parsed.data.position,
+  };
+
+  const { data: champ, error } = parsed.data.id
+    ? await supabase
+        .from('prompt_fields')
+        .update(valeurs)
+        .eq('id', parsed.data.id)
+        .select('id')
+        .maybeSingle()
+    : await supabase.from('prompt_fields').insert(valeurs).select('id').maybeSingle();
+
+  if (error) return { error: readableError(error.message) };
+  if (!champ) return { error: 'Champ introuvable.' };
+
+  await supabase.from('prompt_field_choices').delete().eq('field_id', champ.id);
+
+  if (parsed.data.kind === 'liste') {
+    const lignes = lireLesChoix(parsed.data.choix.join('\n')).map((choix, rang) => ({
+      field_id: champ.id,
+      valeur: choix.valeur,
+      libelle: choix.libelle,
+      position: rang + 1,
+    }));
+    const { error: erreurChoix } = await supabase.from('prompt_field_choices').insert(lignes);
+    if (erreurChoix) return { error: readableError(erreurChoix.message) };
+  }
+
+  revalidatePath(`/admin/raccourcis/${parsed.data.promptId}`);
+  revalidatePath('/app');
+  return { success: parsed.data.id ? 'Champ enregistré.' : 'Champ ajouté.' };
+}
+
+export async function supprimerChamp(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = promptFieldDeleteInput.safeParse({ fieldId: formData.get('fieldId') });
+  if (!parsed.success) return { error: 'Champ introuvable.' };
+
+  const supabase = await createClient();
+  // Les choix partent en cascade avec le champ.
+  const { error } = await supabase.from('prompt_fields').delete().eq('id', parsed.data.fieldId);
+  if (error) return { error: readableError(error.message) };
+
+  const promptId = formData.get('promptId');
+  if (typeof promptId === 'string') revalidatePath(`/admin/raccourcis/${promptId}`);
+  revalidatePath('/app');
+  return { success: 'Champ retiré.' };
+}
+
+// --- Suppressions definitives (V3) ------------------------------------------
+
+/**
+ * Supprime une commande, definitivement.
+ *
+ * Archiver reste le geste par defaut : il conserve la ligne, ses relations
+ * et son identifiant, et se defait. Celui-ci ne se defait pas, et c'est
+ * pourquoi il demande de retaper la commande — une case a cocher se coche
+ * sans lire.
+ *
+ * Le journal garde le bilan de ce qui a disparu. Les fichiers du stockage,
+ * eux, ne partent pas en cascade : la base rend leurs chemins et ils sont
+ * retires ici, sans quoi le bucket grossirait d'images que plus rien ne
+ * reference.
+ */
+export async function supprimerCommande(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = promptDeleteInput.safeParse({
+    promptId: formData.get('promptId'),
+    emporterLesLiens: checked(formData, 'emporterLesLiens'),
+    confirmation: formData.get('confirmation') ?? '',
+  });
+  if (!parsed.success) return { error: 'Retapez la commande pour confirmer la suppression.' };
+
+  const supabase = await createClient();
+
+  // La confirmation est verifiee contre ce que la base porte, pas contre un
+  // champ cache du formulaire : celui-ci se modifie dans le navigateur.
+  const { data: commande } = await supabase
+    .from('prompts')
+    .select('command')
+    .eq('id', parsed.data.promptId)
+    .maybeSingle();
+
+  if (!commande) return { error: 'Cette commande n’existe plus.' };
+
+  if (parsed.data.confirmation.toLowerCase() !== commande.command.toLowerCase()) {
+    return { error: `Pour confirmer, retapez exactement ${commande.command}.` };
+  }
+
+  const { data, error } = await supabase.rpc('admin_supprimer_commande', {
+    p_prompt_id: parsed.data.promptId,
+    p_emporter_les_liens: parsed.data.emporterLesLiens,
+  });
+
+  if (error) return { error: readableError(error.message) };
+
+  const bilan = (data ?? {}) as { chemins?: string[] };
+  if (bilan.chemins && bilan.chemins.length > 0) {
+    await supabase.storage.from(STORAGE_BUCKETS.PROMPT_MEDIA).remove(bilan.chemins);
+  }
+
+  revalidatePath('/admin/raccourcis');
+  revalidatePath('/app');
+  redirect('/admin/raccourcis?supprime=1');
+}
+
+/**
+ * Supprime un rayon, definitivement.
+ *
+ * Un rayon qui porte encore des commandes ne part pas sans dire ou elles
+ * vont : la base refuse, et le message donne le compte. Ses sous-rayons
+ * partent avec lui — le bilan les annonce avant, pas apres.
+ */
+export async function supprimerCategorie(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = categoryDeleteInput.safeParse({
+    categoryId: formData.get('categoryId'),
+    reaffectation: formData.get('reaffectation') || undefined,
+    confirmation: formData.get('confirmation') ?? '',
+  });
+  if (!parsed.success) return { error: 'Retapez le nom du rayon pour confirmer la suppression.' };
+
+  const supabase = await createClient();
+
+  const { data: rayon } = await supabase
+    .from('categories')
+    .select('name')
+    .eq('id', parsed.data.categoryId)
+    .maybeSingle();
+
+  if (!rayon) return { error: 'Ce rayon n’existe plus.' };
+
+  if (parsed.data.confirmation.trim().toLowerCase() !== rayon.name.trim().toLowerCase()) {
+    return { error: `Pour confirmer, retapez exactement « ${rayon.name} ».` };
+  }
+
+  const { error } = await supabase.rpc('admin_supprimer_categorie', {
+    p_category_id: parsed.data.categoryId,
+    p_reaffectation: parsed.data.reaffectation,
+  });
+
+  if (error) return { error: readableError(error.message) };
+
+  revalidatePath('/admin/categories');
+  revalidatePath('/app');
+  revalidatePath('/app/bibliotheque');
+  return { success: `Rayon « ${rayon.name} » supprimé.` };
+}
+
+/**
+ * Remplace les tags d'une commande.
+ *
+ * La liste entiere, et non des ajouts un a un : un formulaire a cases a
+ * cocher decrit un etat, pas une suite de gestes. Rapprocher les deux listes
+ * laisserait une association derriere a chaque case decochee trop vite.
+ *
+ * Rien n'est cree ici : seuls les tags du referentiel peuvent etre poses.
+ * C'est ce qui empeche le desordre de revenir par la fiche apres avoir ete
+ * corrige dans la taxonomie.
+ */
+export async function enregistrerLesTagsDuRaccourci(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await assertAdmin();
+
+  const parsed = promptTagsInput.safeParse({
+    promptId: formData.get('promptId'),
+    tagIds: formData
+      .getAll('tagIds')
+      .filter((valeur): valeur is string => typeof valeur === 'string'),
+  });
+  if (!parsed.success) return { error: 'Sélection de tags invalide.' };
+
+  const supabase = await createClient();
+
+  // On pose d'abord, on retire ensuite. PostgREST n'offre pas de
+  // transaction : si le retrait passait en premier et que la pose echouait,
+  // la commande se retrouverait sans aucun tag — c'est-a-dire invisible dans
+  // la Bibliotheque, sans que rien ne le dise. Dans cet ordre, le pire cas
+  // laisse un tag de trop, que le prochain enregistrement corrige.
+  if (parsed.data.tagIds.length > 0) {
+    const { error } = await supabase.from('prompt_tags').upsert(
+      parsed.data.tagIds.map((tagId) => ({
+        prompt_id: parsed.data.promptId,
+        tag_id: tagId,
+      })),
+      { onConflict: 'prompt_id,tag_id', ignoreDuplicates: true },
+    );
+    if (error) return { error: readableError(error.message) };
+  }
+
+  let retrait = supabase.from('prompt_tags').delete().eq('prompt_id', parsed.data.promptId);
+  if (parsed.data.tagIds.length > 0) {
+    retrait = retrait.not('tag_id', 'in', `(${parsed.data.tagIds.join(',')})`);
+  }
+  const { error: erreurRetrait } = await retrait;
+  if (erreurRetrait) return { error: readableError(erreurRetrait.message) };
+
+  revalidatePath(`/admin/raccourcis/${parsed.data.promptId}`);
+  revalidatePath('/app');
+  revalidatePath('/app/bibliotheque');
+
+  const n = parsed.data.tagIds.length;
+  return { success: n === 0 ? 'Tous les tags retirés.' : `${n} tag(s) enregistré(s).` };
 }

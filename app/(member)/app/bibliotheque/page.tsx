@@ -1,4 +1,7 @@
 import { getBibliotheque } from '@/lib/catalog/queries';
+import { getTagsExplorables } from '@/lib/catalog/tags';
+import { ExplorationParTags } from '@/components/library/exploration-par-tags';
+import { RechercheBibliotheque } from '@/components/library/recherche-bibliotheque';
 import { CollectionTile } from '@/components/library/collection-tile';
 import { RayonsDepliables, type RayonDepliable } from '@/components/library/rayons-depliables';
 import { FaconsDUtiliser } from '@/components/library/facons-d-utiliser';
@@ -16,7 +19,18 @@ import {
 export const metadata = { title: 'Bibliothèque' };
 
 /**
- * La Bibliotheque : les deux facons de se servir de l'outil, puis les rayons.
+ * La Bibliotheque : les deux facons de se servir de l'outil, les tags, puis
+ * les rayons.
+ *
+ * L'exploration par tags passe devant. Un rayon range une commande a une
+ * place et une seule : un portrait vintage en studio vit dans « Portraits »,
+ * et rien dans l'arbre ne permettait de partir de « vintage » ni de
+ * « studio ». Les tags se croisent, donc ils repondent a la facon dont on
+ * cherche reellement.
+ *
+ * Les rayons restent, en dessous et replies. Ils portent les descriptions et
+ * les dessins du kit, et ils sont la seule entree qui montre la forme du
+ * catalogue d'un coup d'oeil — mais ce n'est plus par eux qu'on entre.
  *
  * Les tuiles sont rendues ici, au serveur, et passees deja faites au
  * composant qui les deplie. Leurs dessins viennent du kit et pesent ensemble
@@ -28,9 +42,10 @@ export const metadata = { title: 'Bibliothèque' };
  */
 export default async function BibliothequePage() {
   let familles: Awaited<ReturnType<typeof getBibliotheque>>;
+  let rayonsDeTags: Awaited<ReturnType<typeof getTagsExplorables>>;
 
   try {
-    familles = await getBibliotheque();
+    [familles, rayonsDeTags] = await Promise.all([getBibliotheque(), getTagsExplorables()]);
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -60,7 +75,15 @@ export default async function BibliothequePage() {
     <div className="space-y-5 pt-1">
       <Titre />
 
+      <RechercheBibliotheque />
+
       <FaconsDUtiliser modesIa={modesIa} parcours={parcours} />
+
+      <ExplorationParTags rayons={rayonsDeTags} />
+
+      <h2 className="text-[length:var(--texte-section)] font-bold leading-tight text-[color:var(--color-night)]">
+        Parcourir par rayon
+      </h2>
 
       {rayons.length === 0 ? (
         <EmptyState
