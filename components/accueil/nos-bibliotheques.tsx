@@ -10,8 +10,13 @@ import { LIBRARIES, LIBRARY_LABELS, LIBRARY_PROMESSES, type Library } from '@/li
  *
  * Trois tuiles cote a cote plutot qu'une rangee qui defile : avec trois
  * elements, faire glisser pour voir le troisieme reviendrait a le cacher.
- * Chacune mene a l'accueil filtre, pas a une page a part : la liste est la
- * meme, seul son perimetre change.
+ *
+ * Chacune mene au SOMMAIRE de sa bibliotheque, et non plus a la liste
+ * filtree. Toucher « Images » rendait mille cartes a la suite : une bonne
+ * reponse quand on sait ce qu'on cherche, un mur quand on vient se
+ * reperer — or c'est pour se reperer qu'on touche le nom d'une
+ * bibliotheque. Le sommaire montre ses collections et ses tags ; « Voir
+ * toutes les commandes » y ramene, pour qui voulait bien le mur.
  */
 const TONS: Record<Library, { fond: string; encre: string }> = {
   images: { fond: 'bg-[color:var(--color-sky)]', encre: 'text-[color:var(--color-brand)]' },
@@ -35,7 +40,7 @@ export function NosBibliotheques({ disponibles }: { disponibles?: readonly Libra
         return (
           <li key={library}>
             <Link
-              href={`/app?bibliotheque=${library}`}
+              href={`/app/bibliotheque/rayon/${library}`}
               className={`flex h-full flex-col gap-1.5 rounded-[color:var(--radius-card)] ${ton.fond} p-3 transition-transform duration-[var(--duration-fast)] active:scale-[0.985]`}
             >
               <span

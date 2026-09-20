@@ -1,51 +1,46 @@
-import { getBibliotheque } from '@/lib/catalog/queries';
 import { getTagsExplorables } from '@/lib/catalog/tags';
-import { ExplorationParTags } from '@/components/library/exploration-par-tags';
+import { getCollectionsPopulaires } from '@/lib/catalog/accueil';
 import { RechercheBibliotheque } from '@/components/library/recherche-bibliotheque';
-import { CollectionTile } from '@/components/library/collection-tile';
-import { RayonsDepliables, type RayonDepliable } from '@/components/library/rayons-depliables';
-import { FaconsDUtiliser } from '@/components/library/facons-d-utiliser';
+import { NosBibliotheques } from '@/components/accueil/nos-bibliotheques';
+import { Mosaique, type CarteDeMosaique } from '@/components/library/mosaique';
 import { NetworkError } from '@/components/ui/network-error';
 import { EmptyState } from '@/components/ui/states';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
-import { iconeDeLaFamille } from '@/lib/ui/icones';
-import {
-  FAMILLE_MODES_IA,
-  FAMILLE_PARCOURS,
-  famillesDeRayon,
-  familleSpeciale,
-} from '@/lib/catalog/familles-speciales';
 
 export const metadata = { title: 'Bibliothèque' };
 
 /**
- * La Bibliotheque : les deux facons de se servir de l'outil, les tags, puis
- * les rayons.
+ * La Bibliotheque : trois portes, puis des cartes.
  *
- * L'exploration par tags passe devant. Un rayon range une commande a une
- * place et une seule : un portrait vintage en studio vit dans « Portraits »,
- * et rien dans l'arbre ne permettait de partir de « vintage » ni de
- * « studio ». Les tags se croisent, donc ils repondent a la facon dont on
- * cherche reellement.
+ * Elle empilait quatre facons de ranger la meme chose — les deux « facons
+ * d'utiliser », les tags en tuiles, les tags en puces groupees par famille,
+ * puis les rayons en accordeons. Quatre sommaires pour un seul catalogue :
+ * on ne savait plus lequel lire, et les intitules de groupe — « Rendu »,
+ * « Capacite », « Contexte » — sont le vocabulaire du classeur, jamais
+ * celui du lecteur.
  *
- * Les rayons restent, en dessous et replies. Ils portent les descriptions et
- * les dessins du kit, et ils sont la seule entree qui montre la forme du
- * catalogue d'un coup d'oeil — mais ce n'est plus par eux qu'on entre.
+ * Il n'en reste que deux niveaux. Les trois bibliotheques en tete, parce
+ * que c'est la premiere decision : une image, un texte, une conversation.
+ * Puis des cartes illustrees — collections et tags melanges, sans intitule
+ * de famille — parce que ce sont deux chemins vers la meme etagere et que
+ * rien n'oblige a choisir lequel.
  *
- * Les tuiles sont rendues ici, au serveur, et passees deja faites au
- * composant qui les deplie. Leurs dessins viennent du kit et pesent ensemble
- * cinquante kilo-octets : les faire resoudre par le navigateur reviendrait a
- * lui envoyer les cinquante pour en afficher six.
- *
- * Les familles viennent de la base, jamais d'une liste ecrite ici : en
- * ajouter une en administration la fait apparaitre sans redeploiement.
+ * La recherche reste en tete : c'est la seule de l'application depuis que
+ * l'accueil a range la sienne, et mille cartes sans moyen de chercher un
+ * nom qu'on connait deja resteraient mille cartes a faire defiler.
  */
 export default async function BibliothequePage() {
-  let familles: Awaited<ReturnType<typeof getBibliotheque>>;
+  let collections: Awaited<ReturnType<typeof getCollectionsPopulaires>>;
   let rayonsDeTags: Awaited<ReturnType<typeof getTagsExplorables>>;
 
   try {
-    [familles, rayonsDeTags] = await Promise.all([getBibliotheque(), getTagsExplorables()]);
+    // Trente collections : de quoi tenir un sommaire sans le rendre
+    // interminable. Les autres s'atteignent par la porte de leur
+    // bibliotheque, qui les montre toutes.
+    [collections, rayonsDeTags] = await Promise.all([
+      getCollectionsPopulaires(30),
+      getTagsExplorables(),
+    ]);
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -58,18 +53,30 @@ export default async function BibliothequePage() {
     throw error;
   }
 
-  const modesIa = familleSpeciale(familles, FAMILLE_MODES_IA);
-  const parcours = familleSpeciale(familles, FAMILLE_PARCOURS);
+  const tags = rayonsDeTags
+    .flatMap((rayon) => rayon.tags)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 24);
 
-  const rayons: RayonDepliable[] = famillesDeRayon(familles).map((famille) => ({
-    id: famille.id,
-    slug: famille.slug,
-    nom: famille.name,
-    icone: iconeDeLaFamille(famille.slug),
-    tuiles: famille.collections.map((collection) => (
-      <CollectionTile key={collection.id} tile={collection} famille={famille.name} />
-    )),
-  }));
+  // Collections et tags alternes plutot que poses en deux blocs. Deux blocs
+  // rendraient le second facultatif : on parcourt le premier, on croit avoir
+  // fait le tour, et la moitie des chemins reste derriere le pouce.
+  const cartes: CarteDeMosaique[] = entrelacer(
+    collections.map((collection) => ({
+      cle: `c-${collection.slug}`,
+      href: `/app/bibliotheque/${collection.slug}`,
+      titre: collection.nom,
+      detail: `${collection.total} commande${collection.total > 1 ? 's' : ''}`,
+      imageUrl: collection.apercuUrl,
+    })),
+    tags.map((tag) => ({
+      cle: `t-${tag.slug}`,
+      href: `/app/bibliotheque/tag/${tag.slug}`,
+      titre: tag.nom,
+      detail: `${tag.total} commande${tag.total > 1 ? 's' : ''}`,
+      imageUrl: tag.imageUrl,
+    })),
+  );
 
   return (
     <div className="space-y-5 pt-1">
@@ -77,24 +84,36 @@ export default async function BibliothequePage() {
 
       <RechercheBibliotheque />
 
-      <FaconsDUtiliser modesIa={modesIa} parcours={parcours} />
+      <NosBibliotheques />
 
-      <ExplorationParTags rayons={rayonsDeTags} />
-
-      <h2 className="text-[length:var(--texte-section)] font-bold leading-tight text-[color:var(--color-night)]">
-        Parcourir par rayon
-      </h2>
-
-      {rayons.length === 0 ? (
+      {cartes.length === 0 ? (
         <EmptyState
           title="La bibliothèque est vide"
           body="Aucune collection n’est ouverte pour le moment."
         />
       ) : (
-        <RayonsDepliables rayons={rayons} />
+        <Mosaique cartes={cartes} />
       )}
     </div>
   );
+}
+
+/**
+ * Deux listes melees, en alternance, sans perdre la fin de la plus longue.
+ *
+ * Une alternance stricte s'arreterait a la plus courte ; ce qui reste est
+ * pose a la suite plutot que perdu.
+ */
+function entrelacer(premieres: CarteDeMosaique[], secondes: CarteDeMosaique[]): CarteDeMosaique[] {
+  const melange: CarteDeMosaique[] = [];
+  const maximum = Math.max(premieres.length, secondes.length);
+
+  for (let i = 0; i < maximum; i += 1) {
+    if (premieres[i]) melange.push(premieres[i]!);
+    if (secondes[i]) melange.push(secondes[i]!);
+  }
+
+  return melange;
 }
 
 function Titre() {

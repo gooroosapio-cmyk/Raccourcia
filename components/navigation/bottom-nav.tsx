@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
 /**
  * Barre basse : cinq destinations, libelles toujours visibles.
@@ -28,11 +29,55 @@ const ITEMS = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const barre = useRef<HTMLElement>(null);
+
+  // La barre suit le VIEWPORT VISIBLE, pas la page.
+  //
+  // `position: fixed` se repere sur le viewport de mise en page, qui ne bouge
+  // pas quand la barre d'adresse du navigateur se retracte. Sur Android comme
+  // sur iOS, la barre basse glisse alors sous la barre du navigateur : elle
+  // disparait au defilement, puis revient — exactement ce qu'on nous a
+  // signale. Le clavier logiciel produit le meme effet, en pire.
+  //
+  // `visualViewport` donne la seule mesure juste : ce que l'oeil voit. On
+  // rattrape l'ecart par une translation, recalculee a chaque redimensionnement
+  // et a chaque defilement du viewport visible.
+  //
+  // L'ecriture passe par le style de l'element et non par un etat React :
+  // ce calcul se produit a chaque image d'un defilement, et un rendu React
+  // par image rendrait la page saccadee.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    let attendu = 0;
+    const placer = () => {
+      cancelAnimationFrame(attendu);
+      attendu = requestAnimationFrame(() => {
+        const element = barre.current;
+        if (!element) return;
+        // Bas du viewport visible, exprime dans le repere de la page.
+        const basVisible = vv.offsetTop + vv.height;
+        const ecart = Math.max(0, window.innerHeight - basVisible);
+        element.style.transform = ecart > 0 ? `translateY(-${ecart}px)` : '';
+      });
+    };
+
+    placer();
+    vv.addEventListener('resize', placer);
+    vv.addEventListener('scroll', placer);
+    return () => {
+      cancelAnimationFrame(attendu);
+      vv.removeEventListener('resize', placer);
+      vv.removeEventListener('scroll', placer);
+    };
+  }, []);
 
   return (
     <nav
+      ref={barre}
       aria-label="Navigation principale"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--color-line)] bg-[color:var(--color-surface)] pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--color-line)] bg-[color:var(--color-surface)] pb-[env(safe-area-inset-bottom)] will-change-transform"
     >
       <ul className="mx-auto flex max-w-screen-sm">
         {ITEMS.map((item) => {

@@ -99,6 +99,55 @@ export type BlocDuFeed = { cle: string; debut: number; fin: number } & (
 const PAR_BLOC = 4;
 
 /**
+ * Le vivier, remelange a chaque ouverture.
+ *
+ * L'accueil rendait le meme ordre a chaque visite : les memes douze cartes
+ * en haut, tous les jours. Un catalogue de mille cartes donnait
+ * l'impression de n'en avoir que douze, et rien n'incitait a revenir.
+ *
+ * Le melange vient AVANT `ordonnerLeFeed`, jamais apres : l'ordonnancement
+ * tient les regles qui comptent — pas deux cartes du meme rayon a la
+ * suite, un mode toutes les quatre cartes — et melanger ensuite les
+ * deferait toutes.
+ *
+ * La graine est un parametre plutot qu'un `Math.random()` interne : un
+ * tirage verrouille par un test est un tirage qu'on peut relire, et l'appelant
+ * reste libre de fixer la graine pour obtenir deux fois le meme ordre.
+ *
+ * Fisher-Yates, donc chaque permutation est aussi probable ; un tri par
+ * comparateur aleatoire, lui, penche vers l'ordre de depart.
+ */
+export function melangerLeVivier(cartes: PromptCard[], graine: number): PromptCard[] {
+  const melange = [...cartes];
+  const suivant = generateur(graine);
+
+  for (let i = melange.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(suivant() * (i + 1));
+    [melange[i], melange[j]] = [melange[j]!, melange[i]!];
+  }
+
+  return melange;
+}
+
+/**
+ * Mulberry32 : trente-deux bits d'etat, une suite reproductible.
+ *
+ * `Math.random()` ne se seme pas en JavaScript. Sans generateur a graine,
+ * le melange serait intestable — or c'est exactement le genre de code qui
+ * casse en silence, en rendant toujours la meme « permutation ».
+ */
+function generateur(graine: number): () => number {
+  let etat = graine >>> 0;
+  return () => {
+    etat = (etat + 0x6d2b79f5) >>> 0;
+    let t = etat;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
  * Le feed, decoupe en blocs autonomes.
  *
  * Les modes et les parcours etaient poses dans la meme grille que les images,

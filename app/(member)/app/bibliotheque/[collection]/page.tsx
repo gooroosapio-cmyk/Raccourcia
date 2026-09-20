@@ -2,12 +2,11 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getBibliotheque, getCatalogPage } from '@/lib/catalog/queries';
-import { PromptGrid } from '@/components/cards/prompt-grid';
+import { GalerieInfinie } from '@/components/cards/galerie-infinie';
 import { EmptyState } from '@/components/ui/states';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
-import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE, MODES, type Mode } from '@/lib/constants';
-import { VoirPlus } from '@/components/discovery/voir-plus';
+import { CATALOG_PAGE_SIZE, MODES, type Mode } from '@/lib/constants';
 import { estUneFamilleSpeciale } from '@/lib/catalog/familles-speciales';
 
 /**
@@ -28,15 +27,10 @@ export async function generateMetadata({ params }: { params: Promise<{ collectio
 
 export default async function CollectionPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ collection: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { collection } = await params;
-  const recherche = await searchParams;
-  const lot = Number(typeof recherche.page === 'string' ? recherche.page : 1) || 1;
-  const lots = Math.min(Math.max(lot, 1), CATALOG_MAX_LOTS);
 
   let familles: Awaited<ReturnType<typeof getBibliotheque>>;
   try {
@@ -81,11 +75,9 @@ export default async function CollectionPage({
       // Une collection est un rayon : on y reste.
       portee: 'domaine',
       page: 1,
-      pageSize: CATALOG_PAGE_SIZE * lots,
+      pageSize: CATALOG_PAGE_SIZE,
     }),
   ]);
-
-  const suivante = new URLSearchParams({ page: String(lots + 1) });
 
   return (
     <div className="space-y-3 pt-1">
@@ -116,8 +108,10 @@ export default async function CollectionPage({
         </p>
       </div>
 
-      <PromptGrid
-        prompts={page.items}
+      <GalerieInfinie
+        premieres={page.items}
+        critere={{ collectionSlug: collection }}
+        encore={page.hasMore}
         locked={!acces.hasFullAccess}
         visiteur={!acces.isMember}
         emptyState={
@@ -129,12 +123,6 @@ export default async function CollectionPage({
           />
         }
       />
-
-      {page.hasMore && lots < CATALOG_MAX_LOTS ? (
-        <div className="pt-1">
-          <VoirPlus href={`/app/bibliotheque/${collection}?${suivante.toString()}`} />
-        </div>
-      ) : null}
     </div>
   );
 }
