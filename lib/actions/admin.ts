@@ -17,6 +17,7 @@ import {
   mediaTicketInput,
   newPromptInput,
   promptFreeInput,
+  promptIdInput,
   promptIdentityInput,
   promptPinnedInput,
   promptStatusInput,
@@ -1166,4 +1167,50 @@ export async function enregistrerLesTagsDuRaccourci(
 
   const n = parsed.data.tagIds.length;
   return { success: n === 0 ? 'Tous les tags retirés.' : `${n} tag(s) enregistré(s).` };
+}
+
+/**
+ * Le texte d'une commande, rendu a l'administration pour etre copie.
+ *
+ * LE GESTE QU'ELLE EPARGNE. Verifier un payload demandait d'ouvrir la
+ * fiche, de descendre jusqu'au formulaire de version, de selectionner le
+ * texte dans une zone de saisie, puis de revenir — en perdant sa place
+ * dans une liste de mille cinq cents entrees. Sur une seance de
+ * relecture, c'est le trajet refait a chaque carte.
+ *
+ * ELLE NE CONTOURNE AUCUN CONTROLE. `prompt_versions` reste ferme :
+ * la lecture passe par `admin_get_prompt_versions`, qui verifie le role en
+ * premiere ligne, et `assertAdmin` leve avant meme d'y arriver. C'est
+ * exactement le chemin qu'emprunte deja la fiche.
+ *
+ * ELLE NE RETOURNE RIEN AU HASARD. La version courante de ChatGPT quand
+ * elle existe — c'est celle que le catalogue sert par defaut —, sinon la
+ * premiere qui porte un texte. Une commande sans aucun texte le dit
+ * plutot que de rendre une chaine vide que le presse-papiers accepterait
+ * en silence.
+ */
+export async function lireLePayloadAdmin(
+  promptId: string,
+): Promise<{ payload: string; ia: string } | { error: string }> {
+  await assertAdmin();
+
+  const parsed = promptIdInput.safeParse({ promptId });
+  if (!parsed.success) return { error: 'Commande introuvable.' };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc('admin_get_prompt_versions', {
+    p_prompt_id: parsed.data.promptId,
+  });
+
+  if (error) return { error: readableError(error.message) };
+
+  const versions = (data ?? []).filter(
+    (entree): entree is typeof entree & { payload: string } =>
+      typeof entree.payload === 'string' && entree.payload.trim() !== '',
+  );
+
+  const retenue = versions.find((entree) => entree.provider_key === 'chatgpt') ?? versions[0];
+  if (!retenue) return { error: 'Cette commande n’a pas encore de texte.' };
+
+  return { payload: retenue.payload, ia: retenue.provider_name };
 }
