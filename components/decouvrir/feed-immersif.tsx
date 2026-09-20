@@ -230,9 +230,18 @@ function CarteImmersive({
               </span>
             ) : null}
 
-            <h2 className="text-[19px] font-bold leading-tight">{carte.name}</h2>
-
-            <p className="mt-0.5 font-mono text-[13px] text-white/70">{carte.command}</p>
+            {/* Le nom ouvre la fiche, comme le bouton du bas. On touche
+                naturellement ce qu'on lit ; n'avoir que le bouton obligeait
+                a viser plus bas ce qu'on avait deja designe du doigt. */}
+            <button
+              type="button"
+              onClick={() => onUtiliser(carte)}
+              disabled={ouverture}
+              className="block text-left"
+            >
+              <h2 className="text-[19px] font-bold leading-tight">{carte.name}</h2>
+              <p className="mt-0.5 font-mono text-[13px] text-white/70">{carte.command}</p>
+            </button>
 
             {carte.description ? (
               <p className="mt-1.5 line-clamp-2 text-[length:var(--texte-carte)] leading-snug text-white/85">
@@ -267,6 +276,15 @@ function CarteImmersive({
           <BoutonJaime carte={carte} visiteur={visiteur} />
         </div>
 
+        {/* LE GESTE LATERAL : LA MEME COLLECTION.
+            Le feed descend au hasard — c'est sa promesse, et sa limite.
+            Tomber sur un portrait vintage qui plait sans pouvoir en voir
+            d'autres du meme genre obligeait a fermer la page, a chercher le
+            rayon, puis a recommencer. A droite, ses voisines. */}
+        {carte.voisines.length > 0 ? (
+          <RailDeCollection carte={carte} onUtiliser={onUtiliser} />
+        ) : null}
+
         <button
           type="button"
           onClick={() => onUtiliser(carte)}
@@ -279,6 +297,68 @@ function CarteImmersive({
         </button>
       </div>
     </article>
+  );
+}
+
+/**
+ * Les voisines de la carte, en une rangee qui defile.
+ *
+ * Des vignettes et non des cartes : ce rail sert a choisir, pas a lire.
+ * Le nom sous chaque vignette suffit — le reste se decouvre en ouvrant.
+ *
+ * `snap-start` sur chaque element : le pouce repose la rangee sur une
+ * vignette entiere, jamais a cheval sur deux, ce qui evite le sentiment
+ * d'une liste qui glisse toute seule.
+ */
+function RailDeCollection({
+  carte,
+  onUtiliser,
+}: {
+  carte: CarteDecouverte;
+  onUtiliser: (carte: CarteDecouverte) => void;
+}) {
+  return (
+    <div className="mt-3">
+      <p className="text-[length:var(--texte-meta)] font-medium text-white/70">
+        {carte.collection ? `Dans ${carte.collection.nom}` : 'Dans la même collection'}
+      </p>
+
+      <ul className="rail -mx-5 mt-1.5 flex snap-x snap-mandatory gap-2 px-5 pb-0.5">
+        {carte.voisines.map((voisine) => (
+          <li key={voisine.id} className="w-[74px] shrink-0 snap-start">
+            <button
+              type="button"
+              // La voisine emprunte l'ouverture de la carte courante : le
+              // feed ne connait qu'un chemin vers une fiche, et en ouvrir
+              // un second ici ferait diverger les deux le jour ou l'un
+              // change.
+              onClick={() =>
+                onUtiliser({
+                  ...carte,
+                  id: voisine.id,
+                  slug: voisine.slug,
+                  isFree: voisine.isFree,
+                })
+              }
+              className="block w-full text-left"
+            >
+              <span className="relative block aspect-square w-full overflow-hidden rounded-[10px] border border-white/20">
+                <Image
+                  src={voisine.visuelUrl}
+                  alt={voisine.visuelAlt}
+                  fill
+                  sizes="74px"
+                  className="object-cover"
+                />
+              </span>
+              <span className="mt-1 block truncate text-[11px] leading-tight text-white/75">
+                {voisine.name}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -304,7 +384,18 @@ function CarteEcrite({ carte }: { carte: CarteDecouverte }) {
 
   return (
     <div
-      className="absolute inset-0 flex flex-col justify-center px-6 pb-[42%] pt-16"
+      // LE TEXTE NE DESCEND PLUS SOUS LA ZONE D'INFORMATION.
+      //
+      // Il etait centre dans le cadre entier avec une reserve de 42 % en
+      // bas : sur une carte au detail long, les dernieres lignes passaient
+      // derriere le titre et le bouton. Deux textes superposes ne se lisent
+      // ni l'un ni l'autre.
+      //
+      // La reserve suit desormais ce que la zone basse occupe reellement —
+      // titre, raccourci, description, tags et bouton — et le texte se pose
+      // en haut plutot qu'au centre : une phrase courte reste lisible en
+      // haut de cadre, une phrase longue s'arrete avant la zone basse.
+      className="absolute inset-0 flex flex-col justify-start overflow-hidden px-6 pb-[58%] pt-16"
       style={{
         background: `linear-gradient(155deg, ${teinte.haut} 0%, ${teinte.bas} 100%)`,
       }}
@@ -317,7 +408,7 @@ function CarteEcrite({ carte }: { carte: CarteDecouverte }) {
 
       {/* Le detail, et non la description courte : c'est le contenu de la
           carte, donc il prend la place qu'aurait eue l'image. */}
-      <p className="mt-3 line-clamp-[9] text-[19px] font-medium leading-[1.45] text-white">
+      <p className="mt-3 line-clamp-6 text-[19px] font-medium leading-[1.45] text-white">
         {carte.detail || carte.description}
       </p>
     </div>

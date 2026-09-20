@@ -39,10 +39,22 @@ export type ChampDeclare = {
   choix: string[];
 };
 
-export type Personnalisation =
-  | { ok: true; texte: string }
-  /** Les libelles des champs obligatoires laisses vides. */
-  | { ok: false; manquants: string[] };
+/**
+ * UN CHAMP VIDE NE BLOQUE PLUS LA COPIE.
+ *
+ * La route rendait un 422 des qu'un champ « obligatoire » restait vide :
+ * on arrivait au bouton, on appuyait, et on repartait remplir un
+ * formulaire. C'etait prendre le formulaire pour la commande. Ce qu'on
+ * vient chercher, c'est un texte a coller ; s'il manque une information,
+ * l'IA la demandera — elle sait faire cela mieux qu'un message d'erreur,
+ * parce qu'elle voit deja le contexte.
+ *
+ * L'information manquante laisse donc une marque entre crochets dans le
+ * texte, a l'endroit exact ou elle devait aller. Le cadrage de la commande
+ * s'en saisit et pose une question courte, une seule. Rien n'est invente
+ * pour boucher le trou : une valeur devinee vaut moins qu'une question.
+ */
+export type Personnalisation = { texte: string };
 
 /** Ce qu'une valeur peut peser, par genre. Au-dela, elle est coupee. */
 const LONGUEURS: Record<GenreDeChamp, number> = {
@@ -66,34 +78,39 @@ export function appliquerLaPersonnalisation(
   champs: ChampDeclare[],
   valeurs: Record<string, string>,
 ): Personnalisation {
-  if (champs.length === 0) return { ok: true, texte };
+  if (champs.length === 0) return { texte };
 
   const retenues = new Map<string, string>();
-  const manquants: string[] = [];
 
   for (const champ of champs) {
     const propre = assainir(valeurs[champ.cle] ?? '', champ);
-    if (propre === '') {
-      if (champ.requis) manquants.push(champ.libelle);
-      continue;
-    }
-    retenues.set(champ.cle, propre);
+    if (propre !== '') retenues.set(champ.cle, propre);
   }
-
-  if (manquants.length > 0) return { ok: false, manquants };
-  if (retenues.size === 0) return { ok: true, texte };
 
   let resultat = texte;
   const restants: ChampDeclare[] = [];
 
   for (const champ of champs) {
     const valeur = retenues.get(champ.cle);
-    if (valeur === undefined) continue;
-
     // Une marque dans le texte : la valeur prend sa place, sur une seule
     // ligne — a cet endroit-la, rien n'annonce que ce qui suit est une
     // donnee, donc rien ne doit pouvoir y ouvrir de section.
     const marque = new RegExp(`\\{\\{\\s*${echapper(champ.cle)}\\s*\\}\\}`, 'g');
+
+    if (valeur === undefined) {
+      // Rien n'a ete saisi. Une marque laissee telle quelle — « {{secteur}} »
+      // — se lirait comme un defaut de l'application ; remplacee par des
+      // crochets en francais, elle se lit comme ce qu'elle est : une case a
+      // remplir, que l'IA verra et sur laquelle elle posera sa question.
+      if (marque.test(resultat)) {
+        resultat = resultat.replace(marque, `[${surUneLigne(champ.libelle)} : à préciser]`);
+      }
+      // Sans marque, on n'ajoute rien : le cadrage de la commande sait deja
+      // reclamer ce qui lui manque, et une ligne « a preciser » posee en fin
+      // de texte ne ferait que lui repeter son travail.
+      continue;
+    }
+
     if (marque.test(resultat)) {
       resultat = resultat.replace(marque, surUneLigne(valeur));
       continue;
@@ -101,7 +118,7 @@ export function appliquerLaPersonnalisation(
     restants.push(champ);
   }
 
-  if (restants.length === 0) return { ok: true, texte: resultat };
+  if (restants.length === 0) return { texte: resultat };
 
   // Le reste en fin de texte, dans un bloc ferme. Les commandes du catalogue
   // ne portent aucune marque aujourd'hui : c'est ce chemin-la qui sert, et
@@ -114,7 +131,6 @@ export function appliquerLaPersonnalisation(
   });
 
   return {
-    ok: true,
     texte: `${resultat.trimEnd()}\n\n${OUVERTURE}\n${lignes.join('\n')}\n${FERMETURE}\n`,
   };
 }

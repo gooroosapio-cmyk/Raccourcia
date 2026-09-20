@@ -5,7 +5,12 @@ import { createClient } from '@/lib/supabase/server';
 import { CatalogUnavailableError } from '@/lib/catalog/errors';
 import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
 import { LIBRARY_LABELS, type Library } from '@/lib/constants';
-import type { CarteDecouverte, CurseurDecouverte, PageDecouverte } from '@/lib/catalog/types';
+import type {
+  CarteDecouverte,
+  CarteVoisine,
+  CurseurDecouverte,
+  PageDecouverte,
+} from '@/lib/catalog/types';
 
 /**
  * Le feed Decouvrir : ce que les commandes produisent, avant ce qu'elles
@@ -43,13 +48,16 @@ type LigneDecouverte = {
   is_free: boolean;
   like_count: number;
   discover_rank: number;
+  category_id: string | null;
+  categories: { slug: string; name: string } | null;
   prompt_media: { kind: string; storage_path: string; alt: string | null; sort_order: number }[];
   prompt_tags: { tags: { slug: string; name: string; groupe: string } | null }[];
 };
 
 const COLONNES = `
   id, slug, command, name, short_description, result_summary, intention,
-  library, is_free, like_count, discover_rank,
+  library, is_free, like_count, discover_rank, category_id,
+  categories(slug, name),
   prompt_tags(tags(slug, name, groupe))
 `;
 
@@ -76,10 +84,14 @@ export async function getDecouverte(
     lireUnVivier('textes', curseur?.texte ?? null, TEXTES_PAR_PALIER),
   ]);
 
-  const aimees = await lesQuellesJaime([...images.lignes, ...textes.lignes].map((l) => l.id));
+  const lignes = [...images.lignes, ...textes.lignes];
+  const [aimees, voisinage] = await Promise.all([
+    lesQuellesJaime(lignes.map((l) => l.id)),
+    lesVoisines(lignes),
+  ]);
 
-  const cartesImage = images.lignes.map((l) => versCarte(l, aimees, 'image'));
-  const cartesTexte = textes.lignes.map((l) => versCarte(l, aimees, 'texte'));
+  const cartesImage = images.lignes.map((l) => versCarte(l, aimees, voisinage, 'image'));
+  const cartesTexte = textes.lignes.map((l) => versCarte(l, aimees, voisinage, 'texte'));
 
   return {
     cartes: entrelacer(cartesImage, cartesTexte),
@@ -167,6 +179,7 @@ async function lireUnVivier(
 function versCarte(
   ligne: LigneDecouverte,
   aimees: Set<string>,
+  voisinage: Map<string, CarteVoisine[]>,
   genre: 'image' | 'texte',
 ): CarteDecouverte {
   const visuel =
@@ -200,8 +213,96 @@ function versCarte(
     likeCount: ligne.like_count ?? 0,
     aime: aimees.has(ligne.id),
     isFree: ligne.is_free,
+    collection: ligne.categories
+      ? { slug: ligne.categories.slug, nom: ligne.categories.name }
+      : null,
+    // Sans elle-meme : un rail qui rouvre la carte qu'on regarde deja
+    // donne l'impression que le geste n'a rien fait.
+    voisines: (voisinage.get(ligne.category_id ?? '') ?? []).filter(
+      (voisine) => voisine.id !== ligne.id,
+    ),
   };
 }
+
+/**
+ * Les voisines de chaque collection du palier, en une seule lecture.
+ *
+ * Le feed se parcourt de haut en bas, au hasard. C'est sa promesse, et
+ * c'est aussi sa limite : tomber sur un portrait vintage qui plait sans
+ * pouvoir en voir d'autres du meme genre oblige a fermer la page, a
+ * chercher le rayon, puis a recommencer. Le geste lateral repond a cela.
+ *
+ * UNE REQUETE POUR TOUT LE PALIER, et non une par carte. Dix cartes
+ * feraient dix allers-retours avant le premier affichage — sur un reseau
+ * mobile, c'est une seconde de page noire.
+ *
+ * On lit large puis on coupe a quatre par collection : PostgREST ne sait
+ * pas limiter par groupe, et un `limit` global rendrait toutes les
+ * voisines d'une seule collection.
+ */
+const VOISINES_PAR_COLLECTION = 4;
+
+async function lesVoisines(lignes: LigneDecouverte[]): Promise<Map<string, CarteVoisine[]>> {
+  const collections = [
+    ...new Set(lignes.map((ligne) => ligne.category_id).filter((id): id is string => Boolean(id))),
+  ];
+  if (collections.length === 0) return new Map();
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('prompts')
+    .select(
+      'id, slug, name, command, is_free, category_id, prompt_media!inner(kind, storage_path, alt)',
+    )
+    .eq('status', 'published')
+    .eq('prompt_media.kind', 'after')
+    .in('category_id', collections)
+    .order('is_pinned', { ascending: false })
+    .order('sort_order', { ascending: true })
+    .order('command', { ascending: true })
+    .limit(collections.length * VOISINES_PAR_COLLECTION * 3);
+
+  // Le rail est un supplement : s'il manque, le feed vertical fonctionne
+  // exactement comme avant. On ne fait donc pas tomber la page pour lui.
+  if (error || !data) return new Map();
+
+  const par = new Map<string, CarteVoisine[]>();
+  for (const ligne of data as unknown as VoisineRow[]) {
+    const cle = ligne.category_id ?? '';
+    const deja = par.get(cle) ?? [];
+    if (deja.length >= VOISINES_PAR_COLLECTION) continue;
+
+    const visuel = (ligne.prompt_media ?? [])[0];
+    if (!visuel) continue;
+
+    deja.push({
+      id: ligne.id,
+      slug: ligne.slug,
+      name: ligne.name,
+      command: ligne.command,
+      visuelUrl: urlVisuel(visuel.storage_path, LARGEURS_VISUEL.vignette),
+      visuelAlt: visuel.alt ?? `Résultat obtenu avec ${ligne.name}`,
+      isFree: ligne.is_free,
+    });
+    par.set(cle, deja);
+  }
+
+  // Une collection qui ne rend qu'une carte n'a pas de voisine : le rail
+  // promettrait un geste qui ne mene nulle part.
+  for (const [cle, cartes] of par) if (cartes.length < 2) par.delete(cle);
+
+  return par;
+}
+
+type VoisineRow = {
+  id: string;
+  slug: string;
+  name: string;
+  command: string;
+  is_free: boolean;
+  category_id: string | null;
+  prompt_media: { kind: string; storage_path: string; alt: string | null }[];
+};
 
 /**
  * Ce que le membre courant a deja aime, parmi les cartes de ce palier.

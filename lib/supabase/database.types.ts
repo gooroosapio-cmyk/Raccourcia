@@ -1642,6 +1642,7 @@ export type Database = {
       admin_supprimer_tag: { Args: { p_tag_id: string }; Returns: Json };
       alias_recherche: { Args: { v: string[] }; Returns: string };
       analytics_window: { Args: { p_days: number }; Returns: number };
+      collections_de_bibliotheque: { Args: { p_library: string }; Returns: Json };
       collections_populaires: { Args: { p_limite?: number }; Returns: Json };
       consume_rate_limit: {
         Args: {
@@ -1761,6 +1762,7 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
       };
+      tags_de_bibliotheque: { Args: { p_library: string }; Returns: Json };
       tags_explorables: { Args: Record<PropertyKey, never>; Returns: Json };
       tags_voisins: {
         Args: { p_limite?: number; p_tags: string[] };

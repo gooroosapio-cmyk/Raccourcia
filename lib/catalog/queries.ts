@@ -17,6 +17,7 @@ import { clesDeTri } from '@/lib/catalog/tri';
 import { modesLisibles } from '@/lib/catalog/modes';
 import { lireLeMoteur } from '@/lib/catalog/moteur';
 import { normaliserRecherche, portesDeRecherche } from '@/lib/catalog/recherche';
+import { melangerLeVivier } from '@/lib/catalog/feed';
 import type {
   BeforeAfter,
   CategoryNode,
@@ -67,6 +68,7 @@ export const getPublicConfig = cache(async () => {
         CONFIG_KEYS.PRICE_CURRENCY,
         CONFIG_FALLBACKS[CONFIG_KEYS.PRICE_CURRENCY],
       ),
+      periode: read<string>(CONFIG_KEYS.PRICE_PERIOD, CONFIG_FALLBACKS[CONFIG_KEYS.PRICE_PERIOD]),
     },
   };
 });
@@ -308,6 +310,7 @@ function colonnesDuComptage(filtreFournisseur: boolean): string {
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
   show_image_card, payload_ready, cta_label, entity_type, images_min, default_ratio, witness_type,
+  library,
   is_free, is_new, is_featured, risk_level, sort_order,
   level, max_questions,
   intention, expected_input, limitations, required_variables,
@@ -328,6 +331,7 @@ type CardRow = {
   name: string;
   slug: string;
   mode: Enums<'app_mode'>;
+  library: Enums<'app_library'> | null;
   short_description: string;
   result_summary: string | null;
   input_examples: InputExampleKind[] | null;
@@ -440,6 +444,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     showImageCard: row.show_image_card,
     entityType: genre,
     witnessType: row.witness_type ?? null,
+    library: row.library ?? null,
     collectionSlug: row.categories?.slug ?? null,
     collectionName: row.categories?.name ?? null,
     imagesMin: row.images_min,
@@ -1079,7 +1084,10 @@ export async function getRangeeAccueil(
  * catalogue arrive par vagues, et les exclure viderait l'Accueil — ce qui est
  * pire qu'une carte qui dit franchement « Bientot ».
  */
-export async function getVivierDuFeed(limite = 60): Promise<PromptCard[]> {
+export async function getVivierDuFeed(
+  limite = 60,
+  { garder }: { garder?: number } = {},
+): Promise<PromptCard[]> {
   const supabase = await createClient();
   const favorites = await getFavoriteIds();
 
@@ -1120,7 +1128,23 @@ export async function getVivierDuFeed(limite = 60): Promise<PromptCard[]> {
     ...((experiencesReponse.data ?? []) as unknown as CardRow[]),
   ];
 
-  return lignes.map((row) => toCard(row, favorites));
+  const cartes = lignes.map((row) => toCard(row, favorites));
+
+  // LE TIRAGE VIT ICI, PAS DANS LA PAGE.
+  //
+  // L'accueil rendait le meme ordre a chaque visite : les memes douze
+  // cartes en haut, tous les jours. Un catalogue de mille cartes donnait
+  // l'impression d'en avoir douze, et rien n'incitait a revenir.
+  //
+  // Le melange appartient a la lecture, pas au rendu : un composant qui
+  // appelle `Date.now()` pendant qu'il rend n'est plus idempotent, et le
+  // compilateur React le refuse — a juste titre. Ici, dans une fonction
+  // asynchrone de donnees, la variation est ce qu'on demande.
+  //
+  // `garder` borne ce qui ressort : on tire large pour varier, on rend
+  // court pour ne pas charger trois cents vignettes.
+  if (garder === undefined) return cartes;
+  return melangerLeVivier(cartes, Date.now()).slice(0, garder);
 }
 
 /** Vue Recents : les raccourcis copies priment sur les simples consultations. */

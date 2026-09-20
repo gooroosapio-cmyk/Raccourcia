@@ -9,12 +9,13 @@ import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { InputExampleList } from '@/components/detail/input-example-list';
 import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
-import { GenreDeFiche } from '@/components/detail/genre-fiche';
 import { ModesCommande } from '@/components/detail/modes-commande';
 import { MotsCles } from '@/components/detail/mots-cles';
+import { FilTaxonomique } from '@/components/detail/fil-taxonomique';
+import { CopieDuRaccourci } from '@/components/detail/copie-du-raccourci';
+import { VousObtenez } from '@/components/detail/vous-obtenez';
 import { ListePuces, Section } from '@/components/detail/section-fiche';
 import { NiveauExecution } from '@/components/detail/niveau-execution';
-import { OutputFormatList } from '@/components/detail/output-format-list';
 import { SheetCloseButton } from '@/components/ui/sheet-close';
 import { SheetDragHandle, useSheetDrag } from '@/components/ui/sheet-drag';
 import { usePaywall } from '@/components/paywall/paywall-provider';
@@ -276,20 +277,28 @@ export function PromptDetailSheet({
               fait, on apprend ensuite comment l'appeler. La carte qui a
               amene ici portait ce meme titre — la fiche ne change pas de
               nom en cours de route. */}
-              <div className="mt-4 flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <GenreDeFiche entityType={prompt.entityType} />
-                  <h2
-                    id="fiche-commande"
-                    className="text-[22px] font-semibold leading-tight text-[color:var(--color-night)]"
-                  >
-                    {prompt.name}
-                  </h2>
-                  <p className="commande truncate text-[length:var(--texte-corps)] font-semibold text-[color:var(--color-brand)]">
-                    {prompt.command}
-                  </p>
+              <div className="mt-4">
+                {/* Le fil remplace la pastille de genre. « Mode IA » disait
+                    comment le classeur range la commande ; « Images ›
+                    Matieres et metamorphoses » dit ou l'on se trouve, ce qui
+                    est la question qu'on se pose en ouvrant une fiche. */}
+                <div className="flex items-start justify-between gap-2">
+                  <FilTaxonomique library={prompt.library} collection={prompt.collectionName} />
+                  <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
                 </div>
-                <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
+
+                <h2
+                  id="fiche-commande"
+                  className="mt-2 text-[22px] font-semibold leading-tight text-[color:var(--color-night)]"
+                >
+                  {prompt.name}
+                </h2>
+
+                {/* Le raccourci, avec sa propre copie. Deux copies coexistent
+                    sur cette fiche et les confondre coute cher : celle-ci rend
+                    « /toybox », le bouton bleu du bas rend le texte complet.
+                    Elles ne se ressemblent donc pas. */}
+                <CopieDuRaccourci commande={prompt.command} />
               </div>
 
               {/* Ce que fait la commande, en premiere information apres son nom.
@@ -344,12 +353,21 @@ export function PromptDetailSheet({
                   c'est le dernier geste avant la copie, et le lire apres
                   avoir compris ce que fait la commande vaut mieux que de le
                   trouver avant d'en connaitre l'usage. */}
-              <ChampsDeCommande
-                champs={prompt.champs}
-                valeurs={valeurs}
-                onChange={renseigner}
-                desactive={locked}
-              />
+              {/* AUCUN CHAMP SUR UNE FICHE IMAGE.
+                  Ce qu'une commande image attend, c'est une photo — et la
+                  photo se joint dans la conversation, pas ici. Un formulaire
+                  a cet endroit demandait d'ecrire ce qu'on allait de toute
+                  facon montrer. Les champs restent la ou ils servent : les
+                  Textes et les Reflexions, ou une precision ecrite change
+                  reellement le resultat. */}
+              {prompt.showImageCard ? null : (
+                <ChampsDeCommande
+                  champs={prompt.champs}
+                  valeurs={valeurs}
+                  onChange={renseigner}
+                  desactive={locked}
+                />
+              )}
             </div>
           </div>
 
@@ -430,18 +448,15 @@ function CorpsCommande({ prompt }: { prompt: PromptCard }) {
         </Section>
       ) : null}
 
-      {prompt.outputFormats.length > 0 || prompt.resultSummary ? (
-        <Section titre="Vous obtenez">
-          {prompt.outputFormats.length > 0 ? (
-            <OutputFormatList formats={prompt.outputFormats} />
-          ) : null}
-          {prompt.resultSummary && prompt.resultSummary !== prompt.shortDescription ? (
-            <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-              {prompt.resultSummary}
-            </p>
-          ) : null}
-        </Section>
-      ) : null}
+      {/* « Vous obtenez » tenait en deux tuiles encadrees, une par format,
+          chacune avec son icone et sa precision. Beaucoup de place pour une
+          phrase qu'on ne relit pas — et cette place manquait en bas, la ou
+          se decide la copie. Une ligne suffit : « 1 image · format 4:5 ». */}
+      <VousObtenez
+        formats={prompt.outputFormats}
+        ratio={prompt.defaultRatio}
+        quantite={prompt.imagesMin}
+      />
 
       {/* « Quand l'utiliser » vient apres ce qu'on donne et ce qu'on
               obtient : c'est ce qui fait choisir entre deux commandes

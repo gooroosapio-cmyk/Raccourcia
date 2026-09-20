@@ -32,6 +32,8 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - offre-2026-09
+          - exploration-v4
           - fusion-2026-09
           - catalogue-2026-09
           - administration-v3
@@ -131,7 +133,9 @@ jobs:
           inputs.dossier != 'ecrans-v3' &&
           inputs.dossier != 'administration-v3' &&
           inputs.dossier != 'catalogue-2026-09' &&
-          inputs.dossier != 'fusion-2026-09'
+          inputs.dossier != 'fusion-2026-09' &&
+          inputs.dossier != 'offre-2026-09' &&
+          inputs.dossier != 'exploration-v4'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -390,6 +394,56 @@ jobs:
                    (select count(*) from public.prompts
                     where status = 'published' and library is null) ||
                    ' commande(s) publiee(s) sans bibliotheque';"
+
+      # Le sommaire d'une bibliotheque : ses collections et ses tags.
+      #
+      # Toucher « Images » rendait mille cartes a la suite. Ces deux
+      # fonctions rendent de quoi se reperer : les collections et les tags
+      # de la bibliotheque, deja comptes et deja illustres.
+      #
+      # `security invoker`, donc lecture a travers les politiques du
+      # lecteur. Rejouable : `create or replace` seul.
+      - name: Installer l'exploration par bibliotheque (V4)
+        if: inputs.dossier == 'exploration-v4'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          echo '  Migration : collections_de_bibliotheque / tags_de_bibliotheque'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260921090000_exploration_par_bibliotheque.sql
+          echo '  Sommaires :'
+          psql "$PGURL" -At -c "
+            select '    Images : ' || jsonb_array_length(public.collections_de_bibliotheque('images')) ||
+                   ' collection(s), ' || jsonb_array_length(public.tags_de_bibliotheque('images')) || ' tag(s)';"
+          psql "$PGURL" -At -c "
+            select '    Textes : ' || jsonb_array_length(public.collections_de_bibliotheque('textes')) ||
+                   ' collection(s), ' || jsonb_array_length(public.tags_de_bibliotheque('textes')) || ' tag(s)';"
+          psql "$PGURL" -At -c "
+            select '    Reflexions : ' || jsonb_array_length(public.collections_de_bibliotheque('reflexions')) ||
+                   ' collection(s), ' || jsonb_array_length(public.tags_de_bibliotheque('reflexions')) || ' tag(s)';"
+
+      # Le prix affiche.
+      #
+      # Un lot de configuration : il ne touche ni au catalogue ni aux
+      # visuels, et `upsert_config` ecrase la valeur sans doublon. La
+      # periode voyage avec le montant — annoncer un tarif annuel sous une
+      # mention « une fois » serait un engagement qu'on ne tient pas.
+      - name: Mettre a jour l'offre
+        if: inputs.dossier == 'offre-2026-09'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          for fichier in supabase/seed/offre-2026-09/*.sql; do
+            echo "  $(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          psql "$PGURL" -At -c "
+            select '    Offre : ' ||
+                   (select value #>> '{}' from public.app_config where key = 'price_current') ||
+                   ' ' || (select value #>> '{}' from public.app_config where key = 'price_currency') ||
+                   ' ' || (select value #>> '{}' from public.app_config where key = 'price_period');"
 
       # La fusion des deux catalogues, et la mise en ligne.
       #

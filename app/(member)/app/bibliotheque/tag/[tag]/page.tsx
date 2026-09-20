@@ -3,13 +3,12 @@ import { getAccessState } from '@/lib/access/entitlement';
 import { getCatalogPage } from '@/lib/catalog/queries';
 import { getTag, getTagsExplorables, getTagsVoisins } from '@/lib/catalog/tags';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
-import { PromptGrid } from '@/components/cards/prompt-grid';
+import { GalerieInfinie } from '@/components/cards/galerie-infinie';
 import { SelectionDeTags } from '@/components/library/selection-de-tags';
-import { VoirPlus } from '@/components/discovery/voir-plus';
 import { NetworkError } from '@/components/ui/network-error';
 import { EmptyState } from '@/components/ui/states';
 import { catalogQuery } from '@/lib/validation/schemas';
-import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE } from '@/lib/constants';
+import { CATALOG_PAGE_SIZE } from '@/lib/constants';
 
 /** Cinq au plus : au-dela, le croisement ne rend plus jamais rien. */
 const TAGS_MAX = 5;
@@ -77,16 +76,13 @@ export default async function TagPage({
   const query = catalogQuery.parse({
     portee: 'catalogue',
     tags: selection,
-    page: lire('page') ?? 1,
   });
-
-  const lots = Math.min(query.page, CATALOG_MAX_LOTS);
 
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
   let voisins: Awaited<ReturnType<typeof getTagsVoisins>>;
   try {
     [page, voisins] = await Promise.all([
-      getCatalogPage({ ...query, page: 1, pageSize: CATALOG_PAGE_SIZE * lots }),
+      getCatalogPage({ ...query, page: 1, pageSize: CATALOG_PAGE_SIZE }),
       // Plus rien a proposer une fois la limite atteinte : des puces qui ne
       // repondraient pas au geste valent moins que pas de puces du tout.
       selection.length >= TAGS_MAX ? Promise.resolve([]) : getTagsVoisins(selection),
@@ -116,10 +112,6 @@ export default async function TagPage({
     return suffixe ? `/app/bibliotheque/tag/${slug}?${suffixe}` : `/app/bibliotheque/tag/${slug}`;
   };
 
-  const suivante = new URLSearchParams();
-  if (ajoutes.length > 0) suivante.set('avec', ajoutes.join(','));
-  suivante.set('page', String(lots + 1));
-
   return (
     <div className="space-y-4 pt-1">
       <div>
@@ -141,8 +133,10 @@ export default async function TagPage({
         lien={lien}
       />
 
-      <PromptGrid
-        prompts={page.items}
+      <GalerieInfinie
+        premieres={page.items}
+        critere={{ tags: selection }}
+        encore={page.hasMore}
         locked={!acces.hasFullAccess}
         visiteur={!acces.isMember}
         emptyState={
@@ -152,10 +146,6 @@ export default async function TagPage({
           />
         }
       />
-
-      {page.hasMore && lots < CATALOG_MAX_LOTS ? (
-        <VoirPlus href={`/app/bibliotheque/tag/${slug}?${suivante.toString()}`} />
-      ) : null}
     </div>
   );
 }

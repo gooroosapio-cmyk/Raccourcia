@@ -1,0 +1,127 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
+/**
+ * Une mosaique de cartes illustrees, de tailles inegales.
+ *
+ * La Bibliotheque presentait deux choses de deux facons : les tags en
+ * tuiles, les rayons en accordeons a ouvrir, chacun coiffe d'un intitule de
+ * groupe — « Rendu », « Capacite », « Contexte ». Ces intitules sont le
+ * vocabulaire du classeur, pas celui du lecteur : personne n'arrive en se
+ * demandant s'il cherche un rendu ou une capacite.
+ *
+ * Il ne reste donc qu'un objet : une carte avec une image et un nom. Les
+ * tailles varient pour que la page ait un relief — une grille parfaitement
+ * reguliere de vingt vignettes se parcourt sans que l'oeil s'accroche
+ * nulle part. Le rythme est calcule, pas aleatoire : une large toutes les
+ * cinq, toujours au meme endroit, donc la page ne saute pas au rechargement.
+ *
+ * L'image est empruntee a une carte du lot quand l'administration n'en a
+ * pas depose : une grille de cadres vides ne donne envie d'ouvrir aucun
+ * rayon.
+ */
+export type CarteDeMosaique = {
+  /** Ce qui l'identifie dans la liste, et dans l'adresse. */
+  cle: string;
+  href: string;
+  titre: string;
+  /** Ce qui se lit sous le titre : un compte, une famille. */
+  detail?: string;
+  imageUrl: string | null;
+};
+
+/**
+ * Le rythme des tailles.
+ *
+ * Une carte large tous les cinq elements : assez pour donner un relief,
+ * assez peu pour que la grille reste une grille. Le motif se repete, donc
+ * il se prevoit — et une mise en page qu'on prevoit se parcourt vite.
+ */
+function estLarge(rang: number): boolean {
+  return rang % 5 === 0;
+}
+
+export function Mosaique({
+  cartes,
+  /** Les premieres images sont chargees en priorite : elles sont a l'ecran. */
+  prioritaires = 2,
+}: {
+  cartes: CarteDeMosaique[];
+  prioritaires?: number;
+}) {
+  if (cartes.length === 0) return null;
+
+  return (
+    <ul className="grid grid-cols-2 gap-2 min-[400px]:gap-[var(--gouttiere-carte)]">
+      {cartes.map((carte, rang) => {
+        const large = estLarge(rang);
+        return (
+          <li key={carte.cle} className={large ? 'col-span-2' : undefined}>
+            <CarteIllustree carte={carte} large={large} priority={rang < prioritaires} />
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function CarteIllustree({
+  carte,
+  large,
+  priority,
+}: {
+  carte: CarteDeMosaique;
+  large: boolean;
+  priority: boolean;
+}) {
+  return (
+    <Link
+      href={carte.href}
+      className={`relative flex w-full flex-col justify-end overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-sky)] p-3 transition-transform duration-[var(--duration-fast)] active:scale-[0.985] ${
+        // Une carte large est plus basse qu'elle n'est haute : elle occupe
+        // deux colonnes, lui garder le meme rapport en ferait une affiche
+        // qui pousse tout le reste hors de l'ecran.
+        large ? 'aspect-[2/1]' : 'aspect-[4/3]'
+      }`}
+    >
+      {carte.imageUrl ? (
+        <>
+          <Image
+            src={carte.imageUrl}
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes={large ? '(max-width: 430px) 100vw, 430px' : '(max-width: 430px) 50vw, 220px'}
+            className="object-cover"
+            priority={priority}
+          />
+          {/* Le nom se pose sur un fondu, jamais sur l'image nue : un texte
+              blanc sur un visuel clair ne se lit pas. */}
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"
+          />
+        </>
+      ) : null}
+
+      <span className="relative">
+        <span
+          className={`block text-[length:var(--texte-titre-carte)] font-bold leading-[1.25] ${
+            carte.imageUrl ? 'text-white' : 'text-[color:var(--color-night)]'
+          }`}
+        >
+          {carte.titre}
+        </span>
+        {carte.detail ? (
+          <span
+            className={`block text-[length:var(--texte-meta)] ${
+              carte.imageUrl ? 'text-white/80' : 'text-[color:var(--color-muted)]'
+            }`}
+          >
+            {carte.detail}
+          </span>
+        ) : null}
+      </span>
+    </Link>
+  );
+}

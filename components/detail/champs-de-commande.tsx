@@ -37,10 +37,28 @@ export function ChampsDeCommande({
   return (
     <section className="mt-5 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-canvas)] p-3.5">
       <h3 className="text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">
-        À personnaliser
+        Avant de copier
       </h3>
-      <p className="mt-0.5 text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-muted)]">
-        Ce que vous saisissez ici part avec la commande copiée.
+
+      {/* POURQUOI REMPLIR, DIT AVANT DE DEMANDER DE REMPLIR.
+          Le formulaire arrivait sans justification : trois cases grises au
+          bas d'une fiche, qu'on saute pour atteindre le bouton. Or ce sont
+          elles qui font la difference entre un resultat generique et un
+          resultat juste — et rien ne le disait.
+          La phrase dit aussi ce qui arrive si l'on ne remplit pas, parce
+          que c'est la vraie question : non, cela ne bloque rien. */}
+      <p className="mt-1 flex gap-2 text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-muted)]">
+        <span aria-hidden="true" className="mt-px shrink-0 text-[color:var(--color-brand)]">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.9" />
+            <path d="M12 11v5.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+            <circle cx="12" cy="7.8" r="1.05" fill="currentColor" />
+          </svg>
+        </span>
+        <span>
+          Ces précisions partent avec la commande et rendent le résultat plus juste. Laissées vides,
+          l’IA vous posera la question dans la conversation.
+        </span>
       </p>
 
       <div className="mt-3 space-y-3">
@@ -70,7 +88,15 @@ function Champ({
   desactive: boolean;
 }) {
   const identifiant = `champ-${champ.cle}`;
-  const aide = champ.indication ? `${identifiant}-aide` : undefined;
+
+  // L'INDICATION DEVIENT L'EXEMPLE, DANS LE CHAMP.
+  //
+  // Elle vivait sur une ligne grise entre le libelle et le champ : trois
+  // niveaux de texte pour une seule question, et la ligne du milieu ne se
+  // lisait pas. Posee dans le champ, elle montre la forme attendue a
+  // l'endroit ou l'on va ecrire — « Ex. Choisir entre deux offres » en dit
+  // plus qu'une consigne, et disparait des qu'on tape.
+  const exemple = champ.indication ?? undefined;
 
   // 46 px de haut : la fiche est dense et le champ suit la hauteur des
   // autres controles, mais reste au-dessus de la cible confortable.
@@ -84,20 +110,17 @@ function Champ({
         className="block text-[length:var(--texte-carte)] font-medium text-[color:var(--color-night)]"
       >
         {champ.libelle}
-        {/* « Obligatoire » en toutes lettres : une asterisque demande de
-            connaitre la convention, et rien ne l'explique sur la fiche. */}
-        {champ.requis ? (
-          <span className="ml-1.5 text-[length:var(--texte-meta)] font-normal text-[color:var(--color-muted)]">
-            obligatoire
+        {/* « Facultatif » plutot que « obligatoire ».
+            Depuis qu'un champ vide ne bloque plus la copie, marquer les
+            champs essentiels comme « obligatoires » serait faux : rien
+            n'est obligatoire. Ce qui reste utile a dire, c'est l'inverse —
+            celui-la, vous pouvez le sauter sans rien perdre. */}
+        {champ.requis ? null : (
+          <span className="ml-1.5 rounded-full bg-[color:var(--color-surface)] px-2 py-0.5 text-[length:var(--texte-meta)] font-normal text-[color:var(--color-muted)]">
+            Facultatif
           </span>
-        ) : null}
+        )}
       </label>
-
-      {champ.indication ? (
-        <p id={aide} className="text-[length:var(--texte-meta)] text-[color:var(--color-muted)]">
-          {champ.indication}
-        </p>
-      ) : null}
 
       {champ.genre === 'liste' ? (
         <select
@@ -105,8 +128,6 @@ function Champ({
           value={valeur}
           onChange={(evenement) => onChange(evenement.target.value)}
           disabled={desactive}
-          aria-describedby={aide}
-          required={champ.requis}
           className={`${style} h-[46px]`}
         >
           {/* Une entree vide en tete, meme pour un champ obligatoire : sans
@@ -124,8 +145,7 @@ function Champ({
           value={valeur}
           onChange={(evenement) => onChange(evenement.target.value)}
           disabled={desactive}
-          aria-describedby={aide}
-          required={champ.requis}
+          placeholder={exemple}
           rows={3}
           maxLength={600}
           className={`${style} resize-y py-2.5 leading-snug`}
@@ -141,8 +161,7 @@ function Champ({
           value={valeur}
           onChange={(evenement) => onChange(evenement.target.value)}
           disabled={desactive}
-          aria-describedby={aide}
-          required={champ.requis}
+          placeholder={exemple}
           maxLength={champ.genre === 'nombre' ? 40 : 200}
           className={`${style} h-[46px]`}
         />

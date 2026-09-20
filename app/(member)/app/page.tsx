@@ -11,19 +11,29 @@ import { ordonnerLeFeed } from '@/lib/catalog/feed';
 import type { PromptCard } from '@/lib/catalog/types';
 import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
 import { FiltreDepliant, type SelectionAccueil } from '@/components/discovery/filtre-depliant';
-import { VoirPlus } from '@/components/discovery/voir-plus';
 import { AucunResultat } from '@/components/discovery/aucun-resultat';
-import { PromptGrid } from '@/components/cards/prompt-grid';
+import { GalerieInfinie } from '@/components/cards/galerie-infinie';
 import { PaywallAutoOpen } from '@/components/paywall/paywall-provider';
 import { catalogQuery } from '@/lib/validation/schemas';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
-import { CATALOG_MAX_LOTS, CATALOG_PAGE_SIZE, LIBRARIES, type Library } from '@/lib/constants';
+import { CATALOG_PAGE_SIZE, LIBRARIES, type Library } from '@/lib/constants';
 
 export const metadata = { title: 'Accueil' };
 
 /** Cinq tags au plus : au-dela, le croisement ne rend plus jamais rien. */
 const TAGS_MAX = 5;
+
+/**
+ * Dans quoi l'accueil tire, et combien il en montre.
+ *
+ * Le tirage est volontairement plus large que l'affichage : c'est l'ecart
+ * entre les deux qui fait qu'une visite ne ressemble pas a la precedente.
+ * Trop large, il couterait une lecture inutile a chaque ouverture ; trois
+ * fois ce qu'on montre suffit a ne pas revoir la meme page deux fois.
+ */
+const VIVIER_TIRAGE = 180;
+const VIVIER_MONTRE = 60;
 
 /**
  * L'accueil : une galerie, et un filtre replie au-dessus.
@@ -85,8 +95,7 @@ export default async function AccueilPage({
 
   const selection: SelectionAccueil = { library, categorie, tags, ia, recherche };
 
-  const editorial =
-    !library && !categorie && tags.length === 0 && !ia && !recherche && !lire('page');
+  const editorial = !library && !categorie && tags.length === 0 && !ia && !recherche;
 
   // Zod filtre les valeurs inconnues : un parametre d'URL bricole ne peut ni
   // atteindre la requete, ni faire echouer la page.
@@ -101,15 +110,13 @@ export default async function AccueilPage({
     tags: tags.length > 0 ? tags : undefined,
     search: recherche,
     provider: ia,
-    page: lire('page') ?? 1,
   });
 
-  // La liste s'affiche par lots cumules : « Voir plus » n'ouvre pas une page
-  // suivante, il rallonge la liste. Une pagination numerotee ferait perdre
-  // les cartes deja parcourues a chaque clic, et sur un telephone personne ne
-  // revient en arriere pour les retrouver.
-  const lots = Math.min(query.page, CATALOG_MAX_LOTS);
-  const requete = { ...query, page: 1, pageSize: CATALOG_PAGE_SIZE * lots };
+  // Un seul lot ici : la galerie s'allonge d'elle-meme cote client, lot par
+  // lot, a mesure qu'on descend. La page n'a plus a deviner combien de
+  // cartes l'utilisateur voudra voir — elle en rend un ecran et laisse la
+  // suite venir.
+  const requete = { ...query, page: 1, pageSize: CATALOG_PAGE_SIZE };
 
   let page: Awaited<ReturnType<typeof getCatalogPage>>;
   let accueil: {
@@ -123,8 +130,11 @@ export default async function AccueilPage({
     if (editorial) {
       // L'historique n'existe que pour un compte : le demander a un visiteur
       // revient a interroger une table qui lui est fermee.
+      // Un vivier plus large que ce qu'on montre : c'est ce qui donne au
+      // melange de quoi varier. Tire dans soixante cartes, il rendrait
+      // toujours les memes soixante, dans un autre ordre.
       const [vivier, familles, reprendre, collections] = await Promise.all([
-        getVivierDuFeed(),
+        getVivierDuFeed(VIVIER_TIRAGE, { garder: VIVIER_MONTRE }),
         getBibliotheque(),
         acces.isMember ? getDernieresCopies() : Promise.resolve([]),
         // Dix collections : de quoi remplir une rangee qui defile sans en
@@ -136,6 +146,10 @@ export default async function AccueilPage({
         // Une seule galerie, et non une vitrine puis une galerie : c'est
         // `ordonnerLeFeed` qui alterne les rayons et glisse un mode ou un
         // parcours toutes les quatre cartes.
+        //
+        // Le vivier arrive deja melange : la lecture tire large, rend
+        // court, et change d'un passage a l'autre. L'ordonnancement se
+        // pose par-dessus — l'inverse deferait ses regles.
         feed: ordonnerLeFeed(vivier),
         familles,
         reprendre,
@@ -161,16 +175,6 @@ export default async function AccueilPage({
   // parametre, c'est donc lui qui decide d'ouvrir la fenetre.
   const renvoye = lire('offre') === '1' && !acces.hasFullAccess;
 
-  // Le lot suivant reprend la selection en cours : « Voir plus » ne doit
-  // jamais reouvrir un catalogue different de celui qu'on regarde.
-  const suivante = new URLSearchParams();
-  if (library) suivante.set('bibliotheque', library);
-  if (categorie) suivante.set('categorie', categorie);
-  if (tags.length > 0) suivante.set('tags', tags.join(','));
-  if (ia) suivante.set('ia', ia);
-  if (recherche) suivante.set('q', recherche);
-  suivante.set('page', String(lots + 1));
-
   return (
     <div className="space-y-3 pt-1">
       {renvoye ? <PaywallAutoOpen /> : null}
@@ -192,11 +196,15 @@ export default async function AccueilPage({
         <h1 className="sr-only">Bibliothèque de commandes RaccourcIA</h1>
       )}
 
-      <FiltreDepliant
-        facettes={facettes}
-        selection={selection}
-        resultats={editorial ? null : page.total}
-      />
+      {/* LE FILTRE N'EST PLUS EN TETE D'ACCUEIL.
+          Il demandait de savoir ce qu'on cherchait avant d'avoir rien vu :
+          une barre de reglages au-dessus d'une page dont le role est de
+          montrer. La Bibliotheque range, l'accueil propose. Le filtre reste
+          la ou une selection est deja en cours — sans lui, on ne saurait
+          plus ni ce qui est coche ni comment le decocher. */}
+      {editorial ? null : (
+        <FiltreDepliant facettes={facettes} selection={selection} resultats={page.total} />
+      )}
 
       {accueil ? (
         <AccueilEditorial
@@ -208,8 +216,18 @@ export default async function AccueilPage({
           visiteur={!acces.isMember}
         />
       ) : (
-        <PromptGrid
-          prompts={page.items}
+        <GalerieInfinie
+          premieres={page.items}
+          critere={{
+            library,
+            categorySlug: categorie,
+            tags: tags.length > 0 ? tags : undefined,
+            // `ia` a deja ete confronte aux facettes ; Zod le revalide de
+            // toute facon a l'arrivee de l'action.
+            provider: query.provider,
+            search: recherche,
+          }}
+          encore={page.hasMore}
           locked={!acces.hasFullAccess}
           visiteur={!acces.isMember}
           emptyState={
@@ -228,18 +246,6 @@ export default async function AccueilPage({
           }
         />
       )}
-
-      {page.hasMore ? (
-        lots < CATALOG_MAX_LOTS ? (
-          <div className="pt-1">
-            <VoirPlus href={`/app?${suivante.toString()}`} />
-          </div>
-        ) : (
-          <p className="pt-1 text-center text-[13px] text-[color:var(--color-muted)]">
-            Affinez la sélection pour réduire la liste.
-          </p>
-        )
-      ) : null}
     </div>
   );
 }

@@ -248,6 +248,15 @@ export const CONFIG_KEYS = {
   PRICE_REGULAR: 'price_regular',
   PRICE_CURRENT: 'price_current',
   PRICE_CURRENCY: 'price_currency',
+  /**
+   * Ce que le prix couvre : « une fois », « par an ».
+   *
+   * En configuration et non dans le code : la periode est une decision
+   * commerciale, elle change sans redeploiement, et elle doit pouvoir
+   * changer en meme temps que le montant — sinon l'interface annonce un
+   * prix annuel sous une mention « une fois ».
+   */
+  PRICE_PERIOD: 'price_period',
 } as const;
 
 /** Valeur par defaut si la table app_config est injoignable. */
@@ -262,6 +271,7 @@ export const CONFIG_FALLBACKS = {
   [CONFIG_KEYS.PRICE_REGULAR]: 0,
   [CONFIG_KEYS.PRICE_CURRENT]: 0,
   [CONFIG_KEYS.PRICE_CURRENCY]: 'FCFA',
+  [CONFIG_KEYS.PRICE_PERIOD]: 'par an',
 } as const;
 
 /**

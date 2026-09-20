@@ -4,6 +4,8 @@ import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { VisualSlot } from '@/components/cards/visual-slot';
+import { IllustrationThematique } from '@/components/cards/illustration-thematique';
+import { motifDeLaCarte } from '@/lib/ui/motifs';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
 import { nomDuGenre, repereDuMoteur } from '@/lib/catalog/experience';
@@ -75,6 +77,13 @@ export function TextPromptCard({
   // supplementaire repousserait le bouton hors du cadre.
   const repere = pleineLargeur ? repereDuMoteur(prompt) : null;
 
+  // Le motif qui habille le cadre, choisi d'apres les tags de la commande.
+  // Deux cent quarante cartes texte partageaient le meme rectangle bleu :
+  // l'oeil ne s'accrochait nulle part, et rien ne distinguait un jeu de role
+  // d'un plan de tresorerie. `null` quand aucun tag ne dit rien — la carte
+  // garde alors sa composition typographique plutot qu'un dessin au hasard.
+  const motif = motifDeLaCarte(prompt.motsCles);
+
   return (
     <article className="anim-apparition relative flex h-full flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
@@ -85,7 +94,11 @@ export function TextPromptCard({
         }`}
       >
         <VisualSlot ton="texte" mission={niveau?.mission ?? false}>
+          {motif ? <IllustrationThematique motif={motif} /> : null}
           <span
+            /* Le texte passe au-dessus du motif : le dessin habille le
+               cadre, il ne prend pas la place de ce qu'on lit. */
+            style={{ position: 'relative' }}
             className={`flex h-full w-full flex-col justify-center gap-1.5 px-3 pt-3 ${
               niveau?.mission ? 'pb-8' : 'pb-3'
             }`}

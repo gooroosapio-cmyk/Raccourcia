@@ -73,8 +73,14 @@ export default async function ConditionsPage() {
 
       <LegalSection titre="Prix, commande et paiement">
         <p>
+          {/* LA DUREE SUIT LA CONFIGURATION. La phrase disait « en un
+              paiement unique » quel que soit le tarif reellement pratique :
+              passer a un acces annuel sans la reecrire aurait fait promettre
+              par les conditions generales le contraire de ce que la page
+              d'offre annonce. C'est un engagement contractuel, pas un
+              habillage. */}
           {prix
-            ? `L’accès à vie est propose au prix de ${prix}, en un paiement unique. Ce prix, la devise, les taxes éventuelles, le contenu et les modalités de paiement sont affichés avant validation.`
+            ? `L’accès complet est proposé au prix de ${prix} ${config.price.periode}. Ce prix, la devise, les taxes éventuelles, la durée d’accès, le contenu et les modalités de paiement sont affichés avant validation.`
             : 'Lorsque des offres payantes sont proposées, leur prix, devise, taxes éventuelles, durée d’accès, contenu et modalités de paiement sont affichés avant validation.'}
         </p>
         <p>
@@ -83,8 +89,8 @@ export default async function ConditionsPage() {
           . Une confirmation est adressée à l’adresse indiquée lors de l’achat.
         </p>
         <p>
-          Les accès à vie sont personnels, non transférables et ne donnent pas le droit de partager
-          l’accès où le contenu du service.
+          Les accès sont personnels, non transférables et ne donnent pas le droit de partager
+          l’accès ou le contenu du service.
         </p>
       </LegalSection>
 

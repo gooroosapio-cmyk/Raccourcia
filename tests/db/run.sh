@@ -379,6 +379,20 @@ if compgen -G "$ROOT/supabase/seed/fusion-2026-09/*.sql" > /dev/null; then
     from public.prompts;"
 fi
 
+# L'offre : prix et periode. Un lot de configuration, donc rejouable sans
+# precaution particuliere — `upsert_config` ecrase la valeur.
+if compgen -G "$ROOT/supabase/seed/offre-2026-09/*.sql" > /dev/null; then
+  echo "==> Offre 2026-09 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/offre-2026-09/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || (select value #>> '{}' from public.app_config where key = 'price_current') ||
+           ' FCFA ' || (select value #>> '{}' from public.app_config where key = 'price_period');"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do
