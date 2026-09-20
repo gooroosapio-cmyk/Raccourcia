@@ -140,21 +140,42 @@ body {
 }
 
 body {
-  /* Aucun debordement lateral : la regle vaut pour toute la page. */
-  overflow-x: hidden;
   padding-bottom: env(safe-area-inset-bottom);
 }
 
 /*
- * La meme regle sur `html`, et le defilement lateral verrouille.
+ * L'ECRAN EST FIGE HORIZONTALEMENT. `clip`, ET SURTOUT PAS `hidden`.
  *
- * `overflow-x: hidden` pose sur `body` seul ne suffit pas : le navigateur
- * remonte alors la responsabilite du defilement a `html`, qui n'a aucune
- * borne. La page pouvait donc glisser lateralement meme avec un `body`
- * cense ne pas deborder.
+ * C'est la troisieme tentative sur le meme defaut, et les deux premieres
+ * ont echoue pour la meme raison. Symptome : l'interface entiere parquee
+ * quarante pixels a droite, titres coupes au bord gauche, sans aucun
+ * geste pour revenir — la page n'a pas de barre de defilement laterale,
+ * donc rien a ramener.
+ *
+ * `overflow-x: hidden` ne fige rien. Il fait de l'element un CONTENEUR DE
+ * DEFILEMENT dont on masque la barre : le contenu reste deplacable, et
+ * tout ce qui fait defiler sans geste de l'utilisateur y parvient encore —
+ * un enfant `snap-x` qui recoit le focus, un `scrollIntoView`, le saut
+ * vers une ancre, la restauration de position au retour arriere. C'est
+ * exactement ce qui se passait : quelque chose poussait la page de
+ * quarante pixels, et plus rien ne la ramenait.
+ *
+ * `overflow-x: clip` ne cree aucun conteneur de defilement. Il n'y a plus
+ * de position laterale a deplacer : ni le focus, ni l'aimantation, ni un
+ * script ne peuvent bouger la page. C'est ce que « figer » veut dire.
+ *
+ * ET IL NE CASSE PAS LA VERTICALE. `overflow-x: hidden` force
+ * `overflow-y` a passer de `visible` a `auto` — un second conteneur de
+ * defilement, qui met en peril l'en-tete collant et les hauteurs en
+ * `dvh`. `clip` fait partie des valeurs qui laissent `visible` tranquille.
+ *
+ * `overscroll-behavior-x: none` reste, pour le geste lui-meme : sur
+ * certains navigateurs, un balayage lateral au bord declenche encore la
+ * navigation arriere du systeme.
  */
-html {
-  overflow-x: hidden;
+html,
+body {
+  overflow-x: clip;
   overscroll-behavior-x: none;
 }
 
@@ -204,6 +225,46 @@ html {
 .overflow-x-auto,
 .overflow-x-scroll {
   overscroll-behavior-x: contain;
+}
+
+/*
+ * LA MARGE DE LA COQUILLE, DECLAREE UNE SEULE FOIS.
+ *
+ * Les rails sortent des marges pour defiler d'un bord a l'autre. Ils le
+ * faisaient avec `-mx-5` ecrit a la main dans huit composants, alors que
+ * la coquille passe a `px-4` sous 360 px : sous cette largeur, chaque
+ * rail depassait de huit pixels et c'est le document qui s'elargissait.
+ * Un ecart de huit pixels ne se voit pas ; une page qui glisse, si.
+ *
+ * Une variable, deux valeurs, un seul endroit ou les changer.
+ */
+:root {
+  --marge-coquille: 1rem;
+}
+
+@media (min-width: 360px) {
+  :root {
+    --marge-coquille: 1.25rem;
+  }
+}
+
+/** Sortir des marges de la coquille, et les rendre en rembourrage. */
+.pleine-largeur {
+  margin-inline: calc(var(--marge-coquille) * -1);
+  padding-inline: var(--marge-coquille);
+}
+
+/**
+ * La coquille elle-meme ne deborde pas.
+ *
+ * Deuxieme verrou, sous celui de `html` : `clip` ici arrete un enfant
+ * trop large a la largeur de la coquille, donc au bord de l'ecran sur un
+ * telephone. Sans lui, `html` clipperait bien, mais la mise en page aurait
+ * deja ete calculee sur un document trop large — et les elements
+ * `position: fixed` s'y referent.
+ */
+.coquille {
+  overflow-x: clip;
 }
 
 .rail {

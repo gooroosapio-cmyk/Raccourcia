@@ -78,7 +78,7 @@ export function SelectionDeTags({
           {/* Un rail : ces propositions sont secondaires, et douze puces
               repliees sur trois lignes repousseraient les commandes — ce
               qu'on est venu voir — sous la ligne de flottaison. */}
-          <div className="rail -mx-5 mt-2 px-5">
+          <div className="rail pleine-largeur mt-2">
             <div className="flex w-max gap-2 pb-1">
               {voisins.map((tag) => (
                 <Link

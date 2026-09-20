@@ -373,7 +373,7 @@ function RailDeCollection({
         {carte.collection ? `Dans ${carte.collection.nom}` : 'Dans la même collection'}
       </p>
 
-      <ul className="rail -mx-5 mt-1.5 flex snap-x snap-mandatory gap-2 px-5 pb-0.5">
+      <ul className="rail pleine-largeur mt-1.5 flex snap-x snap-mandatory gap-2 pb-0.5">
         {carte.voisines.map((voisine) => (
           <li key={voisine.id} className="w-[74px] shrink-0 snap-start">
             <button

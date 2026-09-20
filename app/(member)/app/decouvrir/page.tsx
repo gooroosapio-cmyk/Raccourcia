@@ -71,10 +71,15 @@ export default async function DecouvrirPage() {
     // vingt pixels de chaque cote n'est plus plein ecran. La marge basse de
     // la coquille — celle qui degage la barre de navigation — est reprise de
     // la meme facon, la zone de defilement calculant sa propre hauteur.
-    // `data-plein-ecran` : la coquille s'en sert pour effacer le fond de
-    // son en-tete. Un bandeau opaque au-dessus d'un feed plein ecran coupe
-    // l'image en deux et defait ce que la page promet.
-    <div data-plein-ecran className="-mx-4 -mb-24 min-[360px]:-mx-5">
+    //
+    // La marge vient de `--marge-coquille` et non d'une valeur recopiee :
+    // elle vaut 16 px sous 360 px et 20 px au-dela. Une valeur ecrite en
+    // dur ici depassait de quatre pixels sur un petit ecran, et quatre
+    // pixels de trop suffisent a faire glisser toute la page.
+    // Plus de `data-plein-ecran` : l'en-tete ne se teintait pas d'apres cet
+    // attribut, il disparait desormais d'apres le chemin. Un marqueur que
+    // plus personne ne lit finit par etre recopie ailleurs « au cas ou ».
+    <div className="-mb-24 mx-[calc(var(--marge-coquille)*-1)]">
       <h1 className="sr-only">Découvrir</h1>
       <PremiereVisite />
       <FeedImmersif

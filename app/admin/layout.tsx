@@ -17,8 +17,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   await requireAdmin();
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col">
-      <header className="sticky top-0 z-30 border-b border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-5 py-3">
+    <div className="coquille mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col">
+      <header className="sticky top-0 z-30 border-b border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-[var(--marge-coquille)] py-3">
         <div className="flex items-center justify-between">
           <Link href="/admin" className="flex items-center gap-2">
             <Logo className="text-base" />
@@ -36,7 +36,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <AdminNav />
       </header>
 
-      <main className="flex-1 px-5 pb-16 pt-4">{children}</main>
+      <main className="flex-1 px-[var(--marge-coquille)] pb-16 pt-4">{children}</main>
     </div>
   );
 }

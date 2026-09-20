@@ -105,7 +105,7 @@ export function PromptGrid({
               // `items-stretch` : dans un carrousel, deux cartes cote a cote
               // dont l'une a un titre plus long doivent quand meme finir a la
               // meme hauteur, sinon la rangee ondule.
-              'rail -mx-5 flex snap-x snap-mandatory items-stretch gap-2 px-5 pb-1 [&>*]:w-[42%] [&>*]:shrink-0 [&>*]:snap-start sm:[&>*]:w-[30%] lg:[&>*]:w-[22%]'
+              'rail pleine-largeur flex snap-x snap-mandatory items-stretch gap-2 pb-1 [&>*]:w-[42%] [&>*]:shrink-0 [&>*]:snap-start sm:[&>*]:w-[30%] lg:[&>*]:w-[22%]'
             : // Deux colonnes partout, y compris sur ordinateur. Trois puis
               // quatre colonnes reduisaient chaque resultat a une vignette de
               // 200 px sur un grand ecran : la galerie devenait une planche

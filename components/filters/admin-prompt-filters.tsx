@@ -181,7 +181,7 @@ export function AdminPromptFilters({
         </label>
       ) : null}
 
-      <div className="-mx-5 overflow-x-auto px-5">
+      <div className="pleine-largeur overflow-x-auto">
         <div className="flex w-max gap-2">
           {/* La bibliotheque en tete : c'est le premier axe du catalogue
               depuis la V2, et celui qui separe vraiment le travail — une

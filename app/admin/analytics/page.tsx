@@ -34,7 +34,7 @@ export default async function AdminAnalyticsPage({
         </p>
       </div>
 
-      <nav aria-label="Periode" className="-mx-5 overflow-x-auto px-5">
+      <nav aria-label="Periode" className="pleine-largeur overflow-x-auto">
         <ul className="flex w-max gap-2">
           {ANALYTICS_WINDOWS.map((value) => (
             <li key={value}>

@@ -18,7 +18,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Sections d’administration" className="-mx-5 mt-3 overflow-x-auto px-5">
+    <nav aria-label="Sections d’administration" className="pleine-largeur mt-3 overflow-x-auto">
       <ul className="flex w-max gap-2">
         {SECTIONS.map((section) => {
           const active =
