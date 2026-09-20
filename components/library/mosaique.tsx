@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { FondDeRayon } from '@/components/library/fond-de-rayon';
+import { EtoileDeRayon } from '@/components/library/etoile-de-rayon';
 
 /**
  * Une mosaique de cartes illustrees, de tailles inegales.
@@ -18,7 +20,9 @@ import Link from 'next/link';
  *
  * L'image est empruntee a une carte du lot quand l'administration n'en a
  * pas depose : une grille de cadres vides ne donne envie d'ouvrir aucun
- * rayon.
+ * rayon. Et quand meme cela ne donne rien — un rayon dont aucune commande
+ * n'a de visuel —, `FondDeRayon` pose une teinte et un dessin plutot que
+ * du gris.
  */
 export type CarteDeMosaique = {
   /** Ce qui l'identifie dans la liste, et dans l'adresse. */
@@ -28,6 +32,14 @@ export type CarteDeMosaique = {
   /** Ce qui se lit sous le titre : un compte, une famille. */
   detail?: string;
   imageUrl: string | null;
+  /** Le slug du rayon, dont se deduit sa teinte de repli. */
+  slug: string;
+  /**
+   * Presente sur un tag, et seulement pour un membre : l'etoile qui
+   * l'epingle. Une collection n'en a pas — on epingle un sujet, pas un
+   * tiroir de classement.
+   */
+  epingle?: boolean;
 };
 
 /**
@@ -56,8 +68,18 @@ export function Mosaique({
       {cartes.map((carte, rang) => {
         const large = estLarge(rang);
         return (
-          <li key={carte.cle} className={large ? 'col-span-2' : undefined}>
+          // `relative` : l'etoile se pose par-dessus la carte, jamais
+          // dedans — un bouton dans une ancre n'est pas du HTML valide.
+          <li key={carte.cle} className={`relative ${large ? 'col-span-2' : ''}`}>
             <CarteIllustree carte={carte} large={large} priority={rang < prioritaires} />
+            {carte.epingle === undefined ? null : (
+              <EtoileDeRayon
+                slug={carte.slug}
+                nom={carte.titre}
+                epingleAuDepart={carte.epingle}
+                surVisuel={carte.imageUrl !== null}
+              />
+            )}
           </li>
         );
       })}
@@ -84,7 +106,9 @@ function CarteIllustree({
         large ? 'aspect-[2/1]' : 'aspect-[4/3]'
       }`}
     >
-      {carte.imageUrl ? (
+      {carte.imageUrl === null ? (
+        <FondDeRayon slug={carte.slug} nom={carte.titre} />
+      ) : (
         <>
           <Image
             src={carte.imageUrl}
@@ -102,7 +126,7 @@ function CarteIllustree({
             className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"
           />
         </>
-      ) : null}
+      )}
 
       <span className="relative">
         <span

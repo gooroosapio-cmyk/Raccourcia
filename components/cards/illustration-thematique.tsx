@@ -40,8 +40,12 @@ export function IllustrationThematique({ motif }: { motif: MotifIllustration }) 
  *
  * Un seul jeu de proportions — 48x48, trait de 2,4 — pour que deux cartes
  * voisines ne donnent pas l'impression de venir de deux applications.
+ *
+ * Exporte parce que les cartes de rayon de la Bibliotheque s'en servent
+ * aussi. Un second jeu de dessins la-bas ferait deux vocabulaires pour une
+ * meme idee — un personnage n'aurait pas la meme tete selon l'ecran.
  */
-function Trait({ cle }: { cle: string }) {
+export function Trait({ cle }: { cle: string }) {
   const commun = {
     stroke: 'currentColor',
     strokeWidth: 2.4,

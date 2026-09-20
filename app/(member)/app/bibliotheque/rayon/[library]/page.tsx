@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSommaireDeBibliotheque } from '@/lib/catalog/sommaire';
+import { getTagsFavoris } from '@/lib/catalog/tags-favoris';
+import { getVisuelsTournants, visuelDeCarte } from '@/lib/catalog/visuels';
+import { getAccessState } from '@/lib/access/entitlement';
 import { Mosaique, type CarteDeMosaique } from '@/components/library/mosaique';
 import { NetworkError } from '@/components/ui/network-error';
 import { EmptyState } from '@/components/ui/states';
@@ -39,8 +42,20 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
   const library = demandee as Library;
 
   let sommaire: Awaited<ReturnType<typeof getSommaireDeBibliotheque>>;
+  let tirage: Awaited<ReturnType<typeof getVisuelsTournants>>;
+  let epingles: Awaited<ReturnType<typeof getTagsFavoris>>;
+  let membre: boolean;
   try {
-    sommaire = await getSommaireDeBibliotheque(library);
+    const [acces, lot, visuels, favoris] = await Promise.all([
+      getAccessState(),
+      getSommaireDeBibliotheque(library),
+      getVisuelsTournants(),
+      getTagsFavoris(),
+    ]);
+    membre = acces.isMember;
+    sommaire = lot;
+    tirage = visuels;
+    epingles = favoris;
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -52,20 +67,29 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
     throw error;
   }
 
+  // Les rayons epingles d'abord : c'est le seul ordre que le membre a
+  // choisi lui-meme, et il doit survivre au classement du catalogue.
+  const tags = [...sommaire.tags]
+    .sort((a, b) => Number(epingles.has(b.slug)) - Number(epingles.has(a.slug)))
+    .slice(0, 24);
+
   const cartes: CarteDeMosaique[] = [
     ...sommaire.collections.map((collection) => ({
       cle: `c-${collection.slug}`,
+      slug: collection.slug,
       href: `/app/bibliotheque/${collection.slug}`,
       titre: collection.nom,
       detail: `${collection.total} commande${collection.total > 1 ? 's' : ''}`,
-      imageUrl: collection.apercuUrl,
+      imageUrl: visuelDeCarte(collection.apercuUrl, `collection:${collection.slug}`, tirage),
     })),
-    ...sommaire.tags.slice(0, 24).map((tag) => ({
+    ...tags.map((tag) => ({
       cle: `t-${tag.slug}`,
+      slug: tag.slug,
       href: `/app/bibliotheque/tag/${tag.slug}`,
       titre: tag.nom,
       detail: `${tag.total} commande${tag.total > 1 ? 's' : ''}`,
-      imageUrl: tag.imageUrl,
+      imageUrl: visuelDeCarte(tag.imageUrl, `tag:${tag.slug}`, tirage),
+      ...(membre ? { epingle: epingles.has(tag.slug) } : {}),
     })),
   ];
 

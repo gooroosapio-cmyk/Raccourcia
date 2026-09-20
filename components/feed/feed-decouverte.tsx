@@ -99,13 +99,19 @@ export function FeedDecouverte({
 
   const toutes = useMemo(() => [...prompts, ...ajoutees], [ajoutees, prompts]);
 
+  // Ce qui reste apres les puces. Calcule avant `allonger` parce que c'est
+  // SUR CE NOMBRE que se decide le palier suivant : un sujet coche ne
+  // retient qu'un tiers des cartes, et compter le vivier entier ferait
+  // croire qu'il y a de quoi remplir trois ecrans quand il y a une rangee.
+  const retenues = useMemo(() => appliquerLesFiltres(toutes, filtres), [filtres, toutes]);
+
   const allonger = useCallback(() => {
     setMontrees((n) => n + PALIER);
 
     // Le palier suivant est demande avant d'en avoir besoin : quand ce
     // qu'on montre approche de ce qu'on a, pas quand il n'y a plus rien.
     if (!chargerLaSuite || charge || fini) return;
-    if (montrees + PALIER < toutes.length) return;
+    if (montrees + PALIER < retenues.length) return;
 
     setCharge(true);
     const suivante = page + 1;
@@ -126,7 +132,7 @@ export function FeedDecouverte({
       })
       .catch(() => setFini(true))
       .finally(() => setCharge(false));
-  }, [charge, chargerLaSuite, fini, montrees, page, prompts, toutes.length]);
+  }, [charge, chargerLaSuite, fini, montrees, page, prompts, retenues.length]);
 
   const ouvrir = useCallback(
     (prompt: PromptCard) => {
@@ -142,7 +148,6 @@ export function FeedDecouverte({
 
   if (prompts.length === 0) return null;
 
-  const retenues = appliquerLesFiltres(toutes, filtres);
   const visibles = retenues.slice(0, montrees);
 
   return (

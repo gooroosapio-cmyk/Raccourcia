@@ -422,6 +422,13 @@ jobs:
           psql "$PGURL" -At -c "
             select '    Reflexions : ' || jsonb_array_length(public.collections_de_bibliotheque('reflexions')) ||
                    ' collection(s), ' || jsonb_array_length(public.tags_de_bibliotheque('reflexions')) || ' tag(s)';"
+          echo '  Migration : visuels_tournants / tag_favorites'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260921140000_visuels_tournants_et_tags_favoris.sql
+          echo '  Cartes de rayon illustrees :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) || ' rayon(s) recoivent un visuel tire de leur dossier'
+            from jsonb_object_keys(public.visuels_tournants(0));"
 
       # Le prix affiche.
       #

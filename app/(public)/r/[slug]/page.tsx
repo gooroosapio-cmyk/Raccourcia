@@ -18,6 +18,7 @@ import { OutputFormatList } from '@/components/detail/output-format-list';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
 import { decrireNiveau } from '@/lib/catalog/niveau';
+import { texteDePartage } from '@/lib/share/texte-de-partage';
 
 /**
  * Page publique partageable d'une commande.
@@ -51,11 +52,18 @@ export async function generateMetadata({
 
   return {
     title: `${prompt.name} - ${prompt.command}`,
+    // La description de page reste celle du catalogue : c'est elle que les
+    // moteurs de recherche indexent, et un moteur veut une phrase qui
+    // decrit, pas une phrase qui s'adresse a quelqu'un.
     description: prompt.resultSummary,
     openGraph: {
-      title: `${prompt.name} - ${prompt.command}`,
-      description: prompt.resultSummary,
-      images: prompt.beforeAfter ? [prompt.beforeAfter.afterUrl] : undefined,
+      title: prompt.name,
+      // L'apercu de partage, lui, s'adresse a une personne : c'est le
+      // meme texte que le bouton Partager met dans le message.
+      description: texteDePartage(prompt),
+      // Aucune image nommee ici : `opengraph-image.tsx` en fabrique une,
+      // avec le logo incruste. La declarer en plus la remplacerait par la
+      // photo nue, qui ne dit pas d'ou elle vient.
     },
   };
 }

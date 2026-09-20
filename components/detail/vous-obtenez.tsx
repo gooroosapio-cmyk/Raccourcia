@@ -9,9 +9,20 @@ import { OUTPUT_FORMAT_LABELS, type OutputFormatKind } from '@/lib/constants';
  * en bas, ou se decide la copie.
  *
  * Trois faits, dans l'ordre ou ils comptent : combien, de quoi, a quel
- * format. Le ratio ne se dit que lorsqu'il existe — une commande texte n'a
- * pas de format d'image, et annoncer « format — » vaut moins que se taire.
+ * format. Le format ne se dit que pour ce qui a une forme : une commande
+ * texte n'a pas de ratio, et annoncer « format — » vaut moins que se taire.
+ * Une commande image, elle, en a toujours un — declare ou par defaut.
  */
+
+/**
+ * Ce que le catalogue vise quand il ne dit rien.
+ *
+ * Le 4:5 est le format des 582 commandes image du catalogue ; une carte
+ * sans ratio declare n'en produit pas moins une image. Se taire laissait
+ * un blanc a l'endroit le plus concret de la fiche.
+ */
+const RATIO_PAR_DEFAUT = '4:5';
+
 export function VousObtenez({
   formats,
   ratio,
@@ -41,7 +52,10 @@ export function VousObtenez({
           .map((format) => OUTPUT_FORMAT_LABELS[format])
           .join(', ')
       : null,
-    principal === 'image' && ratio ? `format ${ratio}` : null,
+    // « par defaut » : le ratio est celui que la commande vise, pas une
+    // contrainte. L'IA rend autre chose si on le lui demande, et annoncer
+    // « format 4:5 » sec laissait croire a une fatalite.
+    principal === 'image' ? `format ${ratio ?? RATIO_PAR_DEFAUT} par défaut` : null,
   ].filter((precision): precision is string => Boolean(precision));
 
   return (

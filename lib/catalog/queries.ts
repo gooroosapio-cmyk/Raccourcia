@@ -782,7 +782,7 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   // L'ordre vit dans `lib/catalog/tri.ts`, ou il se lit sans base et ou un
   // test le verrouille : c'est la regle la plus facile a casser sans s'en
   // apercevoir, une liste restant une liste meme mal triee.
-  for (const cle of clesDeTri(query.sort, isMember)) {
+  for (const cle of clesDeTri(query.sort, hasFullAccess)) {
     request = request.order(cle.colonne, {
       ascending: cle.ascendant,
       nullsFirst: cle.nullsFirst,
@@ -935,7 +935,18 @@ export async function getPromptDetail(slug: string): Promise<PromptDetail | null
 
   const { data, error } = await supabase
     .from('prompts')
-    .select(`${CARD_COLUMNS}, expected_output, categories(name)`)
+    // `categories` UNE SEULE FOIS. `CARD_COLUMNS` porte deja
+    // `categories(slug, name)` ; demander en plus `categories(name)`
+    // embarque deux fois la meme relation dans un seul select, et PostgREST
+    // rejette la requete. Cette fonction etait la seule a le faire, et
+    // c'etaient exactement les deux seuls ecrans casses : Decouvrir, dont
+    // le bouton rendait « La fiche n'a pas pu etre ouverte », et les pages
+    // de partage `/r/`, qui rendaient une page neutre.
+    //
+    // Rien ne l'attrapait : la suite de tests parle a Postgres en direct,
+    // jamais a PostgREST, donc une faute de syntaxe de select lui est
+    // invisible.
+    .select(`${CARD_COLUMNS}, expected_output`)
     .eq('slug', slug)
     .eq('status', 'published')
     .maybeSingle();
@@ -945,14 +956,12 @@ export async function getPromptDetail(slug: string): Promise<PromptDetail | null
   if (error) throw new CatalogUnavailableError(error);
   if (!data) return null;
 
-  const row = data as unknown as CardRow & {
-    expected_output: string | null;
-    categories: { name: string } | null;
-  };
+  const row = data as unknown as CardRow & { expected_output: string | null };
 
   return {
     ...toCard(row, favorites),
     expectedOutput: row.expected_output,
+    // Le nom vient de l'embarquement unique de `CARD_COLUMNS`.
     categoryName: row.categories?.name ?? null,
     media: (row.prompt_media ?? [])
       .sort((a, b) => a.sort_order - b.sort_order)
@@ -1086,7 +1095,7 @@ export async function getRangeeAccueil(
  */
 export async function getVivierDuFeed(
   limite = 60,
-  { garder }: { garder?: number } = {},
+  { garder, offertsDabord = false }: { garder?: number; offertsDabord?: boolean } = {},
 ): Promise<PromptCard[]> {
   const supabase = await createClient();
   const favorites = await getFavoriteIds();
@@ -1144,7 +1153,24 @@ export async function getVivierDuFeed(
   // `garder` borne ce qui ressort : on tire large pour varier, on rend
   // court pour ne pas charger trois cents vignettes.
   if (garder === undefined) return cartes;
-  return melangerLeVivier(cartes, Date.now()).slice(0, garder);
+
+  const melangees = melangerLeVivier(cartes, Date.now()).slice(0, garder);
+
+  // LES OFFERTES EN TETE, POUR QUI N'A PAS L'ACCES — et pour lui seul.
+  //
+  // Sans acces, une commande reservee ne repond a rien qu'on puisse
+  // essayer tout de suite : la galerie devient une vitrine fermee. Avec
+  // l'acces, les remonter ferait voir en premier les quinze memes cartes a
+  // chaque visite, ce qui defait exactement le melange qu'on vient de
+  // faire.
+  //
+  // La partition garde l'ordre a l'interieur de chaque bloc : les offertes
+  // restent melangees entre elles, le reste aussi.
+  if (!offertsDabord) return melangees;
+  return [
+    ...melangees.filter((carte) => carte.isFree),
+    ...melangees.filter((carte) => !carte.isFree),
+  ];
 }
 
 /** Vue Recents : les raccourcis copies priment sur les simples consultations. */

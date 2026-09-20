@@ -134,7 +134,10 @@ export default async function AccueilPage({
       // melange de quoi varier. Tire dans soixante cartes, il rendrait
       // toujours les memes soixante, dans un autre ordre.
       const [vivier, familles, reprendre, collections] = await Promise.all([
-        getVivierDuFeed(VIVIER_TIRAGE, { garder: VIVIER_MONTRE }),
+        getVivierDuFeed(VIVIER_TIRAGE, {
+          garder: VIVIER_MONTRE,
+          offertsDabord: !acces.hasFullAccess,
+        }),
         getBibliotheque(),
         acces.isMember ? getDernieresCopies() : Promise.resolve([]),
         // Dix collections : de quoi remplir une rangee qui defile sans en

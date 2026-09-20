@@ -182,7 +182,20 @@ function CarteImmersive({
   const illustree = carte.genre === 'image' && carte.visuelUrl !== '';
 
   return (
-    <article className="relative h-full w-full snap-start overflow-hidden bg-[#0b1220]">
+    // UNE COLONNE, ET NON UNE PILE DE COUCHES.
+    //
+    // Sur une carte illustree, l'image remplit le cadre et les informations
+    // se posent dessus : c'est le propre d'une photo plein ecran. Sur une
+    // carte ECRITE, il n'y a pas de photo — il y a deux textes, et deux
+    // textes superposes ne se lisent ni l'un ni l'autre. Le second cas est
+    // donc rendu en flux : le texte prend la place qui reste, les
+    // informations gardent la leur, et aucune reserve en pourcentage n'a
+    // plus a deviner la hauteur de l'autre.
+    <article
+      className={`relative w-full snap-start overflow-hidden bg-[#0b1220] ${
+        illustree ? 'h-full' : 'flex h-full flex-col'
+      }`}
+    >
       {illustree ? (
         <>
           {/* 1. Le fond. Agrandi au-dela du cadre : un flou laisse sinon
@@ -213,15 +226,22 @@ function CarteImmersive({
         <CarteEcrite carte={carte} />
       )}
 
-      {/* 3. Le fondu. Opaque en bas, nul a mi-hauteur : le texte se lit quel
-          que soit le visuel dessous, sans le masquer. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black via-black/75 to-transparent"
-      />
+      {/* 3. Le fondu, sous les informations posees sur l'image. Une carte
+          ecrite n'en a pas besoin : son fond est deja sombre, et sa zone
+          basse ne recouvre rien. */}
+      {illustree ? (
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black via-black/75 to-transparent"
+        />
+      ) : null}
 
-      {/* 4. Les informations. */}
-      <div className="absolute inset-x-0 bottom-0 px-5 pb-5 pt-4 text-white">
+      {/* 4. Les informations. Posees sur l'image, ou a la suite du texte. */}
+      <div
+        className={`px-5 pb-5 pt-4 text-white ${
+          illustree ? 'absolute inset-x-0 bottom-0' : 'relative shrink-0 bg-black/25'
+        }`}
+      >
         <div className="flex items-end gap-3">
           <div className="min-w-0 flex-1">
             {carte.isFree ? (
@@ -384,18 +404,19 @@ function CarteEcrite({ carte }: { carte: CarteDecouverte }) {
 
   return (
     <div
-      // LE TEXTE NE DESCEND PLUS SOUS LA ZONE D'INFORMATION.
+      // LE TEXTE NE PEUT PLUS PASSER SOUS LA ZONE D'INFORMATION.
       //
-      // Il etait centre dans le cadre entier avec une reserve de 42 % en
-      // bas : sur une carte au detail long, les dernieres lignes passaient
-      // derriere le titre et le bouton. Deux textes superposes ne se lisent
-      // ni l'un ni l'autre.
+      // Il etait centre dans le cadre entier, puis borne par une reserve en
+      // pourcentage — 42 %, puis 58 %. Un pourcentage est une estimation de
+      // la hauteur de l'autre bloc : il tombe juste sur la carte qui a servi
+      // a le regler, trop court des qu'une carte porte trois tags, trop
+      // large des qu'elle n'en porte aucun.
       //
-      // La reserve suit desormais ce que la zone basse occupe reellement —
-      // titre, raccourci, description, tags et bouton — et le texte se pose
-      // en haut plutot qu'au centre : une phrase courte reste lisible en
-      // haut de cadre, une phrase longue s'arrete avant la zone basse.
-      className="absolute inset-0 flex flex-col justify-start overflow-hidden px-6 pb-[58%] pt-16"
+      // Il n'y a plus de reserve. Le bloc prend ce que la colonne lui
+      // laisse — `flex-1`, `min-h-0` pour qu'il accepte de retrecir — et la
+      // zone basse garde exactement la place qu'elle occupe. Les deux ne
+      // peuvent plus se croiser, quelle que soit la longueur du texte.
+      className="flex min-h-0 flex-1 flex-col justify-start overflow-hidden px-6 pb-6 pt-14"
       style={{
         background: `linear-gradient(155deg, ${teinte.haut} 0%, ${teinte.bas} 100%)`,
       }}
