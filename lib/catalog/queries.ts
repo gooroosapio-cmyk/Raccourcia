@@ -311,7 +311,7 @@ const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
   show_image_card, payload_ready, cta_label, entity_type, images_min, default_ratio, witness_type,
   library,
-  is_free, is_new, is_featured, risk_level, sort_order,
+  is_free, is_new, is_featured, risk_level, sort_order, like_count,
   level, max_questions,
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
@@ -349,6 +349,7 @@ type CardRow = {
   is_free: boolean;
   is_new: boolean;
   is_featured: boolean;
+  like_count: number | null;
   risk_level: Enums<'risk_level'>;
   level: Enums<'execution_level'> | null;
   max_questions: number | null;
@@ -414,7 +415,18 @@ function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
   };
 }
 
-function toCard(row: CardRow, favorites: Set<string>): PromptCard {
+/**
+ * Ce que le membre courant a marque sur les cartes.
+ *
+ * Deux ensembles et non un : un favori range pour soi, un « j'aime » dit
+ * publiquement que la commande sert. Ils vivent dans deux tables, ils se
+ * lisent en une fois, et la carte porte les deux.
+ */
+type MarquesDuMembre = { favoris: Set<string>; likes: Set<string> };
+
+const SANS_MARQUE: MarquesDuMembre = { favoris: new Set(), likes: new Set() };
+
+function toCard(row: CardRow, marques: MarquesDuMembre = SANS_MARQUE): PromptCard {
   // L'Apres prime : c'est le resultat, donc ce qui fait choisir. La miniature
   // ne sert que de repli pour les raccourcis qui en ont une sans paire.
   const parType = (kind: Enums<'media_kind'>) =>
@@ -467,7 +479,12 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
         name: variant.ai_providers!.name,
         compatibility: variant.compatibility,
       })),
-    isFavorite: favorites.has(row.id),
+    isFavorite: marques.favoris.has(row.id),
+    // Le compte vient de la base, jamais d'un calcul ici : un declencheur
+    // l'ecrit a chaque like, et le recalculer cote serveur ouvrirait la
+    // porte a deux gestes simultanes comptes une seule fois.
+    likeCount: row.like_count ?? 0,
+    aime: marques.likes.has(row.id),
     intention: row.intention,
     expectedInput: row.expected_input,
     limitations: row.limitations,
@@ -531,15 +548,26 @@ function lireLesChamps(row: CardRow): ChampDeCommande[] {
 }
 
 /** Favoris du membre courant, sous forme d'ensemble pour un rendu direct. */
-async function getFavoriteIds(): Promise<Set<string>> {
+async function getMarquesDuMembre(): Promise<MarquesDuMembre> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return new Set();
+  // Un visiteur n'a ni favori ni like : deux ensembles vides valent mieux
+  // que deux requetes qui rendront vide de toute facon.
+  if (!user) return SANS_MARQUE;
 
-  const { data } = await supabase.from('favorites').select('prompt_id');
-  return new Set((data ?? []).map((row) => row.prompt_id));
+  // Les deux en parallele : elles ne se conditionnent pas, et les enchainer
+  // ajouterait un aller-retour a chaque page de galerie.
+  const [favoris, likes] = await Promise.all([
+    supabase.from('favorites').select('prompt_id'),
+    supabase.from('prompt_likes').select('prompt_id'),
+  ]);
+
+  return {
+    favoris: new Set((favoris.data ?? []).map((row) => row.prompt_id)),
+    likes: new Set((likes.data ?? []).map((row) => row.prompt_id)),
+  };
 }
 
 export type CatalogPage = {
@@ -710,7 +738,7 @@ async function categoriesParRecherche(
  */
 export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> {
   const supabase = await createClient();
-  const favorites = await getFavoriteIds();
+  const marques = await getMarquesDuMembre();
   // Memoise par requete : l'appel ci-dessous ne coute rien de plus a la page,
   // qui interroge deja l'etat d'acces en parallele.
   const { isMember, hasFullAccess } = await getAccessState();
@@ -806,7 +834,7 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   const rows = (lecture.data ?? []) as unknown as CardRow[];
 
   const items = rows.slice(0, pageSize).map((row) => {
-    const card = toCard(row, favorites);
+    const card = toCard(row, marques);
     const verrouille = !hasFullAccess && !card.isFree;
     return visiteur && verrouille ? masquerCommande(card) : card;
   });
@@ -931,7 +959,7 @@ export async function getQuestionExemple(command: string): Promise<QuestionExemp
 /** Fiche detaillee. Le prompt complet reste absent : il passe par resolve. */
 export async function getPromptDetail(slug: string): Promise<PromptDetail | null> {
   const supabase = await createClient();
-  const favorites = await getFavoriteIds();
+  const marques = await getMarquesDuMembre();
 
   const { data, error } = await supabase
     .from('prompts')
@@ -959,7 +987,7 @@ export async function getPromptDetail(slug: string): Promise<PromptDetail | null
   const row = data as unknown as CardRow & { expected_output: string | null };
 
   return {
-    ...toCard(row, favorites),
+    ...toCard(row, marques),
     expectedOutput: row.expected_output,
     // Le nom vient de l'embarquement unique de `CARD_COLUMNS`.
     categoryName: row.categories?.name ?? null,
@@ -1011,9 +1039,13 @@ export async function getFavorites(): Promise<PromptCard[]> {
   const ids = (rows ?? []).map((row) => row.prompt_id);
   if (ids.length === 0) return [];
 
-  const { data } = await supabase.from('prompts').select(CARD_COLUMNS).in('id', ids);
-  const favorites = new Set(ids);
-  const cards = ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
+  // Les likes viennent de la meme lecture que partout ailleurs ; les
+  // favoris, eux, sont deja connus — ce sont precisement ces lignes.
+  const [{ data }, marques] = await Promise.all([
+    supabase.from('prompts').select(CARD_COLUMNS).in('id', ids),
+    getMarquesDuMembre(),
+  ]);
+  const cards = ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, marques));
   // Conserver l'ordre "ajoute recemment d'abord".
   return ids.map((id) => cards.find((card) => card.id === id)).filter((card) => card !== undefined);
 }
@@ -1038,7 +1070,7 @@ export async function getRangeeAccueil(
   limite = 8,
 ): Promise<PromptCard[]> {
   const supabase = await createClient();
-  const favorites = await getFavoriteIds();
+  const marques = await getMarquesDuMembre();
 
   let requete = supabase
     .from('prompts')
@@ -1067,7 +1099,7 @@ export async function getRangeeAccueil(
   const { data, error } = await requete.order('command', { ascending: true });
   if (error) throw new CatalogUnavailableError(error);
 
-  return ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
+  return ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, marques));
 }
 
 /**
@@ -1098,7 +1130,7 @@ export async function getVivierDuFeed(
   { garder, offertsDabord = false }: { garder?: number; offertsDabord?: boolean } = {},
 ): Promise<PromptCard[]> {
   const supabase = await createClient();
-  const favorites = await getFavoriteIds();
+  const marques = await getMarquesDuMembre();
 
   const [imagesReponse, experiencesReponse] = await Promise.all([
     supabase
@@ -1137,7 +1169,7 @@ export async function getVivierDuFeed(
     ...((experiencesReponse.data ?? []) as unknown as CardRow[]),
   ];
 
-  const cartes = lignes.map((row) => toCard(row, favorites));
+  const cartes = lignes.map((row) => toCard(row, marques));
 
   // LE TIRAGE VIT ICI, PAS DANS LA PAGE.
   //
@@ -1196,7 +1228,7 @@ export async function getRecents(): Promise<PromptCard[]> {
 
   if (ordered.length === 0) return [];
 
-  const favorites = await getFavoriteIds();
+  const marques = await getMarquesDuMembre();
   const { data } = await supabase
     .from('prompts')
     .select(CARD_COLUMNS)
@@ -1205,7 +1237,7 @@ export async function getRecents(): Promise<PromptCard[]> {
       ordered.map((entry) => entry.id),
     );
 
-  const cards = ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
+  const cards = ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, marques));
   return ordered
     .map((entry) => cards.find((card) => card.id === entry.id))
     .filter((card) => card !== undefined);
@@ -1241,14 +1273,14 @@ export async function getDernieresCopies(limite = 10): Promise<PromptCard[]> {
   if ((rows ?? []).length === 0) return [];
 
   const ordre = (rows ?? []).map((row) => row.prompt_id);
-  const favorites = await getFavoriteIds();
+  const marques = await getMarquesDuMembre();
   const { data } = await supabase
     .from('prompts')
     .select(CARD_COLUMNS)
     .eq('status', 'published')
     .in('id', ordre);
 
-  const cartes = ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, favorites));
+  const cartes = ((data ?? []) as unknown as CardRow[]).map((row) => toCard(row, marques));
   // L'ordre vient du journal, pas de la base : `in` ne le conserve pas.
   return ordre
     .map((id) => cartes.find((carte) => carte.id === id))

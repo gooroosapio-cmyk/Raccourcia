@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { basculerLeTagFavori } from '@/lib/actions/tags-favoris';
+import { basculerLeRayonFavori, type GenreDeRayon } from '@/lib/actions/tags-favoris';
 
 /**
  * L'etoile qui epingle un rayon.
@@ -10,6 +10,10 @@ import { basculerLeTagFavori } from '@/lib/actions/tags-favoris';
  * un rayon. Or on ne revient pas a la Bibliotheque pour une carte precise :
  * on y revient pour un endroit — « Portrait », « Prospection » — qu'il
  * fallait retrouver a la main a chaque visite, cinquante cartes plus bas.
+ *
+ * TAG OU COLLECTION, LE MEME GESTE. La grille pose les deux cote a cote ;
+ * n'en rendre qu'une epinglable se lisait comme un defaut d'affichage. Le
+ * genre choisit la table, rien d'autre ne change.
  *
  * ELLE VIT A COTE DU LIEN, JAMAIS DEDANS. Un bouton place dans une ancre
  * n'est pas du HTML valide, et le lecteur d'ecran annonce alors deux
@@ -21,12 +25,15 @@ import { basculerLeTagFavori } from '@/lib/actions/tags-favoris';
  * au moment ou le pouce la touche emporte avec elle ce qu'on lisait.
  */
 export function EtoileDeRayon({
+  genre,
   slug,
   nom,
   epingleAuDepart,
   /** Vrai quand la carte porte une photo : l'etoile doit alors se voir dessus. */
   surVisuel,
 }: {
+  /** Un tag ou une collection : deux tables, un seul geste. */
+  genre: GenreDeRayon;
   slug: string;
   nom: string;
   epingleAuDepart: boolean;
@@ -50,7 +57,7 @@ export function EtoileDeRayon({
         const voulu = !epingle;
         setEpingle(voulu);
         demarrer(async () => {
-          const etat = await basculerLeTagFavori(slug, voulu);
+          const etat = await basculerLeRayonFavori(genre, slug, voulu);
           // Refus ou panne : on remet l'etoile dans l'etat que la base
           // connait, plutot que de laisser croire que c'est enregistre.
           if (!etat.ok) setEpingle(!voulu);

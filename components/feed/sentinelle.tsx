@@ -20,16 +20,25 @@ import { useEffect, useRef } from 'react';
  * actionnable enferme qui navigue au clavier — il arrive au bas de la liste
  * et n'a aucun moyen de demander la suite. Le bouton est cet equivalent, et
  * c'est aussi lui qui repond si l'observateur n'existe pas.
+ *
+ * ET IL DIT QU'IL TRAVAILLE. Entre le declenchement et l'arrivee des
+ * cartes, l'ecran ne disait rien : sur un reseau lent, le bas d'une
+ * galerie muette se lit comme une fin de liste, et on remonte. Trois
+ * points suffisent — ils tiennent sur une ligne, ne deplacent pas ce qui
+ * est deja a l'ecran, et s'effacent des que le palier arrive.
  */
 export function Sentinelle({
   onVisible,
   libelle,
   racine,
+  charge = false,
 }: {
   /** Memorise par l'appelant : il decide de l'observateur. */
   onVisible: () => void;
   /** Ce que le bouton de repli annonce. */
   libelle: string;
+  /** Vrai pendant que le palier suivant arrive. */
+  charge?: boolean;
   /**
    * Le conteneur qui defile, quand ce n'est pas la page.
    *
@@ -62,6 +71,25 @@ export function Sentinelle({
 
   return (
     <div ref={cible} className="mt-3">
+      {/* `aria-live` polie et non assertive : l'annonce attend une pause
+          dans la lecture plutot que de couper la carte en cours. */}
+      <p
+        aria-live="polite"
+        className={`flex items-center justify-center gap-1.5 py-2 ${charge ? '' : 'invisible'}`}
+      >
+        <span className="sr-only">Chargement de la suite…</span>
+        {[0, 1, 2].map((rang) => (
+          <span
+            key={rang}
+            aria-hidden="true"
+            className="point-de-chargement block h-1.5 w-1.5 rounded-full bg-[color:var(--color-brand)]"
+            // Le decalage fait l'onde : trois points qui battent ensemble
+            // se lisent comme un clignotement, pas comme une progression.
+            style={{ animationDelay: `${rang * 0.14}s` }}
+          />
+        ))}
+      </p>
+
       <button
         type="button"
         onClick={onVisible}

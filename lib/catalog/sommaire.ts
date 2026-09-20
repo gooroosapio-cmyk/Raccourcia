@@ -68,6 +68,7 @@ function lireLesCollections(brut: unknown): CollectionPopulaire[] {
         famille: typeof entree.famille === 'string' ? entree.famille : '',
         total: typeof entree.total === 'number' ? Math.trunc(entree.total) : 0,
         apercuUrl: apercu ? urlVisuel(apercu, LARGEURS_VISUEL.vignette) : null,
+        description: typeof entree.description === 'string' ? entree.description : null,
       };
     })
     .filter((collection) => collection.slug !== '' && collection.nom !== '');
@@ -88,6 +89,7 @@ function lireLesTags(brut: unknown): TagExplorable[] {
         nom: typeof entree.nom === 'string' ? entree.nom : '',
         groupe: typeof entree.groupe === 'string' ? entree.groupe : '',
         imageUrl: image ? urlVisuel(image, LARGEURS_VISUEL.vignette) : null,
+        description: typeof entree.description === 'string' ? entree.description : null,
         total: typeof entree.total === 'number' ? Math.trunc(entree.total) : 0,
       } as TagExplorable;
     })

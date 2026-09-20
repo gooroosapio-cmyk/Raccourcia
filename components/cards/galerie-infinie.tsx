@@ -86,7 +86,7 @@ export function GalerieInfinie({
       />
 
       {!fini && toutes.length > 0 ? (
-        <Sentinelle onVisible={allonger} libelle="Voir plus de commandes" />
+        <Sentinelle onVisible={allonger} libelle="Voir plus de commandes" charge={charge} />
       ) : null}
     </>
   );

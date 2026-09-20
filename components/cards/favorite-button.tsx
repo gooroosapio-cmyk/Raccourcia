@@ -4,8 +4,18 @@ import { useState, useTransition } from 'react';
 import { toggleFavorite } from '@/lib/actions/catalog';
 
 /**
- * Coeur de favori. Rendu optimiste avec retour arriere si le serveur refuse
- * (Spec UX/UI, 13.1). Cible tactile de 44 px, meme si l'icone est plus petite.
+ * L'etoile de favori. Rendu optimiste, retour arriere si le serveur refuse.
+ * Cible tactile de 44 px, meme si l'icone est plus petite.
+ *
+ * UNE ETOILE, ET PLUS UN COEUR. Les deux gestes existaient cote a cote
+ * avec le meme dessin : un coeur pour ranger la commande chez soi, un
+ * coeur pour dire publiquement qu'elle sert. Deux sens pour une icone,
+ * c'est une icone qui n'en a plus aucun — et sur Decouvrir, ou les deux
+ * apparaissaient, personne ne pouvait deviner lequel faisait quoi.
+ *
+ * L'etoile range, le coeur approuve. C'est aussi la convention des rayons
+ * epingles de la Bibliotheque, et il n'y a plus qu'un vocabulaire a
+ * apprendre pour toute l'application.
  */
 export function FavoriteButton({
   promptId,
@@ -62,9 +72,9 @@ export function FavoriteButton({
           aria-hidden="true"
         >
           <path
-            d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13Z"
+            d="m12 3.6 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.8l5.9-.9z"
             stroke={isFavorite ? 'var(--color-brand)' : 'currentColor'}
-            strokeWidth="2"
+            strokeWidth="1.9"
             strokeLinejoin="round"
           />
         </svg>

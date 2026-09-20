@@ -3,6 +3,7 @@
 import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
+import { BoutonJaime } from '@/components/cards/bouton-jaime';
 import { ResultThumbnail } from '@/components/cards/result-thumbnail';
 import { LienDeCollection } from '@/components/cards/lien-de-collection';
 import { usePaywall } from '@/components/paywall/paywall-provider';
@@ -120,9 +121,18 @@ export function ImagePromptCard({
         </span>
       </button>
 
-      {/* Hors du bouton : un lien dans un bouton rend la cible imprevisible. */}
-      <div className="px-2.5 pb-1">
-        <LienDeCollection prompt={prompt} trait={rayon} />
+      {/* Hors du bouton : un lien dans un bouton rend la cible imprevisible.
+          Le genre monte ici, a cote du rayon : il occupait la ligne du bas,
+          ou le coeur et son compte ont maintenant besoin de la place. */}
+      <div className="flex items-baseline gap-2 px-2.5 pb-1">
+        <span className="min-w-0 flex-1">
+          <LienDeCollection prompt={prompt} trait={rayon} />
+        </span>
+        {genre ? (
+          <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
+            {genre}
+          </span>
+        ) : null}
       </div>
 
       <span className="pointer-events-none absolute left-1.5 top-1.5">
@@ -140,13 +150,14 @@ export function ImagePromptCard({
 
       {/* La copie ferme la carte, en bas, la ou se prend la decision : on
           regarde le resultat, on lit le titre, on copie. */}
-      <div className="mt-auto flex items-center gap-2 px-2.5 pb-2.5">
-        {genre ? (
-          <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
-            {genre}
-          </span>
-        ) : null}
-        <span className="ml-auto w-full">
+      <div className="mt-auto flex items-center gap-1 px-2.5 pb-2.5">
+        <BoutonJaime
+          promptId={prompt.id}
+          likeCount={prompt.likeCount}
+          aime={prompt.aime}
+          visiteur={visiteur}
+        />
+        <span className="block min-w-0 flex-1">
           <CopyCommandButton
             promptId={prompt.id}
             provider={actif?.key ?? 'chatgpt'}

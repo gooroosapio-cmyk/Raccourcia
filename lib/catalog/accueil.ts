@@ -28,6 +28,12 @@ export type CollectionPopulaire = {
   total: number;
   /** Le visuel d'une de ses commandes. `null` quand aucune n'en a. */
   apercuUrl: string | null;
+  /**
+   * Ce qu'on trouve derriere, en une phrase, telle que l'administration
+   * l'ecrit. `null` pour un rayon qu'elle n'a pas encore decrit — la carte
+   * retombe alors sur son compteur.
+   */
+  description: string | null;
 };
 
 export const getCollectionsPopulaires = cache(
@@ -51,6 +57,7 @@ export const getCollectionsPopulaires = cache(
           famille: typeof entree.famille === 'string' ? entree.famille : '',
           total: typeof entree.total === 'number' ? Math.trunc(entree.total) : 0,
           apercuUrl: apercu ? urlVisuel(apercu, LARGEURS_VISUEL.vignette) : null,
+          description: typeof entree.description === 'string' ? entree.description : null,
         };
       })
       .filter((collection) => collection.slug !== '' && collection.nom !== '');

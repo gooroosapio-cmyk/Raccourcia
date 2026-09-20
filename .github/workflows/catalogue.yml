@@ -32,6 +32,7 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          - formats-et-rayons
           - catalogue-final
           - offre-2026-09
           - exploration-v4
@@ -137,7 +138,8 @@ jobs:
           inputs.dossier != 'fusion-2026-09' &&
           inputs.dossier != 'offre-2026-09' &&
           inputs.dossier != 'exploration-v4' &&
-          inputs.dossier != 'catalogue-final'
+          inputs.dossier != 'catalogue-final' &&
+          inputs.dossier != 'formats-et-rayons'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -404,6 +406,62 @@ jobs:
       # de la bibliotheque, deja comptes et deja illustres.
       #
       # `security invoker`, donc lecture a travers les politiques du
+      # Ce que rend chaque commande, et ce que contient chaque rayon.
+      #
+      # TROIS CORRECTIONS DANS UN SEUL LOT.
+      #
+      # 1. « VOUS OBTENEZ » DISAIT FAUX. `output_formats` n'est jamais
+      #    vide : un declencheur le remplit a l'insertion depuis
+      #    `output_type`, que l'import ne renseigne pas. Les 1 595 cartes
+      #    avaient donc recu « texte » — y compris les 1 242 commandes
+      #    image, qui annoncaient « 1 texte ». Le lot remplace cette seule
+      #    valeur par defaut, jamais une valeur choisie.
+      #
+      # 2. AUCUN TAG NE DISAIT LE FORMAT RENDU. Douze tags `sortie-*`
+      #    dans le groupe « Ce que vous obtenez » : conversation, PDF,
+      #    CSV, tableur, presentation, e-mail... On peut enfin chercher
+      #    un outil et pas seulement un sujet.
+      #
+      # 3. LES RAYONS DE TEXTES NE MONTRAIENT RIEN. Trente descriptions
+      #    ecrites a la main. Un rayon d'Images emprunte le visuel d'une
+      #    de ses commandes ; « Synthese » n'a rien a emprunter.
+      #
+      # Rejouable : upserts et mises a jour bornees, verifie deux fois de
+      # suite sur une base montee de zero.
+      - name: Poser les formats de sortie et decrire les rayons
+        if: inputs.dossier == 'formats-et-rayons'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          for fichier in supabase/seed/formats-et-rayons/*.sql; do
+            # Les « j'aime » de depart sont des donnees de presentation :
+            # elles attendent « basculer », comme toute mise en vitrine.
+            case "$fichier" in *900_jaime_de_depart.sql) continue;; esac
+            printf '  %s\n' "$(basename "$fichier")"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc < "$fichier"
+          done
+          echo '  Ce que le catalogue annonce rendre :'
+          psql "$PGURL" -At -c "
+            select '    ' || f || ' : ' || n || ' carte(s)' from (
+              select f::text as f, count(*) as n
+              from public.prompts p, unnest(p.output_formats) f
+              where p.status = 'published' and p.card_id is not null
+              group by 1 order by 2 desc) x;"
+
+      # Des « j'aime » de depart — DES DONNEES DE PRESENTATION, PAS DES
+      # MESURES. Aucune ligne n'existe en face dans `prompt_likes` : ces
+      # chiffres ne comptent personne. A remettre a zero avant
+      # l'ouverture du service, c'est le point 0 de la check-list.
+      - name: Poser des « j'aime » de depart
+        if: inputs.dossier == 'formats-et-rayons' && inputs.bascule == 'basculer'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
+            < supabase/seed/formats-et-rayons/900_jaime_de_depart.sql
+
       # Le catalogue final : 1 595 cartes, 624 commandes.
       #
       # C'est le meme referentiel que `catalogue-2026-09`, augmente de 585

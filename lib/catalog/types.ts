@@ -122,6 +122,18 @@ export type PromptCard = {
   outputFormats: OutputFormatKind[];
   providers: { key: string; name: string; compatibility: Enums<'compatibility_level'> }[];
   isFavorite: boolean;
+  /**
+   * Combien de personnes ont aime la commande, et si le lecteur en fait
+   * partie.
+   *
+   * DISTINCT DU FAVORI, et les deux se lisent desormais sur la meme carte.
+   * Un favori range une commande pour soi — l'etoile. Un « j'aime » dit
+   * publiquement qu'elle sert — le coeur, et son compte. Les confondre
+   * reviendrait a publier la bibliotheque privee de chacun, et c'est
+   * exactement ce que deux icones identiques laissaient croire.
+   */
+  likeCount: number;
+  aime: boolean;
   // Contenu de la fiche : entierement public, donc embarque avec la carte.
   // Ouvrir le detail ne declenche ainsi aucun aller-retour reseau.
   intention: string | null;

@@ -42,3 +42,34 @@ export const getTagsFavoris = cache(async (): Promise<Set<string>> => {
   }
   return slugs;
 });
+
+/**
+ * Les collections qu'un membre a epinglees.
+ *
+ * Meme geste, meme promesse que pour les tags : la Bibliotheque montre
+ * les deux sortes de portes cote a cote, et n'en rendre qu'une epinglable
+ * se lit comme un defaut plutot que comme un choix.
+ *
+ * Rendu en slugs, comme pour les tags : c'est ce que les cartes portent.
+ */
+export const getCollectionsFavorites = cache(async (): Promise<Set<string>> => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return new Set();
+
+  const { data, error } = await supabase
+    .from('category_favorites')
+    .select('categories(slug)')
+    .eq('user_id', user.id);
+
+  if (error || !Array.isArray(data)) return new Set();
+
+  const slugs = new Set<string>();
+  for (const ligne of data) {
+    const categorie = (ligne as { categories: { slug: string } | null }).categories;
+    if (categorie?.slug) slugs.add(categorie.slug);
+  }
+  return slugs;
+});

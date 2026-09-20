@@ -186,6 +186,26 @@ html {
  * droite, logo coupe, sans rien pour revenir. `contain` arrete le geste au
  * bord du rail : il ne se propage plus.
  */
+/*
+ * TOUT CE QUI DEFILE HORIZONTALEMENT RETIENT LE GESTE.
+ *
+ * `.rail` le faisait deja ; il restait une demi-douzaine de conteneurs
+ * poses directement en `overflow-x-auto` — la navigation de
+ * l'administration, les periodes des statistiques, les filtres. Chacun
+ * rouvrait le meme defaut : arrive au bout, le navigateur enchaine le
+ * geste sur l'ancetre qui peut encore defiler, et comme ces conteneurs
+ * debordent des marges par `-mx-5`, c'est le document entier qui glisse.
+ * On se retrouve avec l'interface decalee a droite, logo coupe, sans rien
+ * pour revenir.
+ *
+ * La regle porte donc sur la classe utilitaire elle-meme : un conteneur
+ * ajoute demain est couvert sans qu'on ait a y penser.
+ */
+.overflow-x-auto,
+.overflow-x-scroll {
+  overscroll-behavior-x: contain;
+}
+
 .rail {
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -379,4 +399,56 @@ html {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/*
+ * Le chargement du palier suivant : trois points, une seconde en boucle.
+ *
+ * La galerie s'allonge toute seule, et jusqu'ici elle le faisait en
+ * silence : entre la sentinelle et l'arrivee des cartes, l'ecran ne
+ * disait rien. Sur un reseau lent, on croit etre arrive au bout.
+ *
+ * Trois points plutot qu'un tourniquet : un tourniquet occupe le centre
+ * de l'ecran et se lit comme une attente longue. Les points tiennent sur
+ * une ligne, disparaissent des que les cartes arrivent, et l'animation
+ * est assez rapide pour ne pas devenir le sujet.
+ */
+@keyframes point-de-chargement {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+.point-de-chargement {
+  animation: point-de-chargement 0.9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Le mouvement disparait, le signal reste : les points clignotent au
+     lieu de sauter. Retirer l'animation entiere laisserait trois points
+     figes, qu'on ne lit plus comme un chargement. */
+  .point-de-chargement {
+    animation-name: none;
+    opacity: 0.6;
+  }
+}
+
+/*
+ * UNE CARTE A LA FOIS DANS DECOUVRIR.
+ *
+ * `snap-mandatory` pose la carte au bon endroit, mais n'empeche pas un
+ * geste ample d'en traverser trois d'un coup : on arrive quatre cartes
+ * plus loin sans avoir vu les deux du milieu, et le feed devient une
+ * loterie. `scroll-snap-stop: always` oblige le defilement a s'arreter a
+ * chaque point d'ancrage — un geste, une carte, quelle que soit sa force.
+ */
+.une-carte-a-la-fois > * {
+  scroll-snap-stop: always;
 }
