@@ -114,19 +114,13 @@ export async function POST(request: NextRequest) {
     (parsed.data.champs ?? []).map((champ) => [champ.cle, champ.valeur]),
   );
 
+  // Plus de 422 pour un champ vide. La route refusait la copie tant que le
+  // formulaire n'etait pas complet : on arrivait au bouton, on appuyait, et
+  // on repartait remplir des cases. C'etait prendre le formulaire pour la
+  // commande — or ce qu'on vient chercher est un texte a coller. Ce qui
+  // manque part entre crochets, et l'IA pose une question courte : elle
+  // voit le contexte, un message d'erreur non.
   const personnalise = appliquerLaPersonnalisation(resolved.payload, declares, saisies);
-
-  if (!personnalise.ok) {
-    // 422 et non 400 : la requete est bien formee, c'est le formulaire qui
-    // est incomplet. Le message nomme les champs, sinon il faut deviner
-    // lequel manque parmi trois.
-    return NextResponse.json(
-      {
-        error: `Renseignez d'abord : ${personnalise.manquants.join(', ')}.`,
-      },
-      { status: 422, headers: noStore },
-    );
-  }
 
   return NextResponse.json(
     { command: resolved.command, payload: personnalise.texte },

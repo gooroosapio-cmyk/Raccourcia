@@ -309,6 +309,7 @@ function colonnesDuComptage(filtreFournisseur: boolean): string {
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
   show_image_card, payload_ready, cta_label, entity_type, images_min, default_ratio, witness_type,
+  library,
   is_free, is_new, is_featured, risk_level, sort_order,
   level, max_questions,
   intention, expected_input, limitations, required_variables,
@@ -329,6 +330,7 @@ type CardRow = {
   name: string;
   slug: string;
   mode: Enums<'app_mode'>;
+  library: Enums<'app_library'> | null;
   short_description: string;
   result_summary: string | null;
   input_examples: InputExampleKind[] | null;
@@ -441,6 +443,7 @@ function toCard(row: CardRow, favorites: Set<string>): PromptCard {
     showImageCard: row.show_image_card,
     entityType: genre,
     witnessType: row.witness_type ?? null,
+    library: row.library ?? null,
     collectionSlug: row.categories?.slug ?? null,
     collectionName: row.categories?.name ?? null,
     imagesMin: row.images_min,

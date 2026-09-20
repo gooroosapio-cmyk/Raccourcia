@@ -65,6 +65,15 @@ export type PromptCard = {
    */
   witnessType: string | null;
   /**
+   * Images, Textes ou Reflexions : le premier niveau de rangement.
+   *
+   * La fiche s'en sert pour son fil — « Images > Matieres et
+   * metamorphoses ». `null` pour une commande d'un import anterieur au
+   * socle V3 : le fil n'affiche alors que la collection plutot que de
+   * deviner une bibliotheque.
+   */
+  library: Enums<'app_library'> | null;
+  /**
    * Le rayon d'ou vient la carte, pour le sur-titre du feed et pour la
    * regle qui interdit deux cartes du meme rayon a la suite.
    */
