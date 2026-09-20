@@ -369,6 +369,31 @@ export type Database = {
           },
         ];
       };
+      tag_favorites: {
+        Row: {
+          created_at: string;
+          tag_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          tag_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          tag_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'tag_favorites_tag_id_fkey';
+            columns: ['tag_id'];
+            referencedRelation: 'tags';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       pending_licenses: {
         Row: {
           adopted_at: string | null;
@@ -1770,6 +1795,7 @@ export type Database = {
       };
       texte_normalise: { Args: { v: string }; Returns: string };
       track_prompt_view: { Args: { p_prompt_id: string }; Returns: undefined };
+      visuels_tournants: { Args: { p_graine?: number }; Returns: Json };
     };
     Enums: {
       access_type: 'lifetime' | 'subscription';

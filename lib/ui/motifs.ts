@@ -104,3 +104,52 @@ export function motifDeLaCarte(tags: { slug: string }[]): MotifIllustration | nu
   }
   return null;
 }
+
+/**
+ * LES RAYONS, EUX, ONT TOUJOURS UN FOND.
+ *
+ * Une commande sans motif garde sa composition typographique : lui poser un
+ * dessin pris au hasard mentirait sur ce qu'elle rend. Un RAYON — un tag,
+ * une collection — ne rend rien ; c'est une porte. Une porte peut porter
+ * une couleur sans rien promettre, et la Bibliotheque en montre cinquante
+ * d'un coup : un tiers de cadres vides y fait une grille en damier ou
+ * l'oeil ne sait plus ou se poser.
+ *
+ * Le fond est donc garanti, et le dessin reste facultatif : le motif quand
+ * les mots du rayon en appellent un, l'initiale du nom sinon.
+ */
+export type TeinteDeRayon = { fond: string; encre: string };
+
+/** Les memes couples que les motifs : une seule palette dans l'application. */
+const TEINTES: TeinteDeRayon[] = MOTIFS.map(({ fond, encre }) => ({ fond, encre }));
+
+/**
+ * La teinte d'un rayon, tiree de son slug.
+ *
+ * Stable : le meme rayon garde sa couleur d'une visite a l'autre, et deux
+ * rayons voisins dans la grille en ont presque toujours deux differentes.
+ * Un tirage a chaque rendu ferait clignoter la page au rechargement.
+ */
+export function teinteDeRayon(cle: string): TeinteDeRayon {
+  let somme = 0;
+  for (let i = 0; i < cle.length; i += 1) somme = (somme * 31 + cle.charCodeAt(i)) % 100003;
+  return TEINTES[somme % TEINTES.length]!;
+}
+
+/**
+ * Ce qu'on dessine sur un rayon sans photo : un motif, ou son initiale.
+ *
+ * Le motif passe d'abord — il dit quelque chose. L'initiale ne dit rien,
+ * mais elle distingue, et c'est tout ce qu'on lui demande.
+ */
+export function habillageDeRayon(
+  slug: string,
+  nom: string,
+): { teinte: TeinteDeRayon; motif: string | null; initiale: string } {
+  const motif = motifDeLaCarte([{ slug }]);
+  return {
+    teinte: motif ? { fond: motif.fond, encre: motif.encre } : teinteDeRayon(slug),
+    motif: motif?.cle ?? null,
+    initiale: (nom.trim()[0] ?? '·').toUpperCase(),
+  };
+}

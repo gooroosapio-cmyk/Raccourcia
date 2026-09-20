@@ -1,5 +1,8 @@
 import { getTagsExplorables } from '@/lib/catalog/tags';
+import { getTagsFavoris } from '@/lib/catalog/tags-favoris';
+import { getVisuelsTournants, visuelDeCarte } from '@/lib/catalog/visuels';
 import { getCollectionsPopulaires } from '@/lib/catalog/accueil';
+import { getAccessState } from '@/lib/access/entitlement';
 import { RechercheBibliotheque } from '@/components/library/recherche-bibliotheque';
 import { NosBibliotheques } from '@/components/accueil/nos-bibliotheques';
 import { Mosaique, type CarteDeMosaique } from '@/components/library/mosaique';
@@ -32,15 +35,26 @@ export const metadata = { title: 'Bibliothèque' };
 export default async function BibliothequePage() {
   let collections: Awaited<ReturnType<typeof getCollectionsPopulaires>>;
   let rayonsDeTags: Awaited<ReturnType<typeof getTagsExplorables>>;
+  let tirage: Awaited<ReturnType<typeof getVisuelsTournants>>;
+  let epingles: Awaited<ReturnType<typeof getTagsFavoris>>;
+  let membre: boolean;
 
   try {
     // Trente collections : de quoi tenir un sommaire sans le rendre
     // interminable. Les autres s'atteignent par la porte de leur
     // bibliotheque, qui les montre toutes.
-    [collections, rayonsDeTags] = await Promise.all([
+    const [acces, lot, rayons, visuels, favoris] = await Promise.all([
+      getAccessState(),
       getCollectionsPopulaires(30),
       getTagsExplorables(),
+      getVisuelsTournants(),
+      getTagsFavoris(),
     ]);
+    membre = acces.isMember;
+    collections = lot;
+    rayonsDeTags = rayons;
+    tirage = visuels;
+    epingles = favoris;
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -53,9 +67,15 @@ export default async function BibliothequePage() {
     throw error;
   }
 
+  // Les rayons epingles passent devant, quel que soit leur volume : c'est
+  // le seul classement que le membre a choisi lui-meme. Le reste garde
+  // l'ordre du catalogue — le plus porte d'abord.
   const tags = rayonsDeTags
     .flatMap((rayon) => rayon.tags)
-    .sort((a, b) => b.total - a.total)
+    .sort((a, b) => {
+      const ecart = Number(epingles.has(b.slug)) - Number(epingles.has(a.slug));
+      return ecart !== 0 ? ecart : b.total - a.total;
+    })
     .slice(0, 24);
 
   // Collections et tags alternes plutot que poses en deux blocs. Deux blocs
@@ -64,17 +84,23 @@ export default async function BibliothequePage() {
   const cartes: CarteDeMosaique[] = entrelacer(
     collections.map((collection) => ({
       cle: `c-${collection.slug}`,
+      slug: collection.slug,
       href: `/app/bibliotheque/${collection.slug}`,
       titre: collection.nom,
       detail: `${collection.total} commande${collection.total > 1 ? 's' : ''}`,
-      imageUrl: collection.apercuUrl,
+      imageUrl: visuelDeCarte(collection.apercuUrl, `collection:${collection.slug}`, tirage),
     })),
     tags.map((tag) => ({
       cle: `t-${tag.slug}`,
+      slug: tag.slug,
       href: `/app/bibliotheque/tag/${tag.slug}`,
       titre: tag.nom,
       detail: `${tag.total} commande${tag.total > 1 ? 's' : ''}`,
-      imageUrl: tag.imageUrl,
+      imageUrl: visuelDeCarte(tag.imageUrl, `tag:${tag.slug}`, tirage),
+      // L'etoile n'existe que pour un compte : un visiteur n'a pas de
+      // rayon a lui, et la lui montrer serait promettre un geste qui
+      // echoue.
+      ...(membre ? { epingle: epingles.has(tag.slug) } : {}),
     })),
   );
 

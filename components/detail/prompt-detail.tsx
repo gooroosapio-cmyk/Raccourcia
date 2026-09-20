@@ -7,7 +7,7 @@ import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-af
 import { ChampsDeCommande } from '@/components/detail/champs-de-commande';
 import { ChoixMoteur } from '@/components/detail/choix-moteur';
 import { FavoriteButton } from '@/components/cards/favorite-button';
-import { InputExampleList } from '@/components/detail/input-example-list';
+import { AFournir } from '@/components/detail/a-fournir';
 import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
 import { ModesCommande } from '@/components/detail/modes-commande';
 import { MotsCles } from '@/components/detail/mots-cles';
@@ -20,6 +20,7 @@ import { SheetCloseButton } from '@/components/ui/sheet-close';
 import { SheetDragHandle, useSheetDrag } from '@/components/ui/sheet-drag';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
+import { texteDePartage } from '@/lib/share/texte-de-partage';
 import { useToast } from '@/components/ui/toast';
 import type { PromptCard } from '@/lib/catalog/types';
 
@@ -148,12 +149,20 @@ export function PromptDetailSheet({
   const partager = async () => {
     const url = `${window.location.origin}/r/${prompt.slug}`;
     try {
+      // Un texte redige, pas la legende du catalogue. Collee dans une
+      // conversation, celle-ci arrivait sans nom, sans sujet et sans rien
+      // qui dise quoi en faire.
+      const texte = texteDePartage(prompt);
+
       if (navigator.share) {
-        await navigator.share({ title: prompt.command, text: prompt.resultSummary, url });
+        await navigator.share({ title: prompt.name, text: texte, url });
         return;
       }
-      await navigator.clipboard.writeText(url);
-      show('Lien copié');
+      // Sans partage natif — un navigateur de bureau —, c'est le message
+      // ENTIER qui part au presse-papiers, lien compris : copier l'adresse
+      // seule obligeait a reecrire a la main ce qu'on vient de composer.
+      await navigator.clipboard.writeText(`${texte}\n${url}`);
+      show('Message copié');
     } catch {
       // Un partage annule par l'utilisateur n'est pas une erreur a signaler.
     }
@@ -435,18 +444,18 @@ export function PromptDetailSheet({
 function CorpsCommande({ prompt }: { prompt: PromptCard }) {
   return (
     <>
-      {prompt.inputExamples.length > 0 || prompt.expectedInput ? (
-        <Section titre="À fournir">
-          {prompt.inputExamples.length > 0 ? (
-            <InputExampleList inputs={prompt.inputExamples} />
-          ) : null}
-          {prompt.expectedInput ? (
-            <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-              {prompt.expectedInput}
-            </p>
-          ) : null}
-        </Section>
-      ) : null}
+      {/* « A fournir » disait le contraire de ce que la commande attend.
+          Les tuiles venaient de `input_examples`, que l'import a rempli des
+          memes valeurs par defaut sur des centaines de cartes : sur une
+          commande qui transforme un portrait, on lisait « Texte brut » et
+          « Brief » juste au-dessus d'une phrase qui disait « Une photo
+          nette de la personne ». C'est le temoin qui fait foi. */}
+      <AFournir
+        temoin={prompt.witnessType}
+        precision={prompt.expectedInput}
+        exemples={prompt.inputExamples}
+        image={prompt.showImageCard}
+      />
 
       {/* « Vous obtenez » tenait en deux tuiles encadrees, une par format,
           chacune avec son icone et sa precision. Beaucoup de place pour une

@@ -145,6 +145,19 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/*
+ * La meme regle sur `html`, et le defilement lateral verrouille.
+ *
+ * `overflow-x: hidden` pose sur `body` seul ne suffit pas : le navigateur
+ * remonte alors la responsabilite du defilement a `html`, qui n'a aucune
+ * borne. La page pouvait donc glisser lateralement meme avec un `body`
+ * cense ne pas deborder.
+ */
+html {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
 /* Cible tactile minimale de 44x44px pour toute action recurrente. */
 .touch-target {
   min-block-size: 44px;
@@ -164,9 +177,18 @@ body {
 /*
  * Defilement horizontal des chips : la barre systeme est masquee, le fondu
  * lateral suffit a dire qu'il reste du contenu.
+ *
+ * `overscroll-behavior-x: contain` REPARE LE DECALAGE DE TOUTE LA PAGE.
+ * Quand un carrousel arrive au bout, le navigateur enchaine le geste sur
+ * l'ancetre qui peut encore defiler — et comme les rails debordent des
+ * marges de la coquille par `-mx-5`, le document lui-meme pouvait glisser
+ * lateralement. On se retrouvait avec l'interface entiere decalee a
+ * droite, logo coupe, sans rien pour revenir. `contain` arrete le geste au
+ * bord du rail : il ne se propage plus.
  */
 .rail {
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
@@ -357,38 +379,4 @@ body {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-/*
- * L'en-tete s'efface au-dessus d'un ecran plein.
- *
- * La coquille pose un bandeau opaque et flou en haut de chaque page. Sur
- * Decouvrir, ou chaque carte occupe tout l'ecran, ce bandeau coupait
- * l'image en deux et defaisait exactement ce que la page promet.
- *
- * Il devient transparent, et un voile sombre prend sa place : sans lui, le
- * logo passerait du noir sur un fond clair au noir sur un fond noir selon
- * la carte affichee. Le voile garantit un contraste quelle que soit
- * l'image dessous.
- *
- * `:has()` plutot qu'un drapeau porte par la coquille : c'est la page qui
- * sait qu'elle est plein ecran, et elle le dit par un attribut. La
- * coquille n'a pas a connaitre la liste de ses pages.
- */
-body:has([data-plein-ecran]) > div > header {
-  background-color: transparent;
-  backdrop-filter: none;
-  color: #fff;
-}
-
-body:has([data-plein-ecran]) > div > header::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), transparent);
-  pointer-events: none;
-}
-
-body:has([data-plein-ecran]) > div > header > * {
-  position: relative;
 }

@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { headers } from 'next/headers';
-import { Logo } from '@/components/ui/logo';
+import { EnteteApp } from '@/components/navigation/entete-app';
 import { BottomNav } from '@/components/navigation/bottom-nav';
 import { PaywallLayer } from '@/components/paywall/paywall-provider';
 import { Toaster } from '@/components/ui/toast';
@@ -39,20 +38,10 @@ export default async function MemberLayout({ children }: { children: React.React
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-screen-sm flex-col lg:max-w-[46rem]">
-      <header className="sticky top-0 z-30 flex items-center justify-between bg-[color:var(--color-canvas)]/95 px-4 py-3 backdrop-blur min-[360px]:px-5">
-        <Logo className="text-lg" />
-
-        {/* Un visiteur doit pouvoir entrer sans passer par la page Compte :
-            c'est la seule action que la coquille lui doit. */}
-        {!acces.isMember ? (
-          <Link
-            href="/connexion"
-            className="touch-target inline-flex items-center rounded-[color:var(--radius-control)] px-2 text-[length:var(--texte-carte)] font-medium text-[color:var(--color-brand)]"
-          >
-            Se connecter
-          </Link>
-        ) : null}
-      </header>
+      {/* L'en-tete est une feuille cliente : elle doit savoir sur quelle
+          page elle se trouve pour s'effacer au-dessus de Decouvrir. Une
+          feuille, jamais une enveloppe — voir le commentaire de tete. */}
+      <EnteteApp membre={acces.isMember} />
 
       {/* Seize pixels de marge sous 360 px au lieu de vingt : sur un ecran
           de 320 px, les huit pixels rendus a la grille font la difference

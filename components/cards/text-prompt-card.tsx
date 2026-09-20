@@ -127,7 +127,16 @@ export function TextPromptCard({
             {/* Le titre, pas la commande : « Rayon X » se lit sans connaitre la
                 convention des raccourcis. Deux lignes reservees, toujours,
                 sinon la galerie part en escalier. */}
-            <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+            {/* Deux lignes reservees dans la grille, et seulement la :
+                c'est ce qui empeche les cartes voisines de partir en
+                escalier. Sur une carte pleine largeur, il n'y a pas de
+                voisine a aligner, et la reserve ne fait qu'un grand vide
+                sous un titre d'une ligne. */}
+            <span
+              className={`line-clamp-2 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)] ${
+                pleineLargeur ? '' : 'min-h-[2.6em]'
+              }`}
+            >
               {prompt.name}
             </span>
             {repere ? (
@@ -139,9 +148,19 @@ export function TextPromptCard({
         </span>
       </button>
 
-      {/* Hors du bouton : un lien dans un bouton rend la cible imprevisible. */}
-      <div className={pleineLargeur ? 'px-3 pb-1' : 'px-2.5 pb-1'}>
-        <LienDeCollection prompt={prompt} trait={rayon} />
+      {/* Hors du bouton : un lien dans un bouton rend la cible imprevisible.
+          Le genre — « Mode IA », « Parcours » — se lit ici, a cote du rayon,
+          et non plus sur la ligne du bouton : la, il volait la moitie de la
+          largeur et le libelle finissait coupe en « Personna… ». */}
+      <div className={`flex items-baseline gap-2 ${pleineLargeur ? 'px-3 pb-1' : 'px-2.5 pb-1'}`}>
+        <span className="min-w-0 flex-1">
+          <LienDeCollection prompt={prompt} trait={rayon} />
+        </span>
+        {genre ? (
+          <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
+            {genre}
+          </span>
+        ) : null}
       </div>
 
       <span className="pointer-events-none absolute left-1.5 top-1.5">
@@ -157,14 +176,10 @@ export function TextPromptCard({
         />
       </div>
 
-      {/* La copie ferme la carte, en bas, la ou se prend la decision. */}
-      <div className="mt-auto flex items-center gap-2 px-2.5 pb-2.5">
-        {genre ? (
-          <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
-            {genre}
-          </span>
-        ) : null}
-        <span className="ml-auto w-full">
+      {/* La copie ferme la carte, en bas, la ou se prend la decision — et
+          seule sur sa ligne, donc jamais coupee. */}
+      <div className="mt-auto px-2.5 pb-2.5">
+        <span className="block w-full">
           <CopyCommandButton
             promptId={prompt.id}
             provider={actif?.key ?? 'chatgpt'}
