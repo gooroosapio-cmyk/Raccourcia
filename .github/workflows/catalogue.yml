@@ -524,6 +524,11 @@ jobs:
                    ' collection(s), ' || jsonb_array_length(public.tags_de_bibliotheque('reflexions')) || ' tag(s)';"
 
       # lecteur. Rejouable : `create or replace` seul.
+      #
+      # Trois migrations, dans l'ordre : les sommaires de bibliotheque, les
+      # visuels tournants, puis les collections epinglables et la
+      # description rendue par les sommaires. Elles vont ensemble — c'est la
+      # meme grille qu'elles achevent — et aucune ne touche a une donnee.
       - name: Installer l'exploration par bibliotheque (V4)
         if: inputs.dossier == 'exploration-v4'
         env:
@@ -550,6 +555,58 @@ jobs:
           psql "$PGURL" -At -c "
             select '    ' || count(*) || ' rayon(s) recoivent un visuel tire de leur dossier'
             from jsonb_object_keys(public.visuels_tournants(0));"
+          # La troisieme de la serie, et la seule qui n'avait pas de pas.
+          #
+          # Elle etait citee nulle part dans ce fichier : elle n'avait donc
+          # aucun chemin vers la production, et elle y manque encore alors
+          # que les deux precedentes sont posees depuis longtemps. Deux
+          # consequences visibles, et chacune se lit comme un defaut :
+          #
+          #   * l'etoile posee sur une collection ne fait rien. La lecture
+          #     de `category_favorites` echoue, l'ecran avale l'erreur et
+          #     rend une liste vide — le geste echoue donc en silence,
+          #     alors que la meme etoile fonctionne sur un tag ;
+          #
+          #   * les rayons de Textes ne montrent toujours qu'un nom. Les
+          #     trente descriptions du lot `formats-et-rayons` SONT en base
+          #     — quarante-deux tags en portent une — mais aucune des
+          #     quatre fonctions de sommaire ne les rend. Elles sont
+          #     ecrites et jamais lues.
+          #
+          # Rejouable : `create table if not exists`, `create or replace`
+          # sur des fonctions dont aucune signature ne change — une cle
+          # s'ajoute au JSON rendu, et une cle inconnue est ignoree par un
+          # lecteur qui ne l'attend pas encore. Le deploiement peut donc se
+          # faire dans n'importe quel ordre sans qu'un ecran casse
+          # entre-temps.
+          echo '  Migration : category_favorites / description des rayons'
+          psql "$PGURL" -v ON_ERROR_STOP=1 -q --no-psqlrc \
+            < supabase/migrations/20260921160000_rayons_favoris_et_descriptions.sql
+          # Les deux controles que la migration appelle. Un `create or
+          # replace` qui n'aurait pas pris ne leve pas : il faut regarder
+          # ce que la fonction rend, pas le fait qu'elle existe.
+          echo '  Collections epinglables :'
+          psql "$PGURL" -At -c "
+            select '    category_favorites : ' ||
+                   count(*) || ' table, RLS ' ||
+                   coalesce((select case when c.relrowsecurity then 'active' else 'INACTIVE' end
+                             from pg_class c join pg_namespace n on n.oid = c.relnamespace
+                             where n.nspname = 'public' and c.relname = 'category_favorites'), 'absente')
+            from information_schema.tables
+            where table_schema = 'public' and table_name = 'category_favorites';"
+          echo '  Ce que contient chaque rayon :'
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) || ' sommaire(s) sur 4 rendent la description'
+            from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+            where n.nspname = 'public'
+              and p.proname in ('tags_explorables', 'tags_de_bibliotheque',
+                                'collections_populaires', 'collections_de_bibliotheque')
+              and pg_get_function_result(p.oid) like '%jsonb%'
+              and pg_get_functiondef(p.oid) like '%as description%';"
+          psql "$PGURL" -At -c "
+            select '    ' || count(*) filter (where coalesce(btrim(description), '') <> '') ||
+                   ' rayon(s) decrit(s) sur ' || count(*)
+            from public.tags where is_active;"
 
       # Le prix affiche.
       #
