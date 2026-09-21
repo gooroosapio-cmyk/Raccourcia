@@ -10,7 +10,7 @@ import { motifDeLaCarte } from '@/lib/ui/motifs';
 import { resumerPourCarte } from '@/lib/format/resume';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
-import { nomDuGenre, repereDuMoteur } from '@/lib/catalog/experience';
+import { nomDuGenre, promesseDeCarte, repereDuMoteur } from '@/lib/catalog/experience';
 import { LienDeCollection } from '@/components/cards/lien-de-collection';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
@@ -76,16 +76,15 @@ export function TextPromptCard({
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
 
-  // L'intention dit ce que la commande cherche a obtenir ; la description dit
-  // comment elle s'y prend. La premiere des deux qui existe tient la place.
+  // La promesse de la commande, choisie par `promesseDeCarte` — la
+  // description d'abord, l'intention en dernier recours : depuis l'import du
+  // moteur V3, `intention` porte le cadrage complet, garde-fous compris.
   //
   // Bornee au mot pres, et pas seulement a l'affichage : les descriptions du
   // catalogue vont de six mots a cent cinquante, et une carte qui les rend
   // telles quelles n'a pas de taille. La suite est dans la fiche, a un geste
   // de la — c'est ce que disent les points de suspension.
-  const apercu = resumerPourCarte(
-    prompt.intention?.trim() || prompt.shortDescription || prompt.resultSummary,
-  );
+  const apercu = resumerPourCarte(promesseDeCarte(prompt));
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
   const genre = nomDuGenre(prompt);
   const repere = pleineLargeur ? repereDuMoteur(prompt) : null;

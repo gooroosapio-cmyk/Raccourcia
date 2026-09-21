@@ -8,7 +8,7 @@ import { ResultThumbnail } from '@/components/cards/result-thumbnail';
 import { LienDeCollection } from '@/components/cards/lien-de-collection';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
-import { nomDuGenre } from '@/lib/catalog/experience';
+import { nomDuGenre, promesseDeCarte } from '@/lib/catalog/experience';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
@@ -72,7 +72,7 @@ export function ImagePromptCard({
   const { open: ouvrirOffre } = usePaywall();
   const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
-  const description = prompt.shortDescription || prompt.resultSummary;
+  const description = promesseDeCarte(prompt);
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
   const genre = nomDuGenre(prompt);
 
