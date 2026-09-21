@@ -4,7 +4,7 @@ import { cache } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { CatalogUnavailableError } from '@/lib/catalog/errors';
 import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
-import { LIBRARY_LABELS, type Library } from '@/lib/constants';
+import { resumerPourCarte } from '@/lib/format/resume';
 import type {
   CarteDecouverte,
   CarteVoisine,
@@ -13,28 +13,26 @@ import type {
 } from '@/lib/catalog/types';
 
 /**
- * Le feed Decouvrir : ce que les commandes produisent, avant ce qu'elles
- * demandent.
+ * Le feed Decouvrir : ce que les commandes produisent, et rien d'autre.
  *
  * On ne choisit pas une commande sur son nom. « /goldenselfie » ne dit
  * rien ; le selfie dore, si. La Bibliotheque range, l'accueil oriente —
  * cette page montre.
  *
- * SEPT IMAGES POUR TROIS TEXTES. Le catalogue n'est pas qu'une galerie :
- * un tiers de ses commandes redige, analyse ou converse, et celles-la
- * n'ont pas de resultat a montrer. Les exclure reviendrait a dire qu'elles
- * n'existent pas ; les melanger a parts egales ferait d'une page de
- * decouverte visuelle un sommaire. Sept pour trois garde la promesse de la
- * page et laisse sa place au reste.
+ * DES VISUELS, ET SEULEMENT DES VISUELS. Le feed a longtemps glisse trois
+ * cartes ecrites entre sept images, pour que les commandes qui redigent ou
+ * analysent ne soient pas absentes de la page. La regle a coute plus
+ * qu'elle ne rapportait : sur un ecran plein qui s'aimante carte par carte,
+ * un bloc de texte arrete net un parcours qu'on fait pour regarder, et il
+ * n'en dit pas plus que ne le ferait sa fiche. Les Textes et les Reflexions
+ * gardent la Bibliotheque et l'accueil, ou l'on vient lire ; ici, on
+ * regarde.
  *
- * Une carte image montre son resultat. Une carte texte montre ce qu'elle
- * fait, ecrit : c'est son equivalent de l'image, et un cadre vide avec un
- * nom dedans ne donnerait envie de rien.
+ * La consequence tient en une ligne de requete : une commande entre dans le
+ * feed si elle est publiee, rangee dans la bibliotheque Images, et si elle
+ * porte un visuel « apres ». La jointure interne fait office de filtre, donc
+ * un palier ne se remplit jamais de cadres vides.
  */
-
-/** Dix par palier : sept images, trois textes. */
-const IMAGES_PAR_PALIER = 7;
-const TEXTES_PAR_PALIER = 3;
 
 type LigneDecouverte = {
   id: string;
@@ -43,8 +41,6 @@ type LigneDecouverte = {
   name: string;
   short_description: string;
   result_summary: string | null;
-  intention: string | null;
-  library: Library | null;
   is_free: boolean;
   like_count: number;
   discover_rank: number;
@@ -55,8 +51,8 @@ type LigneDecouverte = {
 };
 
 const COLONNES = `
-  id, slug, command, name, short_description, result_summary, intention,
-  library, is_free, like_count, discover_rank, category_id,
+  id, slug, command, name, short_description, result_summary,
+  is_free, like_count, discover_rank, category_id,
   categories(slug, name),
   prompt_tags(tags(slug, name, groupe))
 `;
@@ -65,90 +61,69 @@ const COLONNES = `
 const COLONNES_IMAGE = `${COLONNES}, prompt_media!inner(kind, storage_path, alt, sort_order)`;
 
 /**
+ * Combien de cartes par palier.
+ *
+ * Dix : a peu pres dix gestes de pouce, ce qui laisse le temps au palier
+ * suivant d'arriver sans jamais faire attendre devant une fin de liste
+ * prematuree.
+ */
+const CARTES_PAR_PALIER = 10;
+
+/**
  * Un palier du feed.
  *
- * Deux lectures, une par vivier, puis un entrelacement. Une seule lecture
- * melangee obligerait a trier les deux catalogues ensemble, donc a choisir
- * un critere commun a une photo et a un plan de tresorerie — il n'y en a
- * pas.
+ * Une seule lecture depuis que le feed ne montre que des images. Il y en
+ * avait deux — une par vivier — suivies d'un entrelacement, parce qu'on ne
+ * peut pas trier ensemble une photo et un plan de tresorerie : il n'existe
+ * pas de critere commun aux deux. La question ne se pose plus.
  *
- * Chaque curseur porte le rang **et** l'identifiant : deux commandes
- * peuvent partager un rang, et sans le second critere la frontiere entre
- * deux paliers sauterait une carte ou la repeterait.
+ * Le curseur porte le rang **et** l'identifiant : deux commandes peuvent
+ * partager un rang, et sans le second critere la frontiere entre deux
+ * paliers sauterait une carte ou la repeterait.
  */
 export async function getDecouverte(
   curseur: CurseurDecouverte | null = null,
 ): Promise<PageDecouverte> {
-  const [images, textes] = await Promise.all([
-    lireUnVivier('images', curseur?.image ?? null, IMAGES_PAR_PALIER),
-    lireUnVivier('textes', curseur?.texte ?? null, TEXTES_PAR_PALIER),
-  ]);
+  const { lignes, suite } = await lireLesVisuels(curseur, CARTES_PAR_PALIER);
 
-  const lignes = [...images.lignes, ...textes.lignes];
   const [aimees, voisinage] = await Promise.all([
     lesQuellesJaime(lignes.map((l) => l.id)),
     lesVoisines(lignes),
   ]);
 
-  const cartesImage = images.lignes.map((l) => versCarte(l, aimees, voisinage, 'image'));
-  const cartesTexte = textes.lignes.map((l) => versCarte(l, aimees, voisinage, 'texte'));
-
   return {
-    cartes: entrelacer(cartesImage, cartesTexte),
-    // Il reste quelque chose tant que l'un des deux viviers n'est pas
-    // epuise : le feed ne s'arrete pas parce que les images manquent.
-    suite: images.suite || textes.suite ? { image: images.suite, texte: textes.suite } : null,
+    cartes: lignes.map((ligne) => versCarte(ligne, aimees, voisinage)),
+    suite,
   };
 }
 
 /**
- * Sept images, puis trois textes, mais pas en bloc.
+ * Les visuels du catalogue, du rang ou l'on en est.
  *
- * Les trois cartes texte sont reparties dans le palier plutot que posees a
- * la suite : trois ecrans de texte d'affilee cassent le rythme d'une page
- * qu'on parcourt pour regarder. Une tous les trois visuels environ.
+ * Trois conditions, et elles sont toutes les trois des filtres : publiee,
+ * rangee dans la bibliotheque Images, et porteuse d'un visuel « apres ».
+ * La jointure interne sur `prompt_media` fait ce dernier filtre — une
+ * commande sans « apres » ne remonte pas du tout, donc le palier garde sa
+ * taille au lieu de se remplir de cadres vides.
+ *
+ * Le filtre sur `library` est redondant avec la jointure tant qu'aucune
+ * commande ecrite ne porte de visuel « apres ». Il est ecrit quand meme :
+ * c'est lui qui dit la regle de la page, et le jour ou l'administration
+ * deposera une illustration sur un Mode IA, elle n'atterrira pas ici par
+ * accident.
  */
-function entrelacer(images: CarteDecouverte[], textes: CarteDecouverte[]): CarteDecouverte[] {
-  if (textes.length === 0) return images;
-  if (images.length === 0) return textes;
-
-  const melange: CarteDecouverte[] = [];
-  const pas = Math.max(1, Math.ceil(images.length / (textes.length + 1)));
-  let prochainTexte = 0;
-
-  images.forEach((carte, rang) => {
-    melange.push(carte);
-    if ((rang + 1) % pas === 0 && prochainTexte < textes.length) {
-      melange.push(textes[prochainTexte]!);
-      prochainTexte += 1;
-    }
-  });
-
-  // Ce qui n'a pas trouve sa place ferme le palier plutot que d'etre perdu.
-  return [...melange, ...textes.slice(prochainTexte)];
-}
-
-async function lireUnVivier(
-  vivier: 'images' | 'textes',
-  depuis: { rang: number; id: string } | null,
+async function lireLesVisuels(
+  depuis: CurseurDecouverte | null,
   limite: number,
-): Promise<{ lignes: LigneDecouverte[]; suite: { rang: number; id: string } | null }> {
+): Promise<{ lignes: LigneDecouverte[]; suite: CurseurDecouverte | null }> {
   const supabase = await createClient();
 
   let requete = supabase
     .from('prompts')
-    .select(vivier === 'images' ? COLONNES_IMAGE : COLONNES)
-    .eq('status', 'published');
-
-  if (vivier === 'images') {
-    // La jointure interne fait office de filtre : une commande sans
-    // « apres » ne remonte pas du tout, et le palier garde sa taille.
-    requete = requete.eq('library', 'images').eq('prompt_media.kind', 'after');
-  } else {
-    // Textes et Reflexions ensemble : ce sont les deux facons de se servir
-    // de l'outil sans image a la sortie.
-    requete = requete.in('library', ['textes', 'reflexions']);
-  }
+    .select(COLONNES_IMAGE)
+    .eq('status', 'published')
+    .eq('library', 'images')
+    .eq('prompt_media.kind', 'after');
 
   if (depuis) {
     // « strictement apres » sur le couple (rang, id) : PostgREST n'a pas de
@@ -180,7 +155,6 @@ function versCarte(
   ligne: LigneDecouverte,
   aimees: Set<string>,
   voisinage: Map<string, CarteVoisine[]>,
-  genre: 'image' | 'texte',
 ): CarteDecouverte {
   const visuel =
     (ligne.prompt_media ?? [])
@@ -192,13 +166,9 @@ function versCarte(
     slug: ligne.slug,
     command: ligne.command,
     name: ligne.name,
-    description: ligne.short_description || (ligne.result_summary ?? ''),
-    genre,
-    // Le detail ne voyage que pour une carte texte : c'est elle qui
-    // l'affiche, et l'embarquer pour sept cartes image par palier
-    // alourdirait chaque chargement sans rien montrer de plus.
-    detail: genre === 'texte' ? (ligne.intention ?? ligne.result_summary ?? '') : '',
-    bibliotheque: ligne.library ? (LIBRARY_LABELS[ligne.library] ?? null) : null,
+    // Bornee au mot pres, comme partout ailleurs : la carte pleine page en
+    // reserve deux lignes, et une description de cent mots les depasserait.
+    description: resumerPourCarte(ligne.short_description || (ligne.result_summary ?? '')),
     visuelUrl: visuel ? urlVisuel(visuel.storage_path, LARGEURS_VISUEL.comparaison) : '',
     visuelAlt: visuel?.alt ?? `Résultat obtenu avec ${ligne.name}`,
     // Ni la bibliotheque ni l'IA : la premiere se lit deja dans le rayon,
@@ -333,27 +303,26 @@ async function lesQuellesJaime(ids: string[]): Promise<Set<string>> {
 /**
  * Combien de commandes le feed peut montrer.
  *
- * Sert a l'ecran vide : « aucune commande n'a encore de visuel » se dit
- * autrement que « le catalogue est vide ». Les textes comptent aussi :
- * depuis qu'ils entrent dans le feed, une bibliotheque sans une seule image
- * a quand meme quelque chose a montrer.
+ * Sert a l'ecran vide, et a lui seul : « aucune commande n'a encore de
+ * visuel » se dit autrement que « le catalogue est vide », et les deux
+ * appellent des gestes opposes — le premier une mise en ligne de visuels,
+ * le second une publication de commandes.
+ *
+ * On compte donc exactement ce que le feed sait montrer : des commandes
+ * publiees, rangees en Images, avec un visuel « apres ». Les Textes ne
+ * comptent plus, puisqu'ils n'entrent plus dans la page ; les inclure
+ * ferait dire « les visuels ne sont pas accessibles » a un catalogue qui
+ * n'en a simplement aucun.
  */
 export const compterLesVisuels = cache(async (): Promise<number> => {
   const supabase = await createClient();
 
-  const [images, textes] = await Promise.all([
-    supabase
-      .from('prompts')
-      .select('id, prompt_media!inner(kind)', { count: 'exact', head: true })
-      .eq('status', 'published')
-      .eq('library', 'images')
-      .eq('prompt_media.kind', 'after'),
-    supabase
-      .from('prompts')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'published')
-      .in('library', ['textes', 'reflexions']),
-  ]);
+  const { count } = await supabase
+    .from('prompts')
+    .select('id, prompt_media!inner(kind)', { count: 'exact', head: true })
+    .eq('status', 'published')
+    .eq('library', 'images')
+    .eq('prompt_media.kind', 'after');
 
-  return (images.count ?? 0) + (textes.count ?? 0);
+  return count ?? 0;
 });

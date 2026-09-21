@@ -1,6 +1,6 @@
 import { getTagsExplorables } from '@/lib/catalog/tags';
 import { getCollectionsFavorites, getTagsFavoris } from '@/lib/catalog/tags-favoris';
-import { getVisuelsTournants, visuelDeCarte } from '@/lib/catalog/visuels';
+import { getVisuelsTournants, visuelDeCollection, visuelDeTag } from '@/lib/catalog/visuels';
 import { getCollectionsPopulaires } from '@/lib/catalog/accueil';
 import { getAccessState } from '@/lib/access/entitlement';
 import { RechercheBibliotheque } from '@/components/library/recherche-bibliotheque';
@@ -92,7 +92,7 @@ export default async function BibliothequePage() {
       href: `/app/bibliotheque/${collection.slug}`,
       titre: collection.nom,
       detail: collection.description ?? compter(collection.total),
-      imageUrl: visuelDeCarte(collection.apercuUrl, `collection:${collection.slug}`, tirage),
+      imageUrl: visuelDeCollection(collection.apercuUrl, collection.slug, tirage),
       ...(membre ? { epingle: rayonsEpingles.has(collection.slug) } : {}),
     })),
     tags.map((tag) => ({
@@ -102,7 +102,7 @@ export default async function BibliothequePage() {
       href: `/app/bibliotheque/tag/${tag.slug}`,
       titre: tag.nom,
       detail: tag.description ?? compter(tag.total),
-      imageUrl: visuelDeCarte(tag.imageUrl, `tag:${tag.slug}`, tirage),
+      imageUrl: visuelDeTag(tag.imageUrl, tag.slug, tirage),
       // L'etoile n'existe que pour un compte : un visiteur n'a pas de
       // rayon a lui, et la lui montrer serait promettre un geste qui
       // echoue.

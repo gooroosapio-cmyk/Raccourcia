@@ -7,6 +7,7 @@ import {
 } from '@/lib/catalog/queries';
 import { getFacettes } from '@/lib/catalog/filtres';
 import { getCollectionsPopulaires } from '@/lib/catalog/accueil';
+import { getVisuelsTournants, visuelDeCollection } from '@/lib/catalog/visuels';
 import { ordonnerLeFeed } from '@/lib/catalog/feed';
 import type { PromptCard } from '@/lib/catalog/types';
 import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
@@ -133,7 +134,7 @@ export default async function AccueilPage({
       // Un vivier plus large que ce qu'on montre : c'est ce qui donne au
       // melange de quoi varier. Tire dans soixante cartes, il rendrait
       // toujours les memes soixante, dans un autre ordre.
-      const [vivier, familles, reprendre, collections] = await Promise.all([
+      const [vivier, familles, reprendre, collections, tirage] = await Promise.all([
         getVivierDuFeed(VIVIER_TIRAGE, {
           garder: VIVIER_MONTRE,
           offertsDabord: !acces.hasFullAccess,
@@ -143,6 +144,11 @@ export default async function AccueilPage({
         // Dix collections : de quoi remplir une rangee qui defile sans en
         // faire un sommaire.
         getCollectionsPopulaires(10),
+        // Le tirage des miniatures. L'accueil ne le demandait pas : ses
+        // tuiles de collection montraient l'apercu prete par la premiere
+        // commande du rayon, donc la meme image a chaque visite. La
+        // Bibliotheque, elle, tirait deja.
+        getVisuelsTournants(),
       ]);
 
       accueil = {
@@ -156,7 +162,13 @@ export default async function AccueilPage({
         feed: ordonnerLeFeed(vivier),
         familles,
         reprendre,
-        collections,
+        // Le tirage se pose ici et non dans la tuile : un composant qui
+        // tire au sort pendant qu'il rend n'est plus idempotent, et deux
+        // rendus du meme arbre ne donneraient pas la meme page.
+        collections: collections.map((collection) => ({
+          ...collection,
+          apercuUrl: visuelDeCollection(collection.apercuUrl, collection.slug, tirage),
+        })),
       };
       page = { items: [], hasMore: false, total: 0 };
     } else {

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { resumerPourCarte } from '@/lib/format/resume';
 import { IllustrationDeRayon } from '@/components/library/illustration-rayon';
 import type { CollectionTile as Tile } from '@/lib/catalog/types';
 
@@ -55,7 +56,7 @@ export function CollectionTile({
              une phrase longue mettent leurs deux tuiles a des hauteurs
              differentes, et la grille part en escalier. */
           <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-meta)] leading-[1.3] text-[color:var(--color-muted)]">
-            {tile.description}
+            {resumerPourCarte(tile.description)}
           </span>
         ) : null}
       </span>

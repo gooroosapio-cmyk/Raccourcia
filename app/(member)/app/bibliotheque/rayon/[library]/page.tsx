@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSommaireDeBibliotheque } from '@/lib/catalog/sommaire';
 import { getCollectionsFavorites, getTagsFavoris } from '@/lib/catalog/tags-favoris';
-import { getVisuelsTournants, visuelDeCarte } from '@/lib/catalog/visuels';
+import { getVisuelsTournants, visuelDeCollection, visuelDeTag } from '@/lib/catalog/visuels';
 import { getAccessState } from '@/lib/access/entitlement';
 import { Mosaique, type CarteDeMosaique } from '@/components/library/mosaique';
 import { NetworkError } from '@/components/ui/network-error';
@@ -93,7 +93,7 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
       // Textes, il n'y a pas d'image a emprunter et un compteur seul ne
       // fait choisir personne.
       detail: collection.description ?? compter(collection.total),
-      imageUrl: visuelDeCarte(collection.apercuUrl, `collection:${collection.slug}`, tirage),
+      imageUrl: visuelDeCollection(collection.apercuUrl, collection.slug, tirage),
       ...(membre ? { epingle: rayonsEpingles.has(collection.slug) } : {}),
     })),
     ...tags.map((tag) => ({
@@ -103,7 +103,7 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
       href: `/app/bibliotheque/tag/${tag.slug}`,
       titre: tag.nom,
       detail: tag.description ?? compter(tag.total),
-      imageUrl: visuelDeCarte(tag.imageUrl, `tag:${tag.slug}`, tirage),
+      imageUrl: visuelDeTag(tag.imageUrl, tag.slug, tirage),
       ...(membre ? { epingle: epingles.has(tag.slug) } : {}),
     })),
   ];

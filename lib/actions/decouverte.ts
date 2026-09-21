@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { getDecouverte } from '@/lib/catalog/decouverte';
 import { getPromptDetail } from '@/lib/catalog/queries';
-import type { PageDecouverte, PromptCard } from '@/lib/catalog/types';
+import type { CurseurDecouverte, PageDecouverte, PromptCard } from '@/lib/catalog/types';
 
 /**
  * Ce que le feed Decouvrir demande en cours de route.
@@ -13,9 +13,7 @@ import type { PageDecouverte, PromptCard } from '@/lib/catalog/types';
  * toujours par `resolve_prompt`, jamais par ici.
  */
 
-const marquePage = z.object({ rang: z.number().int(), id: z.string().uuid() }).nullable();
-
-const curseur = z.object({ image: marquePage, texte: marquePage });
+const curseur = z.object({ rang: z.number().int(), id: z.string().uuid() });
 
 /**
  * Le palier suivant.
@@ -24,11 +22,8 @@ const curseur = z.object({ image: marquePage, texte: marquePage });
  * requete. Un rang bricole ne peut au pire que deplacer la fenetre de
  * lecture dans un catalogue deja public.
  */
-export async function chargerLaSuite(
-  image: { rang: number; id: string } | null,
-  texte: { rang: number; id: string } | null,
-): Promise<PageDecouverte> {
-  const parse = curseur.safeParse({ image, texte });
+export async function chargerLaSuite(depuis: CurseurDecouverte): Promise<PageDecouverte> {
+  const parse = curseur.safeParse(depuis);
   // Un curseur illisible rend une page vide plutot qu'une erreur : le feed
   // s'arrete, ce qui est exactement ce qu'il ferait au bout de la liste.
   if (!parse.success) return { cartes: [], suite: null };

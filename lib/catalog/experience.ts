@@ -94,3 +94,45 @@ export function repereDuMoteur(carte: PromptCard): string | null {
 
   return `${plan.compte} livrables`;
 }
+
+/**
+ * Ce qu'une carte dit de la commande, en une phrase.
+ *
+ * LA DESCRIPTION D'ABORD, ET L'INTENTION EN DERNIER RECOURS.
+ *
+ * L'ordre etait l'inverse sur les cartes texte, et il partait d'une idee
+ * juste : « l'intention dit ce que la commande cherche a obtenir, la
+ * description dit comment elle s'y prend ». La donnee ne suit plus cette
+ * idee depuis l'import du moteur V3. `intention` y porte le cadrage
+ * complet envoye au moteur — la promesse, puis les garde-fous :
+ *
+ *   intention          « Jeu de role. Inventaire sante objectifs et
+ *                        consequences, hasard explicite. Exactitude des
+ *                        noms, dates, chiffres et references. Separer
+ *                        faits, hypotheses et propositions. Verifier
+ *                        coherence, calculs et fidelite au perimetre... »
+ *   short_description  « Aventure fantasy : inventaire sante objectifs et
+ *                        consequences, hasard explicite. »
+ *
+ * La seconde est la carte ; la premiere est la consigne. Sur les 2 121
+ * commandes publiees, `intention` fait 209 caracteres en moyenne contre 70
+ * pour la description, et **1 431 cartes** ont une intention plus de deux
+ * fois plus longue que leur description. Deux cent vingt-neuf repetent mot
+ * pour mot la meme clause d'exactitude : une carte sur dix affichait donc
+ * le meme paragraphe que sa voisine.
+ *
+ * Meme coupee a seize mots, l'intention rendait une carte qui commence par
+ * repeter son propre titre et finit au milieu d'un garde-fou. La
+ * description, elle, tient en une ligne et dit ce qu'on obtient.
+ *
+ * L'intention reste en dernier recours : quelques commandes n'ont qu'elle,
+ * et une carte muette serait pire qu'une carte bavarde.
+ *
+ * Les cartes image lisaient deja `short_description` en premier. Les deux
+ * sortes de cartes disent enfin la meme chose de la meme facon.
+ */
+export function promesseDeCarte(carte: PromptCard): string {
+  return (
+    carte.shortDescription?.trim() || carte.resultSummary?.trim() || carte.intention?.trim() || ''
+  );
+}

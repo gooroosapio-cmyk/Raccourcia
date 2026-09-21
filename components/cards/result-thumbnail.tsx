@@ -49,8 +49,6 @@ export function ResultThumbnail({
         // redimensionner ici. L'optimiseur de l'hebergeur, lui, a un quota
         // mensuel — epuise, il repond « Payment Required » et la vignette
         // disparait. Une image du catalogue ne doit dependre d'aucun
-        // compteur exterieur.
-        unoptimized
         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
         priority={priority}
         loading={priority ? undefined : 'lazy'}
