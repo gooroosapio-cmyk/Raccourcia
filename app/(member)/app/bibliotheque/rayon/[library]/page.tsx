@@ -82,6 +82,23 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
 
   const compter = (total: number) => `${total} commande${total > 1 ? 's' : ''}`;
 
+  // UN RAYON DE TEXTES N'EMPRUNTE PAS DE PHOTOGRAPHIE.
+  //
+  // Le tirage remplit les cadres vides en piochant un visuel « apres » parmi
+  // les commandes qui portent le tag. Un tag traverse les bibliotheques : sur
+  // « Personnage » ou « Analyse », les commandes illustrees sont des commandes
+  // IMAGE, et leur photo se retrouvait en couverture d'un rayon de Reflexions.
+  // Mesure sur le catalogue : 5 tags sur 18 en Reflexions, 3 sur 31 en Textes.
+  //
+  // Ce n'est pas seulement incongru, c'est faux : la couverture d'un rayon se
+  // lit comme un exemple de ce qu'il rend, et ces rayons-la ne rendent pas
+  // d'image. Le motif typographique de `FondDeRayon` dit la verite, et la
+  // description du rayon fait le reste du travail.
+  //
+  // L'image DEPOSEE par l'administration passe toujours : elle, quelqu'un l'a
+  // choisie pour ce rayon-la.
+  const photosEmpruntables = library === 'images';
+
   const cartes: CarteDeMosaique[] = [
     ...sommaire.collections.map((collection) => ({
       cle: `c-${collection.slug}`,
@@ -103,7 +120,11 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
       href: `/app/bibliotheque/tag/${tag.slug}`,
       titre: tag.nom,
       detail: tag.description ?? compter(tag.total),
-      imageUrl: visuelDeTag(tag.imageUrl, tag.slug, tirage),
+      imageUrl: photosEmpruntables
+        ? visuelDeTag(tag.imageUrl, tag.slug, tirage)
+        : // Hors de la bibliotheque Images, seule l'image DEPOSEE compte.
+          // Voir `photosEmpruntables` ci-dessus.
+          tag.imageUrl,
       ...(membre ? { epingle: epingles.has(tag.slug) } : {}),
     })),
   ];

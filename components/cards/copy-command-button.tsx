@@ -359,14 +359,33 @@ export function CopyCommandButton({
       {/* Action secondaire, discrete et seulement une fois la copie faite :
           proposer d'ouvrir l'IA avant qu'il y ait quelque chose a coller
           n'aurait servi qu'a faire quitter la page. Le lien ne porte aucune
-          donnee — la commande est dans le presse-papiers, pas dans l'URL. */}
-      {ouvertureProposee && adresse ? (
+          donnee — la commande est dans le presse-papiers, pas dans l'URL.
+
+          SA PLACE EST RESERVEE DES LE DEPART, ET C'EST LA CORRECTION.
+          Le lien apparaissait dans le flux apres la copie : le pied de la
+          fiche gagnait cinquante pixels d'un coup, la zone de lecture
+          au-dessus perdait autant, et tout ce qu'on etait en train de lire
+          remontait sous les yeux — juste au moment ou l'on venait d'agir.
+
+          Le lien occupe donc sa ligne des l'ouverture, invisible et hors
+          du parcours de tabulation tant qu'il n'y a rien a ouvrir.
+          `invisible` et non `hidden` : le premier garde la place, le second
+          la rend. Le pied garde ainsi la meme hauteur du debut a la fin.
+
+          La reserve ne coute rien la ou le lien ne peut pas paraitre : sur
+          une carte de galerie, `proposerOuverture` est faux et la ligne
+          n'est pas rendue du tout. */}
+      {proposerOuverture && adresse ? (
         <a
           href={adresse}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => setOuvertureProposee(false)}
-          className="touch-target mt-2 flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] text-[length:var(--texte-carte)] font-medium text-[color:var(--color-brand)]"
+          aria-hidden={!ouvertureProposee}
+          tabIndex={ouvertureProposee ? undefined : -1}
+          className={`touch-target mt-2 flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] text-[length:var(--texte-carte)] font-medium text-[color:var(--color-brand)] ${
+            ouvertureProposee ? '' : 'invisible'
+          }`}
         >
           Ouvrir {PROVIDER_LABELS[cle]}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">

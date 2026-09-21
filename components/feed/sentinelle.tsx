@@ -32,6 +32,7 @@ export function Sentinelle({
   libelle,
   racine,
   charge = false,
+  avance = 1,
 }: {
   /** Memorise par l'appelant : il decide de l'observateur. */
   onVisible: () => void;
@@ -48,6 +49,19 @@ export function Sentinelle({
    * bas atteint — c'est-a-dire trop tard.
    */
   racine?: React.RefObject<HTMLElement | null>;
+  /**
+   * De combien de hauteurs d'ecran on prend de l'avance.
+   *
+   * Une suffit a une galerie : on y descend par petits gestes, et une
+   * hauteur d'ecran represente six a huit cartes de reserve.
+   *
+   * Elle ne suffit pas a un feed plein ecran ou une carte OCCUPE l'ecran :
+   * une hauteur d'avance ne vaut plus qu'une carte, donc la demande part
+   * au moment ou l'on arrive sur la derniere et le geste suivant bute sur
+   * du vide. Decouvrir en prend trois — trois cartes de reserve, soit le
+   * temps d'un aller-retour reseau meme lent.
+   */
+  avance?: number;
 }) {
   const cible = useRef<HTMLDivElement>(null);
 
@@ -62,12 +76,12 @@ export function Sentinelle({
       (entrees) => {
         for (const entree of entrees) if (entree.isIntersecting) onVisible();
       },
-      // Une hauteur d'ecran d'avance : la suite arrive avant le bas.
-      { root: racine?.current ?? null, rootMargin: '100% 0px' },
+      // L'avance, en hauteurs d'ecran : la suite arrive avant le bas.
+      { root: racine?.current ?? null, rootMargin: `${avance * 100}% 0px` },
     );
     observateur.observe(noeud);
     return () => observateur.disconnect();
-  }, [onVisible, racine]);
+  }, [onVisible, racine, avance]);
 
   return (
     <div ref={cible} className="mt-3">
