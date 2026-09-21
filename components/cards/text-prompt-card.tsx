@@ -7,6 +7,7 @@ import { FavoriteButton } from '@/components/cards/favorite-button';
 import { BoutonJaime } from '@/components/cards/bouton-jaime';
 import { IllustrationThematique } from '@/components/cards/illustration-thematique';
 import { motifDeLaCarte } from '@/lib/ui/motifs';
+import { resumerPourCarte } from '@/lib/format/resume';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
 import { nomDuGenre, repereDuMoteur } from '@/lib/catalog/experience';
@@ -77,7 +78,14 @@ export function TextPromptCard({
 
   // L'intention dit ce que la commande cherche a obtenir ; la description dit
   // comment elle s'y prend. La premiere des deux qui existe tient la place.
-  const apercu = prompt.intention?.trim() || prompt.shortDescription || prompt.resultSummary;
+  //
+  // Bornee au mot pres, et pas seulement a l'affichage : les descriptions du
+  // catalogue vont de six mots a cent cinquante, et une carte qui les rend
+  // telles quelles n'a pas de taille. La suite est dans la fiche, a un geste
+  // de la — c'est ce que disent les points de suspension.
+  const apercu = resumerPourCarte(
+    prompt.intention?.trim() || prompt.shortDescription || prompt.resultSummary,
+  );
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
   const genre = nomDuGenre(prompt);
   const repere = pleineLargeur ? repereDuMoteur(prompt) : null;
@@ -158,28 +166,42 @@ export function TextPromptCard({
             onClick={() => onOpen(prompt)}
             className="flex-1 px-3 pt-3 text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.99]"
           >
-            <span className="line-clamp-2 block text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+            {/* DEUX LIGNES RESERVEES, ICI COMME AILLEURS. Sans reserve, un
+                titre court et un titre long donnent deux cartes de hauteurs
+                differentes, et le feed perd son rythme.
+
+                Pas de classe `block` a cote d'un `line-clamp` : les deux
+                posent `display`, la seconde ecrite dans la feuille gagne, et
+                c'est `block` — la coupe ne s'appliquait donc pas du tout.
+                C'est ce qui donnait des cartes de onze lignes. */}
+            <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
               {prompt.name}
             </span>
             {/* CE QUI REMPLIT LE VIDE. La carte montrait son titre puis
                 trois centimetres de blanc : la place existait, personne ne
-                l'utilisait. */}
-            <span className="mt-1 line-clamp-3 block text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-muted)]">
+                l'utilisait. Deux lignes, pas trois : le texte est deja borne
+                au mot pres, la coupe visuelle n'est plus qu'un garde-fou. */}
+            <span className="mt-1 line-clamp-2 min-h-[2.75em] text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-muted)]">
               {apercu}
             </span>
-            {repere ? (
-              <span className="mt-1 block text-[length:var(--texte-meta)] font-semibold text-[color:var(--color-brand-strong)]">
-                {repere}
-              </span>
-            ) : null}
           </button>
 
           {/* Hors du bouton : un lien dans un bouton rend la cible
-              imprevisible. */}
+              imprevisible.
+
+              Le repere du moteur — « 4 livrables » — tient sur cette ligne
+              plutot que sur la sienne : il ne concerne que les parcours, et
+              une ligne qui n'apparait que sur certaines cartes suffit a
+              rendre la hauteur du feed irreguliere. */}
           <div className="flex items-baseline gap-2 px-3 pb-1 pt-1.5">
             <span className="min-w-0 flex-1">
               <LienDeCollection prompt={prompt} trait={rayon} />
             </span>
+            {repere ? (
+              <span className="shrink-0 text-[length:var(--texte-meta)] font-semibold text-[color:var(--color-brand-strong)]">
+                {repere}
+              </span>
+            ) : null}
             {genre ? (
               <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
                 {genre}
@@ -225,8 +247,13 @@ export function TextPromptCard({
           className="block text-left"
           // Le titre ouvre la fiche comme le visuel : on touche ce qu'on
           // lit. Deux lignes reservees, sinon la grille part en escalier.
+          //
+          // `block` a ete retire du span : pose a cote d'un `line-clamp`, il
+          // gagnait sur lui et la coupe ne s'appliquait pas. Un titre de
+          // quatre lignes poussait alors le coeur et le bouton hors du cadre,
+          // que `overflow-hidden` finissait de trancher.
         >
-          <span className="line-clamp-2 block min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+          <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
             {prompt.name}
           </span>
         </button>
@@ -279,10 +306,6 @@ function Visuel({
           src={url}
           alt={alt ?? `Illustration de ${nom}`}
           fill
-          // Le stockage a deja rendu la vignette a la bonne largeur.
-          // L'optimiseur de l'hebergeur, lui, a un quota mensuel — epuise,
-          // il repond « Payment Required » et la vignette disparait.
-          unoptimized
           sizes="(max-width: 640px) 50vw, 300px"
           loading="lazy"
           className="object-cover"

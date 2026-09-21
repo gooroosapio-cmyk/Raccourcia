@@ -258,24 +258,14 @@ export type CarteDecouverte = {
   slug: string;
   command: string;
   name: string;
+  /** Bornee au mot pres : la carte en reserve deux lignes, pas davantage. */
   description: string;
   /**
-   * Ce que la carte montre.
+   * Le visuel « apres », en grand.
    *
-   * « image » : le resultat, plein cadre. « texte » : une carte
-   * typographique, parce qu'une commande de redaction n'a pas de resultat
-   * a montrer et qu'un cadre vide ne donne envie de rien. Ce qu'elle a a la
-   * place, c'est ce qu'elle fait — donc on l'ecrit.
+   * Jamais vide : une commande sans visuel n'entre pas dans le feed, et
+   * c'est la jointure interne de la requete qui le garantit.
    */
-  genre: 'image' | 'texte';
-  /**
-   * Ce que la commande fait, en detail. Rempli pour une carte texte, ou
-   * c'est le contenu principal ; vide pour une image, ou le visuel parle.
-   */
-  detail: string;
-  /** La bibliotheque d'ou vient la carte : le sur-titre d'une carte texte. */
-  bibliotheque: string | null;
-  /** Vide pour une carte texte. */
   visuelUrl: string;
   visuelAlt: string;
   /** Trois au plus : au-dela, la zone basse mange le visuel. */
@@ -319,19 +309,19 @@ export type CarteVoisine = {
 };
 
 /**
- * Le curseur du feed. Deux marque-pages, un par vivier.
+ * Le curseur du feed : un seul marque-page.
  *
- * Decouvrir melange deux catalogues qui n'ont ni la meme taille ni le meme
- * rythme : sept cent soixante-cinq cartes image, deux cent quarante-cinq
- * cartes texte et reflexion. Un seul curseur les epuiserait a des vitesses
- * differentes et le melange se deferait au bout de quelques paliers.
+ * Il y en avait deux, un par vivier, tant que Decouvrir melangeait des
+ * images et des cartes ecrites : deux catalogues de tailles differentes
+ * s'epuisent a des vitesses differentes, et un curseur unique aurait defait
+ * le melange au bout de quelques paliers. Le feed ne montre plus que des
+ * visuels ; il n'y a plus qu'un catalogue a parcourir.
+ *
+ * Le rang **et** l'identifiant : deux commandes peuvent partager un rang, et
+ * sans le second critere la frontiere entre deux paliers sauterait une carte
+ * ou la repeterait.
  */
-export type CurseurDecouverte = {
-  /** Ou l'on en est dans les images. */
-  image: { rang: number; id: string } | null;
-  /** Ou l'on en est dans les textes et les modes. */
-  texte: { rang: number; id: string } | null;
-};
+export type CurseurDecouverte = { rang: number; id: string };
 
 export type PageDecouverte = {
   cartes: CarteDecouverte[];

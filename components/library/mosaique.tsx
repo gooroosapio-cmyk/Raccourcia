@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { resumerPourCarte } from '@/lib/format/resume';
 import Link from 'next/link';
 import { FondDeRayon } from '@/components/library/fond-de-rayon';
 import { EtoileDeRayon } from '@/components/library/etoile-de-rayon';
@@ -148,11 +149,11 @@ function CarteIllustree({
             cadre et pousse le titre hors de la carte. */}
         {carte.detail ? (
           <span
-            className={`mt-0.5 line-clamp-2 block text-[length:var(--texte-meta)] leading-snug ${
+            className={`mt-0.5 line-clamp-2 text-[length:var(--texte-meta)] leading-snug ${
               carte.imageUrl ? 'text-white/80' : 'text-[color:var(--color-muted)]'
             }`}
           >
-            {carte.detail}
+            {resumerPourCarte(carte.detail)}
           </span>
         ) : null}
       </span>

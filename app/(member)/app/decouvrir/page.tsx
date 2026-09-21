@@ -54,7 +54,7 @@ export default async function DecouvrirPage() {
         {disponibles === 0 ? (
           <EmptyState
             title="Rien à découvrir pour l’instant"
-            body="Cette page montre ce que les commandes produisent. Aucune n’est encore publiée : la Bibliothèque, elle, reste ouverte."
+            body="Cette page ne montre que des résultats en images, et aucune commande n’en porte encore. La Bibliothèque, elle, reste ouverte."
           />
         ) : (
           <EmptyState

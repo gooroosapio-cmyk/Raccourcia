@@ -69,7 +69,6 @@ export function ListeCompacte({
                       src={prompt.thumbnailUrl}
                       alt=""
                       fill
-                      unoptimized
                       sizes="56px"
                       className={`object-cover ${verrouille ? 'blur-[4px]' : ''}`}
                     />

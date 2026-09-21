@@ -30,7 +30,6 @@ export function PromptPreview({ prompt }: { prompt: AdminPromptDetail }) {
                 src={thumbnail.url}
                 alt={thumbnail.alt ?? ''}
                 fill
-                unoptimized
                 sizes="200px"
                 className="object-cover"
               />

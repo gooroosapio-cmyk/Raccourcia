@@ -29,6 +29,7 @@ import type {
 import type { Enums } from '@/lib/supabase/database.types';
 import type { CatalogQuery } from '@/lib/validation/schemas';
 import { CatalogUnavailableError } from '@/lib/catalog/errors';
+import { lireTousLesPaliers } from '@/lib/catalog/paliers';
 import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
 
 /**
@@ -168,17 +169,21 @@ const APERCUS_PAR_COUVERTURE = 3;
 export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
   const supabase = await createClient();
 
-  const [{ data: rayons, error }, { data: commandes }] = await Promise.all([
+  const [{ data: rayons, error }, commandes] = await Promise.all([
     supabase
       .from('categories')
       .select('id, slug, name, short_description, mode, parent_id, sort_order')
       .eq('is_visible', true)
       .order('sort_order', { ascending: true }),
-    supabase
-      .from('prompts')
-      .select('category_id, sort_order, prompt_media(kind, storage_path, sort_order)')
-      .eq('status', 'published')
-      .order('sort_order', { ascending: true }),
+    lireTousLesPaliers((debut, fin) =>
+      supabase
+        .from('prompts')
+        .select('category_id, sort_order, prompt_media(kind, storage_path, sort_order)')
+        .eq('status', 'published')
+        .order('sort_order', { ascending: true })
+        .order('id', { ascending: true })
+        .range(debut, fin),
+    ),
   ]);
 
   // Les types generes ne declarent pas la relation prompts -> prompt_media :
@@ -200,7 +205,7 @@ export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
   // et rendent la collision beaucoup moins probable.
   const comptes = new Map<string, number>();
   const visuels = new Map<string, string[]>();
-  for (const commande of (commandes ?? []) as unknown as LigneVisuel[]) {
+  for (const commande of commandes as unknown as LigneVisuel[]) {
     if (!commande.category_id) continue;
     comptes.set(commande.category_id, (comptes.get(commande.category_id) ?? 0) + 1);
     const deja = visuels.get(commande.category_id) ?? [];
@@ -873,26 +878,37 @@ export type CategorieVitrine = {
  * finit toujours par en promettre un que la bibliotheque n'a plus : ici, ce
  * qui est affiche est exactement ce que le visiteur trouvera en entrant.
  *
- * Le comptage se fait sur les identifiants seuls — trois cents lignes de deux
- * colonnes — plutot qu'en interrogeant la base une fois par categorie.
+ * Le comptage se fait sur les identifiants seuls — une colonne par ligne —
+ * plutot qu'en interrogeant la base une fois par categorie. Par paliers, pour
+ * la meme raison que la Bibliotheque : au-dela de mille commandes, une
+ * lecture d'un bloc revient tronquee sans le dire, et une categorie bien
+ * garnie se retrouve annoncee vide — ou pas annoncee du tout, puisqu'une
+ * categorie a zero n'a rien a vendre.
  */
 export async function getCategoriesVitrine(): Promise<CategorieVitrine[]> {
   const supabase = await createClient();
 
-  const [{ data: categories, error }, { data: prompts }] = await Promise.all([
+  const [{ data: categories, error }, prompts] = await Promise.all([
     supabase
       .from('categories')
       .select('id, name, short_description, mode, parent_id, sort_order')
       .eq('is_visible', true)
       .is('parent_id', null)
       .order('sort_order'),
-    supabase.from('prompts').select('category_id').eq('status', 'published'),
+    lireTousLesPaliers((debut, fin) =>
+      supabase
+        .from('prompts')
+        .select('category_id')
+        .eq('status', 'published')
+        .order('id', { ascending: true })
+        .range(debut, fin),
+    ),
   ]);
 
   if (error) throw new CatalogUnavailableError(error);
 
   const parCategorie = new Map<string, number>();
-  for (const prompt of prompts ?? []) {
+  for (const prompt of prompts) {
     if (!prompt.category_id) continue;
     parCategorie.set(prompt.category_id, (parCategorie.get(prompt.category_id) ?? 0) + 1);
   }

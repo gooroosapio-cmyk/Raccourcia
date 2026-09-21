@@ -28,10 +28,32 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
-    formats: ['image/avif', 'image/webp'],
-    // `/storage/v1/**` couvre les deux formes d'adresse : le fichier
-    // d'origine (`object/public`) et le rendu redimensionne par le stockage
-    // (`render/image/public`), que les visuels du catalogue utilisent.
+    // L'OPTIMISEUR DE L'HEBERGEUR EST COUPE, ET C'EST TOUT L'ENJEU DE CE
+    // FICHIER.
+    //
+    // Le stockage rend deja chaque visuel a la largeur utile — c'est ce que
+    // fait `lib/media/url.ts`, sans quota et derriere son propre cache. Le
+    // faire repasser par l'optimiseur de l'hebergeur n'ajoute donc rien,
+    // sinon une dependance a un compteur mensuel : ce compteur epuise,
+    // l'optimiseur repond « Payment Required » et l'image ne s'affiche plus
+    // du tout.
+    //
+    // La regle etait jusqu'ici posee carte par carte, par une propriete
+    // `unoptimized` recopiee a la main. Quatre appels l'avaient, sept ne
+    // l'avaient pas : les tuiles de l'accueil, les trois visuels de
+    // Decouvrir et la mosaique de la Bibliotheque montraient une image
+    // cassee pendant que la galerie, elle, s'affichait. Une regle qui se
+    // recopie est une regle qu'on oublie au prochain appel ; elle vit donc
+    // ici, une fois, pour tout le monde.
+    //
+    // Les fichiers locaux ne perdent rien : `public/landing/*` est deja en
+    // webp et le plus lourd pese 160 ko.
+    unoptimized: true,
+    // Conserve bien que l'optimiseur soit coupe : c'est la liste des hotes
+    // autorises le jour ou l'on voudrait le rallumer, et elle dit d'ou les
+    // visuels ont le droit de venir. `/storage/v1/**` couvre les deux formes
+    // d'adresse : le fichier d'origine (`object/public`) et le rendu
+    // redimensionne par le stockage (`render/image/public`).
     remotePatterns: supabaseHost
       ? [{ protocol: 'https', hostname: supabaseHost, pathname: '/storage/v1/**' }]
       : [],
