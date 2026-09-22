@@ -5,6 +5,7 @@ import { getCollectionsFavorites, getTagsFavoris } from '@/lib/catalog/tags-favo
 import { getVisuelsTournants, visuelDeCollection, visuelDeTag } from '@/lib/catalog/visuels';
 import { getAccessState } from '@/lib/access/entitlement';
 import { Mosaique, type CarteDeMosaique } from '@/components/library/mosaique';
+import { FiltreDeCategories } from '@/components/library/filtre-de-categories';
 import { NetworkError } from '@/components/ui/network-error';
 import { EmptyState } from '@/components/ui/states';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
@@ -110,6 +111,7 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
       // Textes, il n'y a pas d'image a emprunter et un compteur seul ne
       // fait choisir personne.
       detail: collection.description ?? compter(collection.total),
+      famille: collection.famille,
       imageUrl: visuelDeCollection(collection.apercuUrl, collection.slug, tirage),
       ...(membre ? { epingle: rayonsEpingles.has(collection.slug) } : {}),
     })),
@@ -167,7 +169,22 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
         />
       ) : (
         <>
-          <Mosaique cartes={cartes} />
+          {/* LE FILTRE, SUR LES DEUX ETAGERES OU IL MANQUE.
+              Une etagere d'Images se parcourt a l'oeil : on reconnait un
+              rayon a sa photographie. Sur du texte il n'y a que des mots, et
+              trente cartes sans ordre apparent obligent a lire la page
+              entiere pour trouver « Produire un contenu ». Les categories
+              existent pourtant — quatre ici, quatre en Reflexions — et
+              n'etaient affichees nulle part.
+
+              Images garde la mosaique nue : dix-neuf categories y feraient
+              un rail plus long que ce qu'il resserre. Le passage se fait en
+              un mot le jour ou l'on en veut un la aussi. */}
+          {library === 'images' ? (
+            <Mosaique cartes={cartes} />
+          ) : (
+            <FiltreDeCategories cartes={cartes} />
+          )}
 
           <Link
             href={`/app?bibliotheque=${library}`}
