@@ -26,10 +26,16 @@ export default async function DecouvrirPage() {
   let disponibles: number;
 
   try {
-    [acces, page, disponibles] = await Promise.all([
-      getAccessState(),
-      getDecouverte(),
-      compterLesVisuels(),
+    // L'acces d'abord : c'est lui qui decide de ce que le feed contient.
+    // Un visiteur sans acces a vie ne voit que les commandes offertes —
+    // parcourir deux cent trente-quatre resultats dont il ne peut rien
+    // copier ne lui apprend rien et ne vend rien.
+    acces = await getAccessState();
+    const offertesSeulement = !acces.hasFullAccess;
+
+    [page, disponibles] = await Promise.all([
+      getDecouverte(null, { offertesSeulement }),
+      compterLesVisuels(offertesSeulement),
     ]);
   } catch (error) {
     // Un catalogue injoignable n'est pas un catalogue vide.
@@ -51,10 +57,22 @@ export default async function DecouvrirPage() {
     return (
       <div className="pt-6">
         <h1 className="sr-only">Découvrir</h1>
-        {disponibles === 0 ? (
+        {disponibles === 0 && acces.hasFullAccess ? (
           <EmptyState
             title="Rien à découvrir pour l’instant"
             body="Cette page ne montre que des résultats en images, et aucune commande n’en porte encore. La Bibliothèque, elle, reste ouverte."
+          />
+        ) : disponibles === 0 ? (
+          /* Un visiteur devant zéro carte ne regarde pas un catalogue vide :
+             il regarde un catalogue dont aucune commande offerte n'a encore
+             de visuel. Lui dire « rien à découvrir » lui ferait croire que
+             le produit est vide, au moment précis où l'on voudrait qu'il
+             ouvre l'offre. */
+          <EmptyState
+            title="Aucun aperçu offert pour l’instant"
+            body="Cette page montre les résultats des commandes offertes. L’accès à vie ouvre tout le catalogue en images."
+            actionLabel="Voir l’offre"
+            actionHref="/offre"
           />
         ) : (
           <EmptyState

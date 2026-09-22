@@ -6,6 +6,38 @@ export type Offre = {
 };
 
 /**
+ * L'argumentaire dit les TROIS BIBLIOTHEQUES, et non « Image et Texte ».
+ *
+ * La promesse tenait en une ligne — « le catalogue entier » — qui ne donne
+ * aucune raison d'acheter : on ne sait pas ce qu'il y a dedans. Trois
+ * bibliotheques, trois usages differents, et c'est la variete qui justifie
+ * un abonnement plutot qu'un achat a l'unite.
+ *
+ * Aucun chiffre : annoncer « 1 500 commandes » engage a les avoir et oblige
+ * a corriger la phrase a chaque publication.
+ */
+const AVANTAGES = [
+  {
+    titre: 'Images',
+    corps:
+      'Portraits, produits, matières, scènes : des centaines de rendus, chacun avec son avant/après.',
+  },
+  {
+    titre: 'Réflexions',
+    corps:
+      'Des modes qui changent la façon dont l’IA vous répond — débat, décision, enquête, immersion.',
+  },
+  {
+    titre: 'Textes',
+    corps: 'Écrire, reformuler, synthétiser : on remplit deux champs, on copie, c’est prêt.',
+  },
+  {
+    titre: 'Nouveautés incluses',
+    corps: 'Les commandes ajoutées ensuite sont comprises, sans rien repayer.',
+  },
+] as const;
+
+/**
  * Argumentaire de l'acces a vie.
  *
  * Un seul composant sert la page dediee et la fenetre contextuelle : deux
@@ -31,38 +63,34 @@ export function UpgradePanel({
   /** Vrai lorsque ce panneau porte le titre de la page qui l'affiche. */
   titrePrincipal?: boolean;
 }) {
-  // L'argumentaire dit les TROIS BIBLIOTHEQUES, et non « Image et Texte ».
-  //
-  // La promesse tenait en une ligne — « le catalogue entier » — qui ne
-  // donne aucune raison d'acheter : on ne sait pas ce qu'il y a dedans.
-  // Trois bibliotheques, trois usages differents, et c'est la variete qui
-  // justifie un abonnement plutot qu'un achat a l'unite.
-  //
-  // Aucun chiffre : annoncer « 1 500 commandes » engage a les avoir et
-  // oblige a corriger la phrase a chaque publication.
-  const avantages = [
-    {
-      titre: 'Images',
-      corps:
-        'Portraits, produits, matières, scènes : des centaines de rendus, chacun avec son avant/après.',
-    },
-    {
-      titre: 'Réflexions',
-      corps:
-        'Des modes qui changent la façon dont l’IA vous répond — débat, décision, enquête, immersion.',
-    },
-    {
-      titre: 'Textes',
-      corps: 'Écrire, reformuler, synthétiser : on remplit deux champs, on copie, c’est prêt.',
-    },
-    {
-      titre: 'Nouveautés incluses',
-      corps: 'Les commandes ajoutées ensuite sont comprises, sans rien repayer.',
-    },
-  ];
-
   return (
     <div className={compact ? undefined : 'text-center'}>
+      <ArgumentaireDOffre compact={compact} titrePrincipal={titrePrincipal} />
+      <ActionsDOffre offre={offre} />
+    </div>
+  );
+}
+
+/**
+ * Ce que l'offre dit. Sans le prix, sans les boutons.
+ *
+ * Separe des actions parce que la feuille du paywall a besoin des deux
+ * moities a deux endroits : l'argumentaire dans sa zone defilante, les
+ * actions dans un pied qui ne defile pas. La page d'offre, elle, les
+ * empile comme avant — c'est `UpgradePanel` qui s'en charge.
+ *
+ * Un seul argumentaire pour les deux endroits : deux textes distincts
+ * finiraient par diverger, et l'un des deux serait faux.
+ */
+export function ArgumentaireDOffre({
+  compact = false,
+  titrePrincipal = false,
+}: {
+  compact?: boolean;
+  titrePrincipal?: boolean;
+}) {
+  return (
+    <>
       {!compact ? <Halo /> : null}
 
       {/* Ce panneau sert deux endroits : la page d'offre, ou cette phrase
@@ -72,45 +100,78 @@ export function UpgradePanel({
       <Titre
         principal={titrePrincipal}
         className={`font-semibold text-[color:var(--color-night)] ${
-          compact ? 'text-[20px]' : 'text-[30px] leading-tight'
+          compact ? 'text-[19px]' : 'text-[30px] leading-tight'
         }`}
       >
         Tout RaccourcIA, sans limites.
       </Titre>
       <p
-        className={`mt-2 leading-relaxed text-[color:var(--color-muted)] ${
-          compact ? 'text-[14px]' : 'mx-auto max-w-[38ch] text-[16px]'
+        className={`leading-relaxed text-[color:var(--color-muted)] ${
+          compact ? 'mt-1 text-[13px] leading-snug' : 'mx-auto mt-2 max-w-[38ch] text-[16px]'
         }`}
       >
         Certaines commandes se copient librement. L’accès complet ouvre les trois bibliothèques —
         Images, Réflexions et Textes.
       </p>
 
-      <ul className={`mt-5 space-y-3 ${compact ? '' : 'text-left'}`}>
-        {avantages.map((avantage) => (
-          <li key={avantage.titre} className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-success-soft)]">
+      {/* SUR LA FEUILLE, LE CORPS DE CHAQUE AVANTAGE DISPARAIT.
+          Quatre titres et quatre explications font deux cent quatre-vingts
+          pixels : de quoi repousser le prix et le bouton hors de l'ecran,
+          sur la fenetre meme ou l'on decide d'acheter. Le titre porte deja
+          l'essentiel — « Images », « Reflexions », « Textes »,
+          « Nouveautes incluses » —, et l'argumentaire complet reste a un
+          geste, sur la page d'offre. */}
+      <ul
+        className={compact ? 'mt-3 grid grid-cols-2 gap-x-3 gap-y-2' : 'mt-5 space-y-3 text-left'}
+      >
+        {AVANTAGES.map((avantage) => (
+          <li key={avantage.titre} className="flex items-start gap-2.5">
+            <span
+              className={`flex shrink-0 items-center justify-center rounded-full bg-[color:var(--color-success-soft)] ${
+                compact ? 'mt-px h-5 w-5' : 'mt-0.5 h-7 w-7'
+              }`}
+            >
               <CheckIcon />
             </span>
-            <span>
-              <span className="block text-[15px] font-semibold text-[color:var(--color-night)]">
+            <span className="min-w-0">
+              <span
+                className={`block font-semibold text-[color:var(--color-night)] ${
+                  compact ? 'text-[14px] leading-snug' : 'text-[15px]'
+                }`}
+              >
                 {avantage.titre}
               </span>
-              <span className="block text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-                {avantage.corps}
-              </span>
+              {compact ? null : (
+                <span className="block text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+                  {avantage.corps}
+                </span>
+              )}
             </span>
           </li>
         ))}
       </ul>
+    </>
+  );
+}
 
+/**
+ * Le prix et les deux facons d'y aller.
+ *
+ * Toujours ensemble : un prix sans bouton fait chercher le bouton, et un
+ * bouton sans prix fait hesiter. La feuille du paywall les pose dans un
+ * pied qui ne defile pas — c'est ce qui garantit qu'on les atteint sans
+ * rien faire defiler, quelle que soit la hauteur du telephone.
+ */
+export function ActionsDOffre({ offre }: { offre: Offre }) {
+  return (
+    <>
       <PriceTag price={offre.price} />
 
       <a
         href={offre.purchaseUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 flex h-13 w-full items-center justify-center gap-2 rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-[16px] font-semibold text-white transition-[background-color,transform] duration-[var(--duration-fast)] hover:bg-[color:var(--color-brand-strong)] active:scale-[0.99]"
+        className="mt-3 flex h-13 w-full items-center justify-center gap-2 rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-[16px] font-semibold text-white transition-[background-color,transform] duration-[var(--duration-fast)] hover:bg-[color:var(--color-brand-strong)] active:scale-[0.99]"
       >
         Passer en Premium
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -127,11 +188,11 @@ export function UpgradePanel({
       {/* Deja acheteur : il lui manque seulement d'activer sa licence. */}
       <Link
         href="/activation"
-        className="mt-2 flex h-12 w-full items-center justify-center text-[14px] font-medium text-[color:var(--color-brand)] underline underline-offset-2"
+        className="mt-1 flex h-11 w-full items-center justify-center text-[14px] font-medium text-[color:var(--color-brand)] underline underline-offset-2"
       >
         J’ai déjà un accès
       </Link>
-    </div>
+    </>
   );
 }
 

@@ -83,8 +83,9 @@ const CARTES_PAR_PALIER = 10;
  */
 export async function getDecouverte(
   curseur: CurseurDecouverte | null = null,
+  { offertesSeulement = false }: { offertesSeulement?: boolean } = {},
 ): Promise<PageDecouverte> {
-  const { lignes, suite } = await lireLesVisuels(curseur, CARTES_PAR_PALIER);
+  const { lignes, suite } = await lireLesVisuels(curseur, CARTES_PAR_PALIER, offertesSeulement);
 
   const [aimees, voisinage] = await Promise.all([
     lesQuellesJaime(lignes.map((l) => l.id)),
@@ -111,10 +112,22 @@ export async function getDecouverte(
  * c'est lui qui dit la regle de la page, et le jour ou l'administration
  * deposera une illustration sur un Mode IA, elle n'atterrira pas ici par
  * accident.
+ *
+ * UNE QUATRIEME CONDITION POUR QUI N'A PAS L'ACCES. Decouvrir montrait les
+ * deux cent trente-quatre commandes illustrees a tout le monde, et
+ * verrouillait la copie a l'arrivee. Le visiteur parcourait donc un feed
+ * dont il ne pouvait presque rien faire : chaque carte promettait un
+ * resultat et chaque bouton renvoyait a l'offre. Il ne voit plus que ce
+ * qu'il peut reellement utiliser.
+ *
+ * C'est un filtre de presentation et non une mesure de securite : le
+ * contenu complet ne sort de toute facon que par `resolve_prompt`, apres
+ * ses six controles. Ce qui change ici est ce qu'on donne a voir.
  */
 async function lireLesVisuels(
   depuis: CurseurDecouverte | null,
   limite: number,
+  offertesSeulement: boolean,
 ): Promise<{ lignes: LigneDecouverte[]; suite: CurseurDecouverte | null }> {
   const supabase = await createClient();
 
@@ -124,6 +137,8 @@ async function lireLesVisuels(
     .eq('status', 'published')
     .eq('library', 'images')
     .eq('prompt_media.kind', 'after');
+
+  if (offertesSeulement) requete = requete.eq('is_free', true);
 
   if (depuis) {
     // « strictement apres » sur le couple (rang, id) : PostgREST n'a pas de
@@ -314,15 +329,21 @@ async function lesQuellesJaime(ids: string[]): Promise<Set<string>> {
  * ferait dire « les visuels ne sont pas accessibles » a un catalogue qui
  * n'en a simplement aucun.
  */
-export const compterLesVisuels = cache(async (): Promise<number> => {
+export const compterLesVisuels = cache(async (offertesSeulement = false): Promise<number> => {
   const supabase = await createClient();
 
-  const { count } = await supabase
+  let requete = supabase
     .from('prompts')
     .select('id, prompt_media!inner(kind)', { count: 'exact', head: true })
     .eq('status', 'published')
     .eq('library', 'images')
     .eq('prompt_media.kind', 'after');
 
+  // Le compte suit exactement ce que le feed montre : sinon l'ecran vide
+  // dirait « les visuels ne sont pas accessibles » a un visiteur devant un
+  // catalogue qui n'a simplement aucune commande offerte illustree.
+  if (offertesSeulement) requete = requete.eq('is_free', true);
+
+  const { count } = await requete;
   return count ?? 0;
 });
