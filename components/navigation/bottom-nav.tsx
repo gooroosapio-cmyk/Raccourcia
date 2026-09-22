@@ -47,21 +47,35 @@ export function BottomNav() {
   // ce calcul se produit a chaque image d'un defilement, et un rendu React
   // par image rendrait la page saccadee.
   //
-  // UN SEUIL, PARCE QUE TOUS LES ECARTS NE SONT PAS UN CLAVIER.
+  // PAS DE SEUIL. On a essaye, et c'etait une erreur.
   //
-  // La correction repondait a n'importe quel ecart, si petit soit-il. Or le
-  // viewport visible et celui de mise en page se desaccordent aussi pour des
-  // raisons qui n'ont rien a voir avec le clavier : une barre d'appel en
-  // cours, une notification persistante, un arrondi d'un demi-pixel. La
-  // barre remontait alors de quelques dizaines de pixels et laissait sous
-  // elle une bande vide — c'est ce qu'on voyait sur Decouvrir pendant un
-  // appel.
+  // Une bande vide etait apparue SOUS la barre pendant un appel telephonique,
+  // et on en avait conclu que la correction se declenchait a tort. Un seuil
+  // de cent pixels a donc ete pose : en dessous, la barre ne bougeait plus.
   //
-  // Cent pixels : un clavier logiciel fait au moins le tiers de l'ecran,
-  // une barre systeme n'en fait jamais autant. Sous ce seuil, la barre ne
-  // bouge pas ; `position: fixed` suffit.
-  const SEUIL_CLAVIER = 100;
-
+  // Le defaut d'en face est immediatement revenu, et il est bien pire parce
+  // qu'il arrive a chaque geste : en remontant la page, la barre d'adresse
+  // du navigateur reapparait, le viewport visible perd sa hauteur, et la
+  // barre basse — qui ne se corrigeait plus — descendait sous le bord de
+  // l'ecran, tranchee en deux. C'est exactement le defaut que cette
+  // correction existe pour empecher, et il fait cinquante pixels : sous le
+  // seuil.
+  //
+  // Les deux ecarts ont la meme taille. Aucun seuil ne peut les distinguer,
+  // et celui des deux qu'il faut rattraper est celui qui arrive tout le
+  // temps. La correction repond donc de nouveau a n'importe quel ecart.
+  //
+  // CE QUI EST AJOUTE A LA PLACE : une ecoute du redimensionnement de la
+  // FENETRE, en plus de celui du viewport visible. `window.innerHeight` peut
+  // n'avoir pas encore ete remis a jour au moment ou le viewport visible
+  // previent — on lit alors une hauteur perimee, et l'ecart calcule est
+  // faux jusqu'au prochain evenement. C'est l'explication la plus probable
+  // de la bande vide pendant l'appel : un seul evenement manquant, et la
+  // valeur fausse restait. Avec les deux ecoutes, elle se corrige au
+  // rafraichissement suivant.
+  //
+  // Cette explication reste une hypothese : elle n'a pas pu etre reproduite
+  // ici, faute de telephone.
   useEffect(() => {
     const vv = window.visualViewport;
     if (!vv) return;
@@ -75,17 +89,19 @@ export function BottomNav() {
         // Bas du viewport visible, exprime dans le repere de la page.
         const basVisible = vv.offsetTop + vv.height;
         const ecart = Math.max(0, window.innerHeight - basVisible);
-        element.style.transform = ecart >= SEUIL_CLAVIER ? `translateY(-${ecart}px)` : '';
+        element.style.transform = ecart > 0 ? `translateY(-${ecart}px)` : '';
       });
     };
 
     placer();
     vv.addEventListener('resize', placer);
     vv.addEventListener('scroll', placer);
+    window.addEventListener('resize', placer);
     return () => {
       cancelAnimationFrame(attendu);
       vv.removeEventListener('resize', placer);
       vv.removeEventListener('scroll', placer);
+      window.removeEventListener('resize', placer);
     };
   }, []);
 

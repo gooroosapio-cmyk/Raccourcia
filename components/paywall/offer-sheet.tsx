@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { UpgradePanel, type Offre } from '@/components/paywall/upgrade-panel';
+import { ActionsDOffre, ArgumentaireDOffre, type Offre } from '@/components/paywall/upgrade-panel';
 import { SheetCloseButton } from '@/components/ui/sheet-close';
 import { SheetDragHandle, useSheetDrag } from '@/components/ui/sheet-drag';
 
@@ -79,18 +79,31 @@ export function OfferSheet({ offre, onClose }: { offre: Offre; onClose: () => vo
           </div>
         </div>
 
-        <div
-          ref={contenuRef}
-          className="flex-1 overflow-y-auto overscroll-contain px-5 pb-[max(1rem,env(safe-area-inset-bottom))]"
-        >
+        {/* L'ARGUMENTAIRE DEFILE, L'ACTION NON.
+            La fenetre empilait tout dans une seule zone defilante : sur un
+            telephone, le prix et le bouton tombaient sous le bord et il
+            fallait faire defiler l'offre pour trouver comment l'accepter.
+            Demander un geste de plus sur l'ecran meme ou l'on decide
+            d'acheter est le pire endroit du produit pour en demander un.
+
+            Le pied ne defile pas. Le prix et les deux boutons sont donc
+            atteignables sans rien faire, quelle que soit la hauteur du
+            telephone et quelle que soit la longueur de l'argumentaire —
+            c'est une garantie de structure, pas un reglage a reprendre au
+            prochain ecran plus petit. */}
+        <div ref={contenuRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5">
           <div id="offre-titre">
-            <UpgradePanel offre={offre} compact />
+            <ArgumentaireDOffre compact />
           </div>
+        </div>
+
+        <div className="shrink-0 border-t border-[color:var(--color-line)] px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+          <ActionsDOffre offre={offre} />
 
           <button
             type="button"
             onClick={onClose}
-            className="mt-1 flex h-12 w-full items-center justify-center text-[14px] text-[color:var(--color-muted)]"
+            className="mt-1 flex h-11 w-full items-center justify-center text-[13px] text-[color:var(--color-muted)]"
           >
             Continuer avec les commandes offertes
           </button>

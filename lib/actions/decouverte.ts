@@ -1,6 +1,7 @@
 'use server';
 
 import { z } from 'zod';
+import { getAccessState } from '@/lib/access/entitlement';
 import { getDecouverte } from '@/lib/catalog/decouverte';
 import { getPromptDetail } from '@/lib/catalog/queries';
 import type { CurseurDecouverte, PageDecouverte, PromptCard } from '@/lib/catalog/types';
@@ -28,7 +29,13 @@ export async function chargerLaSuite(depuis: CurseurDecouverte): Promise<PageDec
   // s'arrete, ce qui est exactement ce qu'il ferait au bout de la liste.
   if (!parse.success) return { cartes: [], suite: null };
 
-  return getDecouverte(parse.data);
+  // LE DROIT SE RELIT ICI, IL NE VOYAGE PAS DEPUIS LE CLIENT. Le premier
+  // palier est rendu au serveur avec le droit du moment ; les suivants
+  // arrivent par cette action, et un drapeau envoye par le navigateur
+  // serait un drapeau qu'on peut retourner. On redemande donc l'acces.
+  const acces = await getAccessState();
+
+  return getDecouverte(parse.data, { offertesSeulement: !acces.hasFullAccess });
 }
 
 /**
