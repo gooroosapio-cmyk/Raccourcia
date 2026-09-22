@@ -39,6 +39,14 @@ export type CarteDeMosaique = {
   /** Un tag ou une collection : l'etoile s'en sert pour savoir ou ecrire. */
   genre: GenreDeRayon;
   /**
+   * La categorie dont releve la carte, quand elle en a une.
+   *
+   * Renseignee pour une collection, absente pour un tag : un tag qualifie
+   * une commande, il ne la range pas. C'est ce qui permet a l'etagere de
+   * resserrer sur une categorie sans confondre les deux axes.
+   */
+  famille?: string;
+  /**
    * Presente pour un membre seulement : l'etoile qui epingle le rayon. Un
    * visiteur n'a pas de rayon a lui, et la lui montrer serait promettre
    * un geste qui echoue.

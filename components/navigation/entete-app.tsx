@@ -53,7 +53,13 @@ export function EnteteApp({ membre }: { membre: boolean }) {
         <Link
           href="/app/bibliotheque?focus=1"
           aria-label="Rechercher une commande"
-          className="touch-target inline-flex items-center justify-center rounded-full text-[color:var(--color-night)]"
+          // `-mr-2` rend a l'action le bord que sa cible lui prenait : une
+          // cible de 44 px autour d'une icone de 22 px laisse onze pixels
+          // de vide de chaque cote, et ces onze pixels s'ajoutaient a la
+          // marge de l'en-tete. Le logo, lui, commence au bord exact. La
+          // marge negative aligne les deux optiquement sans rien retirer a
+          // la zone de frappe.
+          className="touch-target -mr-2 inline-flex items-center justify-center rounded-full text-[color:var(--color-night)]"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="2" />
@@ -65,7 +71,12 @@ export function EnteteApp({ membre }: { membre: boolean }) {
         // c'est la seule action que la coquille lui doit.
         <Link
           href="/connexion"
-          className="touch-target inline-flex items-center rounded-[color:var(--radius-control)] px-2 text-[length:var(--texte-carte)] font-medium text-[color:var(--color-brand)]"
+          // Meme raison que la loupe : le `px-2` de la cible s'ajoutait a la
+          // marge de l'en-tete, et « Se connecter » s'arretait huit pixels
+          // avant le bord quand le logo, lui, partait du bord. La marge
+          // negative annule ce decalage et rend l'en-tete symetrique, sans
+          // retirer un pixel a la zone de frappe.
+          className="touch-target -mr-2 inline-flex items-center rounded-[color:var(--radius-control)] px-2 text-[length:var(--texte-carte)] font-medium text-[color:var(--color-brand)]"
         >
           Se connecter
         </Link>

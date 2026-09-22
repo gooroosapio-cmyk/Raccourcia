@@ -23,7 +23,7 @@ const ITEMS = [
   { href: '/app', label: 'Accueil', icon: HomeIcon },
   { href: '/app/bibliotheque', label: 'Bibliothèque', icon: LibraryIcon },
   { href: '/app/decouvrir', label: 'Découvrir', icon: CompassIcon },
-  { href: '/app/favoris', label: 'Favoris', icon: HeartIcon },
+  { href: '/app/favoris', label: 'Favoris', icon: StarIcon },
   { href: '/compte', label: 'Profil', icon: AccountIcon },
 ] as const;
 
@@ -46,6 +46,22 @@ export function BottomNav() {
   // L'ecriture passe par le style de l'element et non par un etat React :
   // ce calcul se produit a chaque image d'un defilement, et un rendu React
   // par image rendrait la page saccadee.
+  //
+  // UN SEUIL, PARCE QUE TOUS LES ECARTS NE SONT PAS UN CLAVIER.
+  //
+  // La correction repondait a n'importe quel ecart, si petit soit-il. Or le
+  // viewport visible et celui de mise en page se desaccordent aussi pour des
+  // raisons qui n'ont rien a voir avec le clavier : une barre d'appel en
+  // cours, une notification persistante, un arrondi d'un demi-pixel. La
+  // barre remontait alors de quelques dizaines de pixels et laissait sous
+  // elle une bande vide — c'est ce qu'on voyait sur Decouvrir pendant un
+  // appel.
+  //
+  // Cent pixels : un clavier logiciel fait au moins le tiers de l'ecran,
+  // une barre systeme n'en fait jamais autant. Sous ce seuil, la barre ne
+  // bouge pas ; `position: fixed` suffit.
+  const SEUIL_CLAVIER = 100;
+
   useEffect(() => {
     const vv = window.visualViewport;
     if (!vv) return;
@@ -59,7 +75,7 @@ export function BottomNav() {
         // Bas du viewport visible, exprime dans le repere de la page.
         const basVisible = vv.offsetTop + vv.height;
         const ecart = Math.max(0, window.innerHeight - basVisible);
-        element.style.transform = ecart > 0 ? `translateY(-${ecart}px)` : '';
+        element.style.transform = ecart >= SEUIL_CLAVIER ? `translateY(-${ecart}px)` : '';
       });
     };
 
@@ -119,11 +135,23 @@ function HomeIcon() {
   );
 }
 
-function HeartIcon() {
+/**
+ * Une etoile pour Favoris, et non un coeur.
+ *
+ * Les deux gestes existent cote a cote dans l'application et ils ne disent
+ * pas la meme chose : l'etoile range une commande chez soi, le coeur dit
+ * publiquement qu'elle sert. C'est la separation posee sur les cartes et
+ * sur la fiche — seule la barre basse etait restee en arriere, et elle
+ * envoyait vers une page d'etoiles sous un dessin de coeur.
+ *
+ * Le meme trace que `FavoriteButton`, au pixel pres : une etoile
+ * legerement differente d'un ecran a l'autre se lit comme deux choses.
+ */
+function StarIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13Z"
+        d="m12 3.6 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.8l5.9-.9z"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinejoin="round"

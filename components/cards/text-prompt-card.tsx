@@ -216,30 +216,46 @@ export function TextPromptCard({
     );
   }
 
-  /* --- La carte de grille : trois tiers --- */
+  /* --- La carte de grille --- */
+  //
+  // LE VISUEL EST LA SEULE PARTIE ELASTIQUE, ET C'EST TOUT L'ENJEU.
+  //
+  // La carte se partageait en tiers : deux tiers pour le visuel et la
+  // description, un tiers pour le nom, le rayon et le bouton. Une
+  // proportion ne sait pas ce qu'elle contient. Le dernier tiers devait
+  // loger deux lignes de titre, une ligne de rayon et une cible de 44 px —
+  // sur une carte de galerie, cela ne tient pas dans un tiers, et
+  // `overflow-hidden` tranchait le coeur et le bouton a mi-hauteur.
+  //
+  // Le texte prend donc la hauteur qu'il lui faut, et le visuel prend ce
+  // qui reste. Il ne peut plus rien pousser dehors : c'est lui qui cede,
+  // borne par un `min-h` pour ne pas disparaitre. Les espacements entre les
+  // trois lignes de texte sont resserres dans le meme mouvement — chaque
+  // demi-pixel gagne la remonte le bouton d'autant.
   return (
     <article className="anim-apparition relative flex h-full flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => onOpen(prompt)}
-        className="flex min-h-0 flex-[2] flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
+        className="flex min-h-0 flex-1 flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
       >
-        {/* Premier tiers : le visuel. `min-h` l'empeche de disparaitre quand
-            la carte n'a aucune voisine plus haute pour l'etirer. */}
+        {/* Le visuel : la seule partie qui cede. `min-h` l'empeche de
+            disparaitre quand la carte n'a aucune voisine plus haute. */}
         <span className="relative block min-h-[92px] flex-1 overflow-hidden bg-[color:var(--color-sky)]">
           {visuel}
         </span>
 
-        {/* Deuxieme tiers : ce que la commande fait. */}
-        <span className="flex min-h-0 flex-1 items-start px-2.5 pt-1.5">
-          <span className="line-clamp-3 text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-muted)]">
+        {/* Ce que la commande fait. Hauteur naturelle : deux lignes
+            reservees, trois au plus. */}
+        <span className="flex shrink-0 items-start px-2.5 pt-1.5">
+          <span className="line-clamp-3 min-h-[2.75em] text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-muted)]">
             {apercu}
           </span>
         </span>
       </button>
 
-      {/* Troisieme tiers : le nom, le rayon, le geste. */}
-      <div className="flex min-h-0 flex-1 flex-col px-2.5 pb-2.5 pt-1">
+      {/* Le nom, le rayon, le geste : hauteur naturelle, jamais comprimee. */}
+      <div className="flex shrink-0 flex-col px-2.5 pb-2.5 pt-0.5">
         <button
           type="button"
           onClick={() => onOpen(prompt)}
@@ -257,7 +273,10 @@ export function TextPromptCard({
           </span>
         </button>
 
-        <div className="flex items-baseline gap-2 pb-1">
+        {/* Sans marge sous cette ligne : le lien de collection porte deja sa
+            propre hauteur de cible, et l'espace qu'on gagne ici est celui
+            qui manquait au bouton. */}
+        <div className="flex items-baseline gap-2">
           <span className="min-w-0 flex-1">
             <LienDeCollection prompt={prompt} trait={rayon} />
           </span>

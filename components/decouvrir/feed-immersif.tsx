@@ -126,7 +126,16 @@ export function FeedImmersif({
         ))}
 
         {curseur ? (
-          <Sentinelle onVisible={allonger} libelle="Voir la suite" racine={zone} charge={charge} />
+          <Sentinelle
+            onVisible={allonger}
+            libelle="Voir la suite"
+            racine={zone}
+            charge={charge}
+            // Une carte occupe l'ecran : une hauteur d'avance ne vaudrait
+            // qu'une carte de reserve, et le geste suivant buterait sur du
+            // vide. Trois cartes laissent le temps d'un aller-retour.
+            avance={3}
+          />
         ) : (
           <p className="px-5 py-6 text-center text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
             Vous avez tout vu.
@@ -217,19 +226,31 @@ function CarteImmersive({
         fill
         sizes="100vw"
         priority={prioritaire}
-        className="scale-125 object-cover blur-2xl brightness-[0.45] saturate-150"
+        className="scale-125 object-cover object-top blur-2xl brightness-[0.45] saturate-150"
       />
 
       {/* 2. Le visuel, entier. `contain` et non `cover` : cette page montre
           ce que la commande produit, la recadrer reviendrait a le montrer
-          faux. */}
+          faux.
+
+          ANCRE EN HAUT, ET NON CENTRE. `object-contain` posait l'image au
+          milieu du cadre : un portrait 4:5 sur un telephone 9:19,5 laissait
+          alors une bande noire de deux cents pixels AU-DESSUS, pendant que
+          le bas de la meme image passait derriere le bloc d'informations.
+          Le vide etait en haut, le contenu cache en bas — les deux se
+          corrigent du meme geste.
+
+          `object-top` place la marge restante entierement sous l'image,
+          c'est-a-dire exactement la ou le fondu et les informations se
+          posent. Rien n'est recadre : l'image garde ses proportions, elle
+          change seulement de place dans le cadre. */}
       <Image
         src={carte.visuelUrl}
         alt={carte.visuelAlt}
         fill
         sizes="100vw"
         priority={prioritaire}
-        className="object-contain"
+        className="object-contain object-top"
       />
 
       {/* 3. Le fondu, sous les informations posees sur l'image. */}
