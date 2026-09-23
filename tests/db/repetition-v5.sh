@@ -53,9 +53,69 @@ done
 
 echo "==> Etat final"
 run "${PSQL[@]}" -c "select status, count(*) from public.prompts where catalog_version='v5' group by 1 order by 1;"
+# Le rayon d'une carte est la racine de sa categorie : ses cartes sont
+# rangees dans une collection, sauf celles du rayon de transition, qui sont
+# rangees dans le rayon lui-meme.
+run "${PSQL[@]}" -c "select racine.name as rayon,
+       count(*) filter (where p.status='published') as publiees,
+       count(*) filter (where p.status='draft') as brouillons,
+       count(*) as total
+  from public.prompts p
+  join public.categories feuille on feuille.id = p.category_id
+  join public.categories racine on racine.id = coalesce(feuille.parent_id, feuille.id)
+  where p.catalog_version='v5' group by 1 order by 4 desc;"
+
 run "${PSQL[@]}" -c "select 'visuels'   as quoi, count(*) from public.prompt_media
                      union all select 'actives hors V5', count(*) from public.prompts
                        where catalog_version is distinct from 'v5' and status <> 'archived'
                      union all select 'alias', count(*) from public.prompt_aliases
                      union all select 'champs', count(*) from public.prompt_fields;"
+# --- Ce que la repartition doit tenir -----------------------------------
+#
+# Lire un tableau ne prouve rien : on le regarde une fois, puis plus jamais.
+# Ces trois controles levent.
+run "${PSQL[@]}" -v ON_ERROR_STOP=1 -c "
+do \$verif\$
+declare
+  v_rayons integer;
+  v_transition_publiees integer;
+  v_publiees integer;
+begin
+  select count(distinct coalesce(feuille.parent_id, feuille.id)) into v_rayons
+  from public.prompts p
+  join public.categories feuille on feuille.id = p.category_id
+  where p.catalog_version = 'v5';
+
+  if v_rayons <> 13 then
+    raise exception 'La refonte range les cartes dans % rayons au lieu de 13 (douze nets, un de transition).', v_rayons;
+  end if;
+
+  -- Le rayon de transition ne doit porter aucune carte publiee : ce qui y
+  -- entre attend une relecture, et une carte relue en sort vers son vrai
+  -- rayon. S'il en portait une, la Bibliotheque dessinerait une tuile
+  -- « En cours de reclassement » a des membres.
+  select count(*) into v_transition_publiees
+  from public.prompts p
+  join public.categories c on c.id = p.category_id
+  where c.external_ref = 'V5-TRANSITION' and p.status = 'published';
+
+  if v_transition_publiees > 0 then
+    raise exception 'Le rayon de transition porte % carte(s) publiee(s).', v_transition_publiees;
+  end if;
+
+  -- Et les douze autres portent tout le publie.
+  select count(*) into v_publiees
+  from public.prompts p
+  join public.categories feuille on feuille.id = p.category_id
+  join public.categories racine on racine.id = coalesce(feuille.parent_id, feuille.id)
+  where p.catalog_version = 'v5' and p.status = 'published'
+    and racine.external_ref is distinct from 'V5-TRANSITION';
+
+  if v_publiees <> 349 then
+    raise exception 'Les douze rayons portent % cartes publiees au lieu de 349.', v_publiees;
+  end if;
+
+  raise notice 'Repartition : 12 rayons pour 349 publiees, 1 rayon de transition sans publiee.';
+end \$verif\$;"
+
 echo "==> Repetition terminee"

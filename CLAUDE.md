@@ -81,6 +81,31 @@ Archiver reste disponible et reste le bon geste hors chantier : une commande
 qu'on hesite a perdre s'archive. Mais pendant la reorganisation, garder par
 prudence une categorie morte est un cout, pas une precaution.
 
+### Douze rayons, et un rayon de transition
+
+Le catalogue final tient en **douze rayons nets**, plus un treizieme,
+« En cours de reclassement », qui porte les cartes reprises ou creees que
+personne n'a encore relues. Leur promesse est ecrite et leur classement
+propose, mais tant qu'une carte n'est pas validee, elle attend la — la semer
+dans les douze ferait annoncer a un rayon des cartes que personne n'a lues.
+
+- **Le rayon de transition est visible comme les autres.** La regle qui
+  interdisait une categorie publique « a reclasser » est levee : elle
+  supposait un rayon fourre-tout permanent, alors que celui-ci se vide a
+  mesure qu'on valide.
+- **Il n'apparait pas vide pour autant.** La Bibliotheque ne dessine une
+  tuile que pour un rayon portant au moins une commande publiee, et les
+  cartes en transition sont des brouillons. Le rayon surgit le jour ou la
+  premiere est validee, et disparait quand la derniere en sort.
+- **Une carte n'en sort que vers son vrai rayon**, jamais en y restant
+  publiee. Un rayon de transition qui porte du publie n'est plus une
+  transition, c'est un fourre-tout : la repetition leve si cela arrive.
+- **Il ne se sous-divise pas.** Ce qu'on y depose attend d'etre classe, pas
+  d'etre sous-classe.
+
+Cette borne-ci tient toujours : aucune categorie vide creee pour remplir un
+menu, et aucun rayon ouvert « au cas ou ».
+
 ## Un seul payload, toutes les IA
 
 Une commande porte **un texte unique**, copie tel quel quelle que soit l'IA du

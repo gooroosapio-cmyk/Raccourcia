@@ -157,8 +157,21 @@ const fichiers = [];
 
   const sql =
     entete(
-      'Lot 100 — les 13 categories, 35 collections et 40 tags de la V5',
-      `Les categories V5 portent un external_ref, unique quand il est renseigne :\n` +
+      'Lot 100 — douze rayons nets, un rayon de transition, 35 collections, 40 tags',
+      `Douze rayons portent le catalogue valide ; le treizieme, « En cours de\n` +
+        `reclassement », porte les 284 cartes Visuels que la refonte laisse en\n` +
+        `brouillon. Leur promesse est ecrite et leur classement propose, mais\n` +
+        `aucune n'a ete relue : les semer dans les douze rayons ferait annoncer\n` +
+        `a ces rayons des cartes que personne n'a validees.\n\n` +
+        `Le treizieme est visible comme les autres. Cela ne le fera pas\n` +
+        `apparaitre vide pour autant : la Bibliotheque ne dessine une tuile que\n` +
+        `pour un rayon qui porte au moins une commande publiee, et ses cartes\n` +
+        `sont des brouillons. Il surgira le jour ou la premiere sera validee.\n\n` +
+        `Coachs et Assistants metiers fusionnent pour tenir en douze. C'est la\n` +
+        `seule fusion des treize qui ne coute rien : leurs quatre collections\n` +
+        `survivent telles quelles, la ou fondre Produits dans Marketing\n` +
+        `contredirait les regles de classement du dossier.\n\n` +
+        `Les categories V5 portent un external_ref, unique quand il est renseigne :\n` +
         `c'est lui qui distingue un rayon V5 d'un rayon herite, et c'est sur lui\n` +
         `que l'upsert se fait. Rejouer ce lot ne cree pas un second jeu.\n\n` +
         `Les 287 categories heritees ne sont pas touchees ici. Elles sortiront de\n` +
@@ -326,7 +339,12 @@ lots.forEach((lot, n) => {
     mode: c.mode,
     library: c.library,
     statut: STATUT[c.statut_publication],
-    cat: `V5C-${c.collection.toUpperCase().replace(/--/g, '-')}`,
+    // Une carte validee se range dans sa collection ; une carte en attente
+    // de relecture se range directement dans le rayon de transition, qui
+    // n'a pas de sous-rayon — ce qu'on y depose attend d'etre classe.
+    cat: c.en_transition
+      ? `V5-${c.rayon.toUpperCase()}`
+      : `V5C-${c.collection.toUpperCase().replace(/--/g, '-')}`,
     champs_max: c.champs.length,
     regime: c.regime_champs,
     alias: c.aliases.map((a) => (typeof a === 'string' ? a : a.commande)).filter(Boolean),

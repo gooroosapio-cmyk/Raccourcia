@@ -90,19 +90,20 @@
   },
   {
    "bibliotheque": "assistants",
-   "cartes": 6,
-   "cle": "coachs",
-   "libelle": "Coachs",
+   "cartes": 14,
+   "cle": "experts",
+   "libelle": "Coachs & assistants",
    "library": "reflexions",
    "mode": "texte"
   },
   {
-   "bibliotheque": "assistants",
-   "cartes": 8,
-   "cle": "experts",
-   "libelle": "Assistants métiers",
-   "library": "reflexions",
-   "mode": "texte"
+   "bibliotheque": "visuels",
+   "cartes": 284,
+   "cle": "transition",
+   "libelle": "En cours de reclassement",
+   "library": "images",
+   "mode": "image",
+   "transition": true
   }
  ],
  "collections": [
@@ -328,14 +329,14 @@
    "cle": "coachs--coachs-quotidien",
    "libelle": "Vie quotidienne",
    "mode": "texte",
-   "parent": "coachs"
+   "parent": "experts"
   },
   {
    "cartes": 3,
    "cle": "coachs--coachs-progres",
    "libelle": "Apprendre & progresser",
    "mode": "texte",
-   "parent": "coachs"
+   "parent": "experts"
   },
   {
    "cartes": 6,

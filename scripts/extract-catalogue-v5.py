@@ -51,6 +51,40 @@ TAGS_AUTORISES = [
 
 STATUT_SOURCE = {'P': 'published', 'A': 'archived'}
 
+# --- La repartition finale : douze rayons nets, et un rayon de transition ---
+#
+# Le catalogue V5 propose treize categories. La demande est d'en avoir douze
+# qui tiennent debout et une treizieme ou deposer ce qui n'est pas encore
+# valide. Il faut donc une fusion, et toute fusion abime quelque chose : le
+# dossier separe explicitement Produits de Marketing (§3), et Documents de
+# Syntheses (produire un livrable n'est pas comprendre une source).
+#
+# Coachs et Assistants metiers sont les deux seules que rien n'oppose dans
+# les regles de classement : ce sont toutes deux un accompagnement qui dure,
+# l'un personnel, l'autre professionnel. Et cette distinction-la ne se perd
+# pas en fusionnant, parce qu'elle vit deja un cran plus bas — les quatre
+# collections survivent telles quelles sous le rayon fusionne. C'est la seule
+# fusion des treize qui ne coute aucune information.
+FUSION = {'coachs': 'experts'}
+FUSION_LIBELLE = {'experts': 'Coachs & assistants'}
+
+# Le rayon de transition. Il porte les cartes reprises ou creees que la
+# refonte laisse en brouillon : leur promesse est ecrite, leur classement
+# est propose, mais aucune n'a ete relue. Les y poser plutot que de les
+# semer dans les douze rayons evite qu'un rayon annonce des cartes que
+# personne n'a validees.
+#
+# Une categorie ne porte qu'un mode, et 284 des 293 brouillons sont des
+# Visuels : le rayon est donc un rayon d'images. Les neuf autres (sept
+# Assistants, deux Redaction) restent dans leur rayon final — les deplacer
+# dans un rayon d'images casserait le filtre par bibliotheque pour ne ranger
+# que neuf cartes.
+TRANSITION = {
+    'cle': 'transition',
+    'libelle': 'En cours de reclassement',
+    'bibliotheque': 'visuels',
+}
+
 
 def normaliser(texte):
     """Compare deux titres sans buter sur les accents ni sur les cesures
@@ -186,8 +220,26 @@ def construire(cartes, representante, regroupees, production, anomalies):
                               'tokens': orphelins})
 
         resolue = representante.get(cle)
+
+        # La fusion : la carte change de rayon, jamais de collection.
+        categorie = FUSION.get(carte['categorie'], carte['categorie'])
+        categorie_libelle = FUSION_LIBELLE.get(categorie, carte['categorie_libelle'])
+
+        # Le rayon de transition ne prend que les brouillons Visuels, et il
+        # les prend a la place de leur collection : une carte en attente de
+        # relecture n'a pas encore sa place dans le classement fin.
+        en_transition = (
+            carte['statut_publication'] != 'conserver_publie'
+            and carte['bibliotheque'] == TRANSITION['bibliotheque']
+        )
+        rayon = TRANSITION['cle'] if en_transition else carte['collection']
+
         sorties.append({
             'cle_carte': cle,
+            'rayon': rayon,
+            'en_transition': en_transition,
+            'categorie_finale': categorie,
+            'categorie_finale_libelle': categorie_libelle,
             'action': 'mettre_a_jour' if resolue else 'creer',
             'id_production': resolue['id'] if resolue else None,
             'statut_reel': resolue['statut_reel'] if resolue else None,
@@ -235,22 +287,39 @@ def construire(cartes, representante, regroupees, production, anomalies):
     return sorties, retraits, couvertes
 
 
-def taxonomie(cartes, anomalies):
+def taxonomie(cartes, sorties, anomalies):
     cats, colls = {}, {}
     for c in cartes:
         biblio = BIBLIOTHEQUE[c['bibliotheque']]
-        cats.setdefault(c['categorie'], {
-            'cle': c['categorie'], 'libelle': c['categorie_libelle'],
+        categorie = FUSION.get(c['categorie'], c['categorie'])
+        libelle = FUSION_LIBELLE.get(categorie, c['categorie_libelle'])
+        cats.setdefault(categorie, {
+            'cle': categorie, 'libelle': libelle,
             'bibliotheque': c['bibliotheque'], 'mode': biblio['mode'],
             'library': biblio['library'], 'cartes': 0})
-        cats[c['categorie']]['cartes'] += 1
+        cats[categorie]['cartes'] += 1
         colls.setdefault(c['collection'], {
             'cle': c['collection'], 'libelle': c['collection_libelle'],
-            'parent': c['categorie'], 'mode': biblio['mode'], 'cartes': 0})
+            'parent': categorie, 'mode': biblio['mode'], 'cartes': 0})
         colls[c['collection']]['cartes'] += 1
-        if colls[c['collection']]['parent'] != c['categorie']:
+        if colls[c['collection']]['parent'] != categorie:
             anomalies.append({'type': 'collection_a_deux_parents',
                               'collection': c['collection']})
+
+    # Le rayon de transition est une categorie racine, sans collection : ce
+    # qu'on y depose attend d'etre classe, pas d'etre sous-classe.
+    en_transition = sum(1 for s in sorties if s['en_transition'])
+    biblio = BIBLIOTHEQUE[TRANSITION['bibliotheque']]
+    cats[TRANSITION['cle']] = {
+        'cle': TRANSITION['cle'], 'libelle': TRANSITION['libelle'],
+        'bibliotheque': TRANSITION['bibliotheque'], 'mode': biblio['mode'],
+        'library': biblio['library'], 'cartes': en_transition,
+        'transition': True,
+    }
+
+    if len(cats) != 13:
+        anomalies.append({'type': 'nombre_de_rayons', 'attendu': 13,
+                          'trouve': len(cats)})
     utilises = collections.Counter()
     for c in cartes:
         for t in c['tags'].split(';'):
@@ -269,7 +338,7 @@ def main():
     representante, regroupees, non_resolues, methodes = resoudre(cartes, production, anomalies)
     sorties, retraits, couvertes = construire(cartes, representante, regroupees,
                                               production, anomalies)
-    cats, colls, tags = taxonomie(cartes, anomalies)
+    cats, colls, tags = taxonomie(cartes, sorties, anomalies)
 
     os.makedirs(SORTIE, exist_ok=True)
 
@@ -311,6 +380,8 @@ def main():
     print('Methodes de resolution : %s' % dict(methodes))
     print('Non resolues           : %d' % len(non_resolues))
     print('Categories/collections : %d / %d' % (len(cats), len(colls)))
+    print('   dont rayon de transition : %d carte(s)'
+          % sum(1 for s in sorties if s['en_transition']))
     print('Anomalies              : %d' % len(anomalies))
     for a in anomalies[:15]:
         print('   - %s' % json.dumps(a, ensure_ascii=False)[:160])
