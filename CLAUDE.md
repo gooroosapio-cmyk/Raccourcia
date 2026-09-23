@@ -155,9 +155,12 @@ scripts d'import de medias ne sont plus une voie d'alimentation.
 - Les visuels poses par script sont a effacer, lignes et objets de stockage
   ensemble.
 - Aucune suppression de masse de visuels ne part d'une supposition sur le
-  chemin de stockage : les deux voies ecrivent aujourd'hui le meme chemin.
-  Seul l'auteur distingue, et il doit etre renseigne avant que l'effacement
-  ne soit possible.
+  chemin de stockage : les deux voies ecrivent le meme chemin.
+- **Le critere retenu pour l'existant est la date** : tout visuel depose avant
+  le 18 septembre 2026 a ete injecte par script et part, lignes et fichiers.
+  Il ne s'applique que par le manifeste `data/visuels/purge-avant-18-septembre.json`,
+  jamais par une requete sur la date seule. Pour tout depot posterieur,
+  `created_by` fait foi. Voir `docs/REFONTE-UI-DECISIONS.md`.
 
 ## Contraintes mobile-first
 

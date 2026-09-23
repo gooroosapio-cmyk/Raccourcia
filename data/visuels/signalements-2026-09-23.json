@@ -1,0 +1,42 @@
+{
+  "fichier_absent": [
+    {
+      "id": "e8ab4460-4071-44a3-aaf7-60d0bba04d2b",
+      "prompt_id": "346b0d74-a9f5-47a9-ae0d-22542c505bfa",
+      "kind": "before",
+      "storage_path": "prompts/346b0d74-a9f5-47a9-ae0d-22542c505bfa/before-1789929700076.jpg",
+      "created_at": "2026-09-20 18:41:54.804687+00",
+      "largeur": null,
+      "hauteur": null,
+      "commande": "/1920sportrait",
+      "statut_carte": "published",
+      "bibliotheque": "images"
+    }
+  ],
+  "apres_hors_4_5": [
+    {
+      "id": "711a4c8f-a844-4075-9ce0-c530cfac0748",
+      "prompt_id": "343aebff-c6b4-4757-956b-2dd883c069c6",
+      "kind": "after",
+      "storage_path": "prompts/343aebff-c6b4-4757-956b-2dd883c069c6/after-1789966475113.png",
+      "created_at": "2026-09-21 04:54:38.132593+00",
+      "largeur": 941,
+      "hauteur": 1672,
+      "commande": "/cutoutreality",
+      "statut_carte": "published",
+      "bibliotheque": "images"
+    },
+    {
+      "id": "eed90d51-3fc3-4661-93dc-e19a2e022e69",
+      "prompt_id": "7d4c33ae-daf2-482d-9303-a3fc41e95bd8",
+      "kind": "after",
+      "storage_path": "prompts/7d4c33ae-daf2-482d-9303-a3fc41e95bd8/after-1790088747818.png",
+      "created_at": "2026-09-22 14:52:31.320472+00",
+      "largeur": 1024,
+      "hauteur": 1536,
+      "commande": "/satireline",
+      "statut_carte": "published",
+      "bibliotheque": "images"
+    }
+  ]
+}

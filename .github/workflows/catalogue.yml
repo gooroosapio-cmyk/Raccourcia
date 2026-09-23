@@ -38,6 +38,11 @@ on:
           # les cartes, parce que l'unicite de slug ne porte que sur le non
           # archive. Le lot 000 n'ecrit rien et refuse de continuer si un
           # retrait emporterait un visuel.
+          # L'effacement des visuels anterieurs au 18 septembre 2026 : le
+          # lot 000 lit, le 100 efface les lignes du manifeste. A jouer APRES
+          # la sauvegarde des fichiers (workflow Visuels, purge-sauvegarde).
+          - supabase/seed/purge-visuels-avant-18
+          - supabase/seed/purge-visuels-avant-18-restauration
           - supabase/seed/catalogue-final-v5
           # Le catalogue Visuels V3. Le lot 000 n'ecrit rien : il compte ce
           # que les suivants vont toucher et leve si une carte historique est
