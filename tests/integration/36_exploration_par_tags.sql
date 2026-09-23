@@ -95,37 +95,51 @@ end $$;
 
 -- --- La borne qui protege l'adresse de la requete ------------------------
 --
--- Le filtre par tag renvoie une liste d'identifiants, que l'application pose
--- ensuite dans l'adresse de sa requete : trente-huit caracteres chacun. Une
--- liste de plusieurs centaines fait une adresse qu'une passerelle refuse.
+-- LA SONNETTE A SONNE, ET ON Y A REPONDU.
 --
--- Ce controle est une sonnette, pas une limite : s'il cede, c'est que le
--- catalogue a grossi et qu'il faut passer le filtre entier en SQL. Le
--- tronquer rendrait une liste fausse sans que rien ne le dise.
+-- Elle surveillait le plus gros tag du catalogue, parce que le filtre
+-- renvoyait une liste d'identifiants que l'application posait ensuite dans
+-- l'adresse de sa requete — trente-huit caracteres chacun. Le catalogue
+-- Visuels V3 a porte « photographie » au-dela de cinq cents commandes, et
+-- la sonnette a leve, comme elle devait.
+--
+-- La reponse est celle qu'elle demandait : le filtre A UN TAG est passe en
+-- SQL, par une jointure interne aliasee, et ne rapatrie plus rien. Surveiller
+-- encore le plus gros tag n'aurait plus de sens — ce chemin ne construit
+-- plus d'adresse.
+--
+-- Ce qui reste a surveiller, c'est le chemin qui construit encore une liste :
+-- l'INTERSECTION de plusieurs tags, qu'une jointure ne sait pas exprimer
+-- (elle rendrait un OU). Croiser deux tags ne peut que reduire, donc la borne
+-- tient largement — mais elle tient pour une raison, et c'est celle-la qu'on
+-- verrouille maintenant.
 do $$
 declare
   v_max integer;
-  v_slug text;
+  v_paire text;
 begin
-  select count(*), max(slug) into v_max, v_slug
+  select coalesce(max(n), 0), max(paire) into v_max, v_paire
   from (
-    select t.slug, count(*) as n
-    from public.tags t
-    join public.prompt_tags pt on pt.tag_id = t.id
-    join public.prompts p on p.id = pt.prompt_id
-    where t.is_active
+    select a.slug || ' + ' || b.slug as paire, count(*) as n
+    from public.tags a
+    join public.prompt_tags pa on pa.tag_id = a.id
+    join public.tags b on b.id > a.id
+    join public.prompt_tags pb on pb.tag_id = b.id and pb.prompt_id = pa.prompt_id
+    join public.prompts p on p.id = pa.prompt_id
+    where a.is_active and b.is_active
       and p.status = 'published'
-      and t.groupe not in ('bibliotheque', 'ia')
-    group by t.slug
+      and a.groupe not in ('bibliotheque', 'ia')
+      and b.groupe not in ('bibliotheque', 'ia')
+    group by 1
     order by count(*) desc
     limit 1
-  ) s, lateral generate_series(1, s.n);
+  ) s;
 
   perform tests_assert(
-    coalesce(v_max, 0) <= 300,
-    format('Le tag %s porte %s commandes : la liste d''identifiants ne tient '
-           'plus dans une adresse. Passer le filtre par tag en SQL.',
-           v_slug, v_max));
+    v_max <= 300,
+    format('Le croisement %s porte %s commandes : la liste d''identifiants ne '
+           'tient plus dans une adresse. Passer l''intersection en SQL aussi.',
+           v_paire, v_max));
 end $$;
 
 -- --- Trois champs au plus, et une liste ne vaut que ses choix -------------

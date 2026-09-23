@@ -32,6 +32,10 @@ on:
         default: supabase/seed/v5-lot-01
         type: choice
         options:
+          # Le catalogue Visuels V3. Le lot 000 n'ecrit rien : il compte ce
+          # que les suivants vont toucher et leve si une carte historique est
+          # introuvable. Il part en premier, comme tous les lots du dossier.
+          - supabase/seed/visuels-v3
           - formats-et-rayons
           - catalogue-final
           - offre-2026-09

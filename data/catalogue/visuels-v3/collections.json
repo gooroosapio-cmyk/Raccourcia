@@ -1,0 +1,357 @@
+[
+  {
+    "slug": "design-edition--creation-decorative",
+    "nom": "Création décorative",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--ecrans-et-interfaces",
+    "nom": "Écrans et interfaces",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--evenements-et-spectacles",
+    "nom": "Événements et spectacles",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--fetes-et-calendrier",
+    "nom": "Fêtes et calendrier",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--graphisme-contemporain",
+    "nom": "Graphisme contemporain",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--livres-et-divertissement",
+    "nom": "Livres et divertissement",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--objets-et-metamorphoses",
+    "nom": "Objets et métamorphoses",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--portrait-et-editorial",
+    "nom": "Portrait et éditorial",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--presse-et-magazines",
+    "nom": "Presse et magazines",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--supports-et-formats",
+    "nom": "Supports et formats",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "design-edition--univers-personnels",
+    "nom": "Univers personnels",
+    "categorie": "design-edition"
+  },
+  {
+    "slug": "espaces-architecture--architecture-et-urbanisme",
+    "nom": "Architecture et urbanisme",
+    "categorie": "espaces-architecture"
+  },
+  {
+    "slug": "espaces-architecture--espaces-professionnels",
+    "nom": "Espaces professionnels",
+    "categorie": "espaces-architecture"
+  },
+  {
+    "slug": "espaces-architecture--habitat-et-exterieur",
+    "nom": "Habitat et extérieur",
+    "categorie": "espaces-architecture"
+  },
+  {
+    "slug": "espaces-architecture--volumes-et-amenagements",
+    "nom": "Volumes et aménagements",
+    "categorie": "espaces-architecture"
+  },
+  {
+    "slug": "evenements-souvenirs--etapes-de-vie",
+    "nom": "Étapes de vie",
+    "categorie": "evenements-souvenirs"
+  },
+  {
+    "slug": "evenements-souvenirs--fetes-et-calendrier",
+    "nom": "Fêtes et calendrier",
+    "categorie": "evenements-souvenirs"
+  },
+  {
+    "slug": "evenements-souvenirs--moments-et-celebrations",
+    "nom": "Moments et célébrations",
+    "categorie": "evenements-souvenirs"
+  },
+  {
+    "slug": "evenements-souvenirs--union-et-famille",
+    "nom": "Union et famille",
+    "categorie": "evenements-souvenirs"
+  },
+  {
+    "slug": "fiction-divertissement--animation-et-creatures",
+    "nom": "Animation et créatures",
+    "categorie": "fiction-divertissement"
+  },
+  {
+    "slug": "fiction-divertissement--cinema-et-pop-culture",
+    "nom": "Cinéma et pop culture",
+    "categorie": "fiction-divertissement"
+  },
+  {
+    "slug": "fiction-divertissement--fantasy-et-uchronies",
+    "nom": "Fantasy et uchronies",
+    "categorie": "fiction-divertissement"
+  },
+  {
+    "slug": "fiction-divertissement--objets-et-metamorphoses",
+    "nom": "Objets et métamorphoses",
+    "categorie": "fiction-divertissement"
+  },
+  {
+    "slug": "fiction-divertissement--scenes-et-detournements",
+    "nom": "Scènes et détournements",
+    "categorie": "fiction-divertissement"
+  },
+  {
+    "slug": "fiction-divertissement--univers-et-personnages",
+    "nom": "Univers et personnages",
+    "categorie": "fiction-divertissement"
+  },
+  {
+    "slug": "illustration-arts--dessin-et-ecriture",
+    "nom": "Dessin et écriture",
+    "categorie": "illustration-arts"
+  },
+  {
+    "slug": "illustration-arts--graphisme-contemporain",
+    "nom": "Graphisme contemporain",
+    "categorie": "illustration-arts"
+  },
+  {
+    "slug": "illustration-arts--laboratoire-visuel",
+    "nom": "Laboratoire visuel",
+    "categorie": "illustration-arts"
+  },
+  {
+    "slug": "illustration-arts--matieres-et-patrimoine",
+    "nom": "Matières et patrimoine",
+    "categorie": "illustration-arts"
+  },
+  {
+    "slug": "illustration-arts--mediums-et-explorations",
+    "nom": "Médiums et explorations",
+    "categorie": "illustration-arts"
+  },
+  {
+    "slug": "illustration-arts--narration-dessinee",
+    "nom": "Narration dessinée",
+    "categorie": "illustration-arts"
+  },
+  {
+    "slug": "illustration-arts--peinture-et-grands-maitres",
+    "nom": "Peinture et grands maîtres",
+    "categorie": "illustration-arts"
+  },
+  {
+    "slug": "information-visualisation--comprendre-et-comparer",
+    "nom": "Comprendre et comparer",
+    "categorie": "information-visualisation"
+  },
+  {
+    "slug": "information-visualisation--comprendre-et-representer",
+    "nom": "Comprendre et représenter",
+    "categorie": "information-visualisation"
+  },
+  {
+    "slug": "information-visualisation--matieres-et-metamorphoses",
+    "nom": "Matières et métamorphoses",
+    "categorie": "information-visualisation"
+  },
+  {
+    "slug": "information-visualisation--plans-et-documentation",
+    "nom": "Plans et documentation",
+    "categorie": "information-visualisation"
+  },
+  {
+    "slug": "information-visualisation--presentation-produit",
+    "nom": "Présentation produit",
+    "categorie": "information-visualisation"
+  },
+  {
+    "slug": "information-visualisation--sciences-et-technique",
+    "nom": "Sciences et technique",
+    "categorie": "information-visualisation"
+  },
+  {
+    "slug": "marque-publicite--campagnes-et-acquisition",
+    "nom": "Campagnes et acquisition",
+    "categorie": "marque-publicite"
+  },
+  {
+    "slug": "marque-publicite--fetes-et-calendrier",
+    "nom": "Fêtes et calendrier",
+    "categorie": "marque-publicite"
+  },
+  {
+    "slug": "marque-publicite--identite-et-campagnes",
+    "nom": "Identité et campagnes",
+    "categorie": "marque-publicite"
+  },
+  {
+    "slug": "marque-publicite--identite-et-direction-artistique",
+    "nom": "Identité et direction artistique",
+    "categorie": "marque-publicite"
+  },
+  {
+    "slug": "photomontage-effets--compositing-et-decors",
+    "nom": "Compositing et décors",
+    "categorie": "photomontage-effets"
+  },
+  {
+    "slug": "photomontage-effets--lumiere-et-optique",
+    "nom": "Lumière et optique",
+    "categorie": "photomontage-effets"
+  },
+  {
+    "slug": "photomontage-effets--matieres-et-metamorphoses",
+    "nom": "Matières et métamorphoses",
+    "categorie": "photomontage-effets"
+  },
+  {
+    "slug": "photomontage-effets--montages-et-illusions",
+    "nom": "Montages et illusions",
+    "categorie": "photomontage-effets"
+  },
+  {
+    "slug": "photomontage-effets--temps-et-mouvement",
+    "nom": "Temps et mouvement",
+    "categorie": "photomontage-effets"
+  },
+  {
+    "slug": "portrait-identite--beaute-et-coiffure",
+    "nom": "Beauté et coiffure",
+    "categorie": "portrait-identite"
+  },
+  {
+    "slug": "portrait-identite--liens-et-souvenirs",
+    "nom": "Liens et souvenirs",
+    "categorie": "portrait-identite"
+  },
+  {
+    "slug": "portrait-identite--portrait-et-editorial",
+    "nom": "Portrait et éditorial",
+    "categorie": "portrait-identite"
+  },
+  {
+    "slug": "portrait-identite--portraits-et-presence-sociale",
+    "nom": "Portraits et présence sociale",
+    "categorie": "portrait-identite"
+  },
+  {
+    "slug": "portrait-identite--style-et-essayage",
+    "nom": "Style et essayage",
+    "categorie": "portrait-identite"
+  },
+  {
+    "slug": "portrait-identite--transformation-et-identite",
+    "nom": "Transformation et identité",
+    "categorie": "portrait-identite"
+  },
+  {
+    "slug": "produit-ecommerce--presentation-et-mise-en-scene",
+    "nom": "Présentation et mise en scène",
+    "categorie": "produit-ecommerce"
+  },
+  {
+    "slug": "produit-ecommerce--presentation-produit",
+    "nom": "Présentation produit",
+    "categorie": "produit-ecommerce"
+  },
+  {
+    "slug": "produit-ecommerce--univers-de-consommation",
+    "nom": "Univers de consommation",
+    "categorie": "produit-ecommerce"
+  },
+  {
+    "slug": "retouche-restauration--compositing-et-decors",
+    "nom": "Compositing et décors",
+    "categorie": "retouche-restauration"
+  },
+  {
+    "slug": "retouche-restauration--laboratoire-visuel",
+    "nom": "Laboratoire visuel",
+    "categorie": "retouche-restauration"
+  },
+  {
+    "slug": "retouche-restauration--liens-et-souvenirs",
+    "nom": "Liens et souvenirs",
+    "categorie": "retouche-restauration"
+  },
+  {
+    "slug": "retouche-restauration--presentation-produit",
+    "nom": "Présentation produit",
+    "categorie": "retouche-restauration"
+  },
+  {
+    "slug": "voyages-cultures-epoques--antiquite-et-royaumes",
+    "nom": "Antiquité et royaumes",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--asies-et-moyen-orient",
+    "nom": "Asies et Moyen-Orient",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--contemporain-et-futurs",
+    "nom": "Contemporain et futurs",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--destinations-du-monde",
+    "nom": "Destinations du monde",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--du-moyen-age-au-xixe-siecle",
+    "nom": "Du Moyen Âge au XIXe siècle",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--europe-ameriques-et-oceanie",
+    "nom": "Europe, Amériques et Océanie",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--evasion-et-prestige",
+    "nom": "Évasion et prestige",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--lieux-et-periodes",
+    "nom": "Lieux et périodes",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--nature-et-aventure",
+    "nom": "Nature et aventure",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--patrimoines-africains",
+    "nom": "Patrimoines africains",
+    "categorie": "voyages-cultures-epoques"
+  },
+  {
+    "slug": "voyages-cultures-epoques--photographie-du-xxe-siecle",
+    "nom": "Photographie du XXe siècle",
+    "categorie": "voyages-cultures-epoques"
+  }
+]

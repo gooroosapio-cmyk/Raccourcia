@@ -296,9 +296,24 @@ export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
  * catalogue. Une jointure sert un filtre ; sans le filtre, elle n'a rien a
  * faire la.
  */
-function colonnesDuComptage(filtreFournisseur: boolean): string {
-  return filtreFournisseur ? 'id, prompt_variants!inner(ai_providers!inner(key))' : 'id';
+function colonnesDuComptage(filtreFournisseur: boolean, filtreTag: boolean): string {
+  const jointures = ['id'];
+  if (filtreFournisseur) jointures.push('prompt_variants!inner(ai_providers!inner(key))');
+  if (filtreTag) jointures.push(JOINTURE_TAG);
+  return jointures.join(', ');
 }
+
+/**
+ * La jointure qui porte le filtre par tag, sous un nom a elle.
+ *
+ * ALIASEE, ET C'EST NECESSAIRE. Les colonnes de carte embarquent deja
+ * `prompt_tags(tags(...))` pour AFFICHER les tags d'une commande. Poser le
+ * filtre sur cette imbrication-la la reduirait au tag filtre : une carte
+ * trouvee par « portrait » n'afficherait plus que « portrait », et perdrait
+ * les trois autres. L'alias donne une seconde jointure, interne celle-ci,
+ * qui filtre sans rien retirer de ce qu'on montre.
+ */
+const JOINTURE_TAG = 'filtre_tag:prompt_tags!inner(tags!inner(slug))';
 
 /** Colonnes publiques d'un raccourci. `payload` n'y figure jamais. */
 /**
@@ -695,6 +710,17 @@ async function resoudreCategorie(client: Client, slug?: string): Promise<string[
 async function resoudreLesTags(client: Client, tags?: string[]): Promise<string[] | null> {
   if (!tags || tags.length === 0) return null;
 
+  // UN SEUL TAG NE PASSE PLUS PAR ICI. La sonnette a sonne : le catalogue
+  // Visuels V3 porte « photographie » sur plus de cinq cents commandes, et
+  // cinq cents identifiants de trente-huit caracteres font une adresse
+  // qu'une passerelle refuse. Le filtre a un tag est donc pose en SQL, par
+  // une jointure interne, et ne rapatrie plus rien.
+  //
+  // L'intersection de plusieurs tags reste ici : une jointure ne sait rendre
+  // qu'un OU, et croiser deux tags ne peut que reduire — le plus gros
+  // croisement du catalogue tient largement dans une adresse.
+  if (tags.length === 1) return null;
+
   const { data, error } = await client.rpc('prompts_avec_tous_les_tags', { p_tags: tags });
 
   // Une base qui refuse la question n'est pas une selection vide : on remonte
@@ -783,10 +809,18 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   // de filtres separees auraient fini par annoncer un total qui ne correspond
   // plus a la liste montree. Les colonnes sont le seul parametre, ce qui
   // permet au comptage de ne rien ramener du tout.
+  // Le tag filtre en SQL, quand il est seul. La jointure rejoint les colonnes
+  // de lecture comme celle du comptage : sans elle des deux cotes, le total
+  // annonce ne correspondrait plus a la liste montree.
+  const tagUnique = query.tags?.length === 1 ? query.tags[0] : null;
+
   const construire = (colonnes: string, tete = false) => {
     let requete = supabase
       .from('prompts')
-      .select(colonnes as '*', tete ? { count: 'exact', head: true } : undefined)
+      .select(
+        (tagUnique && !tete ? `${colonnes},\n  ${JOINTURE_TAG}` : colonnes) as '*',
+        tete ? { count: 'exact', head: true } : undefined,
+      )
       .eq('status', 'published');
 
     if (!transverse) requete = requete.eq('mode', query.mode);
@@ -796,6 +830,7 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     if (categorieIds) requete = requete.in('category_id', categorieIds);
 
     if (tagIds) requete = requete.in('id', tagIds);
+    if (tagUnique) requete = requete.eq('filtre_tag.tags.slug', tagUnique);
 
     if (terme) requete = requete.or(portesDeRecherche(terme, famillesTrouvees));
 
@@ -831,7 +866,7 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     // le filtre porte sur `prompt_variants.ai_providers.key` : sans elle
     // PostgREST rejette la requete, avec elle sans filtre le total oublie
     // toutes les commandes sans variante.
-    construire(colonnesDuComptage(Boolean(query.provider)), true),
+    construire(colonnesDuComptage(Boolean(query.provider), Boolean(tagUnique)), true),
   ]);
 
   if (lecture.error) throw new CatalogUnavailableError(lecture.error);

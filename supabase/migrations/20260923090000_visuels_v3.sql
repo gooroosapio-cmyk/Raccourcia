@@ -174,6 +174,22 @@ comment on column public.prompts.reference_inspiration is
   'Provenance editoriale. N''emporte aucune revendication de propriete sur '
   'les images de reference.';
 
+-- --- La clef des rayons --------------------------------------------------
+--
+-- `categories.external_ref` sert de clef aux lots depuis le socle, mais rien
+-- ne garantissait son unicite : les seeds s'en servaient en lecture
+-- (`join ... on c.external_ref = l.family_id`) sans jamais pouvoir s'y
+-- accrocher en ecriture. Deux categories portant la meme reference
+-- auraient fait atterrir des cartes dans l'une ou l'autre selon l'humeur du
+-- planificateur — et personne ne l'aurait vu, puisque les deux existent.
+--
+-- 192 categories en portent une aujourd'hui, aucune en double : l'index se
+-- pose sans rien casser. Partiel, parce que 95 categories n'ont pas de
+-- reference et n'ont pas a en avoir.
+create unique index if not exists categories_external_ref_unique
+  on public.categories (external_ref)
+  where external_ref is not null;
+
 -- --- La clef de l'import : rien a faire ----------------------------------
 --
 -- `prompts_card_id_unique` existe depuis le socle V2, au caractere pres

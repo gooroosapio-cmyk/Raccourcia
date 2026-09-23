@@ -1,0 +1,68 @@
+[
+  {
+    "slug": "portrait-identite",
+    "nom": "Portrait & identité",
+    "ordre": 1
+  },
+  {
+    "slug": "retouche-restauration",
+    "nom": "Retouche & restauration",
+    "ordre": 2
+  },
+  {
+    "slug": "photomontage-effets",
+    "nom": "Photomontage & effets",
+    "ordre": 3
+  },
+  {
+    "slug": "produit-ecommerce",
+    "nom": "Produit & e-commerce",
+    "ordre": 4
+  },
+  {
+    "slug": "marque-publicite",
+    "nom": "Marque & publicité",
+    "ordre": 5
+  },
+  {
+    "slug": "design-edition",
+    "nom": "Design graphique & édition",
+    "ordre": 6
+  },
+  {
+    "slug": "illustration-arts",
+    "nom": "Illustration & arts",
+    "ordre": 7
+  },
+  {
+    "slug": "espaces-architecture",
+    "nom": "Espaces & architecture",
+    "ordre": 8
+  },
+  {
+    "slug": "information-visualisation",
+    "nom": "Information & visualisation",
+    "ordre": 9
+  },
+  {
+    "slug": "evenements-souvenirs",
+    "nom": "Événements & souvenirs",
+    "ordre": 10
+  },
+  {
+    "slug": "fiction-divertissement",
+    "nom": "Fiction & divertissement",
+    "ordre": 11
+  },
+  {
+    "slug": "voyages-cultures-epoques",
+    "nom": "Voyages, cultures & époques",
+    "ordre": 12
+  },
+  {
+    "slug": "a-reclasser",
+    "nom": "À reclasser",
+    "ordre": 99,
+    "description": "Commandes du catalogue précédent qui attendent leur catégorie V3. Elles fonctionnent normalement."
+  }
+]
