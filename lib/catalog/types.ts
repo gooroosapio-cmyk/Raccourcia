@@ -178,6 +178,22 @@ export type PromptCard = {
   motsCles: { slug: string; nom: string }[];
 };
 
+/**
+ * Ce qu'on sait d'une commande retiree, et rien de plus.
+ *
+ * Volontairement pauvre : de quoi ecrire un avis de retrait honnete, pas
+ * de quoi reconstituer une fiche. Une page d'archive qui montrerait la
+ * description complete offrirait gratuitement ce que l'acces paie.
+ */
+export type CommandeRetiree = {
+  nom: string;
+  commande: string;
+  bibliotheque: string | null;
+  retireeLe: string | null;
+  /** Une carte encore publiee sous LA MEME commande, s'il en reste une. */
+  remplacante: { slug: string; nom: string } | null;
+};
+
 /** Ce que la page publique ajoute. Toujours sans le prompt complet. */
 export type PromptDetail = PromptCard & {
   expectedOutput: string | null;

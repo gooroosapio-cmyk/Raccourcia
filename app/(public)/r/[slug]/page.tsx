@@ -1,10 +1,16 @@
 import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getAliasDestination, getPromptDetail, getPublicConfig } from '@/lib/catalog/queries';
+import {
+  getAliasDestination,
+  getPromptDetail,
+  getPublicConfig,
+  getRetiredPrompt,
+} from '@/lib/catalog/queries';
 import { getAccessState } from '@/lib/access/entitlement';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
+import { AvisDeRetrait } from '@/components/detail/avis-de-retrait';
 import { BlocDeCopie } from '@/components/detail/bloc-de-copie';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
 import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
@@ -47,6 +53,20 @@ export async function generateMetadata({
       const cible = await getPromptDetail(destination.slug).catch(() => null);
       if (cible) return { title: `${cible.name} - ${cible.command}` };
     }
+
+    // Une commande retiree garde un titre qui la nomme : l'apercu d'un lien
+    // repartage doit annoncer le retrait, pas un « Commande » muet qui
+    // laisse croire que le lien est casse.
+    const retiree = await getRetiredPrompt(slug).catch(() => null);
+    if (retiree) {
+      return {
+        title: `${retiree.nom} - commande retirée`,
+        // Pas d'openGraph ici : on ne veut pas qu'une commande retiree
+        // continue de se partager avec une belle carte d'apercu.
+        robots: { index: false, follow: true },
+      };
+    }
+
     return { title: 'Commande' };
   }
 
@@ -97,6 +117,15 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
     // reportent alors ce que l'ancienne page avait gagne.
     const destination = await getAliasDestination(slug);
     if (destination) permanentRedirect(`/r/${destination.slug}`);
+
+    // Pas de redirection, mais peut-etre une commande qui a existe. La
+    // refonte V5 en retire beaucoup sans leur donner de suite, et c'est
+    // voulu : envoyer « /1950sstudio » vers un portrait generique
+    // promettrait un resultat qui ne viendrait pas. Ne rien dire du tout
+    // serait pire — la personne croirait s'etre trompee d'adresse.
+    const retiree = await getRetiredPrompt(slug);
+    if (retiree) return <AvisDeRetrait commande={retiree} />;
+
     notFound();
   }
 

@@ -22,6 +22,7 @@ import type {
   BeforeAfter,
   CategoryNode,
   ChampDeCommande,
+  CommandeRetiree,
   LibraryFamily,
   PromptCard,
   PromptDetail,
@@ -1075,6 +1076,41 @@ export async function getAliasDestination(
   const mode = typeof preset?.mode === 'string' ? preset.mode : null;
 
   return { slug: destination.slug, mode };
+}
+
+/**
+ * Avis de retrait pour une adresse dont la commande a ete archivee.
+ *
+ * Une adresse partagee peut survivre longtemps a la commande qu'elle
+ * designait. Quand aucune redirection n'existe — et la refonte V5 en laisse
+ * volontairement beaucoup sans, parce qu'envoyer vers une fonction voisine
+ * promettrait un resultat qui ne viendrait pas — la page ne doit pas se
+ * presenter comme introuvable. « Introuvable » dit « vous vous etes trompe » ;
+ * ici, la personne ne s'est pas trompee, c'est le catalogue qui a change.
+ *
+ * `null` quand l'adresse ne correspond a aucune archive : la page redevient
+ * alors introuvable, ce qui reste la bonne reponse pour une adresse qui n'a
+ * jamais existe.
+ */
+export async function getRetiredPrompt(slug: string): Promise<CommandeRetiree | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc('commande_retiree', { p_slug: slug });
+  const ligne = error ? undefined : data?.[0];
+  if (!ligne) return null;
+
+  return {
+    nom: ligne.nom,
+    commande: ligne.commande,
+    bibliotheque: ligne.bibliotheque,
+    retireeLe: ligne.retiree_le,
+    // La remplacante ne vaut que si elle porte la meme commande. La fonction
+    // SQL ne rend que celles-la ; on ne fabrique rien ici.
+    remplacante:
+      ligne.remplacante_slug && ligne.remplacante_nom
+        ? { slug: ligne.remplacante_slug, nom: ligne.remplacante_nom }
+        : null,
+  };
 }
 
 /** Vue Favoris : exactement les memes cartes que Decouvrir. */
