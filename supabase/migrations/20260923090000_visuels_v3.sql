@@ -186,9 +186,25 @@ comment on column public.prompts.reference_inspiration is
 -- 192 categories en portent une aujourd'hui, aucune en double : l'index se
 -- pose sans rien casser. Partiel, parce que 95 categories n'ont pas de
 -- reference et n'ont pas a en avoir.
-create unique index if not exists categories_external_ref_unique
-  on public.categories (external_ref)
-  where external_ref is not null;
+--
+-- ET ON REGARDE LA GARANTIE, PAS LE NOM. La production porte deja un index
+-- equivalent, appele `categories_external_ref_key` : meme colonne, meme
+-- predicat, pose par le socle. Un `if not exists` compare des noms, pas des
+-- definitions — il ne l'aurait pas reconnu et en aurait pose un second,
+-- identique, que chaque ecriture aurait paye deux fois. Le garde cherche
+-- donc l'index par ce qu'il fait.
+do $$
+begin
+  if not exists (
+    select 1 from pg_indexes
+    where schemaname = 'public' and tablename = 'categories'
+      and indexdef ilike '%unique%' and indexdef ilike '%external_ref%'
+  ) then
+    create unique index categories_external_ref_unique
+      on public.categories (external_ref)
+      where external_ref is not null;
+  end if;
+end $$;
 
 -- --- La clef de l'import : rien a faire ----------------------------------
 --
