@@ -22,6 +22,10 @@ runs:
       # C'est ce qui distingue « cle tronquee au copier-coller » de « cle
       # anon prise pour la cle de service » ou « cle d'un autre projet »,
       # sans quoi il ne reste qu'a deviner.
+      # Une etape « run » d'action composite doit nommer son shell : sans lui,
+      # GitHub refuse de charger l'action, et toutes les taches du workflow
+      # Visuels echouent avant leur premiere ligne.
+      shell: bash
       env:
         CLE: ${{ inputs.cle }}
         PROJET: ${{ inputs.projet }}
