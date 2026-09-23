@@ -104,10 +104,19 @@ membre. Les regles precedentes sont annulees :
 Le membre renseigne ses informations _avant_ la copie ; c'est la ce qui
 personnalise le texte, maintenant que l'IA ne le fait plus.
 
-- **Trois champs par defaut** pour toute commande qui n'en declare pas
-  explicitement d'autres. La valeur de reference est trois, pas zero.
-- Trois reste le maximum. La borne vit dans la base.
+- **Une carte declare ses champs, et l'interface n'affiche que ceux-la.** Le
+  catalogue V5 les porte carte par carte : 365 des 642 n'en demandent aucun,
+  parce que leur promesse n'a rien a demander. Ne pas reclamer un nom, une
+  couleur ou un budget sur toutes les fiches par principe.
+- **La borne depend du regime**, porte par `prompts.regime_champs` : trois au
+  plus en « standard », deux a quatre en « marketing ». Un support marketing
+  sans son titre, son offre et son contact ne produit rien d'utilisable ;
+  ouvrir cette latitude a toutes les cartes rendrait la borne inutile. Les
+  deux bornes vivent en base, pas dans le formulaire.
 - Un champ non rempli ne bloque pas la copie sauf s'il est marque obligatoire.
+  Un champ indispensable laisse vide s'annonce (« l'IA te le demandera ») et
+  n'injecte jamais son exemple a la place.
+- Aucun token `{{cle}}` ne subsiste dans le texte copie.
 - La substitution se fait dans la route de resolution, cote serveur. Une clef
   inventee par le navigateur n'atteint rien.
 

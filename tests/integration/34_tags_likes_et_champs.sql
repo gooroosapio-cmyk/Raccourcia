@@ -104,14 +104,46 @@ begin
   exception when unique_violation then null;
   end;
 
-  -- Un quatrieme champ : refuse. La limite protege la fiche, pas le
-  -- questionnaire que l'IA mene ensuite.
+  -- Un quatrieme champ : accepte depuis le catalogue V5, qui introduit le
+  -- regime marketing. Une affiche sans son titre, son offre et son contact
+  -- ne produit rien d'utilisable, et trois lignes n'y suffisaient pas.
+  --
+  -- La borne n'a pas disparu pour autant, elle s'est deplacee : la position
+  -- va jusqu'a quatre, et c'est `prompts.regime_champs` qui dit combien une
+  -- carte donnee a le droit d'en declarer — trois en standard, quatre en
+  -- marketing. Sans cette seconde borne, relever la position aurait ouvert
+  -- quatre saisies a toutes les fiches, ce que la limite existait pour
+  -- empecher.
+  insert into public.prompt_fields (prompt_id, cle, libelle, position)
+  values (v_prompt, 'quatrieme', 'Quatrieme', 4);
+
+  perform tests_assert(
+    (select count(*) from public.prompt_fields where prompt_id = v_prompt) = 2,
+    'Le quatrieme champ du regime marketing est refuse.');
+
+  -- Un cinquieme reste refuse : la borne s'est deplacee, pas levee.
   begin
     insert into public.prompt_fields (prompt_id, cle, libelle, position)
-    values (v_prompt, 'quatrieme', 'Quatrieme', 4);
-    perform tests_assert(false, 'Un quatrieme champ a ete accepte.');
+    values (v_prompt, 'cinquieme', 'Cinquieme', 5);
+    perform tests_assert(false, 'Un cinquieme champ a ete accepte.');
   exception when check_violation then null;
   end;
+
+  -- Et la borne portee par la carte tient, elle aussi : une carte standard
+  -- ne peut pas annoncer quatre champs sur sa fiche.
+  begin
+    update public.prompts set regime_champs = 'standard', fiche_champs_max = 4
+    where id = v_prompt;
+    perform tests_assert(false, 'Une carte standard annonce quatre champs.');
+  exception when check_violation then null;
+  end;
+
+  update public.prompts set regime_champs = 'marketing', fiche_champs_max = 4
+  where id = v_prompt;
+
+  perform tests_assert(
+    (select fiche_champs_max from public.prompts where id = v_prompt) = 4,
+    'Une carte marketing ne peut pas annoncer quatre champs.');
 
   -- Supprimer la commande emporte ses champs, ses choix et ses likes :
   -- aucun enregistrement orphelin.

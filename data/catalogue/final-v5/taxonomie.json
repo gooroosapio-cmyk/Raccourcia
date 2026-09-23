@@ -1,0 +1,517 @@
+{
+ "categories": [
+  {
+   "bibliotheque": "visuels",
+   "cartes": 219,
+   "cle": "creation",
+   "libelle": "Créations & montages",
+   "library": "images",
+   "mode": "image"
+  },
+  {
+   "bibliotheque": "visuels",
+   "cartes": 171,
+   "cle": "portraits",
+   "libelle": "Portraits & sujets",
+   "library": "images",
+   "mode": "image"
+  },
+  {
+   "bibliotheque": "visuels",
+   "cartes": 33,
+   "cle": "espaces",
+   "libelle": "Espaces",
+   "library": "images",
+   "mode": "image"
+  },
+  {
+   "bibliotheque": "visuels",
+   "cartes": 63,
+   "cle": "marketing",
+   "libelle": "Marketing & édition",
+   "library": "images",
+   "mode": "image"
+  },
+  {
+   "bibliotheque": "visuels",
+   "cartes": 71,
+   "cle": "technique",
+   "libelle": "Schémas & technique",
+   "library": "images",
+   "mode": "image"
+  },
+  {
+   "bibliotheque": "visuels",
+   "cartes": 25,
+   "cle": "produits",
+   "libelle": "Produits",
+   "library": "images",
+   "mode": "image"
+  },
+  {
+   "bibliotheque": "redaction",
+   "cartes": 10,
+   "cle": "ecrire",
+   "libelle": "Écrire & améliorer",
+   "library": "textes",
+   "mode": "texte"
+  },
+  {
+   "bibliotheque": "redaction",
+   "cartes": 5,
+   "cle": "analyser",
+   "libelle": "Synthèses & analyses",
+   "library": "textes",
+   "mode": "texte"
+  },
+  {
+   "bibliotheque": "redaction",
+   "cartes": 6,
+   "cle": "documents",
+   "libelle": "Documents",
+   "library": "textes",
+   "mode": "texte"
+  },
+  {
+   "bibliotheque": "assistants",
+   "cartes": 15,
+   "cle": "personnages",
+   "libelle": "Personnages & recul",
+   "library": "reflexions",
+   "mode": "texte"
+  },
+  {
+   "bibliotheque": "assistants",
+   "cartes": 10,
+   "cle": "jeux",
+   "libelle": "Jeux & simulations",
+   "library": "reflexions",
+   "mode": "texte"
+  },
+  {
+   "bibliotheque": "assistants",
+   "cartes": 6,
+   "cle": "coachs",
+   "libelle": "Coachs",
+   "library": "reflexions",
+   "mode": "texte"
+  },
+  {
+   "bibliotheque": "assistants",
+   "cartes": 8,
+   "cle": "experts",
+   "libelle": "Assistants métiers",
+   "library": "reflexions",
+   "mode": "texte"
+  }
+ ],
+ "collections": [
+  {
+   "cartes": 28,
+   "cle": "creation--univers",
+   "libelle": "Univers & histoires",
+   "mode": "image",
+   "parent": "creation"
+  },
+  {
+   "cartes": 69,
+   "cle": "portraits--editoriaux",
+   "libelle": "Portraits éditoriaux",
+   "mode": "image",
+   "parent": "portraits"
+  },
+  {
+   "cartes": 23,
+   "cle": "espaces--amenagement",
+   "libelle": "Aménagements",
+   "mode": "image",
+   "parent": "espaces"
+  },
+  {
+   "cartes": 13,
+   "cle": "marketing--identite",
+   "libelle": "Identité & maquettes",
+   "mode": "image",
+   "parent": "marketing"
+  },
+  {
+   "cartes": 12,
+   "cle": "technique--plans",
+   "libelle": "Plans & cotes",
+   "mode": "image",
+   "parent": "technique"
+  },
+  {
+   "cartes": 10,
+   "cle": "espaces--imaginaires",
+   "libelle": "Lieux imaginaires",
+   "mode": "image",
+   "parent": "espaces"
+  },
+  {
+   "cartes": 32,
+   "cle": "portraits--style",
+   "libelle": "Style & tenues",
+   "mode": "image",
+   "parent": "portraits"
+  },
+  {
+   "cartes": 16,
+   "cle": "marketing--campagnes",
+   "libelle": "Campagnes",
+   "mode": "image",
+   "parent": "marketing"
+  },
+  {
+   "cartes": 19,
+   "cle": "produits--presentation",
+   "libelle": "Présentation fidèle",
+   "mode": "image",
+   "parent": "produits"
+  },
+  {
+   "cartes": 23,
+   "cle": "marketing--couvertures",
+   "libelle": "Couvertures",
+   "mode": "image",
+   "parent": "marketing"
+  },
+  {
+   "cartes": 58,
+   "cle": "creation--montages",
+   "libelle": "Montages",
+   "mode": "image",
+   "parent": "creation"
+  },
+  {
+   "cartes": 66,
+   "cle": "creation--matieres",
+   "libelle": "Arts & matières",
+   "mode": "image",
+   "parent": "creation"
+  },
+  {
+   "cartes": 17,
+   "cle": "portraits--souvenirs",
+   "libelle": "Liens & souvenirs",
+   "mode": "image",
+   "parent": "portraits"
+  },
+  {
+   "cartes": 49,
+   "cle": "creation--effets",
+   "libelle": "Effets photographiques",
+   "mode": "image",
+   "parent": "creation"
+  },
+  {
+   "cartes": 18,
+   "cle": "creation--detournements",
+   "libelle": "Humour & miniatures",
+   "mode": "image",
+   "parent": "creation"
+  },
+  {
+   "cartes": 19,
+   "cle": "technique--structures",
+   "libelle": "Structures & coupes",
+   "mode": "image",
+   "parent": "technique"
+  },
+  {
+   "cartes": 25,
+   "cle": "technique--explications",
+   "libelle": "Explications visuelles",
+   "mode": "image",
+   "parent": "technique"
+  },
+  {
+   "cartes": 15,
+   "cle": "technique--systemes",
+   "libelle": "Flux & systèmes",
+   "mode": "image",
+   "parent": "technique"
+  },
+  {
+   "cartes": 27,
+   "cle": "portraits--professionnels",
+   "libelle": "Portraits professionnels",
+   "mode": "image",
+   "parent": "portraits"
+  },
+  {
+   "cartes": 26,
+   "cle": "portraits--retouches",
+   "libelle": "Retouches",
+   "mode": "image",
+   "parent": "portraits"
+  },
+  {
+   "cartes": 6,
+   "cle": "produits--creatif",
+   "libelle": "Mises en scène créatives",
+   "mode": "image",
+   "parent": "produits"
+  },
+  {
+   "cartes": 11,
+   "cle": "marketing--affiches",
+   "libelle": "Affiches & menus",
+   "mode": "image",
+   "parent": "marketing"
+  },
+  {
+   "cartes": 3,
+   "cle": "ecrire--ameliorer",
+   "libelle": "Améliorer un texte",
+   "mode": "texte",
+   "parent": "ecrire"
+  },
+  {
+   "cartes": 7,
+   "cle": "ecrire--communiquer",
+   "libelle": "Communiquer",
+   "mode": "texte",
+   "parent": "ecrire"
+  },
+  {
+   "cartes": 5,
+   "cle": "analyser--analyser",
+   "libelle": "Comprendre les sources",
+   "mode": "texte",
+   "parent": "analyser"
+  },
+  {
+   "cartes": 6,
+   "cle": "documents--documents",
+   "libelle": "Livrables professionnels",
+   "mode": "texte",
+   "parent": "documents"
+  },
+  {
+   "cartes": 9,
+   "cle": "personnages--personnages",
+   "libelle": "Personnages",
+   "mode": "texte",
+   "parent": "personnages"
+  },
+  {
+   "cartes": 6,
+   "cle": "personnages--recul",
+   "libelle": "Angles de réflexion",
+   "mode": "texte",
+   "parent": "personnages"
+  },
+  {
+   "cartes": 4,
+   "cle": "jeux--jeux-recits",
+   "libelle": "Enquêtes & aventures",
+   "mode": "texte",
+   "parent": "jeux"
+  },
+  {
+   "cartes": 2,
+   "cle": "jeux--jeux-defis",
+   "libelle": "Défis courts",
+   "mode": "texte",
+   "parent": "jeux"
+  },
+  {
+   "cartes": 4,
+   "cle": "jeux--jeux-pro",
+   "libelle": "Simulations professionnelles",
+   "mode": "texte",
+   "parent": "jeux"
+  },
+  {
+   "cartes": 3,
+   "cle": "coachs--coachs-quotidien",
+   "libelle": "Vie quotidienne",
+   "mode": "texte",
+   "parent": "coachs"
+  },
+  {
+   "cartes": 3,
+   "cle": "coachs--coachs-progres",
+   "libelle": "Apprendre & progresser",
+   "mode": "texte",
+   "parent": "coachs"
+  },
+  {
+   "cartes": 6,
+   "cle": "experts--experts-metiers",
+   "libelle": "Travail & expertise",
+   "mode": "texte",
+   "parent": "experts"
+  },
+  {
+   "cartes": 2,
+   "cle": "experts--experts-finance",
+   "libelle": "Comptabilité & fiscalité",
+   "mode": "texte",
+   "parent": "experts"
+  }
+ ],
+ "tags": [
+  {
+   "cartes": 334,
+   "slug": "photo"
+  },
+  {
+   "cartes": 168,
+   "slug": "portrait"
+  },
+  {
+   "cartes": 6,
+   "slug": "objet"
+  },
+  {
+   "cartes": 26,
+   "slug": "retouche"
+  },
+  {
+   "cartes": 33,
+   "slug": "mode"
+  },
+  {
+   "cartes": 17,
+   "slug": "souvenir"
+  },
+  {
+   "cartes": 41,
+   "slug": "produit"
+  },
+  {
+   "cartes": 40,
+   "slug": "publicite"
+  },
+  {
+   "cartes": 11,
+   "slug": "affiche"
+  },
+  {
+   "cartes": 23,
+   "slug": "couverture"
+  },
+  {
+   "cartes": 13,
+   "slug": "marque"
+  },
+  {
+   "cartes": 39,
+   "slug": "reseaux"
+  },
+  {
+   "cartes": 93,
+   "slug": "illustration"
+  },
+  {
+   "cartes": 9,
+   "slug": "anime"
+  },
+  {
+   "cartes": 28,
+   "slug": "cinema"
+  },
+  {
+   "cartes": 19,
+   "slug": "humour"
+  },
+  {
+   "cartes": 107,
+   "slug": "montage"
+  },
+  {
+   "cartes": 47,
+   "slug": "3d"
+  },
+  {
+   "cartes": 11,
+   "slug": "retro"
+  },
+  {
+   "cartes": 33,
+   "slug": "architecture"
+  },
+  {
+   "cartes": 12,
+   "slug": "plan"
+  },
+  {
+   "cartes": 71,
+   "slug": "schema"
+  },
+  {
+   "cartes": 60,
+   "slug": "donnees"
+  },
+  {
+   "cartes": 74,
+   "slug": "apprentissage"
+  },
+  {
+   "cartes": 10,
+   "slug": "communication"
+  },
+  {
+   "cartes": 5,
+   "slug": "synthese"
+  },
+  {
+   "cartes": 6,
+   "slug": "organisation"
+  },
+  {
+   "cartes": 19,
+   "slug": "analyse"
+  },
+  {
+   "cartes": 2,
+   "slug": "recherche"
+  },
+  {
+   "cartes": 9,
+   "slug": "strategie"
+  },
+  {
+   "cartes": 9,
+   "slug": "personnage"
+  },
+  {
+   "cartes": 6,
+   "slug": "debat"
+  },
+  {
+   "cartes": 10,
+   "slug": "jeu"
+  },
+  {
+   "cartes": 3,
+   "slug": "enquete"
+  },
+  {
+   "cartes": 10,
+   "slug": "simulation"
+  },
+  {
+   "cartes": 6,
+   "slug": "coaching"
+  },
+  {
+   "cartes": 3,
+   "slug": "quotidien"
+  },
+  {
+   "cartes": 2,
+   "slug": "finance"
+  },
+  {
+   "cartes": 1,
+   "slug": "juridique"
+  },
+  {
+   "cartes": 2,
+   "slug": "code"
+  }
+ ]
+}
