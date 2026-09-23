@@ -76,6 +76,36 @@ describe('les rails de la coquille membre', () => {
     expect(fichiers.length).toBeGreaterThan(20);
   });
 
+  it('ne donne jamais de taille à un élément masqué', () => {
+    // LA QUATRIEME CAUSE, trouvee en regardant l'accueil a 360 px : la page
+    // mesurait 379 px et glissait de 19.
+    //
+    // `sr-only` reduit un element a 1 px en position absolue. Mais une classe
+    // qui fixe une largeur, une marge interne ou une bordure l'emporte sur
+    // lui : `w-full` donnait 360 px au bouton « invisible » de la sentinelle,
+    // place a 19 px du bord. Sans parent positionne, il se calait sur la
+    // page entiere et echappait au `clip` de la coquille — le verrou ne
+    // retient que ce qui est DEDANS. `touch-target` produisait le meme
+    // defaut en plus petit : 44 px minimum, et un minimum bat une largeur.
+    //
+    // Tout ce qui donne une taille a un element masque se pose au focus
+    // (`focus:w-full`, `focus:min-h-11`), jamais en permanence.
+    const donneUneTaille =
+      /^(w-|min-w-|max-w-|p-|px-|pl-|pr-|border$|border-\d|border-x|touch-target$)/;
+    const fautifs = fichiers.flatMap(({ chemin, source }) =>
+      [...source.matchAll(/className=(?:"([^"]*)"|\{`([^`]*)`\})/g)]
+        .map((m) => (m[1] ?? m[2] ?? '').split(/\s+/))
+        .filter((classes) => classes.includes('sr-only'))
+        .flatMap((classes) => classes.filter((c) => donneUneTaille.test(c)))
+        .map((c) => `${chemin} (${c})`),
+    );
+
+    expect(
+      fautifs,
+      `Ces éléments sont masqués (« sr-only ») mais une classe leur rend une taille — ils élargissent la page : ${fautifs.join(', ')}`,
+    ).toEqual([]);
+  });
+
   it('ne sort jamais des marges avec une valeur écrite en dur', () => {
     // `-mx-5`, `-ml-5`, `-mx-4`… : une marge negative en unites Tailwind
     // sur un rail. Elle doit venir de `--marge-coquille`, sans quoi elle
