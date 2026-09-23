@@ -50,6 +50,7 @@ const lire = (nom) => JSON.parse(readFileSync(join(DONNEES, nom), 'utf8'));
 const cartes = lire('cartes.json');
 const retraits = lire('retraits.json');
 const taxo = lire('taxonomie.json');
+const alias = lire('alias-reconcilies.json');
 
 const STATUT = {
   conserver_publie: 'published',
@@ -239,22 +240,76 @@ const fichiers = [];
     .filter((l) => l.vers);
   const sql =
     entete(
-      `Lot 200 — les ${liens.length} alias des cartes regroupees`,
+      `Lot 200 — ${liens.length} alias poses, ${alias.perimes.length} retires, ${alias.repointes.length} repointes`,
       `Une carte regroupee n'est pas une carte perdue : sa fonction est reprise\n` +
         `par une autre, et son ancienne adresse doit continuer d'y mener. Les\n` +
         `alias sont poses AVANT les retraits du lot 300, pour qu'aucun favori ni\n` +
         `aucun lien ne pende, meme une seconde.\n\n` +
-        `Un alias ne promet pas un resultat identique : il ouvre la bonne fiche.\n` +
-        `C'est a l'interface de dire, le cas echeant, de quelle variante il vient.`,
+        `MAIS LA BASE PORTE DEJA UNE CARTE DE REDIRECTIONS, ecrite pour le\n` +
+        `catalogue d'avant, et poser les nouvelles par-dessus sans la regarder\n` +
+        `echoue — c'est arrive en production le 23 septembre 2026, sur\n` +
+        `« prompt_aliases_sans_chaine ». Ce declencheur interdit qu'un alias\n` +
+        `pointe\n` +
+        `vers une carte qui est elle-meme un alias. Ce n'est pas une contrainte a\n` +
+        `contourner : c'est elle qui garantit qu'une ancienne adresse mene en UN\n` +
+        `saut a une fiche qui existe, plutot qu'a une chaine qui se perd.\n\n` +
+        `Deux gestes la respectent, dans cet ordre :\n\n` +
+        `  ${alias.perimes.length} liens dont la SOURCE est une carte que la V5 garde sont retires.\n` +
+        `  Ils disaient « cette carte renvoie ailleurs » ; elle est canonique\n` +
+        `  desormais, donc ils mentent.\n\n` +
+        `  ${alias.repointes.length} liens dont la DESTINATION est une carte regroupee avancent d'un\n` +
+        `  cran, vers la cible qui reprend la fonction. L'ancienne adresse\n` +
+        `  continue de mener quelque part, toujours en un saut.\n\n` +
+        `Les ${alias.inchanges} autres ne bougent pas. Ceux dont la destination part sans cible\n` +
+        `cessent simplement de resoudre : leur source s'archive, et la page\n` +
+        `d'archive dit ce qui s'est passe.\n\n` +
+        `Un alias ne promet pas un resultat identique : il ouvre la bonne fiche.`,
     ) +
-    `\ncreate temporary table v5_alias (alias uuid, vers uuid, ref text) on commit drop;\n` +
+    `\n-- 1. Les liens que la refonte rend faux.\n` +
+    `create temporary table v5_alias_perime (source uuid) on commit drop;\n` +
+    `insert into v5_alias_perime select (x ->> 'source')::uuid\n` +
+    `from jsonb_array_elements(${bloc(alias.perimes)}) x;\n\n` +
+    `delete from public.prompt_aliases a using v5_alias_perime p\n` +
+    `where a.alias_prompt_id = p.source;\n` +
+    controle(
+      `(select count(*) from public.prompt_aliases a join v5_alias_perime p
+` + `        on p.source = a.alias_prompt_id) = 0`,
+      `Lot 200 : un alias perime subsiste, il fera echouer les insertions.`,
+    ) +
+    `\n-- 2. Les liens qui menaient a une carte regroupee avancent d'un cran.\n` +
+    `create temporary table v5_alias_repointe (source uuid, ancienne uuid, nouvelle uuid)\n` +
+    `  on commit drop;\n` +
+    `insert into v5_alias_repointe\n` +
+    `select (x ->> 'source')::uuid, (x ->> 'ancienne')::uuid, (x ->> 'nouvelle')::uuid\n` +
+    `from jsonb_array_elements(${bloc(alias.repointes)}) x;\n\n` +
+    `update public.prompt_aliases a\n` +
+    `set canonical_prompt_id = r.nouvelle, updated_at = now()\n` +
+    `from v5_alias_repointe r\n` +
+    `where a.alias_prompt_id = r.source and a.canonical_prompt_id = r.ancienne;\n` +
+    controle(
+      `not exists (select 1 from public.prompt_aliases a join v5_alias_repointe r
+` +
+        `            on r.source = a.alias_prompt_id
+` +
+        `            where a.canonical_prompt_id = r.ancienne)`,
+      `Lot 200 : un alias pointe encore vers une carte regroupee.`,
+    ) +
+    `\n-- 3. Et seulement maintenant, les nouveaux.\n` +
+    `create temporary table v5_alias (alias uuid, vers uuid, ref text) on commit drop;\n` +
     `insert into v5_alias select (x ->> 'alias')::uuid, (x ->> 'vers')::uuid, x ->> 'ref'\n` +
     `from jsonb_array_elements(${bloc(liens)}) x;\n\n` +
     `insert into public.prompt_aliases (alias_prompt_id, canonical_prompt_id)\n` +
     `select a.alias, a.vers from v5_alias a\n` +
     `where exists (select 1 from public.prompts p where p.id = a.alias)\n` +
     `  and exists (select 1 from public.prompts p where p.id = a.vers)\n` +
-    `on conflict do nothing;\n` +
+    `-- alias_prompt_id est unique : une carte ne redirige que vers une\n` +
+    `-- seule autre. 71 des 700 en portaient deja un, ecrit pour le catalogue\n` +
+    `-- d'avant. La decision V5 l'emporte — c'est le choix editorial le plus\n` +
+    `-- recent, et il designe une carte qui survit, la ou l'ancienne cible\n` +
+    `-- s'archive peut-etre. « do nothing » les aurait sautees en silence,\n` +
+    `-- et c'est exactement ce qui est arrive au premier essai.\n` +
+    `on conflict (alias_prompt_id) do update\n` +
+    `  set canonical_prompt_id = excluded.canonical_prompt_id, updated_at = now();\n` +
     controle(
       `(select count(*) from public.prompt_aliases pa join v5_alias a\n` +
         `        on a.alias = pa.alias_prompt_id and a.vers = pa.canonical_prompt_id) = ${liens.length}`,

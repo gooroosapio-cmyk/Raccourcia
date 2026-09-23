@@ -79,8 +79,29 @@ def main():
     out.append("insert into public.prompt_media (prompt_id, kind, storage_path) values")
     out.append(',\n'.join(med) + ";\n")
 
+    # LES ALIAS DEJA EN BASE. Leur absence a laisse passer en repetition un
+    # import qui a echoue en production : le declencheur
+    # `prompt_aliases_sans_chaine` interdit qu'un alias pointe vers une carte
+    # qui est elle-meme un alias, et la refonte en pose 700 par-dessus 131
+    # existants. Sans eux, le replica ne ressemblait pas assez a la base pour
+    # que la question se pose.
+    #
+    # Ils sont charges APRES la reactivation des declencheurs, exactement
+    # comme la production les a recus — les charger sans declencheur aurait
+    # reproduit le meme angle mort.
     out += ["alter table public.prompts enable trigger all;",
             "alter table public.categories enable trigger all;", ""]
+
+    chemin_alias = os.path.join(RACINE, 'data', 'catalogue', 'final-v5',
+                                'alias-existants.json')
+    if os.path.exists(chemin_alias):
+        with io.open(chemin_alias, encoding='utf-8') as f:
+            liens = json.load(f)
+        out.append("insert into public.prompt_aliases (alias_prompt_id, canonical_prompt_id) values")
+        out.append(',\n'.join(
+            "  (%s::uuid, %s::uuid)" % (q(l['source']), q(l['destination'])) for l in liens)
+            + "\non conflict do nothing;\n")
+        print('alias existants : %d' % len(liens))
 
     cible = os.path.join(RACINE, 'tests', 'db', 'replica-v5.sql')
     with io.open(cible, 'w', encoding='utf-8') as f:

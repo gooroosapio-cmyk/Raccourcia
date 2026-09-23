@@ -287,6 +287,82 @@ def construire(cartes, representante, regroupees, production, anomalies):
     return sorties, retraits, couvertes
 
 
+def reconcilier_les_alias(sorties, regroupees, anomalies):
+    """Ce que la refonte fait aux alias deja poses.
+
+    La base porte deja une carte de redirections, ecrite pour le catalogue
+    d'avant. Poser les 700 nouveaux par-dessus sans la regarder echoue :
+    `prompt_aliases_sans_chaine` interdit qu'un alias pointe vers une carte
+    qui est elle-meme un alias, et interdit qu'une carte deja destination
+    devienne source. Ce n'est pas une contrainte a contourner — c'est elle
+    qui garantit qu'une ancienne adresse mene en un saut a une fiche qui
+    existe, et pas a une chaine qui se perd.
+
+    Deux cas, et un seul geste chacun :
+
+      * la SOURCE d'un ancien alias est une carte que la V5 garde. Le lien
+        disait « cette carte renvoie ailleurs » ; elle est canonique
+        desormais, donc il ment. On le retire.
+
+      * la DESTINATION d'un ancien alias est une carte que la V5 regroupe.
+        Le lien menait a une carte qui s'efface ; on le fait pointer un cran
+        plus loin, vers la cible qui reprend la fonction. L'ancienne adresse
+        continue de mener quelque part, en un saut.
+
+    Un troisieme cas ne demande rien : la destination part sans cible. Le
+    lien cesse de resoudre, la source s'archive, et la page d'archive prend
+    le relais pour dire ce qui s'est passe.
+    """
+    chemin = os.path.join(SORTIE, 'alias-existants.json')
+    if not os.path.exists(chemin):
+        return {'perimes': [], 'repointes': [], 'inchanges': 0}
+
+    with io.open(chemin, encoding='utf-8') as f:
+        anciens = json.load(f)
+
+    representantes = set(s['id_production'] for s in sorties if s['id_production'])
+    cible_de = {}
+    for cle, infos in regroupees.items():
+        cible = next((s for s in sorties if s['cle_carte'] == infos['vers']), None)
+        if cible and cible['id_production']:
+            cible_de[cle] = cible['id_production']
+
+    perimes, repointes, inchanges = [], [], 0
+    for lien in anciens:
+        if lien['source'] in representantes:
+            perimes.append(lien)
+        elif lien['destination'] in cible_de:
+            repointes.append({'source': lien['source'],
+                              'ancienne': lien['destination'],
+                              'nouvelle': cible_de[lien['destination']]})
+        else:
+            inchanges += 1
+
+    # Une reconciliation qui laisserait un conflit ne servirait a rien : on
+    # verifie ici, pas en production.
+    apres_sources = set()
+    apres_destinations = set()
+    for lien in anciens:
+        if lien in perimes:
+            continue
+        d = next((r['nouvelle'] for r in repointes if r['source'] == lien['source']),
+                 lien['destination'])
+        apres_sources.add(lien['source'])
+        apres_destinations.add(d)
+
+    conflits = 0
+    for cle, infos in regroupees.items():
+        cible = cible_de.get(cle)
+        if cible is None:
+            continue
+        if cible in apres_sources or cle in apres_destinations:
+            conflits += 1
+    if conflits:
+        anomalies.append({'type': 'alias_en_conflit_apres_reconciliation', 'n': conflits})
+
+    return {'perimes': perimes, 'repointes': repointes, 'inchanges': inchanges}
+
+
 def taxonomie(cartes, sorties, anomalies):
     cats, colls = {}, {}
     for c in cartes:
@@ -338,6 +414,7 @@ def main():
     representante, regroupees, non_resolues, methodes = resoudre(cartes, production, anomalies)
     sorties, retraits, couvertes = construire(cartes, representante, regroupees,
                                               production, anomalies)
+    alias = reconcilier_les_alias(sorties, regroupees, anomalies)
     cats, colls, tags = taxonomie(cartes, sorties, anomalies)
 
     os.makedirs(SORTIE, exist_ok=True)
@@ -348,6 +425,7 @@ def main():
             f.write('\n')
 
     ecrire('cartes.json', sorties)
+    ecrire('alias-reconcilies.json', alias)
     ecrire('retraits.json', retraits)
     ecrire('taxonomie.json', {'categories': cats, 'collections': colls, 'tags': tags})
     ecrire('resolution.json', {
@@ -379,6 +457,8 @@ def main():
     print('Retraits               : %d %s' % (len(retraits), dict(par_motif)))
     print('Methodes de resolution : %s' % dict(methodes))
     print('Non resolues           : %d' % len(non_resolues))
+    print('Alias deja en base     : %d perimes, %d repointes, %d inchanges'
+          % (len(alias['perimes']), len(alias['repointes']), alias['inchanges']))
     print('Categories/collections : %d / %d' % (len(cats), len(colls)))
     print('   dont rayon de transition : %d carte(s)'
           % sum(1 for s in sorties if s['en_transition']))
