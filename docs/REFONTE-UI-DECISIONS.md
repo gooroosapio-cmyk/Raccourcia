@@ -42,3 +42,20 @@ Déroulé, chaque étape vérifiant la précédente :
 Retour arrière : `purge-restauration`, puis le lot
 `supabase/seed/purge-visuels-avant-18-restauration`. Répété sur base jetable
 par `tests/db/repetition-purge-visuels.sh`.
+
+### Exécuté le 23 septembre 2026
+
+| Étape                        | Run           | Résultat                                                               |
+| ---------------------------- | ------------- | ---------------------------------------------------------------------- |
+| `purge-apercu`               | Visuels #13   | 690 fichiers présents, 690 référencés, 0 en sauvegarde                 |
+| `purge-sauvegarde`           | Visuels #14   | 690 fichiers copiés et vérifiés dans `prompt-media-sauvegarde` (privé) |
+| lot `purge-visuels-avant-18` | Catalogue #42 | 374 lignes restantes, 0 antérieure au seuil                            |
+| `purge-fichiers`             | Visuels #15   | 378 fichiers publics restants                                          |
+
+Après coup : 188 cartes publiées portent un visuel, 112 sont « sans visuel »
+(101 issues de l'effacement, 11 qui n'en avaient déjà pas). L'écart de 4
+entre fichiers (378) et lignes (374) préexistait : 5 fichiers orphelins et
+l'« avant » manquant de `/1920sportrait`.
+
+La sauvegarde reste en place tant que la refonte n'est pas validée ; la
+supprimer est une décision à part.
