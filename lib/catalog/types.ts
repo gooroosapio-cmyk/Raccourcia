@@ -283,38 +283,8 @@ export type CarteDecouverte = {
   /** Vrai quand le membre courant l'a en favori. Faux pour un visiteur. */
   isFavorite: boolean;
   isFree: boolean;
-  /**
-   * La collection d'ou vient la carte, et ses voisines.
-   *
-   * Le feed se parcourt de haut en bas, au hasard : c'est sa promesse, et
-   * c'est aussi sa limite — tomber sur un portrait vintage qui plait sans
-   * pouvoir en voir d'autres du meme genre oblige a fermer, a chercher le
-   * rayon, et a recommencer. Le geste lateral repond a cela : a droite,
-   * les cartes de la meme collection.
-   *
-   * Vide quand la collection n'a qu'une carte publiee : un rail d'un seul
-   * element promettrait un geste qui ne mene nulle part.
-   */
+  /** La collection d'ou vient la carte. */
   collection: { slug: string; nom: string } | null;
-  voisines: CarteVoisine[];
-};
-
-/**
- * Une carte du rail lateral : le strict necessaire pour la montrer.
- *
- * Ni tags, ni compteur de likes, ni detail : ce sont des vignettes qu'on
- * parcourt du pouce, et embarquer la fiche complete de quatre voisines par
- * carte quadruplerait le poids de chaque palier.
- */
-export type CarteVoisine = {
-  id: string;
-  /** Ce par quoi la fiche s'ouvre : l'identifiant public, pas l'interne. */
-  slug: string;
-  name: string;
-  command: string;
-  visuelUrl: string;
-  visuelAlt: string;
-  isFree: boolean;
 };
 
 /**
