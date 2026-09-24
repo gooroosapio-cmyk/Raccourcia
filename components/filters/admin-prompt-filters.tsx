@@ -5,7 +5,13 @@ import { useEffect, useState, useTransition } from 'react';
 
 import { oublierLaListe } from '@/components/admin/memoire-des-filtres';
 import type { TagAdmin } from '@/lib/admin/tags';
-import { CONTENT_STATUS, LIBRARIES, LIBRARY_LABELS } from '@/lib/constants';
+import {
+  ALERTES_ADMIN,
+  CONTENT_STATUS,
+  LIBRARIES,
+  LIBRARY_LABELS,
+  type AlerteAdmin,
+} from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 const STATUS_LABELS: Record<Enums<'content_status'>, string> = {
@@ -50,6 +56,7 @@ export function AdminPromptFilters({
   media,
   library,
   tagId,
+  alerte,
   tags,
 }: {
   search?: string;
@@ -59,6 +66,7 @@ export function AdminPromptFilters({
   media?: 'avec' | 'sans';
   library?: Enums<'app_library'>;
   tagId?: string;
+  alerte?: AlerteAdmin;
   tags: TagAdmin[];
 }) {
   const router = useRouter();
@@ -102,7 +110,15 @@ export function AdminPromptFilters({
   // Tout remettre a zero d'un geste. A huit filtres empilables, defaire un
   // par un pour revenir a la liste complete est un aller-retour par filtre,
   // et on finit par recharger la page a la main.
+  const choisirAlerte = (value: string) => {
+    const next = new URLSearchParams(params.toString());
+    if (value) next.set('alerte', value);
+    else next.delete('alerte');
+    push(next);
+  };
+
   const actifs =
+    (alerte ? 1 : 0) +
     (search ? 1 : 0) +
     (mode ? 1 : 0) +
     (status ? 1 : 0) +
@@ -131,6 +147,24 @@ export function AdminPromptFilters({
           placeholder="Rechercher une commande ou un titre..."
           className="h-11 w-full rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 text-[15px] outline-none placeholder:text-[color:var(--color-muted)]"
         />
+      </label>
+
+      {/* Les alertes de qualite : chacune ouvre exactement les lignes a
+          corriger. La Vue d'ensemble y mene directement. */}
+      <label className="block">
+        <span className="sr-only">Filtrer par alerte de qualité</span>
+        <select
+          value={alerte ?? ''}
+          onChange={(event) => choisirAlerte(event.target.value)}
+          className="h-11 w-full rounded-[color:var(--radius-control)] bg-[color:var(--color-canvas)] px-3 text-[15px] text-[color:var(--color-night)] outline-none"
+        >
+          <option value="">Toutes les commandes</option>
+          {(Object.keys(ALERTES_ADMIN) as AlerteAdmin[]).map((cle) => (
+            <option key={cle} value={cle}>
+              Alerte : {ALERTES_ADMIN[cle]}
+            </option>
+          ))}
+        </select>
       </label>
 
       {tags.length > 0 ? (

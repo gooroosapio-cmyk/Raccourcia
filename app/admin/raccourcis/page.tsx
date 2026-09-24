@@ -1,13 +1,27 @@
 import Link from 'next/link';
 
-import { listAdminPrompts, TRIS_ADMIN, type TriAdmin } from '@/lib/admin/queries';
+import {
+  listAdminPromptIds,
+  listAdminPrompts,
+  TRIS_ADMIN,
+  type TriAdmin,
+} from '@/lib/admin/queries';
+import { ChoixDuTri } from '@/components/admin/choix-du-tri';
 import type { AdminPromptFilters as FiltresListe } from '@/lib/admin/queries';
 import { listAdminTags } from '@/lib/admin/tags';
 import { AdminPromptFilters } from '@/components/filters/admin-prompt-filters';
 import { MemoireDesFiltres } from '@/components/admin/memoire-des-filtres';
 import { AdminPromptRowItem } from '@/components/admin/prompt-row';
 import { CaseDeSelection, SelectionEnMasse } from '@/components/admin/selection-en-masse';
-import { CONTENT_STATUS, LIBRARIES, MODES, type Library, type Mode } from '@/lib/constants';
+import {
+  ALERTES_ADMIN,
+  CONTENT_STATUS,
+  LIBRARIES,
+  MODES,
+  type AlerteAdmin,
+  type Library,
+  type Mode,
+} from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 export const metadata = { title: 'Catalogue' };
@@ -37,6 +51,7 @@ export default async function AdminPromptsPage({
   const visuel = asString(params.visuel);
   const tri = asString(params.tri);
   const bibliotheque = asString(params.bibliotheque);
+  const alerte = asString(params.alerte);
 
   // Le type contextuel garde les litteraux : sans lui, « gratuit » redevient
   // `string` dans l'objet et ne correspond plus a la liste fermee.
@@ -53,6 +68,7 @@ export default async function AdminPromptsPage({
     media: visuel === 'avec' || visuel === 'sans' ? visuel : undefined,
     library: LIBRARIES.includes(bibliotheque as Library) ? (bibliotheque as Library) : undefined,
     tagId: asString(params.tag),
+    alerte: alerte && alerte in ALERTES_ADMIN ? (alerte as AlerteAdmin) : undefined,
     tri: tri && tri in TRIS_ADMIN ? (tri as TriAdmin) : undefined,
     page: Math.max(Number(asString(params.page) ?? 1) || 1, 1),
   };
@@ -70,6 +86,7 @@ export default async function AdminPromptsPage({
     if (visuel) suite.set('visuel', visuel);
     if (bibliotheque) suite.set('bibliotheque', bibliotheque);
     if (typeof params.tag === 'string' && params.tag) suite.set('tag', params.tag);
+    if (alerte && alerte in ALERTES_ADMIN) suite.set('alerte', alerte);
     if (tri) suite.set('tri', tri);
     const page = Number(asString(params.page) ?? 1) || 1;
     if (page > 1) suite.set('page', String(page));
@@ -84,6 +101,10 @@ export default async function AdminPromptsPage({
     listAdminTags(),
   ]);
 
+  // Etendre un geste groupe a tous les resultats filtres n'a de sens que
+  // s'ils depassent la page, et n'est permis que jusqu'a deux cents.
+  const tousLesIds = total > items.length && total <= 200 ? await listAdminPromptIds(filters) : [];
+
   /** L'adresse de la meme liste, a une page ou un tri pres. */
   const adresse = (changements: { page?: number; tri?: TriAdmin }) => {
     const suite = new URLSearchParams();
@@ -95,6 +116,7 @@ export default async function AdminPromptsPage({
     if (filters.media) suite.set('visuel', filters.media);
     if (filters.library) suite.set('bibliotheque', filters.library);
     if (filters.tagId) suite.set('tag', filters.tagId);
+    if (filters.alerte) suite.set('alerte', filters.alerte);
     const triRetenu = changements.tri ?? filters.tri;
     if (triRetenu) suite.set('tri', triRetenu);
     const page = changements.page ?? filters.page;
@@ -144,6 +166,7 @@ export default async function AdminPromptsPage({
         media={filters.media}
         library={filters.library}
         tagId={filters.tagId}
+        alerte={filters.alerte}
         tags={tags}
       />
 
@@ -163,25 +186,13 @@ export default async function AdminPromptsPage({
           )}
         </p>
 
-        <nav aria-label="Trier la liste" className="flex flex-wrap gap-1.5">
-          {(Object.keys(TRIS_ADMIN) as TriAdmin[]).map((cle) => {
-            const actif = (filters.tri ?? 'modifie') === cle;
-            return (
-              <Link
-                key={cle}
-                href={adresse({ tri: cle, page: 1 })}
-                aria-current={actif ? 'true' : undefined}
-                className={`inline-flex h-8 items-center rounded-full border px-3 text-[13px] font-medium ${
-                  actif
-                    ? 'border-[color:var(--color-brand)] bg-[color:var(--color-brand)] text-white'
-                    : 'border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[color:var(--color-night)]'
-                }`}
-              >
-                {TRIS_ADMIN[cle].libelle}
-              </Link>
-            );
-          })}
-        </nav>
+        <ChoixDuTri
+          actuel={filters.tri ?? 'modifie'}
+          options={(Object.keys(TRIS_ADMIN) as TriAdmin[]).map((cle) => ({
+            valeur: cle,
+            libelle: TRIS_ADMIN[cle].libelle,
+          }))}
+        />
       </div>
 
       {items.length === 0 ? (
@@ -189,7 +200,20 @@ export default async function AdminPromptsPage({
           Aucun raccourci ne correspond à ces filtres.
         </p>
       ) : (
-        <SelectionEnMasse>
+        <SelectionEnMasse tousLesIds={tousLesIds}>
+          {/* L'en-tete du tableau, sur ordinateur seulement. */}
+          <div
+            aria-hidden="true"
+            className="hidden grid-cols-[44px_48px_minmax(0,2.2fr)_minmax(0,1.4fr)_88px_110px_auto] gap-3 px-2.5 text-[12px] font-semibold uppercase tracking-wide text-[color:var(--color-muted)] lg:grid"
+          >
+            <span />
+            <span />
+            <span>Commande</span>
+            <span>Collection</span>
+            <span>Accès</span>
+            <span>Statut</span>
+            <span className="text-right">Actions</span>
+          </div>
           <ul className="space-y-2">
             {items.map((prompt) => (
               <li key={prompt.id} className="flex items-start gap-2.5">

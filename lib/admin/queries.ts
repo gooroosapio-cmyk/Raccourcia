@@ -3,7 +3,7 @@ import 'server-only';
 import { createClient } from '@/lib/supabase/server';
 import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
 import { normaliserRecherche } from '@/lib/catalog/recherche';
-import { PAYLOAD_CANONIQUE, type EntityType } from '@/lib/constants';
+import { PAYLOAD_CANONIQUE, type AlerteAdmin, type EntityType } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 /**
@@ -112,9 +112,17 @@ const ROW_COLUMNS =
  * taguees : le total annoncerait un chiffre plus petit que la liste
  * montree, et rien ne dirait pourquoi.
  */
-function colonnesDuComptageAdmin(filtreTag: boolean): string {
-  return filtreTag ? 'id, prompt_tags!inner(tag_id)' : 'id';
+function colonnesDuComptageAdmin(filtreTag: boolean, filtreRayon = false): string {
+  return [
+    'id',
+    filtreTag ? 'prompt_tags!inner(tag_id)' : null,
+    filtreRayon ? 'rayon:categories!inner(is_visible)' : null,
+  ]
+    .filter(Boolean)
+    .join(', ');
 }
+
+
 
 export async function getAdminDashboard(): Promise<AdminDashboard> {
   const supabase = await createClient();
@@ -230,6 +238,8 @@ export type AdminPromptFilters = {
   library?: Enums<'app_library'>;
   /** Un tag pose sur la carte. Filtre le catalogue par usage transversal. */
   tagId?: string;
+  /** Une alerte de qualite. Voir `ALERTES_ADMIN`. */
+  alerte?: AlerteAdmin;
   /** Par quoi la liste est triee. Voir `TRIS_ADMIN`. */
   tri?: TriAdmin;
   page: number;
@@ -293,6 +303,9 @@ export async function listAdminPrompts(
     if (filters.library) requete = requete.eq('library', filters.library);
     if (filters.tagId) requete = requete.eq('prompt_tags.tag_id', filters.tagId);
     if (terme) requete = requete.ilike('search_norm', `%${terme}%`);
+    for (const [colonne, valeur] of filtresDAlerte(filters.alerte)) {
+      requete = requete.eq(colonne, valeur as never);
+    }
 
     return requete;
   };
@@ -302,7 +315,14 @@ export async function listAdminPrompts(
   // La jointure sur les tags entre dans les colonnes lues quand le filtre
   // est actif : sans elle, PostgREST rejette le `eq` sur la ressource
   // imbriquee.
-  const colonnes = filters.tagId ? `${ROW_COLUMNS}, prompt_tags!inner(tag_id)` : ROW_COLUMNS;
+  const rayon = filters.alerte === 'rayon_masque';
+  const colonnes = [
+    ROW_COLUMNS,
+    filters.tagId ? 'prompt_tags!inner(tag_id)' : null,
+    rayon ? 'rayon:categories!inner(is_visible)' : null,
+  ]
+    .filter(Boolean)
+    .join(', ');
 
   const [lecture, comptage] = await Promise.all([
     construire(colonnes)
@@ -311,7 +331,7 @@ export async function listAdminPrompts(
       // a l'autre et la meme ligne peut apparaitre deux fois ou disparaitre.
       .order('id', { ascending: true })
       .range(from, from + ADMIN_PAGE_SIZE),
-    construire(colonnesDuComptageAdmin(Boolean(filters.tagId)), true),
+    construire(colonnesDuComptageAdmin(Boolean(filters.tagId), rayon), true),
   ]);
 
   const rows = (lecture.data ?? []) as unknown as Parameters<typeof toRow>[0][];
@@ -321,6 +341,58 @@ export async function listAdminPrompts(
     total: comptage.count ?? rows.length,
     parPage: ADMIN_PAGE_SIZE,
   };
+}
+
+/**
+ * Tous les identifiants d'une selection filtree, dans la limite d'un geste
+ * groupe (200). La barre de lot s'en sert pour etendre une action de la page
+ * a l'ensemble des resultats — la portee est dite avant d'agir.
+ */
+export async function listAdminPromptIds(
+  filters: AdminPromptFilters,
+  limite = 200,
+): Promise<string[]> {
+  const supabase = await createClient();
+  const terme = filters.search ? normaliserRecherche(filters.search) : '';
+  let requete = supabase
+    .from('prompts')
+    .select(colonnesDuComptageAdmin(Boolean(filters.tagId), filters.alerte === 'rayon_masque'));
+  if (filters.mode) requete = requete.eq('mode', filters.mode);
+  if (filters.status) requete = requete.eq('status', filters.status);
+  if (filters.categoryId) requete = requete.eq('category_id', filters.categoryId);
+  if (filters.access) requete = requete.eq('is_free', filters.access === 'gratuit');
+  if (filters.media) requete = requete.eq('media_ready', filters.media === 'avec');
+  if (filters.library) requete = requete.eq('library', filters.library);
+  if (filters.tagId) requete = requete.eq('prompt_tags.tag_id', filters.tagId);
+  if (terme) requete = requete.ilike('search_norm', `%${terme}%`);
+  for (const [colonne, valeur] of filtresDAlerte(filters.alerte)) {
+    requete = requete.eq(colonne, valeur as never);
+  }
+  const { data } = await requete.order('id').limit(limite);
+  return ((data ?? []) as unknown as { id: string }[]).map((ligne) => ligne.id);
+}
+
+/**
+ * Les egalites qui traduisent une alerte de qualite en filtre de `prompts`.
+ * Une liste plutot qu'une fonction sur la requete : le constructeur
+ * PostgREST se type mal en parametre generique, une boucle de `eq` non.
+ */
+function filtresDAlerte(alerte: AlerteAdmin | undefined): [string, string | boolean][] {
+  if (alerte === 'texte_vide') return [['payload_ready', false]];
+  if (alerte === 'visuel_manquant') {
+    return [
+      ['library', 'images'],
+      ['show_image_card', true],
+      ['media_ready', false],
+    ];
+  }
+  if (alerte === 'rayon_masque') {
+    return [
+      ['status', 'published'],
+      ['rayon.is_visible', false],
+    ];
+  }
+  return [];
 }
 
 export type AdminPromptDetail = {

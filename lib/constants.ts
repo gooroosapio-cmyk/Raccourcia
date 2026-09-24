@@ -327,3 +327,23 @@ export const STORAGE_BUCKETS = {
   PROMPT_MEDIA: 'prompt-media',
   ADMIN_TEMP: 'admin-temp',
 } as const;
+
+/**
+ * Les alertes de qualite, propres a chaque univers (rapport de refonte,
+ * p. 11) : chacune se traduit par un filtre de la liste, et un clic sur
+ * l'alerte ouvre exactement les lignes concernees.
+ *
+ *   * `texte_vide` : aucune version courante non vide — rien a copier ;
+ *   * `visuel_manquant` : une commande VISUELS affichee en carte illustree,
+ *     sans visuel de resultat. Une commande Redaction ou Assistants n'est
+ *     jamais en anomalie « sans visuel » : elle n'en attend pas ;
+ *   * `rayon_masque` : publiee, mais rangee dans une categorie masquee —
+ *     personne ne la voit.
+ */
+export const ALERTES_ADMIN = {
+  texte_vide: 'Sans texte à copier',
+  visuel_manquant: 'Visuels sans visuel de résultat',
+  rayon_masque: 'Publiées dans un rayon masqué',
+} as const;
+
+export type AlerteAdmin = keyof typeof ALERTES_ADMIN;
