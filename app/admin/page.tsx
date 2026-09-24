@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { getAdminDashboard } from '@/lib/admin/queries';
 import { MODES, MODE_LABELS } from '@/lib/constants';
 
-export const metadata = { title: 'Tableau de bord' };
+export const metadata = { title: 'Vue d’ensemble' };
 
 /**
  * Tableau de bord : uniquement des alertes utiles, pas un mur de widgets
@@ -15,7 +15,7 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <section>
-        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Tableau de bord</h1>
+        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Vue d’ensemble</h1>
         <p className="mt-1 text-[13px] text-[color:var(--color-muted)]">
           {dashboard.total} raccourcis au catalogue.
         </p>

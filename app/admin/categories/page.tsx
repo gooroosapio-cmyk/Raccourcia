@@ -1,6 +1,7 @@
 import { listAdminCategories } from '@/lib/admin/queries';
 import { CategoryCreateForm, CategoryRow } from '@/app/admin/categories/category-forms';
 import { MODES, MODE_LABELS } from '@/lib/constants';
+import { OngletsOrganisation } from '@/components/admin/onglets-organisation';
 
 export const metadata = { title: 'Catégories' };
 
@@ -29,8 +30,8 @@ export default async function AdminCategoriesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Catégories</h1>
-        <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+        <OngletsOrganisation actif="categories" />
+        <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
           Désactiver une catégorie masque ses raccourcis et ses sous-catégories cote membre. Les
           données restent intactes et reapparaissent des la reactivation.
         </p>

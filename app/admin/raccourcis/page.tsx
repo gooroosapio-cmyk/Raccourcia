@@ -10,7 +10,7 @@ import { CaseDeSelection, SelectionEnMasse } from '@/components/admin/selection-
 import { CONTENT_STATUS, LIBRARIES, MODES, type Library, type Mode } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
-export const metadata = { title: 'Raccourcis' };
+export const metadata = { title: 'Catalogue' };
 
 /**
  * La liste d'administration, pensee pour un catalogue qui grossit.
@@ -108,7 +108,7 @@ export default async function AdminPromptsPage({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Raccourcis</h1>
+        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Catalogue</h1>
         <Link
           href="/admin/raccourcis/nouveau"
           className="touch-target inline-flex items-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] px-3 text-sm font-medium text-white"
