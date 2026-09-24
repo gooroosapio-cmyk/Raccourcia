@@ -452,6 +452,33 @@ for file in "$ROOT"/tests/integration/*.sql; do
   fi
 done
 
+# Menage des archives : il supprime ce que d'autres tests lisent encore
+# (sauvegardes, commandes archivees). Il passe donc apres eux, sur le
+# scenario qui pose un exemplaire de chaque cas, deux fois pour prouver
+# qu'il se rejoue ; ses propres controles suivent. La base de test n'a pas
+# le volume de la production : les bornes du lot sont levees ici.
+if compgen -G "$ROOT/supabase/seed/menage-archives/*.sql" > /dev/null; then
+  echo "==> Menage des archives (scenario, x2, puis controles)"
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null \
+    < "$ROOT/tests/db/scenario-menage-archives.sql"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/menage-archives/*.sql; do
+      PGOPTIONS="-c raccourcia.menage_sans_borne=on" \
+        run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  for file in "$ROOT"/tests/integration/apres-menage/*.sql; do
+    name="apres-menage/$(basename "$file")"
+    if run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/tmp/pgtest.out 2>&1 < "$file"; then
+      printf '    \033[32mOK\033[0m   %s\n' "$name"
+    else
+      printf '    \033[31mFAIL\033[0m %s\n' "$name"
+      sed 's/^/         /' /tmp/pgtest.out
+      status=1
+    fi
+  done
+fi
+
 if [[ $KEEP -eq 1 ]]; then
   echo "==> Cluster conserve : psql -h $SOCKET_DIR -U postgres -d $DB_NAME"
 fi
