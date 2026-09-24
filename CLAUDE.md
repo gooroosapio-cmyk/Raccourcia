@@ -52,6 +52,9 @@ interdit, c'est de supprimer sans savoir ce qu'on emporte.
   supprime pas une deuxieme fois et ne leve pas.
 - Ne jamais toucher aux comptes, aux sessions, aux acces a vie ni au journal des
   copies. Le menage porte sur le catalogue, pas sur les membres.
+  Seule exception, decidee le 24 septembre 2026 pour l'import du catalogue v7 :
+  la suppression des commandes archivees a emporte les lignes du journal, les
+  favoris et les recents qui les citaient. Elle ne fait pas jurisprudence.
 
 ### Doublons et chevauchements
 
@@ -60,7 +63,10 @@ precisement :
 
 - **L'identite d'une carte, c'est `card_id`**, jamais son slug ni son intitule.
   L'import renomme les slugs ; s'appuyer sur eux fabrique des doublons. Toute
-  reprise se fait en `on conflict (card_id)`.
+  reprise se fait en `on conflict (card_id)`. `card_code` (`RCIA-C-000001`) la
+  designe entre humains ; il ne se renumerote jamais, et une carte supprimee ne
+  libere pas le sien. Registre : `data/catalogue/v7/identifiants.csv`, et
+  `identifiants-brouillons.csv` pour les brouillons hors kit.
 - **Une commande active par couple (`command`, `card_slug`)**, garantie par
   `prompts_carte_active_unique`. Une nouvelle carte sous une commande existante
   porte donc toujours son propre `card_slug`.
@@ -72,7 +78,8 @@ precisement :
   Deux rayons qui disent la meme chose sous deux noms, c'est un chevauchement :
   il se resout par une fusion, pas par un troisieme rayon.
 - **Un tag a une definition ecrite.** Deux tags dont les definitions se
-  recouvrent sont fusionnes avant l'import. La taxonomie v3 fait reference.
+  recouvrent sont fusionnes avant l'import. La taxonomie du kit v7
+  (`data/catalogue/v7/tags.csv`, 72 tags definis) fait reference.
 - **Rien de tout cela ne se verifie a l'oeil.** Chaque garantie ci-dessus a son
   controle dans `tests/integration/`, et un lot d'import qui ne compte pas ce
   qu'il a ecrit n'est pas un lot d'import.
@@ -89,6 +96,10 @@ personne n'a encore relues. Leur promesse est ecrite et leur classement
 propose, mais tant qu'une carte n'est pas validee, elle attend la — la semer
 dans les douze ferait annoncer a un rayon des cartes que personne n'a lues.
 
+- **Exception : l'import du catalogue v7.** Ses 760 nouvelles cartes ont ete
+  publiees directement dans leur collection, le 24 septembre 2026, sur
+  decision : le kit est une base relue, pas un lot a reclasser. Le rayon de
+  transition garde les brouillons qui ne viennent pas du kit.
 - **Le rayon de transition est visible comme les autres.** La regle qui
   interdisait une categorie publique « a reclasser » est levee : elle
   supposait un rayon fourre-tout permanent, alors que celui-ci se vide a
@@ -130,7 +141,7 @@ Le membre renseigne ses informations _avant_ la copie ; c'est la ce qui
 personnalise le texte, maintenant que l'IA ne le fait plus.
 
 - **Une carte declare ses champs, et l'interface n'affiche que ceux-la.** Le
-  catalogue V5 les porte carte par carte : 365 des 642 n'en demandent aucun,
+  catalogue v7 les porte carte par carte : 486 des 1 109 n'en demandent aucun,
   parce que leur promesse n'a rien a demander. Ne pas reclamer un nom, une
   couleur ou un budget sur toutes les fiches par principe.
 - **La borne depend du regime**, porte par `prompts.regime_champs` : trois au

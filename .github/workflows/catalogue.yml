@@ -51,6 +51,12 @@ on:
           # retour-arriere-refonte n'a plus rien a rendre et n'est plus
           # propose.
           - supabase/seed/menage-archives
+          # Le catalogue v7 (kit RaccourcIA-final, 24 septembre 2026) : une
+          # seule transaction, validee par le lot 999. La repetition passe les
+          # memes lots sur la base reelle, puis leve a la place du 999 : rien
+          # n'est garde, le journal rend le bilan. Toujours repeter d'abord.
+          - catalogue-v7-repetition
+          - supabase/seed/catalogue-v7
           - supabase/seed/catalogue-final-v5
           # Le catalogue Visuels V3. Le lot 000 n'ecrit rien : il compte ce
           # que les suivants vont toucher et leve si une carte historique est
@@ -163,7 +169,9 @@ jobs:
           inputs.dossier != 'offre-2026-09' &&
           inputs.dossier != 'exploration-v4' &&
           inputs.dossier != 'catalogue-final' &&
-          inputs.dossier != 'formats-et-rayons'
+          inputs.dossier != 'formats-et-rayons' &&
+          inputs.dossier != 'catalogue-v7-repetition' &&
+          inputs.dossier != 'supabase/seed/catalogue-v7'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -182,6 +190,36 @@ jobs:
             echo '  Bascule de navigation'
             psql "$PGURL" -v ON_ERROR_STOP=1 --no-psqlrc \
               < supabase/seed/bascule-navigation-v2.sql
+          fi
+
+      # Catalogue v7 : les lots forment UNE transaction (000 l'ouvre, 999 la
+      # valide). psql lit leur concatenation : au premier echec il s'arrete,
+      # la transaction ouverte est abandonnee, rien n'est ecrit.
+      - name: Importer le catalogue v7 (une transaction)
+        if: >-
+          inputs.dossier == 'supabase/seed/catalogue-v7' ||
+          inputs.dossier == 'catalogue-v7-repetition'
+        env:
+          PGURL: ${{ secrets.SUPABASE_DB_URL }}
+          DOSSIER: ${{ inputs.dossier }}
+        run: |
+          set -euo pipefail
+          lots=(supabase/seed/catalogue-v7/*.sql)
+          if [ "$DOSSIER" = "catalogue-v7-repetition" ]; then
+            unset 'lots[${#lots[@]}-1]'
+            cat "${lots[@]}" supabase/seed/catalogue-v7-repetition.sql > "$RUNNER_TEMP/v7.sql"
+            if psql "$PGURL" -v ON_ERROR_STOP=1 -At --no-psqlrc -f "$RUNNER_TEMP/v7.sql" \
+                 > "$RUNNER_TEMP/v7.out" 2> "$RUNNER_TEMP/v7.err"; then
+              echo 'La repetition aurait du lever.'; exit 1
+            fi
+            cat "$RUNNER_TEMP/v7.out"
+            if ! grep -q 'REPETITION v7' "$RUNNER_TEMP/v7.err"; then
+              cat "$RUNNER_TEMP/v7.err"; exit 1
+            fi
+            grep -o 'REPETITION v7.*' "$RUNNER_TEMP/v7.err"
+          else
+            cat "${lots[@]}" > "$RUNNER_TEMP/v7.sql"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -At --no-psqlrc -f "$RUNNER_TEMP/v7.sql"
           fi
 
       # La bascule de taxonomie est la seule etape que les membres voient :

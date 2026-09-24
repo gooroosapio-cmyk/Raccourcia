@@ -144,6 +144,7 @@ export const TAG_GROUPS = [
   'usage',
   'resultat',
   'experience',
+  'lieu',
   'autre',
 ] as const;
 export type TagGroup = (typeof TAG_GROUPS)[number];
@@ -157,6 +158,7 @@ export const TAG_GROUP_LABELS: Record<TagGroup, string> = {
   usage: 'Domaine',
   resultat: 'Ce que vous obtenez',
   experience: 'Expérience',
+  lieu: 'Lieu',
   autre: 'Autres',
 };
 

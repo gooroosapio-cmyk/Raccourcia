@@ -862,6 +862,7 @@ export type Database = {
           avoid_rules: string | null;
           blocking_condition: string | null;
           capacites_requises: string[];
+          card_code: string | null;
           card_id: string | null;
           card_image_mode: Database['public']['Enums']['card_image_mode'] | null;
           card_slug: string | null;
@@ -1001,6 +1002,7 @@ export type Database = {
           avoid_rules?: string | null;
           blocking_condition?: string | null;
           capacites_requises?: string[];
+          card_code?: string | null;
           card_id?: string | null;
           card_image_mode?: Database['public']['Enums']['card_image_mode'] | null;
           card_slug?: string | null;
@@ -1140,6 +1142,7 @@ export type Database = {
           avoid_rules?: string | null;
           blocking_condition?: string | null;
           capacites_requises?: string[];
+          card_code?: string | null;
           card_id?: string | null;
           card_image_mode?: Database['public']['Enums']['card_image_mode'] | null;
           card_slug?: string | null;
@@ -1934,7 +1937,8 @@ export type Database = {
         | 'resultat'
         | 'experience'
         | 'autre'
-        | 'capacite';
+        | 'capacite'
+        | 'lieu';
       version_status: 'draft' | 'published' | 'retired';
     };
     CompositeTypes: {
@@ -2112,6 +2116,7 @@ export const Constants = {
         'experience',
         'autre',
         'capacite',
+        'lieu',
       ],
       version_status: ['draft', 'published', 'retired'],
     },

@@ -139,6 +139,37 @@ visuels inchangés ; chaque commande publiée sert le même texte. Scénario et
 contrôle : `tests/db/scenario-menage-archives.sql`,
 `tests/integration/apres-menage/50_menage_archives.sql`.
 
+## Catalogue v7 — importé le 24 septembre 2026
+
+Kit « RaccourcIA-final » (contrat 7.0), sources et empreintes dans
+`data/catalogue/v7/`, lots générés par `scripts/build-catalogue-v7.py`.
+Répété sur une réplique locale (`tests/db/repetition-catalogue-v7.sh`), puis
+sur la base réelle en transaction annulée (workflow Catalogue,
+`catalogue-v7-repetition`), puis appliqué en une transaction.
+
+Décisions de cadrage : nouvelles cartes publiées directement ; commandes
+archivées supprimées sans réserve ; brouillons effacés : les trois qui
+doublent une famille du kit ; champ vide : règle actuelle (« à préciser ») ;
+groupe de tags « Lieu » créé ; brouillons retagués par `migration_tags.csv` ;
+photo facultative ; variantes par IA archivées supprimées.
+
+| Bilan                                       | Nombre                    |
+| ------------------------------------------- | ------------------------- |
+| Commandes archivées supprimées              | 917                       |
+| Lignes du journal supprimées / sans version | 190 / 464                 |
+| Favoris / récents supprimés                 | 2 / 224                   |
+| Anciens liens supprimés                     | 751                       |
+| Variantes archivées supprimées              | 306                       |
+| Brouillons supprimés                        | 3                         |
+| Cartes publiées mises à jour / ajoutées     | 349 / 760                 |
+| Tags (tous définis)                         | 49 remplacés par 72       |
+| Collections                                 | 37 (4 créées, 2 retirées) |
+
+Après import : 1 109 cartes publiées, 290 brouillons (registre
+`identifiants-brouillons.csv`), 3 797 liens de tags, 1 690 champs, 374
+visuels intacts, 464 lignes au journal, 21 favoris ; toutes les cartes ont
+un `card_id` et un `card_code`.
+
 ## Lot 2 — composants
 
 - **Copie en deux temps** (migration `20260924110000_copie_en_deux_temps.sql`) :
