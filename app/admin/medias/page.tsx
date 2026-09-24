@@ -18,7 +18,8 @@ const ROLES: Record<string, string> = {
  *
  * Deux provenances seulement, et c'est `created_by` qui tranche (CLAUDE.md) :
  * un visuel depose par la console porte son auteur ; un visuel sans auteur
- * est anterieur a ce controle et se verifie avant toute decision. Cette page
+ * est anterieur a ce controle. Ceux qui restent apres l'effacement du
+ * 18 septembre sont, par construction du manifeste, des depots console. Cette page
  * montre, elle n'efface rien — un visuel se retire depuis la commande qui le
  * porte, avec son bilan.
  *
@@ -37,11 +38,16 @@ export default async function MediasPage() {
           {inventaire.total} visuel{inventaire.total > 1 ? 's' : ''} en base. Un visuel se dépose et
           se retire depuis sa commande, onglet Médias.
         </p>
+        <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+          La console enregistre l’auteur de chaque dépôt depuis le 23 septembre 2026. Les visuels
+          conservés après l’effacement du 18 septembre ont été déposés par la console avant cette
+          date : ils n’ont pas d’auteur enregistré, sans être d’origine inconnue.
+        </p>
       </div>
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Chiffre libelle="Déposés par la console" valeur={inventaire.administration} ton="succes" />
-        <Chiffre libelle="Sans auteur, à vérifier" valeur={inventaire.sansAuteur} ton="alerte" />
+        <Chiffre libelle="Sans auteur enregistré" valeur={inventaire.sansAuteur} />
         <Chiffre libelle="Après (résultats)" valeur={inventaire.parRole.apres} />
         <Chiffre libelle="Avant (références)" valeur={inventaire.parRole.avant} />
       </section>
@@ -84,7 +90,7 @@ export default async function MediasPage() {
                   </span>
                   <span className="block truncate text-[12px] text-[color:var(--color-muted)]">
                     {ROLES[media.role] ?? media.role} ·{' '}
-                    {media.administration ? 'console' : 'sans auteur'} ·{' '}
+                    {media.administration ? 'console' : 'sans auteur enregistré'} ·{' '}
                     {new Date(media.creeLe).toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'short',
