@@ -95,7 +95,7 @@ Six commandes offertes, validées : `/message`, `/reecrire`, `/synthese`
 Le cœur devient le favori privé d'une commande ; le « j'aime » public, son
 compteur et les épingles de tags et de collections disparaissent de
 l'interface. **Pas encore appliqué en base** : la migration
-`20260924100000_retrait_jaime_et_rayons_epingles.sql` part après le
+`20260924120000_retrait_jaime_et_rayons_epingles.sql` part après le
 déploiement du code, qui ne lit plus ces tables.
 
 | Donnée               | Lignes en production (24/09) | Devenir                                     |
@@ -108,3 +108,41 @@ déploiement du code, qui ne lit plus ces tables.
 
 Le schéma `sauvegarde` n'est lisible ni par `anon` ni par `authenticated`.
 Répétition : `tests/db/repetition-retrait-jaime.sh`.
+
+## Lot 2 — composants
+
+- **Copie en deux temps** (migration `20260924110000_copie_en_deux_temps.sql`) :
+  `lire_prompt` / `lire_prompt_offert` lisent sans rien inscrire ;
+  `enregistrer_copie` inscrit la copie seulement après l’écriture réussie
+  dans le presse-papiers, refait les contrôles d’accès et ignore un doublon
+  dans les dix secondes. Si le navigateur refuse, le texte s’ouvre
+  sélectionnable ; une copie manuelle s’inscrit aussi.
+- **Plus de choix d’IA** : sélecteur, filtre « IA compatible », lien
+  « Ouvrir … » et marques IA du texte marketing retirés. Le bouton dit
+  « Copier le prompt ». Une IA absente ne provoque plus de refus.
+- **Cartes** : aucune copie ; toute la carte ouvre la fiche. Rédaction et
+  Assistants partagent le cadre 4:5 des Visuels (extrait typographique,
+  bulle de conversation).
+- **Vocabulaire** : Visuels, Rédaction, Assistants ; adresses et identifiants
+  inchangés. Avertissements définitifs par univers.
+- **Icônes** : kit Lucide 24 × 24, trait de 2 ; le cœur remplace l’étoile
+  dans l’onglet Favoris.
+- **Variantes par IA** : lot `supabase/seed/archiver-variantes-par-ia`
+  (1 926 variantes archivées, textes servis inchangés en répétition). Leur
+  suppression définitive attend votre validation.
+
+## Ordre d’application en production (lots 1 et 2)
+
+1. Migrations **avant** le déploiement (additives, sans effet sur la version
+   en ligne) : `20260924090000_payload_unique.sql`, puis
+   `20260924110000_copie_en_deux_temps.sql`.
+2. Déployer le code.
+3. Lots, par le workflow Catalogue : `supabase/seed/payload-unique`, puis
+   `supabase/seed/archiver-variantes-par-ia`.
+4. Migration **après** le déploiement :
+   `20260924120000_retrait_jaime_et_rayons_epingles.sql`.
+
+Retour arrière : redéployer le code précédent (les anciennes fonctions
+`resolve_prompt` et `resolve_free_prompt` restent en place) ; les variantes
+archivées se republient par changement de statut ; les « j’aime » et
+épingles se restaurent depuis le schéma `sauvegarde`.

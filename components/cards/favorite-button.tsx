@@ -65,7 +65,9 @@ export function FavoriteButton({
     });
   };
 
-  const taille = surVisuel ? 28 : 20;
+  // Le trace du kit (Lucide), trait de 2 sur une grille de 24 : le meme
+  // coeur que celui de l'onglet Favoris (decision de cadrage 9B).
+  const taille = surVisuel ? 28 : sur ? 20 : 24;
 
   return (
     <button
@@ -88,10 +90,11 @@ export function FavoriteButton({
       >
         <svg width={taille} height={taille} viewBox="0 0 24 24" aria-hidden="true">
           <path
-            d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13Z"
+            d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
             fill={isFavorite ? (surVisuel ? 'currentColor' : 'var(--color-brand)') : 'none'}
             stroke={isFavorite && !surVisuel ? 'var(--color-brand)' : 'currentColor'}
-            strokeWidth="1.9"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>

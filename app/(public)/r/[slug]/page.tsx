@@ -286,7 +286,10 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
         </p>
       ) : null}
 
-      <AvertissementResultats className="mt-4 border-t border-[color:var(--color-line)] pt-3" />
+      <AvertissementResultats
+        univers={prompt.library}
+        className="mt-4 border-t border-[color:var(--color-line)] pt-3"
+      />
     </article>
   );
 }

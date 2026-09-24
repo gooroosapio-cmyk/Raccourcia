@@ -88,10 +88,15 @@ export type PurchaseStatus = (typeof PURCHASE_STATUS)[number];
 export const LIBRARIES = ['images', 'textes', 'reflexions'] as const;
 export type Library = (typeof LIBRARIES)[number];
 
+/**
+ * Les noms que l'interface donne aux trois univers (refonte UI, 23 septembre
+ * 2026). Les valeurs de l'enum, les adresses et les identifiants ne changent
+ * pas : un lien `/rayon/textes` partage hier mene toujours au meme endroit.
+ */
 export const LIBRARY_LABELS: Record<Library, string> = {
-  images: 'Images',
-  textes: 'Textes',
-  reflexions: 'Réflexions',
+  images: 'Visuels',
+  textes: 'Rédaction',
+  reflexions: 'Assistants',
 };
 
 /**
@@ -105,7 +110,7 @@ export const LIBRARY_LABELS: Record<Library, string> = {
 export const LIBRARY_PROMESSES: Record<Library, string> = {
   images: 'Générez, éditez et transformez vos images.',
   textes: 'Rédigez, reformulez et trouvez l’inspiration en un instant.',
-  reflexions: 'Apprenez, explorez et approfondissez avec l’IA.',
+  reflexions: 'Des assistants qui vous guident, question après question.',
 };
 
 /**

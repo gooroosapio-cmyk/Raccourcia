@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { LIBRARY_LABELS } from '@/lib/constants';
 
 export type Offre = {
   purchaseUrl: string;
@@ -18,17 +19,17 @@ export type Offre = {
  */
 const AVANTAGES = [
   {
-    titre: 'Images',
+    titre: LIBRARY_LABELS.images,
     corps:
       'Portraits, produits, matières, scènes : des centaines de rendus, chacun avec son avant/après.',
   },
   {
-    titre: 'Réflexions',
+    titre: LIBRARY_LABELS.reflexions,
     corps:
       'Des modes qui changent la façon dont l’IA vous répond — débat, décision, enquête, immersion.',
   },
   {
-    titre: 'Textes',
+    titre: LIBRARY_LABELS.textes,
     corps: 'Écrire, reformuler, synthétiser : on remplit deux champs, on copie, c’est prêt.',
   },
   {
@@ -110,8 +111,8 @@ export function ArgumentaireDOffre({
           compact ? 'mt-1 text-[13px] leading-snug' : 'mx-auto mt-2 max-w-[38ch] text-[16px]'
         }`}
       >
-        Certaines commandes se copient librement. L’accès complet ouvre les trois bibliothèques —
-        Images, Réflexions et Textes.
+        Certaines commandes se copient librement. L’accès complet ouvre les trois bibliothèques —{' '}
+        {LIBRARY_LABELS.images}, {LIBRARY_LABELS.textes} et {LIBRARY_LABELS.reflexions}.
       </p>
 
       {/* SUR LA FEUILLE, LE CORPS DE CHAQUE AVANTAGE DISPARAIT.

@@ -36,7 +36,7 @@ run "$PG_BIN/createdb" -h "$SOCKET_DIR" -U postgres "$DB_NAME"
 
 echo "==> Socle"
 
-RETRAIT="$ROOT/supabase/migrations/20260924100000_retrait_jaime_et_rayons_epingles.sql"
+RETRAIT="$ROOT/supabase/migrations/20260924120000_retrait_jaime_et_rayons_epingles.sql"
 
 echo "==> Migrations jusqu'a la veille du retrait"
 run "${PSQL[@]}" >/dev/null < "$ROOT/tests/db/supabase_stub.sql"

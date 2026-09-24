@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
+import { Icone } from '@/components/ui/icone';
+import { iconeDuRole } from '@/lib/ui/icones';
 
 /**
  * Barre basse : cinq destinations, libelles toujours visibles.
@@ -18,13 +20,25 @@ import { useEffect, useRef } from 'react';
  * au-dela des 44 px de cible confortable. Les libelles restent — une barre
  * d'icones muettes se devine, elle ne se lit pas — et se resserrent d'un
  * pixel plutot que de disparaitre.
+ *
+ * LES ICONES VIENNENT DU KIT (decision de cadrage 9B) : 24 x 24, trait de
+ * 2, extremites arrondies — le meme dessin partout. Favoris porte le coeur :
+ * c'est le geste qui y range une commande, sur la carte comme sur la fiche.
+ * Decouvrir garde sa boussole, que le kit n'a pas, tracee aux memes regles.
  */
+/**
+ * Une boussole pour Decouvrir : on n'y cherche pas, on regarde ce qui vient.
+ * Absente du kit, elle est tracee a ses regles — 24 x 24, trait de 2.
+ */
+const BOUSSOLE =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/></svg>';
+
 const ITEMS = [
-  { href: '/app', label: 'Accueil', icon: HomeIcon },
-  { href: '/app/bibliotheque', label: 'Bibliothèque', icon: LibraryIcon },
-  { href: '/app/decouvrir', label: 'Découvrir', icon: CompassIcon },
-  { href: '/app/favoris', label: 'Favoris', icon: StarIcon },
-  { href: '/compte', label: 'Profil', icon: AccountIcon },
+  { href: '/app', label: 'Accueil', icon: iconeDuRole('home') },
+  { href: '/app/bibliotheque', label: 'Bibliothèque', icon: iconeDuRole('library') },
+  { href: '/app/decouvrir', label: 'Découvrir', icon: BOUSSOLE },
+  { href: '/app/favoris', label: 'Favoris', icon: iconeDuRole('favorite') },
+  { href: '/compte', label: 'Profil', icon: iconeDuRole('profile') },
 ] as const;
 
 export function BottomNav() {
@@ -115,7 +129,6 @@ export function BottomNav() {
         {ITEMS.map((item) => {
           const active =
             item.href === '/app' ? pathname === '/app' : pathname.startsWith(item.href);
-          const Icon = item.icon;
           return (
             <li key={item.href} className="flex-1">
               <Link
@@ -125,7 +138,7 @@ export function BottomNav() {
                   active ? 'text-[color:var(--color-brand)]' : 'text-[color:var(--color-muted)]'
                 }`}
               >
-                <Icon />
+                <Icone svg={item.icon} taille={24} />
                 {/* Le libelle ne se coupe pas : « Bibliothèque » tient sur
                     une ligne a 10,5 px dans 72 px de large. */}
                 <span className="whitespace-nowrap">{item.label}</span>
@@ -135,83 +148,5 @@ export function BottomNav() {
         })}
       </ul>
     </nav>
-  );
-}
-
-function HomeIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5.5H9V20H5a1 1 0 0 1-1-1Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/**
- * Une etoile pour Favoris, et non un coeur.
- *
- * Les deux gestes existent cote a cote dans l'application et ils ne disent
- * pas la meme chose : l'etoile range une commande chez soi, le coeur dit
- * publiquement qu'elle sert. C'est la separation posee sur les cartes et
- * sur la fiche — seule la barre basse etait restee en arriere, et elle
- * envoyait vers une page d'etoiles sous un dessin de coeur.
- *
- * Le meme trace que `FavoriteButton`, au pixel pres : une etoile
- * legerement differente d'un ecran a l'autre se lit comme deux choses.
- */
-function StarIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="m12 3.6 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.8l5.9-.9z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function LibraryIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3.5" y="4" width="7" height="16" rx="1.6" stroke="currentColor" strokeWidth="2" />
-      <rect x="13.5" y="4" width="7" height="16" rx="1.6" stroke="currentColor" strokeWidth="2" />
-      <path d="M3.5 10h7M13.5 10h7" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function AccountIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="8.5" r="3.5" stroke="currentColor" strokeWidth="2" />
-      <path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/**
- * Une boussole pour Decouvrir.
- *
- * Ni loupe ni etoile : la loupe dit « cherche », or on ne cherche pas ici —
- * on regarde ce qui vient. L'aiguille dit l'exploration sans promettre un
- * champ de saisie.
- */
-function CompassIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
-      <path
-        d="m15.5 8.5-2 5-5 2 2-5 5-2Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }
