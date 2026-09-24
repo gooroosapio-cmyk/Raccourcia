@@ -1,137 +1,108 @@
-import { getTagsExplorables } from '@/lib/catalog/tags';
-import { getVisuelsTournants, visuelDeCollection, visuelDeTag } from '@/lib/catalog/visuels';
-import { getCollectionsPopulaires } from '@/lib/catalog/accueil';
+import { cookies } from 'next/headers';
+import { getSommaireDeBibliotheque } from '@/lib/catalog/sommaire';
+import { getVisuelsTournants, visuelDeCollection } from '@/lib/catalog/visuels';
 import { RechercheBibliotheque } from '@/components/library/recherche-bibliotheque';
-import { NosBibliotheques } from '@/components/accueil/nos-bibliotheques';
+import { ChoixUnivers } from '@/components/accueil/choix-univers';
 import { Mosaique, type CarteDeMosaique } from '@/components/library/mosaique';
 import { NetworkError } from '@/components/ui/network-error';
 import { EmptyState } from '@/components/ui/states';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
+import {
+  COOKIE_UNIVERS,
+  LIBRARIES,
+  LIBRARY_LABELS,
+  UNIVERS_PAR_DEFAUT,
+  type Library,
+} from '@/lib/constants';
 
 export const metadata = { title: 'Bibliothèque' };
 
-/**
- * La Bibliotheque : trois portes, puis des cartes.
- *
- * Elle empilait quatre facons de ranger la meme chose — les deux « facons
- * d'utiliser », les tags en tuiles, les tags en puces groupees par famille,
- * puis les rayons en accordeons. Quatre sommaires pour un seul catalogue :
- * on ne savait plus lequel lire, et les intitules de groupe — « Rendu »,
- * « Capacite », « Contexte » — sont le vocabulaire du classeur, jamais
- * celui du lecteur.
- *
- * Il n'en reste que deux niveaux. Les trois bibliotheques en tete, parce
- * que c'est la premiere decision : une image, un texte, une conversation.
- * Puis des cartes illustrees — collections et tags melanges, sans intitule
- * de famille — parce que ce sont deux chemins vers la meme etagere et que
- * rien n'oblige a choisir lequel.
- *
- * La recherche reste en tete : c'est la seule de l'application depuis que
- * l'accueil a range la sienne, et mille cartes sans moyen de chercher un
- * nom qu'on connait deja resteraient mille cartes a faire defiler.
- */
-export default async function BibliothequePage() {
-  let collections: Awaited<ReturnType<typeof getCollectionsPopulaires>>;
-  let rayonsDeTags: Awaited<ReturnType<typeof getTagsExplorables>>;
-  let tirage: Awaited<ReturnType<typeof getVisuelsTournants>>;
+const estUnivers = (valeur: unknown): valeur is Library => LIBRARIES.includes(valeur as Library);
 
+/**
+ * La Bibliotheque : univers, puis collections.
+ *
+ * Le rapport de refonte (23 septembre 2026) : trois boutons compacts qui
+ * servent d'onglets, puis les collections de l'univers choisi — couverture,
+ * titre, nombre de commandes. Pas de description repetee sous chaque tuile,
+ * et plus de tuiles de tags melees aux collections : un tag est un attribut
+ * d'une commande, il s'atteint depuis la commande (#tag), pas comme un
+ * rayon de plus.
+ *
+ * L'univers suit la meme regle que l'accueil : celui de l'adresse, sinon le
+ * dernier choisi, sinon Visuels.
+ */
+export default async function BibliothequePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const demande = (await searchParams).univers;
+  const retenu = (await cookies()).get(COOKIE_UNIVERS)?.value;
+  const univers: Library = estUnivers(demande)
+    ? demande
+    : estUnivers(retenu)
+      ? retenu
+      : UNIVERS_PAR_DEFAUT;
+
+  let sommaire: Awaited<ReturnType<typeof getSommaireDeBibliotheque>> | null = null;
+  let tirage: Awaited<ReturnType<typeof getVisuelsTournants>> = new Map();
   try {
-    // Trente collections : de quoi tenir un sommaire sans le rendre
-    // interminable. Les autres s'atteignent par la porte de leur
-    // bibliotheque, qui les montre toutes.
-    const [lot, rayons, visuels] = await Promise.all([
-      getCollectionsPopulaires(30),
-      getTagsExplorables(),
+    [sommaire, tirage] = await Promise.all([
+      getSommaireDeBibliotheque(univers),
       getVisuelsTournants(),
     ]);
-    collections = lot;
-    rayonsDeTags = rayons;
-    tirage = visuels;
   } catch (error) {
-    if (isCatalogUnavailable(error)) {
-      return (
-        <div className="space-y-4 pt-1">
-          <Titre />
-          <NetworkError />
-        </div>
-      );
-    }
-    throw error;
+    if (!isCatalogUnavailable(error)) throw error;
   }
 
-  // Le plus porte d'abord. Les rayons epingles par le membre ont disparu
-  // avec la decision de cadrage 5A : le coeur ne s'applique qu'aux
-  // commandes.
-  const tags = rayonsDeTags
-    .flatMap((rayon) => rayon.tags)
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 24);
-
-  // Collections et tags alternes plutot que poses en deux blocs. Deux blocs
-  // rendraient le second facultatif : on parcourt le premier, on croit avoir
-  // fait le tour, et la moitie des chemins reste derriere le pouce.
-  const cartes: CarteDeMosaique[] = entrelacer(
-    collections.map((collection) => ({
-      cle: `c-${collection.slug}`,
-      slug: collection.slug,
-      genre: 'collection' as const,
-      href: `/app/bibliotheque/${collection.slug}`,
-      titre: collection.nom,
-      detail: collection.description ?? compter(collection.total),
-      imageUrl: visuelDeCollection(collection.apercuUrl, collection.slug, tirage),
-    })),
-    tags.map((tag) => ({
-      cle: `t-${tag.slug}`,
-      slug: tag.slug,
-      genre: 'tag' as const,
-      href: `/app/bibliotheque/tag/${tag.slug}`,
-      titre: tag.nom,
-      detail: tag.description ?? compter(tag.total),
-      imageUrl: visuelDeTag(tag.imageUrl, tag.slug, tirage),
-    })),
+  const entete = (
+    <>
+      <Titre />
+      <RechercheBibliotheque />
+      <ChoixUnivers actif={univers} base="/app/bibliotheque" />
+    </>
   );
 
+  if (!sommaire) {
+    return (
+      <div className="space-y-4 pt-1">
+        {entete}
+        <NetworkError />
+      </div>
+    );
+  }
+
+  // Hors Visuels, une collection n'emprunte pas de photographie : ses
+  // commandes rendent du texte, et une photo mentirait sur le resultat.
+  const cartes: CarteDeMosaique[] = sommaire.collections.map((collection) => ({
+    cle: `c-${collection.slug}`,
+    slug: collection.slug,
+    genre: 'collection' as const,
+    href: `/app/bibliotheque/${collection.slug}`,
+    titre: collection.nom,
+    detail: `${collection.total} commande${collection.total > 1 ? 's' : ''}`,
+    famille: collection.famille,
+    imageUrl:
+      univers === 'images'
+        ? visuelDeCollection(collection.apercuUrl, collection.slug, tirage)
+        : collection.apercuUrl,
+  }));
+
   return (
-    <div className="space-y-5 pt-1">
-      <Titre />
-
-      <RechercheBibliotheque />
-
-      <NosBibliotheques />
+    <div className="space-y-4 pt-1">
+      {entete}
 
       {cartes.length === 0 ? (
         <EmptyState
-          title="La bibliothèque est vide"
-          body="Aucune collection n’est ouverte pour le moment."
+          title={`Aucune collection en ${LIBRARY_LABELS[univers]}`}
+          body="Aucune commande n’y est publiée pour le moment."
         />
       ) : (
         <Mosaique cartes={cartes} />
       )}
     </div>
   );
-}
-
-/**
- * Deux listes melees, en alternance, sans perdre la fin de la plus longue.
- *
- * Une alternance stricte s'arreterait a la plus courte ; ce qui reste est
- * pose a la suite plutot que perdu.
- */
-function entrelacer(premieres: CarteDeMosaique[], secondes: CarteDeMosaique[]): CarteDeMosaique[] {
-  const melange: CarteDeMosaique[] = [];
-  const maximum = Math.max(premieres.length, secondes.length);
-
-  for (let i = 0; i < maximum; i += 1) {
-    if (premieres[i]) melange.push(premieres[i]!);
-    if (secondes[i]) melange.push(secondes[i]!);
-  }
-
-  return melange;
-}
-
-/** « 32 commandes ». Le repli quand le rayon n'a pas encore de phrase. */
-function compter(total: number): string {
-  return `${total} commande${total > 1 ? 's' : ''}`;
 }
 
 function Titre() {

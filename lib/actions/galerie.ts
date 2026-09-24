@@ -34,6 +34,8 @@ const critereDeGalerie = z.object({
   search: catalogQuery.shape.search,
   // « Gratuits » dans une collection, « Commencer gratuitement » a l'accueil.
   access: catalogQuery.shape.access,
+  // « Pertinence » (l'ordre du catalogue) ou « Recentes ».
+  sort: z.enum(['populaires', 'nouveaux']).optional(),
 });
 
 export type CritereDeGalerie = z.infer<typeof critereDeGalerie>;
@@ -66,6 +68,7 @@ export async function chargerLaGalerie(
       tags: retenu.tags,
       search: retenu.search,
       access: retenu.access,
+      sort: retenu.sort,
       page: demandee,
       pageSize: CATALOG_PAGE_SIZE,
     }),

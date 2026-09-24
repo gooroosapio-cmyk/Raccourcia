@@ -276,7 +276,7 @@ export default async function AccueilPage({
           <TitreDeSection
             titre="Collections à explorer"
             icone={<IconeCollections />}
-            href={`/app/bibliotheque/rayon/${univers}`}
+            href={`/app/bibliotheque?univers=${univers}`}
             action="Toutes"
           />
           <CollectionsPopulaires collections={collections} />
