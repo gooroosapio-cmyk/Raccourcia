@@ -13,12 +13,14 @@ import { PromptChampsForm } from '@/app/admin/raccourcis/[id]/champs-form';
 import { SuppressionDeCommande } from '@/app/admin/raccourcis/[id]/suppression';
 import { listAdminTags } from '@/lib/admin/tags';
 import { apercuDeSuppressionDeCommande } from '@/lib/admin/suppression';
+import { EditeurEnOnglets } from '@/components/admin/editeur-en-onglets';
 
 export const metadata = { title: 'Modifier un raccourci' };
 
 /**
- * Fiche d'edition, organisee comme le formulaire decrit par la spec :
- * identite, contenu par IA, medias, apercu, publication.
+ * L'editeur d'une commande, en quatre sections (rapport de refonte, p. 11) :
+ * Contenu, Prompt et champs, Medias, Publication. Un seul editeur de
+ * payload ; l'apercu de la fiche reste visible sur ordinateur.
  */
 export default async function AdminPromptPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -42,7 +44,7 @@ export default async function AdminPromptPage({ params }: { params: Promise<{ id
           href="/admin/raccourcis"
           className="text-[13px] font-medium text-[color:var(--color-brand)]"
         >
-          &larr; Tous les raccourcis
+          &larr; Catalogue
         </Link>
         <div className="mt-2 flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -55,68 +57,114 @@ export default async function AdminPromptPage({ params }: { params: Promise<{ id
         </div>
       </div>
 
-      <PromptPublishControls promptId={prompt.id} status={prompt.status} slug={prompt.slug} />
-
-      <PromptPreview prompt={prompt} />
-
-      <Section title="Identité">
-        <PromptIdentityForm prompt={prompt} categories={categoriesDeRangement(categories)} />
-      </Section>
-
-      <Section
-        title="Contenu complet par IA"
-        hint="Enregistrer créé une nouvelle version. La précédente est conservée, jamais écrasée."
-      >
-        <PromptVersionForms promptId={prompt.id} variants={prompt.variants} />
-      </Section>
-
-      <Section
-        title="Visuels"
-        hint="Ce que l’écran propose dépend du genre : une comparaison pour une commande image, une vignette pour un parcours, rien pour un mode."
-      >
-        <PromptMediaManager
-          promptId={prompt.id}
-          command={prompt.command}
-          media={prompt.media}
-          requiresPair={prompt.showImageCard}
-          entityType={prompt.entityType}
+      {/* Ordinateur : l'editeur a gauche, l'apercu de la fiche a droite,
+          toujours visible. Mobile : l'apercu vit dans l'onglet Publication. */}
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
+        <EditeurEnOnglets
+          onglets={[
+            {
+              cle: 'contenu',
+              libelle: 'Contenu',
+              contenu: (
+                <>
+                  <Section title="Identité">
+                    <PromptIdentityForm
+                      prompt={prompt}
+                      categories={categoriesDeRangement(categories)}
+                    />
+                  </Section>
+                  <Section
+                    title="Tags"
+                    hint="De un à quatre, dans le référentiel. C’est par eux que la Bibliothèque s’explore."
+                  >
+                    <PromptTagsForm promptId={prompt.id} tags={tags} poses={prompt.tagIds} />
+                  </Section>
+                </>
+              ),
+            },
+            {
+              cle: 'prompt',
+              libelle: 'Prompt et champs',
+              contenu: (
+                <>
+                  <Section
+                    title="Prompt unique"
+                    hint="Un seul texte, copié tel quel quelle que soit l’IA du membre. Enregistrer crée une nouvelle version ; la précédente est conservée."
+                  >
+                    <PromptVersionForms promptId={prompt.id} variants={prompt.variants} />
+                  </Section>
+                  <Section
+                    title="Champs à remplir"
+                    hint="Trois au plus (deux à quatre en marketing). Ce que le membre saisit entre dans le texte copié, comme une donnée — jamais comme une consigne."
+                  >
+                    <PromptChampsForm promptId={prompt.id} champs={prompt.champs} />
+                  </Section>
+                </>
+              ),
+            },
+            {
+              cle: 'medias',
+              libelle: 'Médias',
+              contenu: (
+                <Section
+                  title="Visuels"
+                  hint="Un visuel n’est attendu que pour une commande Visuels affichée en carte illustrée ou dans Découvrir."
+                >
+                  <PromptMediaManager
+                    promptId={prompt.id}
+                    command={prompt.command}
+                    media={prompt.media}
+                    requiresPair={prompt.showImageCard}
+                    entityType={prompt.entityType}
+                  />
+                </Section>
+              ),
+            },
+            {
+              cle: 'publication',
+              libelle: 'Publication',
+              contenu: (
+                <>
+                  <PromptPublishControls
+                    promptId={prompt.id}
+                    status={prompt.status}
+                    slug={prompt.slug}
+                  />
+                  <div className="lg:hidden">
+                    <PromptPreview prompt={prompt} />
+                  </div>
+                  {/* La suppression ferme la page, loin des gestes courants.
+                      Archiver, au-dessus, est le geste qui se defait. */}
+                  <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-danger)] bg-[color:var(--color-surface)] p-4">
+                    <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-danger)]">
+                      Zone de suppression
+                    </h2>
+                    <p className="mt-1 text-[12px] leading-relaxed text-[color:var(--color-muted)]">
+                      Archiver masque la commande et se défait. Supprimer ne se défait pas.
+                    </p>
+                    <div className="mt-3">
+                      {bilan ? (
+                        <SuppressionDeCommande
+                          promptId={prompt.id}
+                          command={prompt.command}
+                          bilan={bilan}
+                        />
+                      ) : (
+                        <p className="text-[13px] text-[color:var(--color-muted)]">
+                          Le bilan de suppression n’a pas pu être lu. Réessayez.
+                        </p>
+                      )}
+                    </div>
+                  </section>
+                </>
+              ),
+            },
+          ]}
         />
-      </Section>
-
-      <Section
-        title="Tags"
-        hint="C’est par eux que la Bibliothèque s’explore. Un tag que personne ne pose n’y apparaît pas."
-      >
-        <PromptTagsForm promptId={prompt.id} tags={tags} poses={prompt.tagIds} />
-      </Section>
-
-      <Section
-        title="Champs à remplir"
-        hint="Trois au plus. Ce que le membre saisit entre dans le texte copié, comme une donnée — jamais comme une consigne."
-      >
-        <PromptChampsForm promptId={prompt.id} champs={prompt.champs} />
-      </Section>
-
-      {/* La suppression ferme la page, loin des gestes courants et separee
-          d'eux. Archiver est juste au-dessus, en tete : c'est le geste qui
-          se defait. */}
-      <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-danger)] bg-[color:var(--color-surface)] p-4">
-        <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-danger)]">
-          Zone de suppression
-        </h2>
-        <p className="mt-1 text-[12px] leading-relaxed text-[color:var(--color-muted)]">
-          Archiver masque la commande et se défait. Supprimer ne se défait pas.
-        </p>
-        <div className="mt-3">
-          {bilan ? (
-            <SuppressionDeCommande promptId={prompt.id} command={prompt.command} bilan={bilan} />
-          ) : (
-            <p className="text-[13px] text-[color:var(--color-muted)]">
-              Le bilan de suppression n’a pas pu être lu. Réessayez.
-            </p>
-          )}
-        </div>
-      </section>
+        <aside className="hidden lg:sticky lg:top-20 lg:block">
+          <PromptPreview prompt={prompt} />
+        </aside>
+      </div>
     </div>
   );
 }
