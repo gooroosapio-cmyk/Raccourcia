@@ -64,8 +64,9 @@ supprimer est une décision à part.
 
 Migrations, lot `payload-unique` puis lot `archiver-variantes-par-ia`
 appliqués après la fusion de la pull request #58 ; contrôles dans
-`docs/RECETTE.md` (§ 2). Les 1 926 variantes par IA sont archivées, pas
-supprimées : leur suppression attend la validation de la recette.
+`docs/RECETTE.md` (§ 2). Les 1 926 variantes par IA ont été archivées ;
+1 620 ont ensuite été supprimées par le ménage des archives (voir plus bas),
+les 306 que cite le journal des copies restent archivées.
 
 - Migration `20260924090000_payload_unique.sql` : `variante_servie` sert la
   variante « universel » quand elle existe, quelle que soit l'IA demandée ;
@@ -110,6 +111,33 @@ dans `docs/RECETTE.md` (§ 2).
 
 Le schéma `sauvegarde` n'est lisible ni par `anon` ni par `authenticated`.
 Répétition : `tests/db/repetition-retrait-jaime.sh`.
+
+## Ménage des archives — appliqué le 24 septembre 2026
+
+Décidé sur le « Bilan des archives avant suppression » (PDF du 24 septembre,
+§ 4), paliers 1, 2 et 2 bis. Lot `supabase/seed/menage-archives`, répété sur
+la production dans une transaction annulée, puis appliqué par le workflow
+Catalogue.
+
+| Supprimé                                                          | Volume                                  |
+| ----------------------------------------------------------------- | --------------------------------------- |
+| Variantes par IA archivées, jamais citées au journal              | 1 620 (5 190 versions)                  |
+| Commandes archivées reliées à rien                                | 1 359 (3 226 variantes, 3 469 versions) |
+| Leurs champs, liens de tags, questions                            | 1 355, 6 107, 61                        |
+| Tags inactifs                                                     | 107 (3 901 liens)                       |
+| Rayons et collections archivés ou hérités de la v2, devenus vides | 287                                     |
+| Tables de sauvegarde (`sauvegarde.*`, `*_avant_*`)                | 11                                      |
+
+Restent, parce qu'ils sont reliés au journal des copies, à des favoris ou
+récents de membres, ou à d'anciens liens : 917 commandes archivées, rangées
+dans deux rayons archivés et invisibles « Commandes retirées » (image : 368,
+texte : 549), et 306 variantes par IA archivées. Les supprimer demanderait de
+lever la règle qui protège le journal des copies (palier 3, non décidé).
+
+Contrôles du lot : journal des copies, favoris, récents, anciens liens et
+visuels inchangés ; chaque commande publiée sert le même texte. Scénario et
+contrôle : `tests/db/scenario-menage-archives.sql`,
+`tests/integration/apres-menage/50_menage_archives.sql`.
 
 ## Lot 2 — composants
 

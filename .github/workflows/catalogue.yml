@@ -942,11 +942,14 @@ jobs:
               -- echouait apres un import deja applique — le pire moment pour
               -- lever. La forme de la reference les separe : « IMG-04 »
               -- appartient a la V2, « IMG-V6-01 » non.
+              -- Toutes ou aucune : le menage des archives du 24 septembre
+              -- 2026 les a supprimees, archivees et vides. Un compte
+              -- intermediaire, lui, dirait une taxonomie a moitie defaite.
               select count(*) into v_categories
               from public.categories
               where external_ref ~ '^(IMG|TXT)-[0-9]+\$';
-              if v_categories <> 13 then
-                raise exception 'Attendu 13 familles V2, trouve %.', v_categories;
+              if v_categories not in (0, 13) then
+                raise exception 'Attendu 13 familles V2, ou aucune, trouve %.', v_categories;
               end if;
             end \$\$;"
 

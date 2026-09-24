@@ -107,11 +107,12 @@ where v.status = 'published';          -- attendu : 642
 
 1. Redéployer le code précédent. Les fonctions `resolve_prompt` et
    `resolve_free_prompt` sont restées en place ; elles servent le même texte.
-2. Si l’étape 4 ou 5 a eu lieu : lot `supabase/seed/retour-arriere-refonte`
-   (workflow **Catalogue**). Il republie exactement les variantes archivées
-   par l’étape 4, recrée les tables des « j’aime » et des épingles avec
-   leurs droits d’origine, et les remplit depuis `sauvegarde`. Sans effet
-   si ces étapes n’ont pas tourné.
+2. **Les données ne se restaurent plus.** Le ménage des archives du
+   24 septembre 2026 (lot `supabase/seed/menage-archives`) a supprimé les
+   variantes par IA non citées au journal et les tables de sauvegarde : le
+   lot `retour-arriere-refonte` n’a plus rien à rendre et n’est plus proposé
+   par le workflow. L’ancien code redéployé servirait encore le texte
+   unique, via `variante_servie`.
 3. Les migrations des étapes 1 n’ont pas à être défaites : elles sont
    compatibles avec l’ancien code (répétition, étape 1).
 
