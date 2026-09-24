@@ -36,6 +36,24 @@ le schéma `sauvegarde` n’existent pas encore ; les tables des « j’aime » 
 des épingles sont en place (29 et 2 lignes). Les préconditions des
 migrations sont réunies.
 
+### Étape 1 appliquée le 24 septembre 2026
+
+Les migrations `20260924090000_payload_unique` et
+`20260924110000_copie_en_deux_temps` sont en production (appliquées par
+Claude, avec votre accord ; corps de fonctions identiques au dépôt,
+commentaires d’en-tête omis). Contrôles faits juste après :
+
+- les 1 047 couples (carte publiée, IA) servent **exactement la même
+  variante** qu’avant : 0 écart ;
+- droits : `lire_prompt` réservé aux comptes, `lire_prompt_offert` et
+  `enregistrer_copie` ouverts aux visiteurs, `variante_servie` fermée aux
+  clients ;
+- en visiteur, `lire_prompt_offert` rend pour `/message` le texte que
+  l’ancien code sert (même empreinte, même version) et refuse une commande
+  réservée (`NOT_AVAILABLE`).
+
+Prochaine étape : fusion et déploiement (étape 2).
+
 ## 3. Mise en ligne, dans cet ordre
 
 | Étape                                     | Quoi                                                                                  | Comment                                                                    | Effet visible                                              |
