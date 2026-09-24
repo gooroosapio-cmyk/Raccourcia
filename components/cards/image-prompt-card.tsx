@@ -3,7 +3,6 @@
 import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
-import { BoutonJaime } from '@/components/cards/bouton-jaime';
 import { ResultThumbnail } from '@/components/cards/result-thumbnail';
 import { LienDeCollection } from '@/components/cards/lien-de-collection';
 import { usePaywall } from '@/components/paywall/paywall-provider';
@@ -143,7 +142,8 @@ export function ImagePromptCard({
         <FavoriteButton
           promptId={prompt.id}
           initial={prompt.isFavorite}
-          disabled={locked || visiteur}
+          disabled={locked}
+          visiteur={visiteur}
           sur
         />
       </div>
@@ -151,12 +151,6 @@ export function ImagePromptCard({
       {/* La copie ferme la carte, en bas, la ou se prend la decision : on
           regarde le resultat, on lit le titre, on copie. */}
       <div className="mt-auto flex items-center gap-1 px-2.5 pb-2.5">
-        <BoutonJaime
-          promptId={prompt.id}
-          likeCount={prompt.likeCount}
-          aime={prompt.aime}
-          visiteur={visiteur}
-        />
         <span className="block min-w-0 flex-1">
           <CopyCommandButton
             promptId={prompt.id}

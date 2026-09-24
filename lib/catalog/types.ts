@@ -122,18 +122,6 @@ export type PromptCard = {
   outputFormats: OutputFormatKind[];
   providers: { key: string; name: string; compatibility: Enums<'compatibility_level'> }[];
   isFavorite: boolean;
-  /**
-   * Combien de personnes ont aime la commande, et si le lecteur en fait
-   * partie.
-   *
-   * DISTINCT DU FAVORI, et les deux se lisent desormais sur la meme carte.
-   * Un favori range une commande pour soi — l'etoile. Un « j'aime » dit
-   * publiquement qu'elle sert — le coeur, et son compte. Les confondre
-   * reviendrait a publier la bibliotheque privee de chacun, et c'est
-   * exactement ce que deux icones identiques laissaient croire.
-   */
-  likeCount: number;
-  aime: boolean;
   // Contenu de la fiche : entierement public, donc embarque avec la carte.
   // Ouvrir le detail ne declenche ainsi aucun aller-retour reseau.
   intention: string | null;
@@ -286,9 +274,8 @@ export type CarteDecouverte = {
   visuelAlt: string;
   /** Trois au plus : au-dela, la zone basse mange le visuel. */
   tags: { slug: string; name: string }[];
-  likeCount: number;
-  /** Vrai quand le membre courant a deja aime. Faux pour un visiteur. */
-  aime: boolean;
+  /** Vrai quand le membre courant l'a en favori. Faux pour un visiteur. */
+  isFavorite: boolean;
   isFree: boolean;
   /**
    * La collection d'ou vient la carte, et ses voisines.

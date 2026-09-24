@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { AccessBadge } from '@/components/cards/access-badge';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
-import { BoutonJaime } from '@/components/cards/bouton-jaime';
 import { IllustrationThematique } from '@/components/cards/illustration-thematique';
 import { motifDeLaCarte } from '@/lib/ui/motifs';
 import { resumerPourCarte } from '@/lib/format/resume';
@@ -102,12 +101,6 @@ export function TextPromptCard({
 
   const action = (
     <div className="flex items-center gap-1">
-      <BoutonJaime
-        promptId={prompt.id}
-        likeCount={prompt.likeCount}
-        aime={prompt.aime}
-        visiteur={visiteur}
-      />
       <span className="block min-w-0 flex-1">
         <CopyCommandButton
           promptId={prompt.id}
@@ -141,7 +134,8 @@ export function TextPromptCard({
         <FavoriteButton
           promptId={prompt.id}
           initial={prompt.isFavorite}
-          disabled={locked || visiteur}
+          disabled={locked}
+          visiteur={visiteur}
           sur
         />
       </div>

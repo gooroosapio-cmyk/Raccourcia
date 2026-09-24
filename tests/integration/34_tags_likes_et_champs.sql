@@ -1,9 +1,8 @@
 -- =====================================================================
--- Le socle V3 : tags relationnels, likes, champs de personnalisation
+-- Le socle V3 : tags relationnels, champs de personnalisation
 --
 -- Ce test porte sur les garanties qu'aucune interface ne peut offrir :
--- qu'un like appartient a son auteur, qu'un compteur ne derive pas, qu'un
--- formulaire de fiche ne devienne pas un questionnaire, et qu'un tag ne se
+-- qu'un formulaire de fiche ne devienne pas un questionnaire, et qu'un tag ne se
 -- dedouble pas sous une variante d'ecriture — le defaut precis qui a rendu
 -- l'ancienne colonne `tags` inutilisable.
 -- =====================================================================
@@ -31,48 +30,8 @@ begin
   delete from public.tags where id = v_id;
 end $$;
 
--- --- Les likes appartiennent a leur auteur ------------------------------
-select tests_login('00000000-0000-0000-0000-0000000000a2',
-                   '00000000-0000-0000-0000-0000000000f2');
-do $$
-declare v_prompt uuid;
-begin
-  select id into v_prompt from public.prompts where status = 'published' limit 1;
-
-  -- Aimer en son nom : autorise.
-  insert into public.prompt_likes (prompt_id, user_id)
-  values (v_prompt, '00000000-0000-0000-0000-0000000000a2');
-
-  -- Aimer au nom d'un autre : refuse par la politique. Sans cette borne le
-  -- compteur ne voudrait plus rien dire.
-  begin
-    insert into public.prompt_likes (prompt_id, user_id)
-    values (v_prompt, '00000000-0000-0000-0000-0000000000a3');
-    perform tests_assert(false, 'Un membre a aime au nom d''un autre.');
-  exception when insufficient_privilege then null;
-  end;
-
-  -- Deux fois le meme like n'en font pas deux.
-  begin
-    insert into public.prompt_likes (prompt_id, user_id)
-    values (v_prompt, '00000000-0000-0000-0000-0000000000a2');
-    perform tests_assert(false, 'Un meme membre a aime deux fois.');
-  exception when unique_violation then null;
-  end;
-
-  -- Le compteur suit, et il est tenu par la base.
-  perform tests_assert(
-    (select like_count from public.prompts where id = v_prompt) = 1,
-    'Le compteur de likes n''a pas suivi l''ajout.');
-
-  delete from public.prompt_likes
-  where prompt_id = v_prompt and user_id = '00000000-0000-0000-0000-0000000000a2';
-
-  perform tests_assert(
-    (select like_count from public.prompts where id = v_prompt) = 0,
-    'Le compteur de likes n''a pas suivi le retrait.');
-end $$;
-reset role;
+-- Les « j'aime » ont ete retires le 24 septembre 2026 (decision 4B) : leur
+-- disparition est verifiee par 48_retrait_jaime_et_rayons_epingles.sql.
 
 -- --- Le formulaire de fiche reste un formulaire -------------------------
 do $$
@@ -145,7 +104,7 @@ begin
     (select fiche_champs_max from public.prompts where id = v_prompt) = 4,
     'Une carte marketing ne peut pas annoncer quatre champs.');
 
-  -- Supprimer la commande emporte ses champs, ses choix et ses likes :
+  -- Supprimer un champ emporte ses choix :
   -- aucun enregistrement orphelin.
   insert into public.prompt_field_choices (field_id, valeur, libelle)
   values (v_champ, 'a', 'A');

@@ -1,5 +1,5 @@
 -- =====================================================================
--- Les visuels tournants, et les rayons epingles
+-- Les visuels tournants
 --
 -- CE QUE LE TIRAGE PROMET :
 --
@@ -15,10 +15,8 @@
 --     illustrerait « Portrait » avec une image de « Cuisine » ;
 --   * il lit a travers les politiques du lecteur.
 --
--- ET LES TAGS EPINGLES : un membre ne lit et n'ecrit que ses propres
--- lignes. C'est la meme promesse que `favorites` pour les commandes, et
--- elle se casse de la meme facon — une politique qui oublierait `user_id`
--- rendrait la bibliotheque privee de chacun lisible par tous.
+-- Les tags epingles ont ete retires le 24 septembre 2026 (decision 5A) ;
+-- voir 48_retrait_jaime_et_rayons_epingles.sql.
 --
 -- Le jeu de donnees commun n'a aucun visuel : les assertions de tirage
 -- n'auraient rien a mesurer. Ce fichier pose donc les siens, dans la
@@ -168,47 +166,5 @@ begin
 
   raise notice 'Lecture anonyme du tirage : % rayon(s) sur %.', v_apres, v_avant;
 end $$;
-
--- --- Les rayons epingles restent prives ----------------------------------
-do $$
-declare v_tag uuid := current_setting('tests.tag_tirage', true)::uuid;
-begin
-  -- Pose en proprietaire : c'est l'etat de depart, pas ce qu'on teste.
-  insert into public.tag_favorites (user_id, tag_id)
-  values ('00000000-0000-0000-0000-0000000000a1', v_tag);
-end $$;
-
--- Celui qui a epingle retrouve son rayon.
-select tests_login('00000000-0000-0000-0000-0000000000a1',
-                   '00000000-0000-0000-0000-0000000000f1');
-do $$
-begin
-  perform tests_assert(
-    (select count(*) from public.tag_favorites) = 1,
-    'Un membre ne retrouve pas le rayon qu''il a epingle.');
-end $$;
-reset role;
-
--- Un autre membre n'en voit rien, et ne peut pas en poser au nom du premier.
-select tests_login('00000000-0000-0000-0000-0000000000a2',
-                   '00000000-0000-0000-0000-0000000000f2');
-do $$
-declare v_tag uuid := current_setting('tests.tag_tirage', true)::uuid;
-begin
-  perform tests_assert(
-    (select count(*) from public.tag_favorites) = 0,
-    'Un membre voit les rayons epingles par quelqu''un d''autre.');
-
-  begin
-    insert into public.tag_favorites (user_id, tag_id)
-    values ('00000000-0000-0000-0000-0000000000a1', v_tag);
-    perform tests_assert(false, 'Un membre a epingle un rayon au nom d''un autre.');
-  exception
-    when insufficient_privilege then null;
-  end;
-
-  raise notice 'Rayons epingles : chacun ne voit et n''ecrit que les siens.';
-end $$;
-reset role;
 
 rollback;

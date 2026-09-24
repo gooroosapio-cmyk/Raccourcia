@@ -9,7 +9,7 @@ import { openPaywall } from '@/components/paywall/paywall-provider';
 import { showToast } from '@/components/ui/toast';
 import { chargerLaSuite, ouvrirLaFiche } from '@/lib/actions/decouverte';
 import { trackPromptView } from '@/lib/actions/catalog';
-import { BoutonJaime } from '@/components/cards/bouton-jaime';
+import { FavoriteButton } from '@/components/cards/favorite-button';
 import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import type { CarteDecouverte, CurseurDecouverte, PromptCard } from '@/lib/catalog/types';
 
@@ -312,10 +312,10 @@ function CarteImmersive({
             ) : null}
           </div>
 
-          <BoutonJaime
+          <FavoriteButton
             promptId={carte.id}
-            likeCount={carte.likeCount}
-            aime={carte.aime}
+            initial={carte.isFavorite}
+            disabled={reserve}
             visiteur={visiteur}
             surVisuel
           />

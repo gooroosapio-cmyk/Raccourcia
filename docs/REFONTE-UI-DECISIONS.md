@@ -82,3 +82,29 @@ la console qui édite la variante universelle.
 
 Ordre d'application : fusion → migration (workflow Catalogue ou console
 Supabase) → lot `supabase/seed/payload-unique` (workflow Catalogue).
+
+## Commandes offertes (décision 3A) — appliqué le 24 septembre 2026
+
+Six commandes offertes, validées : `/message`, `/reecrire`, `/synthese`
+(Rédaction) ; `/mode-organisation`, `/mode-socrate`, `/mode-entretien`
+(Assistants). Lot `supabase/seed/offerts-redaction-assistants`, visé par
+`card_id`, appliqué par le workflow Catalogue et vérifié en base.
+
+## « J'aime » et rayons épinglés (décisions 4B et 5A) — état
+
+Le cœur devient le favori privé d'une commande ; le « j'aime » public, son
+compteur et les épingles de tags et de collections disparaissent de
+l'interface. **Pas encore appliqué en base** : la migration
+`20260924100000_retrait_jaime_et_rayons_epingles.sql` part après le
+déploiement du code, qui ne lit plus ces tables.
+
+| Donnée               | Lignes en production (24/09) | Devenir                                     |
+| -------------------- | ---------------------------- | ------------------------------------------- |
+| `prompt_likes`       | 29 (un membre)               | sauvegardée dans `sauvegarde`, puis retirée |
+| `prompts.like_count` | 29 commandes à 1             | sauvegardé, puis colonne retirée            |
+| `tag_favorites`      | 2 (un membre)                | sauvegardée, puis retirée                   |
+| `category_favorites` | 0                            | retirée                                     |
+| `favorites`          | 23 (deux membres)            | **conservée** : c'est le cœur               |
+
+Le schéma `sauvegarde` n'est lisible ni par `anon` ni par `authenticated`.
+Répétition : `tests/db/repetition-retrait-jaime.sh`.

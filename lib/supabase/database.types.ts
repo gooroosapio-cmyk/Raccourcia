@@ -237,31 +237,6 @@ export type Database = {
           },
         ];
       };
-      category_favorites: {
-        Row: {
-          category_id: string;
-          created_at: string;
-          user_id: string;
-        };
-        Insert: {
-          category_id: string;
-          created_at?: string;
-          user_id: string;
-        };
-        Update: {
-          category_id?: string;
-          created_at?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'category_favorites_category_id_fkey';
-            columns: ['category_id'];
-            referencedRelation: 'categories';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
       copy_events: {
         Row: {
           created_at: string;
@@ -641,31 +616,6 @@ export type Database = {
           },
         ];
       };
-      prompt_likes: {
-        Row: {
-          created_at: string;
-          prompt_id: string;
-          user_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          prompt_id: string;
-          user_id: string;
-        };
-        Update: {
-          created_at?: string;
-          prompt_id?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'prompt_likes_prompt_id_fkey';
-            columns: ['prompt_id'];
-            referencedRelation: 'prompts';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
       prompt_media: {
         Row: {
           alt: string | null;
@@ -961,7 +911,6 @@ export type Database = {
           legacy_subcategory: string | null;
           level: Database['public']['Enums']['execution_level'] | null;
           library: Database['public']['Enums']['app_library'] | null;
-          like_count: number;
           limitations: string | null;
           livrables: string | null;
           max_questions: number | null;
@@ -1101,7 +1050,6 @@ export type Database = {
           legacy_subcategory?: string | null;
           level?: Database['public']['Enums']['execution_level'] | null;
           library?: Database['public']['Enums']['app_library'] | null;
-          like_count?: number;
           limitations?: string | null;
           livrables?: string | null;
           max_questions?: number | null;
@@ -1241,7 +1189,6 @@ export type Database = {
           legacy_subcategory?: string | null;
           level?: Database['public']['Enums']['execution_level'] | null;
           library?: Database['public']['Enums']['app_library'] | null;
-          like_count?: number;
           limitations?: string | null;
           livrables?: string | null;
           max_questions?: number | null;
@@ -1498,31 +1445,6 @@ export type Database = {
           user_id?: string | null;
         };
         Relationships: [];
-      };
-      tag_favorites: {
-        Row: {
-          created_at: string;
-          tag_id: string;
-          user_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          tag_id: string;
-          user_id: string;
-        };
-        Update: {
-          created_at?: string;
-          tag_id?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'tag_favorites_tag_id_fkey';
-            columns: ['tag_id'];
-            referencedRelation: 'tags';
-            referencedColumns: ['id'];
-          },
-        ];
       };
       tags: {
         Row: {

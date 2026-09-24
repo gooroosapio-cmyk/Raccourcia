@@ -42,7 +42,6 @@ type LigneDecouverte = {
   short_description: string;
   result_summary: string | null;
   is_free: boolean;
-  like_count: number;
   discover_rank: number;
   category_id: string | null;
   categories: { slug: string; name: string } | null;
@@ -52,7 +51,7 @@ type LigneDecouverte = {
 
 const COLONNES = `
   id, slug, command, name, short_description, result_summary,
-  is_free, like_count, discover_rank, category_id,
+  is_free, discover_rank, category_id,
   categories(slug, name),
   prompt_tags(tags(slug, name, groupe))
 `;
@@ -87,13 +86,13 @@ export async function getDecouverte(
 ): Promise<PageDecouverte> {
   const { lignes, suite } = await lireLesVisuels(curseur, CARTES_PAR_PALIER, offertesSeulement);
 
-  const [aimees, voisinage] = await Promise.all([
-    lesQuellesJaime(lignes.map((l) => l.id)),
+  const [favoris, voisinage] = await Promise.all([
+    lesFavorisParmi(lignes.map((l) => l.id)),
     lesVoisines(lignes),
   ]);
 
   return {
-    cartes: lignes.map((ligne) => versCarte(ligne, aimees, voisinage)),
+    cartes: lignes.map((ligne) => versCarte(ligne, favoris, voisinage)),
     suite,
   };
 }
@@ -168,7 +167,7 @@ async function lireLesVisuels(
 
 function versCarte(
   ligne: LigneDecouverte,
-  aimees: Set<string>,
+  favoris: Set<string>,
   voisinage: Map<string, CarteVoisine[]>,
 ): CarteDecouverte {
   const visuel =
@@ -195,8 +194,7 @@ function versCarte(
       .filter((tag) => tag.groupe !== 'bibliotheque' && tag.groupe !== 'ia')
       .slice(0, 3)
       .map((tag) => ({ slug: tag.slug, name: tag.name })),
-    likeCount: ligne.like_count ?? 0,
-    aime: aimees.has(ligne.id),
+    isFavorite: favoris.has(ligne.id),
     isFree: ligne.is_free,
     collection: ligne.categories
       ? { slug: ligne.categories.slug, nom: ligne.categories.name }
@@ -290,14 +288,14 @@ type VoisineRow = {
 };
 
 /**
- * Ce que le membre courant a deja aime, parmi les cartes de ce palier.
+ * Ce que le membre courant a en favori, parmi les cartes de ce palier.
  *
  * Une seule lecture bornee aux identifiants affiches, et non un drapeau par
  * carte : dix lectures par palier pour une information qui tient en une.
- * Vide pour un visiteur — il n'a rien aime, et la table lui est fermee en
- * ecriture de toute facon.
+ * Vide pour un visiteur — il n'a pas de favori, et la table lui est
+ * fermee de toute facon.
  */
-async function lesQuellesJaime(ids: string[]): Promise<Set<string>> {
+async function lesFavorisParmi(ids: string[]): Promise<Set<string>> {
   if (ids.length === 0) return new Set();
 
   const supabase = await createClient();
@@ -307,7 +305,7 @@ async function lesQuellesJaime(ids: string[]): Promise<Set<string>> {
   if (!user) return new Set();
 
   const { data } = await supabase
-    .from('prompt_likes')
+    .from('favorites')
     .select('prompt_id')
     .eq('user_id', user.id)
     .in('prompt_id', ids);

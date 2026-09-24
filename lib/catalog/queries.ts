@@ -332,7 +332,7 @@ const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
   show_image_card, payload_ready, cta_label, entity_type, images_min, default_ratio, witness_type,
   library,
-  is_free, is_new, is_featured, risk_level, sort_order, like_count,
+  is_free, is_new, is_featured, risk_level, sort_order,
   level, max_questions,
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
@@ -370,7 +370,6 @@ type CardRow = {
   is_free: boolean;
   is_new: boolean;
   is_featured: boolean;
-  like_count: number | null;
   risk_level: Enums<'risk_level'>;
   level: Enums<'execution_level'> | null;
   max_questions: number | null;
@@ -437,15 +436,14 @@ function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
 }
 
 /**
- * Ce que le membre courant a marque sur les cartes.
+ * Ce que le membre courant a marque sur les cartes : ses favoris.
  *
- * Deux ensembles et non un : un favori range pour soi, un « j'aime » dit
- * publiquement que la commande sert. Ils vivent dans deux tables, ils se
- * lisent en une fois, et la carte porte les deux.
+ * Le « j'aime » public a disparu (decision de cadrage 4B) : le coeur est
+ * desormais le favori, prive, et il n'y a plus qu'un ensemble a lire.
  */
-type MarquesDuMembre = { favoris: Set<string>; likes: Set<string> };
+type MarquesDuMembre = { favoris: Set<string> };
 
-const SANS_MARQUE: MarquesDuMembre = { favoris: new Set(), likes: new Set() };
+const SANS_MARQUE: MarquesDuMembre = { favoris: new Set() };
 
 function toCard(row: CardRow, marques: MarquesDuMembre = SANS_MARQUE): PromptCard {
   // L'Apres prime : c'est le resultat, donc ce qui fait choisir. La miniature
@@ -501,11 +499,6 @@ function toCard(row: CardRow, marques: MarquesDuMembre = SANS_MARQUE): PromptCar
         compatibility: variant.compatibility,
       })),
     isFavorite: marques.favoris.has(row.id),
-    // Le compte vient de la base, jamais d'un calcul ici : un declencheur
-    // l'ecrit a chaque like, et le recalculer cote serveur ouvrirait la
-    // porte a deux gestes simultanes comptes une seule fois.
-    likeCount: row.like_count ?? 0,
-    aime: marques.likes.has(row.id),
     intention: row.intention,
     expectedInput: row.expected_input,
     limitations: row.limitations,
@@ -574,21 +567,13 @@ async function getMarquesDuMembre(): Promise<MarquesDuMembre> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  // Un visiteur n'a ni favori ni like : deux ensembles vides valent mieux
-  // que deux requetes qui rendront vide de toute facon.
+  // Un visiteur n'a pas de favori : un ensemble vide vaut mieux qu'une
+  // requete qui rendra vide de toute facon.
   if (!user) return SANS_MARQUE;
 
-  // Les deux en parallele : elles ne se conditionnent pas, et les enchainer
-  // ajouterait un aller-retour a chaque page de galerie.
-  const [favoris, likes] = await Promise.all([
-    supabase.from('favorites').select('prompt_id'),
-    supabase.from('prompt_likes').select('prompt_id'),
-  ]);
+  const favoris = await supabase.from('favorites').select('prompt_id');
 
-  return {
-    favoris: new Set((favoris.data ?? []).map((row) => row.prompt_id)),
-    likes: new Set((likes.data ?? []).map((row) => row.prompt_id)),
-  };
+  return { favoris: new Set((favoris.data ?? []).map((row) => row.prompt_id)) };
 }
 
 export type CatalogPage = {
@@ -1126,8 +1111,8 @@ export async function getFavorites(): Promise<PromptCard[]> {
   const ids = (rows ?? []).map((row) => row.prompt_id);
   if (ids.length === 0) return [];
 
-  // Les likes viennent de la meme lecture que partout ailleurs ; les
-  // favoris, eux, sont deja connus — ce sont precisement ces lignes.
+  // Les favoris sont relus comme partout ailleurs : la carte ne connait
+  // pas son contexte, et une page de favoris les a tous par definition.
   const [{ data }, marques] = await Promise.all([
     supabase.from('prompts').select(CARD_COLUMNS).in('id', ids),
     getMarquesDuMembre(),
