@@ -175,3 +175,30 @@ archivées se republient par changement de statut ; les « j’aime » et
 Restent hors lot 3 : favoris d’un visiteur mémorisés localement puis
 synchronisés à la connexion ; refonte de la page de présentation (vrais
 exemples, CTA « Essayer gratuitement », illustration sans marques IA).
+
+## Lot 4 — administration
+
+- **Navigation** : Vue d’ensemble, Catalogue, Organisation (catégories et
+  tags), Médias, Membres, Statistiques, Paramètres. Barre latérale sur
+  ordinateur ; section courante et menu compact sur mobile.
+- **Catalogue** : alertes de qualité en filtre, tri en liste déroulante,
+  barre de lot seulement après sélection avec portée dite (page ou tous
+  les résultats filtrés, jusqu’à 200), vue tableau sur ordinateur, cibles
+  de 44 px.
+- **Éditeur** : quatre onglets — Contenu, Prompt et champs, Médias,
+  Publication —, aperçu de la fiche visible sur ordinateur, confirmation
+  avant de quitter avec des modifications non enregistrées. Le texte
+  canonique s’appelle « Prompt unique » et ne se désactive pas.
+- **Qualité** : alertes sans texte, Visuels sans visuel (jamais Rédaction
+  ni Assistants), publiées dans un rayon masqué ; chacune ouvre la liste
+  filtrée. Relevé du 24 septembre : 0, 357 (brouillons compris), 0.
+- **Médias** : inventaire et provenance (`created_by`) ; la page n’efface
+  rien. Les 374 visuels restants n’ont pas d’auteur enregistré parce
+  qu’ils précèdent son enregistrement, pas parce que leur origine est
+  inconnue.
+
+Restent hors lot 4 : import de médias en lot depuis la section Médias
+(le dépôt se fait par commande), réessai des seuls éléments en échec d’un
+geste groupé, alertes « champ introuvable » et « tags hors référentiel ».
+Vérification visuelle de la console impossible ici sans session
+d’administration ; structure verrouillée par `tests/unit/administration.test.ts`.
