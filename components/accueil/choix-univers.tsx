@@ -19,15 +19,37 @@ export function ChoixUnivers({
   actif,
   base,
   parametre = 'univers',
+  avecTout = false,
 }: {
-  actif: Library;
+  /** `null` quand aucun univers ne filtre (« Tout », dans Favoris). */
+  actif: Library | null;
+  /**
+   * Ajoute « Tout » en tete. Pour une liste personnelle — les favoris — un
+   * univers par defaut cacherait ce qu'on a range ailleurs. « Tout » ne se
+   * retient pas : ce n'est pas un univers.
+   */
+  avecTout?: boolean;
   /** L'adresse de l'ecran qui porte le choix : `/app`, `/app/favoris`… */
   base: string;
   /** Le nom du parametre d'adresse que l'ecran lit. */
   parametre?: string;
 }) {
   return (
-    <nav aria-label="Univers" className="grid grid-cols-3 gap-2">
+    <nav aria-label="Univers" className={`grid gap-2 ${avecTout ? 'grid-cols-4' : 'grid-cols-3'}`}>
+      {avecTout ? (
+        <Link
+          href={base}
+          aria-current={actif === null ? 'page' : undefined}
+          scroll={false}
+          className={`flex min-h-11 items-center justify-center rounded-[color:var(--radius-control)] px-2 text-[length:var(--texte-carte)] font-semibold transition-colors duration-[var(--duration-fast)] ${
+            actif === null
+              ? 'bg-[color:var(--color-brand)] text-white'
+              : 'border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[color:var(--color-night)]'
+          }`}
+        >
+          Tout
+        </Link>
+      ) : null}
       {LIBRARIES.map((univers) => {
         const estActif = univers === actif;
         return (

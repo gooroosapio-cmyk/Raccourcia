@@ -12,8 +12,12 @@ import { publicEnv } from '@/lib/env';
 /**
  * Routes reservees aux membres ayant l'acces a vie. Liste explicite plutot
  * qu'un prefixe : `/app` doit rester ouvert a tout le monde, c'est la vitrine.
+ *
+ * Favoris n'y est plus (refonte UI) : chaque compte retrouve ses favoris,
+ * gratuits compris, et un visiteur y lit une invitation a se connecter. La
+ * page le decide elle-meme ; la RLS de `favorites` ne montre que les siens.
  */
-const ESPACES_RESERVES = ['/app/favoris', '/app/recents'];
+const ESPACES_RESERVES = ['/app/recents'];
 
 /**
  * Seul espace ferme aux visiteurs.
