@@ -43,12 +43,11 @@ begin
   exception when insufficient_privilege then null;
   end;
 
-  -- IA inconnue ou inactive.
-  begin
-    perform public.resolve_free_prompt('00000000-0000-0000-0000-0000000000d2', 'inconnue');
-    perform tests_assert(false, 'Une IA inconnue a renvoye un contenu.');
-  exception when insufficient_privilege then null;
-  end;
+  -- IA inconnue : le texte offert est servi quand meme. L'IA ne choisit
+  -- plus le texte et ne peut plus provoquer un refus (payload unique).
+  perform tests_assert(
+    exists (select 1 from public.resolve_free_prompt('00000000-0000-0000-0000-0000000000d2', 'inconnue')),
+    'Une IA inconnue provoque encore un refus.');
 
   -- La porte des membres reste fermee : `resolve_prompt` n'est pas accordee
   -- au role anonyme, la fonction n'est meme pas executable.

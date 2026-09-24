@@ -6,7 +6,8 @@
 # de production et les lots V5 — l'etat actuel de la production — puis passe
 # le lot payload-unique deux fois. Controle ensuite, carte par carte, que le
 # texte servi a chaque IA est le texte canonique et qu'il est identique a
-# celui que cette IA recevait avant.
+# celui que cette IA recevait avant. Enchaine le lot qui archive les
+# variantes par IA, et verifie que rien de ce qui est servi ne change.
 #
 #   ./tests/db/repetition-payload-unique.sh
 # ---------------------------------------------------------------------------
@@ -123,4 +124,39 @@ begin
   end if;
 
   raise notice 'Payload unique : % cartes, un texte chacune, identique a l ancien pour les trois IA.', v_cartes;
+end \$verif\$;"
+
+# La suite : les variantes par IA s'archivent. Deux passes, meme exigence.
+for passe in 1 2; do
+  echo "==> Passe $passe sur le lot archiver-variantes-par-ia"
+  for f in "$ROOT"/supabase/seed/archiver-variantes-par-ia/*.sql; do
+    run "${PSQL[@]}" < "$f"
+  done
+done
+
+echo "==> Controles apres archivage"
+run "${PSQL[@]}" -c "
+do \$verif\$
+declare v_ecarts integer; v_publiees integer;
+begin
+  -- Le texte servi a chaque IA n'a pas bouge d'un caractere.
+  select count(*) into v_ecarts
+  from public.avant_payload av
+  join public.prompt_versions pv on pv.variant_id = public.variante_servie(av.prompt_id, av.ia)
+    and pv.is_current
+  where pv.payload is distinct from av.payload;
+  if v_ecarts > 0 then
+    raise exception '% textes servis ont change avec l archivage.', v_ecarts;
+  end if;
+
+  select count(*) into v_publiees
+  from public.prompt_variants v
+  join public.ai_providers a on a.id = v.provider_id and a.key <> 'universel'
+  join public.prompts p on p.id = v.prompt_id and p.catalog_version = 'v5'
+  where v.status = 'published';
+  if v_publiees > 0 then
+    raise exception '% variantes par IA restent publiees sur des cartes V5.', v_publiees;
+  end if;
+
+  raise notice 'Archivage : variantes par IA archivees, textes servis inchanges.';
 end \$verif\$;"

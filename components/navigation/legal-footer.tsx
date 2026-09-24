@@ -29,7 +29,7 @@ export function LegalFooter({ className = '' }: { className?: string }) {
           </Link>
         ))}
       </nav>
-      <p className="mt-2">RaccourcIA — bibliothèque de commandes pour ChatGPT, Claude et Gemini.</p>
+      <p className="mt-2">RaccourcIA — bibliothèque de commandes prêtes à copier.</p>
     </footer>
   );
 }

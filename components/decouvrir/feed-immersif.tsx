@@ -10,7 +10,6 @@ import { showToast } from '@/components/ui/toast';
 import { chargerLaSuite, ouvrirLaFiche } from '@/lib/actions/decouverte';
 import { trackPromptView } from '@/lib/actions/catalog';
 import { FavoriteButton } from '@/components/cards/favorite-button';
-import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import type { CarteDecouverte, CurseurDecouverte, PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -49,7 +48,6 @@ export function FeedImmersif({
   const [charge, setCharge] = useState(false);
   const [fiche, setFiche] = useState<PromptCard | null>(null);
   const [ouverture, setOuverture] = useState<string | null>(null);
-  const [provider, changeProvider] = usePreferredProvider('chatgpt');
   const zone = useRef<HTMLDivElement>(null);
 
   const allonger = useCallback(() => {
@@ -146,8 +144,6 @@ export function FeedImmersif({
       {fiche ? (
         <PromptDetailSheet
           prompt={fiche}
-          provider={provider}
-          onProviderChange={changeProvider}
           locked={locked && !fiche.isFree}
           free={locked && fiche.isFree}
           visiteur={visiteur}

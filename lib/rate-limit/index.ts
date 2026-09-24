@@ -11,6 +11,8 @@ export const RATE_LIMITS = {
   activation: { limit: 5, windowSeconds: 30 * 60 },
   recuperation: { limit: 5, windowSeconds: 30 * 60 },
   resolution: { limit: 60, windowSeconds: 10 * 60 },
+  // Une copie reussie suit toujours une lecture : meme borne.
+  copie: { limit: 60, windowSeconds: 10 * 60 },
 } as const;
 
 export type RateLimitBucket = keyof typeof RATE_LIMITS;

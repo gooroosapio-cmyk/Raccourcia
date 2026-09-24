@@ -2,7 +2,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
-import { ChatGPTLogo, ClaudeLogo, GeminiLogo } from '@/components/brand/ai-logos';
 import { AvisCarrousel } from '@/components/landing/avis-carrousel';
 import { ChaineBenefices } from '@/components/landing/chaine-benefices';
 import { Film } from '@/components/landing/film';
@@ -217,7 +216,7 @@ function Chiffres({
     // des la publication suivante.
     { valeur: total > 0 ? `+${total}` : '—', libelle: 'commandes prêtes à utiliser' },
     { valeur: categories > 0 ? `${categories}` : '—', libelle: 'catégories classées par besoin' },
-    { valeur: '3', libelle: 'IA compatibles : ChatGPT, Claude, Gemini' },
+    { valeur: '3', libelle: 'univers : Visuels, Rédaction, Assistants' },
     { valeur: prix, libelle: `${periode}, tout le catalogue` },
   ];
 
@@ -369,7 +368,7 @@ function Systeme() {
     {
       cle: 'La copie',
       titre: 'Copiez et utilisez',
-      corps: 'Utilisez votre commande dans ChatGPT, Claude ou Gemini, celle que vous préférez.',
+      corps: 'Collez le prompt dans votre outil d’IA habituel.',
     },
   ];
 
@@ -437,14 +436,9 @@ function Systeme() {
         className="mt-9 w-full rounded-[20px] border border-[color:var(--color-line)] shadow-[var(--shadow-card)]"
       />
 
-      <div className="mt-9">
-        <p className="text-center text-[length:var(--texte-corps)] text-[color:var(--color-muted)]">
-          Copiez une commande depuis RaccourcIA et utilisez-la dans l’IA qui vous convient.
-        </p>
-        <div className="mt-4">
-          <LogosIA />
-        </div>
-      </div>
+      <p className="mt-9 text-center text-[length:var(--texte-corps)] text-[color:var(--color-muted)]">
+        Copiez un prompt depuis RaccourcIA et collez-le dans votre outil d’IA.
+      </p>
     </Section>
   );
 }
@@ -725,7 +719,7 @@ function AvantDeDecider({ total }: { total: number }) {
     {
       question: 'Avec quelles IA puis-je utiliser les commandes ?',
       reponse:
-        'Avec ChatGPT, Claude et Gemini. Chaque commande indique les IA avec lesquelles elle fonctionne, et signale les cas où la génération d’image dépend de l’interface utilisée.',
+        'Un prompt est un texte : il se colle dans l’outil d’IA de votre choix. Le résultat varie selon le modèle utilisé, et les commandes Visuels demandent un outil capable de générer des images.',
     },
     {
       question: 'Les résultats seront-ils toujours identiques ?',
@@ -841,7 +835,7 @@ function PiedDePage() {
               className="h-7 w-auto"
             />
             <p className="mt-3 max-w-[38ch] text-[length:var(--texte-carte)] leading-[1.55] text-[color:var(--color-muted)]">
-              La bibliothèque de commandes pour ChatGPT, Claude et Gemini.
+              La bibliothèque de commandes prêtes à copier.
             </p>
           </div>
 
@@ -864,35 +858,5 @@ function PiedDePage() {
         </div>
       </div>
     </footer>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Compatibilite, dans la section systeme                              */
-/* ------------------------------------------------------------------ */
-
-function LogosIA() {
-  const outils = [
-    { nom: 'ChatGPT', Logo: ChatGPTLogo },
-    { nom: 'Claude', Logo: ClaudeLogo },
-    { nom: 'Gemini', Logo: GeminiLogo },
-  ];
-
-  return (
-    <ul className="flex flex-wrap items-center justify-center gap-3">
-      {outils.map(({ nom, Logo }) => (
-        <li
-          key={nom}
-          className="flex min-h-[48px] items-center gap-2.5 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-4 py-2.5"
-        >
-          {/* Le nom est ecrit juste a cote : le logo devient decoratif,
-              sinon un lecteur d'ecran annonce « ChatGPT ChatGPT ». */}
-          <Logo taille={20} decoratif />
-          <span className="text-[length:var(--texte-corps)] font-semibold text-[color:var(--color-night)]">
-            {nom}
-          </span>
-        </li>
-      ))}
-    </ul>
   );
 }

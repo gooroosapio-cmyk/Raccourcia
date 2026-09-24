@@ -151,25 +151,6 @@ export const PROVIDER_KEYS = ['chatgpt', 'claude', 'gemini'] as const;
 export const PAYLOAD_CANONIQUE = 'universel';
 export type ProviderKey = (typeof PROVIDER_KEYS)[number];
 
-/**
- * Ou coller la commande qu'on vient de copier.
- *
- * Une adresse d'accueil, jamais une adresse portant la commande : le contenu
- * complet ne doit jamais transiter par une URL, ou il finirait dans
- * l'historique du navigateur et dans les journaux du destinataire.
- */
-export const PROVIDER_URLS: Record<ProviderKey, string> = {
-  chatgpt: 'https://chatgpt.com/',
-  claude: 'https://claude.ai/new',
-  gemini: 'https://gemini.google.com/app',
-};
-
-export const PROVIDER_LABELS: Record<ProviderKey, string> = {
-  chatgpt: 'ChatGPT',
-  claude: 'Claude',
-  gemini: 'Gemini',
-};
-
 /** D'ou part une copie. Alimente `copy_events.surface`. */
 export const SURFACES = ['carte', 'detail', 'page-publique'] as const;
 export type Surface = (typeof SURFACES)[number];

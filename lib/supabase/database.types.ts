@@ -1806,6 +1806,39 @@ export type Database = {
         Args: { p_device_label?: string };
         Returns: number;
       };
+      enregistrer_copie: {
+        Args: {
+          p_prompt_id: string;
+          p_version_id: string;
+          p_provider_key?: string;
+          p_surface?: string;
+        };
+        Returns: boolean;
+      };
+      lire_prompt: {
+        Args: {
+          p_prompt_id: string;
+          p_provider_key?: string;
+        };
+        Returns: {
+          command: string;
+          payload: string;
+          version_id: string;
+          version_label: string;
+        }[];
+      };
+      lire_prompt_offert: {
+        Args: {
+          p_prompt_id: string;
+          p_provider_key?: string;
+        };
+        Returns: {
+          command: string;
+          payload: string;
+          version_id: string;
+          version_label: string;
+        }[];
+      };
       resolve_free_prompt: {
         Args: {
           p_prompt_id: string;

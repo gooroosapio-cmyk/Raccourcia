@@ -1,29 +1,27 @@
 'use client';
 
 import { AccessBadge } from '@/components/cards/access-badge';
-import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { ResultThumbnail } from '@/components/cards/result-thumbnail';
 import { LienDeCollection } from '@/components/cards/lien-de-collection';
-import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
 import { nomDuGenre, promesseDeCarte } from '@/lib/catalog/experience';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
- * Carte de galerie : le resultat, son nom, de quoi le copier.
+ * Carte de galerie : le resultat, son nom, le coeur.
  *
- * Trois choses ont ete apprises a l'usage.
+ * AUCUNE COPIE DEPUIS LA CARTE (refonte UI, 23 septembre 2026). Toute la
+ * zone ouvre la fiche, ou se trouvent les champs et « Copier le prompt ».
+ * Une copie en miniature livrait un texte sans ses champs, et repetait le
+ * meme bouton vingt fois dans une grille.
+ *
+ * Ce qui a ete appris a l'usage, et qui reste vrai :
  *
  * « 1 photo » sous chaque vignette ne distinguait rien : presque toutes les
  * commandes image en demandent une. Un signe qui se repete a l'identique sur
  * vingt cartes n'informe pas, il occupe une ligne. A sa place, l'icone du
  * rayon d'ou vient la carte — le meme dessin que la pastille qui y mene.
- *
- * Le bouton de copie est descendu sous le titre. Pose sur la vignette, il
- * masquait le resultat a l'endroit ou l'oeil se porte, et deux pastilles
- * rondes sur une image faisaient plus penser a une barre d'outils qu'a une
- * idee.
  *
  * Toutes les cartes ont la meme hauteur, et le titre occupe deux lignes
  * qu'il en remplisse une ou deux. Sans cela, une galerie a deux colonnes se
@@ -31,11 +29,10 @@ import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
  *
  * Le visuel verrouille est floute. C'est un signal commercial, pas une
  * protection : le contenu premium n'atteint jamais le client, il ne sort que
- * par resolve_prompt apres ses six controles.
+ * par la route de lecture, apres ses controles.
  */
 export function ImagePromptCard({
   prompt,
-  provider,
   locked,
   free,
   masque = false,
@@ -45,7 +42,6 @@ export function ImagePromptCard({
   onOpen,
 }: {
   prompt: PromptCardData;
-  provider: string;
   locked: boolean;
   free: boolean;
   /**
@@ -68,9 +64,6 @@ export function ImagePromptCard({
   rayon?: string;
   onOpen: (prompt: PromptCardData) => void;
 }) {
-  const { open: ouvrirOffre } = usePaywall();
-  const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
-  const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
   const description = promesseDeCarte(prompt);
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
   const genre = nomDuGenre(prompt);
@@ -80,6 +73,9 @@ export function ImagePromptCard({
       <button
         type="button"
         onClick={() => onOpen(prompt)}
+        aria-label={
+          masque ? `Voir la commande : ${description}` : `Voir la commande ${prompt.name}`
+        }
         className="flex flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
       >
         <span className="relative block w-full">
@@ -120,10 +116,8 @@ export function ImagePromptCard({
         </span>
       </button>
 
-      {/* Hors du bouton : un lien dans un bouton rend la cible imprevisible.
-          Le genre monte ici, a cote du rayon : il occupait la ligne du bas,
-          ou le coeur et son compte ont maintenant besoin de la place. */}
-      <div className="flex items-baseline gap-2 px-2.5 pb-1">
+      {/* Hors du bouton : un lien dans un bouton rend la cible imprevisible. */}
+      <div className="mt-auto flex items-baseline gap-2 px-2.5 pb-2.5">
         <span className="min-w-0 flex-1">
           <LienDeCollection prompt={prompt} trait={rayon} />
         </span>
@@ -146,32 +140,6 @@ export function ImagePromptCard({
           visiteur={visiteur}
           sur
         />
-      </div>
-
-      {/* La copie ferme la carte, en bas, la ou se prend la decision : on
-          regarde le resultat, on lit le titre, on copie. */}
-      <div className="mt-auto flex items-center gap-1 px-2.5 pb-2.5">
-        <span className="block min-w-0 flex-1">
-          <CopyCommandButton
-            promptId={prompt.id}
-            provider={actif?.key ?? 'chatgpt'}
-            surface="carte"
-            pret={prompt.payloadReady}
-            locked={locked}
-            compact
-            // Sur une demi-carte, « Copier » s'affichait « Copi… » : on
-            // n'ecrit que ce qui tient en entier, l'icone dit le reste.
-            iconeSeule
-            genre={prompt.entityType}
-            // Une commande a personnaliser ne se copie pas depuis la
-            // galerie : il n'y a pas de formulaire ici, et livrer le texte
-            // sans ses valeurs reviendrait a le livrer incomplet sans le
-            // dire. Le bouton ouvre la fiche, ou les champs existent.
-            aPersonnaliser={prompt.champs.length > 0}
-            onPersonnaliser={() => onOpen(prompt)}
-            onLockedClick={ouvrirOffre}
-          />
-        </span>
       </div>
     </article>
   );

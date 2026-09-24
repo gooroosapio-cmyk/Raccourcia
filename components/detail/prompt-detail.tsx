@@ -5,7 +5,7 @@ import { AccessBadge } from '@/components/cards/access-badge';
 import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
 import { ChampsDeCommande } from '@/components/detail/champs-de-commande';
-import { ChoixMoteur } from '@/components/detail/choix-moteur';
+import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { AFournir } from '@/components/detail/a-fournir';
 import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
@@ -36,16 +36,12 @@ import type { PromptCard } from '@/lib/catalog/types';
  */
 export function PromptDetailSheet({
   prompt,
-  provider,
-  onProviderChange,
   locked,
   free,
   visiteur = false,
   onClose,
 }: {
   prompt: PromptCard;
-  provider: string;
-  onProviderChange: (provider: string) => void;
   locked: boolean;
   free: boolean;
   /**
@@ -142,9 +138,7 @@ export function PromptDetailSheet({
     };
   }, [onClose]);
 
-  const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
-  const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
 
   const partager = async () => {
     const url = `${window.location.origin}/r/${prompt.slug}`;
@@ -385,18 +379,14 @@ export function PromptDetailSheet({
         </div>
 
         <div className="shrink-0 border-t border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
-          <ChoixMoteur
+          <CopyCommandButton
             champs={saisies}
             promptId={prompt.id}
             pret={prompt.payloadReady}
-            providers={compatibles}
             surface="detail"
             locked={locked}
             genre={prompt.entityType}
-            selected={actif?.key}
-            onSelect={onProviderChange}
             onLockedClick={ouvrirOffre}
-            proposerOuverture
           />
         </div>
       </div>

@@ -29,7 +29,6 @@ export type SelectionAccueil = {
   library?: Library;
   categorie?: string;
   tags: string[];
-  ia?: string;
   recherche?: string;
 };
 
@@ -135,7 +134,6 @@ export function FiltreDepliant({
       (selection.library ? 1 : 0) +
       (selection.categorie ? 1 : 0) +
       selection.tags.length +
-      (selection.ia ? 1 : 0) +
       (selection.recherche ? 1 : 0),
     [selection],
   );
@@ -229,19 +227,6 @@ export function FiltreDepliant({
                 />
               );
             })}
-          </Groupe>
-        ) : null}
-
-        {facettes.ias.length > 0 ? (
-          <Groupe titre="IA compatible">
-            {facettes.ias.map((ia) => (
-              <Puce
-                key={ia.cle}
-                libelle={ia.nom}
-                actif={selection.ia === ia.cle}
-                onClick={() => choisirUnique('ia', ia.cle, selection.ia)}
-              />
-            ))}
           </Groupe>
         ) : null}
 

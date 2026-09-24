@@ -6,7 +6,6 @@ import { TextPromptCard } from '@/components/cards/text-prompt-card';
 import { PromptDetailSheet } from '@/components/detail/prompt-detail';
 import { openPaywall } from '@/components/paywall/paywall-provider';
 import { trackPromptView } from '@/lib/actions/catalog';
-import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import { FiltresDeGalerie } from '@/components/feed/filtres-galerie';
 import { appliquerLesFiltres, type FiltresGalerie } from '@/lib/catalog/sujets';
 import { Sentinelle } from '@/components/feed/sentinelle';
@@ -50,7 +49,6 @@ export function FeedDecouverte({
   prompts,
   locked,
   visiteur = false,
-  initialProvider = 'chatgpt',
   intercalaires = [],
   rayons,
   filtrable = false,
@@ -59,7 +57,6 @@ export function FeedDecouverte({
   prompts: PromptCard[];
   locked: boolean;
   visiteur?: boolean;
-  initialProvider?: string;
   intercalaires?: Intercalaire[];
   /** A quel rayon appartient chaque collection, par position. */
   rayons?: Record<string, string>;
@@ -87,7 +84,6 @@ export function FeedDecouverte({
   const [selection, setSelection] = useState<PromptCard | null>(null);
   const [filtres, setFiltres] = useState<FiltresGalerie>({});
   const [montrees, setMontrees] = useState(PALIER);
-  const [provider, changeProvider] = usePreferredProvider(initialProvider);
 
   // Ce que le serveur a envoye en plus du vivier initial, et jusqu'ou on
   // est alle. `fini` retient qu'un palier est revenu vide : sans lui, la
@@ -176,7 +172,6 @@ export function FeedDecouverte({
         intercalaires={intercalaires}
         locked={locked}
         visiteur={visiteur}
-        provider={provider}
         rayons={rayons}
         ouvrir={ouvrir}
       />
@@ -188,8 +183,6 @@ export function FeedDecouverte({
       {selection ? (
         <PromptDetailSheet
           prompt={selection}
-          provider={provider}
-          onProviderChange={changeProvider}
           locked={locked && !selection.isFree}
           free={locked && selection.isFree}
           visiteur={visiteur}
@@ -217,7 +210,6 @@ function Blocs({
   intercalaires,
   locked,
   visiteur,
-  provider,
   rayons,
   ouvrir,
 }: {
@@ -225,7 +217,6 @@ function Blocs({
   intercalaires: Intercalaire[];
   locked: boolean;
   visiteur: boolean;
-  provider: string;
   rayons?: Record<string, string>;
   ouvrir: (prompt: PromptCard) => void;
 }) {
@@ -246,7 +237,6 @@ function Blocs({
             <Fragment key={bloc.cle}>
               <TextPromptCard
                 prompt={bloc.carte}
-                provider={provider}
                 locked={locked && !bloc.carte.isFree}
                 free={locked && bloc.carte.isFree}
                 visiteur={visiteur}
@@ -270,7 +260,6 @@ function Blocs({
                   <ImagePromptCard
                     key={prompt.id}
                     prompt={prompt}
-                    provider={provider}
                     locked={verrouille}
                     free={locked && prompt.isFree}
                     masque={visiteur && verrouille}

@@ -18,61 +18,57 @@ const lire = (chemin: string) => readFileSync(join(racine, chemin), 'utf8');
 
 describe('un pied de fiche garde la meme hauteur', () => {
   /**
-   * LE DEFAUT. Le lien « Ouvrir ChatGPT » n'etait rendu qu'une fois la
-   * copie faite. Le pied gagnait alors une cible de 44 px d'un coup, la
-   * zone de lecture au-dessus perdait autant, et tout ce qu'on lisait
-   * remontait — juste au moment ou l'on venait d'agir.
+   * LE DEFAUT, AUTREFOIS. Le lien « Ouvrir ChatGPT » n'etait rendu qu'une
+   * fois la copie faite : le pied gagnait 44 px d'un coup et tout ce qu'on
+   * lisait remontait. Le lien a disparu avec le choix d'IA — copier copie,
+   * et s'arrete la (CLAUDE.md).
    *
-   * LA REGLE. Ce qui apparait dans un panneau de hauteur fixe occupe sa
-   * place des le depart. `invisible` garde la place, `hidden` la rend :
-   * c'est la difference entre les deux qui compte ici.
+   * LA REGLE, AUJOURD'HUI. Rien n'apparait dans le flux du pied apres la
+   * copie : la confirmation passe par le libelle du bouton et un toast, et
+   * le repli de copie manuelle s'ouvre en surimpression, hors du flux.
    */
   const source = lire('components/cards/copy-command-button.tsx');
 
-  it('rend la ligne d ouverture sur la possibilite, pas sur l evenement', () => {
-    // `proposerOuverture` est connu au rendu ; `ouvertureProposee` n'arrive
-    // qu'apres la copie. C'est le premier qui doit decider de la presence.
-    expect(source).toMatch(/\{proposerOuverture && adresse \?/);
-    expect(source, 'la ligne est de nouveau montee dans le flux apres la copie').not.toMatch(
-      /\{ouvertureProposee && adresse \?/,
-    );
+  it('n ouvre aucune IA apres la copie', () => {
+    expect(source, 'un lien vers une IA est revenu').not.toMatch(/target="_blank"/);
+    expect(source).not.toMatch(/PROVIDER_URLS|proposerOuverture/);
   });
 
-  it('masque la ligne sans lui retirer sa place', () => {
-    expect(source).toContain("ouvertureProposee ? '' : 'invisible'");
+  it('pose le repli de copie manuelle hors du flux', () => {
+    expect(source).toContain('fixed inset-0');
   });
 
-  it('la sort du parcours au clavier tant qu elle ne mene nulle part', () => {
-    expect(source).toContain('tabIndex={ouvertureProposee ? undefined : -1}');
-    expect(source).toContain('aria-hidden={!ouvertureProposee}');
+  it('ne nomme aucune IA dans le libelle', () => {
+    expect(source).not.toMatch(/pour \$\{nomIA\}|PROVIDER_LABELS/);
+    expect(source).toContain("'Copier le prompt'");
   });
 });
 
-describe('une carte de galerie ne comprime jamais son bouton', () => {
+describe('une carte de galerie ne saute pas et ne copie pas', () => {
   /**
-   * LE DEFAUT. La carte texte se partageait en tiers. Une proportion ne
-   * sait pas ce qu'elle contient : le dernier tiers devait loger deux
-   * lignes de titre, une ligne de rayon et une cible de 44 px, ce qui n'y
-   * tient pas — et `overflow-hidden` tranchait le coeur et le bouton a
-   * mi-hauteur.
+   * LE DEFAUT, AUTREFOIS. La carte texte se partageait en tiers, puis en
+   * zones elastiques : le bouton de copie devait tenir dans ce qui restait,
+   * et `overflow-hidden` le tranchait.
    *
-   * LA REGLE. Le texte prend la hauteur qu'il lui faut, le visuel prend ce
-   * qui reste. C'est le visuel qui cede, borne par un `min-h`.
+   * LA REGLE, AUJOURD'HUI (refonte UI). Plus de bouton sur la carte : toute
+   * la carte ouvre la fiche. Le cadre est le meme 4:5 que celui des
+   * Visuels, reserve des le premier rendu — rien ne bouge quand un visuel
+   * arrive.
    */
-  const source = lire('components/cards/text-prompt-card.tsx');
+  const texte = lire('components/cards/text-prompt-card.tsx');
+  const image = lire('components/cards/image-prompt-card.tsx');
 
-  it('laisse au texte sa hauteur naturelle', () => {
-    expect(source, 'le bloc du nom et du bouton est redevenu compressible').toContain(
-      'flex shrink-0 flex-col px-2.5',
-    );
+  it('ne porte aucun bouton de copie', () => {
+    expect(texte).not.toContain('CopyCommandButton');
+    expect(image).not.toContain('CopyCommandButton');
+  });
+
+  it('reserve le cadre 4:5 commun', () => {
+    expect(texte).toContain('<VisualSlot');
   });
 
   it('ne partage plus la carte en proportions', () => {
-    expect(source, 'les tiers sont revenus').not.toContain('flex-[2]');
-  });
-
-  it('garde un plancher au visuel, seule partie elastique', () => {
-    expect(source).toContain('min-h-[92px] flex-1');
+    expect(texte, 'les tiers sont revenus').not.toContain('flex-[2]');
   });
 });
 

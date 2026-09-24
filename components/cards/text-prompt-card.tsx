@@ -2,44 +2,42 @@
 
 import Image from 'next/image';
 import { AccessBadge } from '@/components/cards/access-badge';
-import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
 import { IllustrationThematique } from '@/components/cards/illustration-thematique';
+import { VisualSlot } from '@/components/cards/visual-slot';
 import { motifDeLaCarte } from '@/lib/ui/motifs';
 import { resumerPourCarte } from '@/lib/format/resume';
-import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
 import { nomDuGenre, promesseDeCarte, repereDuMoteur } from '@/lib/catalog/experience';
 import { LienDeCollection } from '@/components/cards/lien-de-collection';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
- * Carte d'une commande qui ne rend pas d'image.
+ * Carte d'une commande Redaction ou Assistants.
  *
- * DEUX FORMES, PARCE QU'IL Y A DEUX PLACES.
+ * LA MEME EMPRISE QU'UNE CARTE VISUELS. Un cadre 4:5, le titre sur deux
+ * lignes, le coeur : les trois univers se parcourent avec les memes yeux.
+ * Ce qui remplit le cadre change — une commande qui rend du texte n'a pas
+ * de photo a montrer, et lui en preter une serait mentir sur le resultat.
  *
- * En GRILLE et en CARROUSEL, la carte fait 42 % d'un telephone et se lit en
- * trois tiers : le visuel, ce que la commande fait, puis son nom avec le
- * rayon et le bouton. C'etait auparavant un cadre typographique qui portait
- * la promesse — donc une carte illustree gagnait un bloc de description que
- * les autres n'avaient pas, et le carrousel ondulait. Trois zones de meme
- * hauteur, presentes qu'il y ait une photo ou non, alignent les cartes
- * texte sur les cartes image sans rien calculer.
+ *   * Redaction : la promesse, posee comme un extrait de texte.
+ *   * Assistants : la promesse en bulle, comme l'amorce d'une conversation
+ *     — c'est ce que l'on ouvre en collant la commande.
  *
- * En PLEINE LARGEUR — un mode, un parcours pose dans le feed —, la carte est
- * un rectangle couche : le visuel tient la colonne de gauche sur toute la
- * hauteur, et la droite empile le titre, la description, le rayon et le
- * bouton. Elle montrait jusqu'ici le titre seul en haut a droite et laissait
- * dessous un grand vide blanc ; c'est ce vide que la description remplit.
+ * Une illustration deposee par l'administration passe avant les deux :
+ * quelqu'un l'a choisie pour cette commande.
  *
- * LE VISUEL VIENT DE L'ADMINISTRATION, ET IL EST FACULTATIF. Tant qu'aucune
- * illustration n'est deposee, le cadre porte le motif tire des tags de la
- * commande. Jamais une photographie d'emprunt : promettre une image a une
- * commande qui rend du texte serait mentir sur le resultat.
+ * AUCUNE COPIE DEPUIS LA CARTE. Toute la carte ouvre la fiche, ou se
+ * trouvent les champs a completer et le bouton « Copier le prompt ». Une
+ * copie en miniature livrait un texte sans ses champs, et une fleche
+ * d'envoi de plus dans chaque carte ne disait rien de plus que la carte.
+ *
+ * En PLEINE LARGEUR — un mode, un parcours pose dans le feed —, la carte
+ * reste un rectangle couche : le visuel a gauche, le titre et la promesse a
+ * droite.
  */
 export function TextPromptCard({
   prompt,
-  provider,
   locked,
   free,
   visiteur = false,
@@ -48,10 +46,9 @@ export function TextPromptCard({
   onOpen,
 }: {
   prompt: PromptCardData;
-  provider: string;
   locked: boolean;
   free: boolean;
-  /** Vrai quand personne n'est connecte : le favori n'a pas ou se ranger. */
+  /** Vrai quand personne n'est connecte : le coeur explique pourquoi se connecter. */
   visiteur?: boolean;
   /**
    * Le trait du rayon d'ou vient la carte, quand l'ecran le connait.
@@ -61,69 +58,16 @@ export function TextPromptCard({
    * les ferait tous entrer dans le navigateur.
    */
   rayon?: string;
-  /**
-   * Vrai quand la carte occupe les deux colonnes.
-   *
-   * Un mode et un parcours demandent plus d'explication qu'une image : leur
-   * promesse ne se devine pas d'un coup d'oeil, elle se lit. Sur une demi-
-   * largeur, l'apercu se coupait au troisieme mot.
-   */
+  /** Vrai quand la carte occupe les deux colonnes (un mode, un parcours du feed). */
   pleineLargeur?: boolean;
   onOpen: (prompt: PromptCardData) => void;
 }) {
-  const { open: ouvrirOffre } = usePaywall();
-  const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
-  const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
-
-  // La promesse de la commande, choisie par `promesseDeCarte` — la
-  // description d'abord, l'intention en dernier recours : depuis l'import du
-  // moteur V3, `intention` porte le cadrage complet, garde-fous compris.
-  //
-  // Bornee au mot pres, et pas seulement a l'affichage : les descriptions du
-  // catalogue vont de six mots a cent cinquante, et une carte qui les rend
-  // telles quelles n'a pas de taille. La suite est dans la fiche, a un geste
-  // de la — c'est ce que disent les points de suspension.
+  // La promesse de la commande, bornee au mot pres : les descriptions du
+  // catalogue vont de six mots a cent cinquante. La suite est dans la fiche.
   const apercu = resumerPourCarte(promesseDeCarte(prompt));
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
   const genre = nomDuGenre(prompt);
   const repere = pleineLargeur ? repereDuMoteur(prompt) : null;
-  const motif = motifDeLaCarte(prompt.motsCles);
-
-  const visuel = (
-    <Visuel
-      url={prompt.thumbnailUrl}
-      alt={prompt.thumbnailAlt}
-      nom={prompt.name}
-      motif={motif}
-      mission={niveau?.mission ?? false}
-    />
-  );
-
-  const action = (
-    <div className="flex items-center gap-1">
-      <span className="block min-w-0 flex-1">
-        <CopyCommandButton
-          promptId={prompt.id}
-          provider={actif?.key ?? 'chatgpt'}
-          surface="carte"
-          pret={prompt.payloadReady}
-          locked={locked}
-          compact
-          genre={prompt.entityType}
-          // Sur une demi-carte, le libelle s'affichait « Copi… » : on
-          // n'ecrit que ce qui tient en entier, l'icone dit le reste.
-          iconeSeule={!pleineLargeur}
-          // Une commande a personnaliser ne se copie pas depuis la
-          // galerie : il n'y a pas de formulaire ici, et livrer le texte
-          // sans ses valeurs reviendrait a le livrer incomplet sans le
-          // dire. Le bouton ouvre la fiche, ou les champs existent.
-          aPersonnaliser={prompt.champs.length > 0}
-          onPersonnaliser={() => onOpen(prompt)}
-          onLockedClick={ouvrirOffre}
-        />
-      </span>
-    </div>
-  );
 
   const marques = (
     <>
@@ -142,67 +86,55 @@ export function TextPromptCard({
     </>
   );
 
-  /* --- Le rectangle couche : visuel a gauche, tout le reste a droite --- */
+  const ligneDuRayon = (
+    <div className="flex items-baseline gap-2 px-2.5 pb-2.5">
+      <span className="min-w-0 flex-1">
+        <LienDeCollection prompt={prompt} trait={rayon} />
+      </span>
+      {repere ? (
+        <span className="shrink-0 text-[length:var(--texte-meta)] font-semibold text-[color:var(--color-brand-strong)]">
+          {repere}
+        </span>
+      ) : null}
+      {genre ? (
+        <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
+          {genre}
+        </span>
+      ) : null}
+    </div>
+  );
+
+  /* --- Le rectangle couche : visuel a gauche, titre et promesse a droite --- */
   if (pleineLargeur) {
     return (
       <article className="anim-apparition relative flex overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
-        {/* Le visuel tient toute la hauteur de la carte : une vignette au
-            format fixe laissait une bande vide sous elle des que la colonne
-            de droite s'allongeait. */}
         <span className="relative block w-[116px] shrink-0 overflow-hidden bg-[color:var(--color-sky)]">
-          {visuel}
+          <Visuel
+            url={prompt.thumbnailUrl}
+            alt={prompt.thumbnailAlt}
+            nom={prompt.name}
+            motif={motifDeLaCarte(prompt.motsCles)}
+            mission={niveau?.mission ?? false}
+          />
         </span>
 
         <div className="flex min-w-0 flex-1 flex-col">
           <button
             type="button"
             onClick={() => onOpen(prompt)}
-            className="flex-1 px-3 pt-3 text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.99]"
+            aria-label={`Voir la commande ${prompt.name}`}
+            className="flex-1 px-3 pb-1 pt-3 text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.99]"
           >
-            {/* DEUX LIGNES RESERVEES, ICI COMME AILLEURS. Sans reserve, un
-                titre court et un titre long donnent deux cartes de hauteurs
-                differentes, et le feed perd son rythme.
-
-                Pas de classe `block` a cote d'un `line-clamp` : les deux
-                posent `display`, la seconde ecrite dans la feuille gagne, et
-                c'est `block` — la coupe ne s'appliquait donc pas du tout.
-                C'est ce qui donnait des cartes de onze lignes. */}
-            <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+            {/* Pas de `block` a cote d'un `line-clamp` : les deux posent
+                `display`, et la coupe ne s'appliquerait pas. */}
+            <span className="line-clamp-2 min-h-[2.6em] pr-9 text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
               {prompt.name}
             </span>
-            {/* CE QUI REMPLIT LE VIDE. La carte montrait son titre puis
-                trois centimetres de blanc : la place existait, personne ne
-                l'utilisait. Deux lignes, pas trois : le texte est deja borne
-                au mot pres, la coupe visuelle n'est plus qu'un garde-fou. */}
             <span className="mt-1 line-clamp-2 min-h-[2.75em] text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-muted)]">
               {apercu}
             </span>
           </button>
-
-          {/* Hors du bouton : un lien dans un bouton rend la cible
-              imprevisible.
-
-              Le repere du moteur — « 4 livrables » — tient sur cette ligne
-              plutot que sur la sienne : il ne concerne que les parcours, et
-              une ligne qui n'apparait que sur certaines cartes suffit a
-              rendre la hauteur du feed irreguliere. */}
-          <div className="flex items-baseline gap-2 px-3 pb-1 pt-1.5">
-            <span className="min-w-0 flex-1">
-              <LienDeCollection prompt={prompt} trait={rayon} />
-            </span>
-            {repere ? (
-              <span className="shrink-0 text-[length:var(--texte-meta)] font-semibold text-[color:var(--color-brand-strong)]">
-                {repere}
-              </span>
-            ) : null}
-            {genre ? (
-              <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
-                {genre}
-              </span>
-            ) : null}
-          </div>
-
-          <div className="px-3 pb-3">{action}</div>
+          {ligneDuRayon}
         </div>
 
         {marques}
@@ -210,82 +142,84 @@ export function TextPromptCard({
     );
   }
 
-  /* --- La carte de grille --- */
-  //
-  // LE VISUEL EST LA SEULE PARTIE ELASTIQUE, ET C'EST TOUT L'ENJEU.
-  //
-  // La carte se partageait en tiers : deux tiers pour le visuel et la
-  // description, un tiers pour le nom, le rayon et le bouton. Une
-  // proportion ne sait pas ce qu'elle contient. Le dernier tiers devait
-  // loger deux lignes de titre, une ligne de rayon et une cible de 44 px —
-  // sur une carte de galerie, cela ne tient pas dans un tiers, et
-  // `overflow-hidden` tranchait le coeur et le bouton a mi-hauteur.
-  //
-  // Le texte prend donc la hauteur qu'il lui faut, et le visuel prend ce
-  // qui reste. Il ne peut plus rien pousser dehors : c'est lui qui cede,
-  // borne par un `min-h` pour ne pas disparaitre. Les espacements entre les
-  // trois lignes de texte sont resserres dans le meme mouvement — chaque
-  // demi-pixel gagne la remonte le bouton d'autant.
+  /* --- La carte de grille : meme charpente que la carte Visuels --- */
   return (
     <article className="anim-apparition relative flex h-full flex-col overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => onOpen(prompt)}
-        className="flex min-h-0 flex-1 flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
+        aria-label={`Voir la commande ${prompt.name}`}
+        className="flex flex-col text-left transition-transform duration-[var(--duration-fast)] active:scale-[0.985]"
       >
-        {/* Le visuel : la seule partie qui cede. `min-h` l'empeche de
-            disparaitre quand la carte n'a aucune voisine plus haute. */}
-        <span className="relative block min-h-[92px] flex-1 overflow-hidden bg-[color:var(--color-sky)]">
-          {visuel}
-        </span>
+        <VisualSlot
+          ton={prompt.thumbnailUrl ? 'media' : 'texte'}
+          mission={niveau?.mission ?? false}
+        >
+          {prompt.thumbnailUrl ? (
+            <Image
+              src={prompt.thumbnailUrl}
+              alt={prompt.thumbnailAlt ?? `Illustration de ${prompt.name}`}
+              fill
+              sizes="(max-width: 640px) 50vw, 300px"
+              loading="lazy"
+              className="object-cover"
+            />
+          ) : (
+            <ApercuTypographique texte={apercu} conversation={prompt.library === 'reflexions'} />
+          )}
+        </VisualSlot>
 
-        {/* Ce que la commande fait. Hauteur naturelle : deux lignes
-            reservees, trois au plus. */}
-        <span className="flex shrink-0 items-start px-2.5 pt-1.5">
-          <span className="line-clamp-3 min-h-[2.75em] text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-muted)]">
-            {apercu}
+        {/* Deux lignes, toujours : `min-h` reserve la seconde meme quand le
+            titre tient sur une, sinon la grille part en escalier. */}
+        <span className="block px-2.5 pb-1 pt-2">
+          <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
+            {prompt.name}
           </span>
         </span>
       </button>
 
-      {/* Le nom, le rayon, le geste : hauteur naturelle, jamais comprimee. */}
-      <div className="flex shrink-0 flex-col px-2.5 pb-2.5 pt-0.5">
-        <button
-          type="button"
-          onClick={() => onOpen(prompt)}
-          className="block text-left"
-          // Le titre ouvre la fiche comme le visuel : on touche ce qu'on
-          // lit. Deux lignes reservees, sinon la grille part en escalier.
-          //
-          // `block` a ete retire du span : pose a cote d'un `line-clamp`, il
-          // gagnait sur lui et la coupe ne s'appliquait pas. Un titre de
-          // quatre lignes poussait alors le coeur et le bouton hors du cadre,
-          // que `overflow-hidden` finissait de trancher.
-        >
-          <span className="line-clamp-2 min-h-[2.6em] text-[length:var(--texte-titre-carte)] font-bold leading-[1.3] text-[color:var(--color-night)]">
-            {prompt.name}
-          </span>
-        </button>
-
-        {/* Sans marge sous cette ligne : le lien de collection porte deja sa
-            propre hauteur de cible, et l'espace qu'on gagne ici est celui
-            qui manquait au bouton. */}
-        <div className="flex items-baseline gap-2">
-          <span className="min-w-0 flex-1">
-            <LienDeCollection prompt={prompt} trait={rayon} />
-          </span>
-          {genre ? (
-            <span className="shrink-0 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-muted)]">
-              {genre}
-            </span>
-          ) : null}
-        </div>
-
-        <div className="mt-auto">{action}</div>
-      </div>
+      {/* Hors du bouton : un lien dans un bouton rend la cible imprevisible. */}
+      <div className="mt-auto">{ligneDuRayon}</div>
 
       {marques}
     </article>
+  );
+}
+
+/**
+ * L'apercu d'une commande qui rend du texte, dans le cadre 4:5.
+ *
+ * Pas une image : le texte lui-meme, lisible, mis en page. Le haut du cadre
+ * reste libre pour le badge et le coeur, qui s'y posent comme sur une photo.
+ */
+function ApercuTypographique({ texte, conversation }: { texte: string; conversation: boolean }) {
+  if (conversation) {
+    return (
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 flex flex-col justify-end gap-1.5 p-2.5 pt-12"
+      >
+        <span className="line-clamp-6 self-start rounded-[14px] rounded-bl-[4px] bg-[color:var(--color-surface)] px-2.5 py-2 text-[12px] leading-snug text-[color:var(--color-night)] shadow-[var(--shadow-card)]">
+          {texte}
+        </span>
+        <span className="flex h-6 w-11 items-center justify-center gap-1 self-end rounded-full bg-[color:var(--color-brand)]">
+          <span className="h-1 w-1 rounded-full bg-white/90" />
+          <span className="h-1 w-1 rounded-full bg-white/70" />
+          <span className="h-1 w-1 rounded-full bg-white/50" />
+        </span>
+      </span>
+    );
+  }
+
+  return (
+    <span aria-hidden="true" className="absolute inset-0 flex flex-col p-3 pt-12">
+      <span className="text-[28px] font-bold leading-none text-[color:var(--color-brand)]/40">
+        “
+      </span>
+      <span className="line-clamp-6 text-[13px] font-medium leading-snug text-[color:var(--color-night)]">
+        {texte}
+      </span>
+    </span>
   );
 }
 

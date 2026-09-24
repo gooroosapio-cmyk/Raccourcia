@@ -59,8 +59,8 @@ export default async function LandingPage() {
           en un geste.
         </h1>
         <p className="mt-2.5 max-w-[40ch] text-[length:var(--texte-corps)] leading-[1.5] text-[color:var(--color-muted)]">
-          Choisissez une commande, utilisez-la dans ChatGPT, Claude ou Gemini et obtenez un meilleur
-          resultat. Rien a configurer, rien a retenir.
+          Choisissez une commande, collez-la dans votre outil d’IA et obtenez un meilleur résultat.
+          Rien à configurer, rien à retenir.
         </p>
 
         {/*

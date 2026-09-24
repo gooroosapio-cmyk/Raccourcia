@@ -30,7 +30,7 @@ import { texteDePartage } from '@/lib/share/texte-de-partage';
  * Page publique partageable d'une commande.
  *
  * Elle montre la valeur : la commande, ce qu'elle produit, la comparaison
- * avant/apres, les entrees acceptees, les IA compatibles. Le contenu complet
+ * avant/apres, les entrees acceptees. Le contenu complet
  * en est totalement absent : ni dans le HTML, ni dans les donnees de page, ni
  * dans les metadonnees SEO (Doc Technique V1, 10.1). Le verrou n'apparait
  * qu'apres la demonstration.
@@ -130,7 +130,6 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
   }
 
   const { hasFullAccess } = await getAccessState();
-  const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
 
   return (
@@ -239,18 +238,9 @@ export default async function PublicPromptPage({ params }: { params: Promise<{ s
            * precis ou on lui montrait ce qu'il y a derriere.
            */
           <>
-            {/* L'IA se choisit ici, pas ailleurs : chaque commande porte un
-                texte different par IA, et quelqu'un qui ouvre ce lien depuis
-                une conversation n'utilise pas forcement la premiere de la
-                liste. Lui servir le texte d'une autre etait une erreur
-                silencieuse — la commande marchait moins bien, sans qu'il
-                puisse savoir pourquoi. */}
-            <BlocDeCopie
-              prompt={prompt}
-              providers={compatibles}
-              surface="page-publique"
-              proposerOuverture
-            />
+            {/* Un seul texte, copie tel quel quelle que soit l'IA de la
+                personne : aucun choix a faire avant de copier. */}
+            <BlocDeCopie prompt={prompt} surface="page-publique" />
             {!hasFullAccess ? (
               <p className="mt-3 text-center text-[13px] leading-relaxed text-[color:var(--color-muted)]">
                 Cette commande est offerte.{' '}

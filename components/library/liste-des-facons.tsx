@@ -7,7 +7,6 @@ import { PromptDetailSheet } from '@/components/detail/prompt-detail';
 import { openPaywall } from '@/components/paywall/paywall-provider';
 import { Icone } from '@/components/ui/icone';
 import { trackPromptView } from '@/lib/actions/catalog';
-import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import { filtrerLesFacons, rayonsPresents } from '@/lib/catalog/facons';
 import type { PromptCard } from '@/lib/catalog/types';
 
@@ -40,7 +39,6 @@ export function ListeDesFacons({
   iconeRecherche,
   locked,
   visiteur = false,
-  initialProvider = 'chatgpt',
   rayonInitial = null,
 }: {
   genre: Genre;
@@ -60,14 +58,12 @@ export function ListeDesFacons({
   iconeRecherche: string;
   locked: boolean;
   visiteur?: boolean;
-  initialProvider?: string;
   /** La famille preselectionnee, quand on arrive par une ancienne adresse. */
   rayonInitial?: string | null;
 }) {
   const [rayon, setRayon] = useState<string | null>(rayonInitial);
   const [terme, setTerme] = useState('');
   const [selection, setSelection] = useState<PromptCard | null>(null);
-  const [provider, changeProvider] = usePreferredProvider(initialProvider);
 
   const ouvrir = useCallback(
     (prompt: PromptCard) => {
@@ -148,8 +144,6 @@ export function ListeDesFacons({
       {selection ? (
         <PromptDetailSheet
           prompt={selection}
-          provider={provider}
-          onProviderChange={changeProvider}
           locked={locked && !selection.isFree}
           free={locked && selection.isFree}
           visiteur={visiteur}

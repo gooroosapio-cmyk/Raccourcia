@@ -91,12 +91,13 @@ export default async function AccueilPage({
   const categorie =
     demandeeCategorie && connues.has(demandeeCategorie) ? demandeeCategorie : undefined;
 
-  const ia = facettes.ias.some((entree) => entree.cle === lire('ia')) ? lire('ia') : undefined;
+  // Plus de filtre « IA compatible » : un texte unique se colle dans
+  // n'importe quelle IA. Un ancien lien `?ia=` est simplement ignore.
   const recherche = lire('q');
 
-  const selection: SelectionAccueil = { library, categorie, tags, ia, recherche };
+  const selection: SelectionAccueil = { library, categorie, tags, recherche };
 
-  const editorial = !library && !categorie && tags.length === 0 && !ia && !recherche;
+  const editorial = !library && !categorie && tags.length === 0 && !recherche;
 
   // Zod filtre les valeurs inconnues : un parametre d'URL bricole ne peut ni
   // atteindre la requete, ni faire echouer la page.
@@ -110,7 +111,6 @@ export default async function AccueilPage({
     categorySlug: categorie,
     tags: tags.length > 0 ? tags : undefined,
     search: recherche,
-    provider: ia,
   });
 
   // Un seul lot ici : la galerie s'allonge d'elle-meme cote client, lot par
@@ -237,9 +237,6 @@ export default async function AccueilPage({
             library,
             categorySlug: categorie,
             tags: tags.length > 0 ? tags : undefined,
-            // `ia` a deja ete confronte aux facettes ; Zod le revalide de
-            // toute facon a l'arrivee de l'action.
-            provider: query.provider,
             search: recherche,
           }}
           encore={page.hasMore}
