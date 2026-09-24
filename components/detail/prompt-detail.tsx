@@ -337,7 +337,9 @@ export function PromptDetailSheet({
               />
 
               {/* 4. La photo se joint dans l'outil d'IA : aucun televersement
-                  ici ne l'alimenterait, et en proposer un serait mentir. */}
+                  ici ne l'alimenterait, et en proposer un serait mentir.
+                  Elle est facultative (catalogue v7) : sans elle, la commande
+                  cree un exemple fictif au lieu de reclamer un formulaire. */}
               {prompt.entreeImage && prompt.library === 'images' ? (
                 <p className="mt-4 flex gap-2 rounded-[color:var(--radius-control)] bg-[color:var(--color-sky)] px-3 py-2.5 text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-night)]">
                   <span aria-hidden="true" className="shrink-0 text-[color:var(--color-brand)]">
@@ -361,7 +363,8 @@ export function PromptDetailSheet({
                       />
                     </svg>
                   </span>
-                  Ajoutez votre photo dans votre outil d’IA après avoir collé le prompt.
+                  Photo facultative : ajoutez-la dans votre outil d’IA après avoir collé le prompt.
+                  Sans photo, l’IA crée un exemple.
                 </p>
               ) : null}
 
@@ -496,7 +499,7 @@ function CorpsCommande({ prompt }: { prompt: PromptCard }) {
           montrait le vocabulaire de la base. Ce qui compte, c'est si la
           commande part d'une photo du membre. */}
       <AFournir
-        temoin={prompt.entreeImage ? 'Votre photo, à joindre dans votre outil d’IA' : null}
+        temoin={prompt.entreeImage ? 'Une photo, si vous en avez une (facultatif)' : null}
         precision={prompt.showImageCard ? null : prompt.expectedInput}
         exemples={prompt.inputExamples}
         image={prompt.showImageCard}
