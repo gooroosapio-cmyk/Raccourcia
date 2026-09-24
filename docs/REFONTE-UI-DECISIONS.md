@@ -59,3 +59,26 @@ l'« avant » manquant de `/1920sportrait`.
 
 La sauvegarde reste en place tant que la refonte n'est pas validée ; la
 supprimer est une décision à part.
+
+## Payload canonique (décision 6) — état
+
+Préparé dans le lot 1, **pas encore appliqué en production** : la migration
+et le lot partent à la fusion de la pull request du lot 1, avec le code de
+la console qui édite la variante universelle.
+
+- Migration `20260924090000_payload_unique.sql` : `variante_servie` sert la
+  variante « universel » quand elle existe, quelle que soit l'IA demandée ;
+  sinon l'ancien chemin par IA (cartes archivées, jamais réconciliées —
+  décision 7). L'IA demandée reste inscrite au journal des copies.
+- Lot `supabase/seed/payload-unique` : crée le fournisseur « universel »
+  (inactif, absent de toute liste d'IA) et pose une variante universelle sur
+  les 642 cartes V5. Il lève si une carte portait deux textes différents
+  selon l'IA ; relevé en production le 24 septembre : aucune.
+- Répétition `tests/db/repetition-payload-unique.sh` : 642 cartes, deux
+  passes sans doublon, et pour chacune des trois IA le texte servi est
+  identique à celui qu'elle recevait avant.
+- Les variantes par IA restent publiées jusqu'au retrait du sélecteur
+  (lot 2), puis s'archivent ; leur suppression suit la validation.
+
+Ordre d'application : fusion → migration (workflow Catalogue ou console
+Supabase) → lot `supabase/seed/payload-unique` (workflow Catalogue).

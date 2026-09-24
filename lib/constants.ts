@@ -142,6 +142,13 @@ export const TAG_GROUP_LABELS: Record<TagGroup, string> = {
 };
 
 export const PROVIDER_KEYS = ['chatgpt', 'claude', 'gemini'] as const;
+
+/**
+ * Le fournisseur qui porte le payload canonique d'une commande : un seul
+ * texte, servi quelle que soit l'IA du membre. Inactif en base, il n'apparait
+ * dans aucune liste d'IA — ce n'est pas une IA, c'est un porteur de texte.
+ */
+export const PAYLOAD_CANONIQUE = 'universel';
 export type ProviderKey = (typeof PROVIDER_KEYS)[number];
 
 /**

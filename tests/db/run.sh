@@ -419,6 +419,26 @@ if compgen -G "$ROOT/supabase/seed/visuels-v3/*.sql" > /dev/null; then
     from public.prompts where catalog_version = 'visuels-v3';"
 fi
 
+# Payload unique : en dernier, comme en production, parce que les lots
+# anterieurs croisent tous les fournisseurs. Le lot constate que les
+# variantes par IA portent le meme texte ; s'il en trouvait deux, il leve.
+if compgen -G "$ROOT/supabase/seed/payload-unique/*.sql" > /dev/null; then
+  echo "==> Payload unique (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/payload-unique/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) || ' cartes servent un texte canonique, ' ||
+           (select count(*) from public.prompt_versions pv
+              join public.prompt_variants v on v.id = pv.variant_id
+              join public.ai_providers a on a.id = v.provider_id and a.key = 'universel'
+             where pv.is_current) || ' versions courantes'
+    from public.prompt_variants v
+    join public.ai_providers a on a.id = v.provider_id and a.key = 'universel';"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

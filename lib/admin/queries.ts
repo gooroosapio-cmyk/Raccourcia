@@ -3,7 +3,7 @@ import 'server-only';
 import { createClient } from '@/lib/supabase/server';
 import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
 import { normaliserRecherche } from '@/lib/catalog/recherche';
-import type { EntityType } from '@/lib/constants';
+import { PAYLOAD_CANONIQUE, type EntityType } from '@/lib/constants';
 import type { Enums } from '@/lib/supabase/database.types';
 
 /**
@@ -478,15 +478,24 @@ export async function getAdminPrompt(id: string): Promise<AdminPromptDetail | nu
     resultSummary: row.result_summary,
     inputExamples: row.input_examples ?? [],
     outputFormats: row.output_formats ?? [],
-    variants: (versions ?? []).map((entry) => ({
-      variantId: entry.variant_id,
-      providerKey: entry.provider_key,
-      providerName: entry.provider_name,
-      compatibility: entry.compatibility,
-      variantStatus: entry.variant_status,
-      versionLabel: entry.version_label,
-      payload: entry.payload,
-    })),
+    // Une commande qui a son payload canonique ne montre que lui : les
+    // variantes par IA ne sont plus servies, et les laisser editables
+    // permettrait de corriger un texte que personne ne recoit.
+    variants: (versions ?? [])
+      .filter(
+        (entry, _, toutes) =>
+          !toutes.some((v) => v.provider_key === PAYLOAD_CANONIQUE) ||
+          entry.provider_key === PAYLOAD_CANONIQUE,
+      )
+      .map((entry) => ({
+        variantId: entry.variant_id,
+        providerKey: entry.provider_key,
+        providerName: entry.provider_name,
+        compatibility: entry.compatibility,
+        variantStatus: entry.variant_status,
+        versionLabel: entry.version_label,
+        payload: entry.payload,
+      })),
     media: (row.prompt_media ?? [])
       .sort((a, b) => a.sort_order - b.sort_order)
       .map((media) => ({
