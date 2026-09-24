@@ -16,6 +16,10 @@
 -- archivee, jamais reconciliee (decision 7), garde ses variantes telles
 -- quelles.
 --
+-- RETOUR ARRIERE EXACT. Avant d'archiver, le lot inscrit chaque variante
+-- visee dans `sauvegarde.variantes_archivees_20260924` : le lot
+-- `retour-arriere-refonte` republie ces variantes-la, et aucune autre.
+--
 -- Rejouable : une variante deja archivee n'est pas reecrite.
 -- =====================================================================
 begin;
@@ -49,6 +53,31 @@ where v.status = 'published'
     join public.ai_providers au on au.id = u.provider_id and au.key = 'universel'
     where u.prompt_id = v.prompt_id and u.status = 'published'
   );
+
+-- La liste exacte, gardee pour le retour arriere. Le schema `sauvegarde`
+-- est ferme aux clients (migration 20260924120000) ; il est cree ici s'il
+-- n'existe pas encore, avec les memes restrictions.
+create schema if not exists sauvegarde;
+revoke all on schema sauvegarde from public;
+do $droits$
+begin
+  if exists (select 1 from pg_roles where rolname = 'anon') then
+    execute 'revoke all on schema sauvegarde from anon';
+  end if;
+  if exists (select 1 from pg_roles where rolname = 'authenticated') then
+    execute 'revoke all on schema sauvegarde from authenticated';
+  end if;
+end $droits$;
+create table if not exists sauvegarde.variantes_archivees_20260924 (
+  variant_id uuid primary key,
+  prompt_id uuid not null,
+  archivee_le timestamptz not null default now()
+);
+alter table sauvegarde.variantes_archivees_20260924 enable row level security;
+revoke all on sauvegarde.variantes_archivees_20260924 from public;
+insert into sauvegarde.variantes_archivees_20260924 (variant_id, prompt_id)
+select variant_id, prompt_id from a_archiver
+on conflict (variant_id) do nothing;
 
 -- Bilan avant ecriture.
 select count(*) as variantes_a_archiver,

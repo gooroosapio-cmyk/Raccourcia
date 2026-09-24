@@ -46,6 +46,7 @@ on:
           - supabase/seed/payload-unique
           - supabase/seed/offerts-redaction-assistants
           - supabase/seed/archiver-variantes-par-ia
+          - supabase/seed/retour-arriere-refonte
           - supabase/seed/catalogue-final-v5
           # Le catalogue Visuels V3. Le lot 000 n'ecrit rien : il compte ce
           # que les suivants vont toucher et leve si une carte historique est
