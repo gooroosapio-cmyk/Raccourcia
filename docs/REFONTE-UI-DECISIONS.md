@@ -60,11 +60,12 @@ l'« avant » manquant de `/1920sportrait`.
 La sauvegarde reste en place tant que la refonte n'est pas validée ; la
 supprimer est une décision à part.
 
-## Payload canonique (décision 6) — état
+## Payload canonique (décision 6) — appliqué le 24 septembre 2026
 
-Préparé dans le lot 1, **pas encore appliqué en production** : la migration
-et le lot partent à la fusion de la pull request du lot 1, avec le code de
-la console qui édite la variante universelle.
+Migrations, lot `payload-unique` puis lot `archiver-variantes-par-ia`
+appliqués après la fusion de la pull request #58 ; contrôles dans
+`docs/RECETTE.md` (§ 2). Les 1 926 variantes par IA sont archivées, pas
+supprimées : leur suppression attend la validation de la recette.
 
 - Migration `20260924090000_payload_unique.sql` : `variante_servie` sert la
   variante « universel » quand elle existe, quelle que soit l'IA demandée ;
@@ -90,13 +91,14 @@ Six commandes offertes, validées : `/message`, `/reecrire`, `/synthese`
 (Assistants). Lot `supabase/seed/offerts-redaction-assistants`, visé par
 `card_id`, appliqué par le workflow Catalogue et vérifié en base.
 
-## « J'aime » et rayons épinglés (décisions 4B et 5A) — état
+## « J'aime » et rayons épinglés (décisions 4B et 5A) — appliqué le 24 septembre 2026
 
 Le cœur devient le favori privé d'une commande ; le « j'aime » public, son
 compteur et les épingles de tags et de collections disparaissent de
-l'interface. **Pas encore appliqué en base** : la migration
-`20260924120000_retrait_jaime_et_rayons_epingles.sql` part après le
-déploiement du code, qui ne lit plus ces tables.
+l'interface. La migration
+`20260924120000_retrait_jaime_et_rayons_epingles.sql` est appliquée depuis
+le déploiement du code, qui ne lit plus ces tables ; bilan et contrôles
+dans `docs/RECETTE.md` (§ 2).
 
 | Donnée               | Lignes en production (24/09) | Devenir                                     |
 | -------------------- | ---------------------------- | ------------------------------------------- |

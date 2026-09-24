@@ -52,7 +52,32 @@ commentaires d’en-tête omis). Contrôles faits juste après :
   l’ancien code sert (même empreinte, même version) et refuse une commande
   réservée (`NOT_AVAILABLE`).
 
-Prochaine étape : fusion et déploiement (étape 2).
+### Étapes 2 à 5 appliquées le 24 septembre 2026
+
+- **Étape 2** : pull request #58 fusionnée (`228c1f4`), déployée sur
+  www.raccourcia.com. La copie d’une commande offerte en visiteur rend le
+  texte complet, sans aucun `{{…}}`.
+- **Étape 3** (workflow **Catalogue**, lot `payload-unique`) : 642 cartes V5
+  portent leur texte unique et sa version courante ; les 1 047 couples
+  (carte publiée, IA) servent toujours le même texte : 0 écart.
+- **Étape 4** (workflow **Catalogue**, lot `archiver-variantes-par-ia`) :
+  1 926 variantes par IA archivées, leurs identifiants gardés dans
+  `sauvegarde.variantes_archivees_20260924` (1 926 lignes). Aucune carte V5
+  ne garde de variante par IA publiée ; chaque carte V5 sert son texte
+  unique, quelle que soit l’IA indiquée ; aucune commande publiée sans
+  texte.
+- **Étape 5** (migration `20260924120000_retrait_jaime_et_rayons_epingles`,
+  appliquée par Claude) : bilan relevé juste avant, 29 « j’aime » (29
+  compteurs), 2 tags épinglés, 0 rayon épinglé. Après : les trois tables et
+  la colonne `like_count` ont disparu ; `sauvegarde` en garde 29, 2, 0 et 29
+  lignes, sans accès pour `anon` ni `authenticated` ; les 23 favoris sont
+  intacts ; les sommaires de collections répondent. Aucune fonction ni vue
+  ne dépendait d’autre chose que ce que la migration redéfinit.
+- Pages vérifiées en ligne après l’étape 5 : accueil, Bibliothèque et une
+  collection, Découvrir, Favoris, Profil, Offre, deux fiches : toutes
+  répondent.
+
+Reste l’étape 6, la recette manuelle ci-dessous.
 
 ## 3. Mise en ligne, dans cet ordre
 
@@ -99,7 +124,7 @@ impression.
 
 | #   | Geste                                                                     | Attendu                                                                                |
 | --- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| C1  | Visiteur : ouvrir `/message`, toucher « Copier le prompt »                | « Prompt copié. Collez-le dans votre outil d’IA. » ; le collage donne le texte complet |
+| C1  | Visiteur : ouvrir `/r/email-e-mail-professionnel` (`/message`), copier    | « Prompt copié. Collez-le dans votre outil d’IA. » ; le collage donne le texte complet |
 | C2  | Toucher deux fois très vite                                               | un seul message ; une seule ligne ajoutée dans `copy_events`                           |
 | C3  | Remplir un champ, ouvrir « Voir le prompt final », copier, coller         | le texte collé est identique à l’aperçu, avec la valeur saisie ; aucun `{{…}}`         |
 | C4  | Champ obligatoire vide, toucher « Copier le prompt »                      | message sous le champ, curseur dans le champ, rien n’est copié                         |
