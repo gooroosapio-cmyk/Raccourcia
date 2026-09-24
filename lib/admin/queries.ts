@@ -122,8 +122,6 @@ function colonnesDuComptageAdmin(filtreTag: boolean, filtreRayon = false): strin
     .join(', ');
 }
 
-
-
 export async function getAdminDashboard(): Promise<AdminDashboard> {
   const supabase = await createClient();
 
@@ -303,8 +301,11 @@ export async function listAdminPrompts(
     if (filters.library) requete = requete.eq('library', filters.library);
     if (filters.tagId) requete = requete.eq('prompt_tags.tag_id', filters.tagId);
     if (terme) requete = requete.ilike('search_norm', `%${terme}%`);
-    for (const [colonne, valeur] of filtresDAlerte(filters.alerte)) {
-      requete = requete.eq(colonne, valeur as never);
+    for (const [operation, colonne, valeur] of filtresDAlerte(filters.alerte)) {
+      requete =
+        operation === 'eq'
+          ? requete.eq(colonne, valeur as never)
+          : requete.neq(colonne, valeur as never);
     }
 
     return requete;
@@ -365,8 +366,11 @@ export async function listAdminPromptIds(
   if (filters.library) requete = requete.eq('library', filters.library);
   if (filters.tagId) requete = requete.eq('prompt_tags.tag_id', filters.tagId);
   if (terme) requete = requete.ilike('search_norm', `%${terme}%`);
-  for (const [colonne, valeur] of filtresDAlerte(filters.alerte)) {
-    requete = requete.eq(colonne, valeur as never);
+  for (const [operation, colonne, valeur] of filtresDAlerte(filters.alerte)) {
+    requete =
+      operation === 'eq'
+        ? requete.eq(colonne, valeur as never)
+        : requete.neq(colonne, valeur as never);
   }
   const { data } = await requete.order('id').limit(limite);
   return ((data ?? []) as unknown as { id: string }[]).map((ligne) => ligne.id);
@@ -377,19 +381,28 @@ export async function listAdminPromptIds(
  * Une liste plutot qu'une fonction sur la requete : le constructeur
  * PostgREST se type mal en parametre generique, une boucle de `eq` non.
  */
-function filtresDAlerte(alerte: AlerteAdmin | undefined): [string, string | boolean][] {
-  if (alerte === 'texte_vide') return [['payload_ready', false]];
+function filtresDAlerte(
+  alerte: AlerteAdmin | undefined,
+): ['eq' | 'neq', string, string | boolean][] {
+  // Une commande archivee n'est plus une anomalie : elle est retiree.
+  if (alerte === 'texte_vide') {
+    return [
+      ['eq', 'payload_ready', false],
+      ['neq', 'status', 'archived'],
+    ];
+  }
   if (alerte === 'visuel_manquant') {
     return [
-      ['library', 'images'],
-      ['show_image_card', true],
-      ['media_ready', false],
+      ['eq', 'library', 'images'],
+      ['eq', 'show_image_card', true],
+      ['eq', 'media_ready', false],
+      ['neq', 'status', 'archived'],
     ];
   }
   if (alerte === 'rayon_masque') {
     return [
-      ['status', 'published'],
-      ['rayon.is_visible', false],
+      ['eq', 'status', 'published'],
+      ['eq', 'rayon.is_visible', false],
     ];
   }
   return [];
