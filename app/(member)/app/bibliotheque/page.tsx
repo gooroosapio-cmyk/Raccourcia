@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import { universActif } from '@/lib/catalog/univers';
 import { getSommaireDeBibliotheque } from '@/lib/catalog/sommaire';
 import { getVisuelsTournants, visuelDeCollection } from '@/lib/catalog/visuels';
 import { RechercheBibliotheque } from '@/components/library/recherche-bibliotheque';
@@ -7,17 +7,9 @@ import { Mosaique, type CarteDeMosaique } from '@/components/library/mosaique';
 import { NetworkError } from '@/components/ui/network-error';
 import { EmptyState } from '@/components/ui/states';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
-import {
-  COOKIE_UNIVERS,
-  LIBRARIES,
-  LIBRARY_LABELS,
-  UNIVERS_PAR_DEFAUT,
-  type Library,
-} from '@/lib/constants';
+import { LIBRARY_LABELS } from '@/lib/constants';
 
 export const metadata = { title: 'Bibliothèque' };
-
-const estUnivers = (valeur: unknown): valeur is Library => LIBRARIES.includes(valeur as Library);
 
 /**
  * La Bibliotheque : univers, puis collections.
@@ -37,13 +29,7 @@ export default async function BibliothequePage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const demande = (await searchParams).univers;
-  const retenu = (await cookies()).get(COOKIE_UNIVERS)?.value;
-  const univers: Library = estUnivers(demande)
-    ? demande
-    : estUnivers(retenu)
-      ? retenu
-      : UNIVERS_PAR_DEFAUT;
+  const univers = await universActif((await searchParams).univers);
 
   let sommaire: Awaited<ReturnType<typeof getSommaireDeBibliotheque>> | null = null;
   let tirage: Awaited<ReturnType<typeof getVisuelsTournants>> = new Map();

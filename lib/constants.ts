@@ -107,6 +107,11 @@ export const LIBRARY_LABELS: Record<Library, string> = {
  */
 export const UNIVERS_PAR_DEFAUT: Library = 'images';
 export const COOKIE_UNIVERS = 'raccourcia_univers';
+/**
+ * L'univers d'accueil choisi dans Profil, quand le membre en fixe un. Absent,
+ * c'est « Dernier utilise » : le cookie ci-dessus decide.
+ */
+export const COOKIE_UNIVERS_PREFERE = 'raccourcia_univers_prefere';
 
 /**
  * Ce que chaque bibliotheque promet, en une ligne.

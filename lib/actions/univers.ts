@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { z } from 'zod';
-import { COOKIE_UNIVERS, LIBRARIES } from '@/lib/constants';
+import { COOKIE_UNIVERS, COOKIE_UNIVERS_PREFERE, LIBRARIES } from '@/lib/constants';
 
 const univers = z.enum(LIBRARIES);
 
@@ -22,4 +22,27 @@ export async function retenirUnivers(valeur: string): Promise<void> {
     sameSite: 'lax',
     httpOnly: true,
   });
+}
+
+const preference = z.union([univers, z.literal('dernier')]);
+
+/**
+ * L'univers d'accueil choisi dans Profil. « dernier » retire la preference :
+ * l'accueil s'ouvre alors sur le dernier univers choisi.
+ */
+export async function choisirUniversDAccueil(valeur: string): Promise<{ ok: boolean }> {
+  const choix = preference.safeParse(valeur);
+  if (!choix.success) return { ok: false };
+  const pot = await cookies();
+  if (choix.data === 'dernier') {
+    pot.delete(COOKIE_UNIVERS_PREFERE);
+  } else {
+    pot.set(COOKIE_UNIVERS_PREFERE, choix.data, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: 'lax',
+      httpOnly: true,
+    });
+  }
+  return { ok: true };
 }

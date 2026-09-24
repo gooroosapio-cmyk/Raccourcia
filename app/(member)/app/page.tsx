@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import { estUnivers, universActif } from '@/lib/catalog/univers';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getBibliotheque, getCatalogPage, getDernieresCopies } from '@/lib/catalog/queries';
 import { getFacettes } from '@/lib/catalog/filtres';
@@ -22,22 +22,12 @@ import { PaywallAutoOpen } from '@/components/paywall/paywall-provider';
 import { catalogQuery } from '@/lib/validation/schemas';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
-import {
-  CATALOG_PAGE_SIZE,
-  COOKIE_UNIVERS,
-  LIBRARIES,
-  LIBRARY_LABELS,
-  UNIVERS_PAR_DEFAUT,
-  type Library,
-} from '@/lib/constants';
+import { CATALOG_PAGE_SIZE, LIBRARY_LABELS } from '@/lib/constants';
 
 export const metadata = { title: 'Accueil' };
 
 /** Cinq tags au plus : au-dela, le croisement ne rend plus jamais rien. */
 const TAGS_MAX = 5;
-
-const estUnivers = (valeur: string | undefined): valeur is Library =>
-  LIBRARIES.includes(valeur as Library);
 
 /**
  * L'accueil : un univers actif, et tout ce qui le concerne.
@@ -68,13 +58,7 @@ export default async function AccueilPage({
   const params = await searchParams;
   const lire = (cle: string) => (typeof params[cle] === 'string' ? params[cle] : undefined);
 
-  const retenu = (await cookies()).get(COOKIE_UNIVERS)?.value;
-  const demande = lire('univers');
-  const univers: Library = estUnivers(demande)
-    ? demande
-    : estUnivers(retenu)
-      ? retenu
-      : UNIVERS_PAR_DEFAUT;
+  const univers = await universActif(lire('univers'));
 
   // La bibliotheque d'une recherche ou d'un filtre. « partout » l'efface :
   // c'est l'elargissement explicite aux trois.
