@@ -31,8 +31,9 @@ const critereDeGalerie = z.object({
   categorySlug: catalogQuery.shape.categorySlug,
   collectionSlug: z.string().trim().min(1).max(80).optional(),
   tags: catalogQuery.shape.tags,
-  provider: catalogQuery.shape.provider,
   search: catalogQuery.shape.search,
+  // « Gratuits » dans une collection, « Commencer gratuitement » a l'accueil.
+  access: catalogQuery.shape.access,
 });
 
 export type CritereDeGalerie = z.infer<typeof critereDeGalerie>;
@@ -63,8 +64,8 @@ export async function chargerLaGalerie(
       // son slug qui la designe, au meme titre qu'une famille.
       categorySlug: retenu.collectionSlug ?? retenu.categorySlug,
       tags: retenu.tags,
-      provider: retenu.provider,
       search: retenu.search,
+      access: retenu.access,
       page: demandee,
       pageSize: CATALOG_PAGE_SIZE,
     }),

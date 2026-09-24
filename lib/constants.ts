@@ -100,6 +100,15 @@ export const LIBRARY_LABELS: Record<Library, string> = {
 };
 
 /**
+ * L'univers ouvert a la premiere visite, puis celui que le membre a choisi
+ * lui-meme. Le choix se retient dans un cookie — le serveur doit le lire
+ * pour filtrer l'accueil des le premier rendu — et seulement quand il est
+ * explicite : un defilement ou une fiche consultee ne le deplacent pas.
+ */
+export const UNIVERS_PAR_DEFAUT: Library = 'images';
+export const COOKIE_UNIVERS = 'raccourcia_univers';
+
+/**
  * Ce que chaque bibliotheque promet, en une ligne.
  *
  * Trois phrases et non une description de rayon : ce sont les libelles de
