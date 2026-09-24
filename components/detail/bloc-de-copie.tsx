@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ChampsDeCommande } from '@/components/detail/champs-de-commande';
 import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import type { PromptCard } from '@/lib/catalog/types';
@@ -23,6 +23,21 @@ export function BlocDeCopie({
   surface: 'carte' | 'detail' | 'page-publique';
 }) {
   const [valeurs, setValeurs] = useState<Record<string, string>>({});
+  const [erreurs, setErreurs] = useState<Record<string, string>>({});
+
+  // Meme regle que la fiche : un champ indispensable vide arrete la copie,
+  // le message se pose sous le champ et le focus y va.
+  const verifierAvantCopie = useCallback(() => {
+    const manquants = prompt.champs.filter(
+      (champ) => champ.requis && !(valeurs[champ.cle] ?? '').trim(),
+    );
+    if (manquants.length === 0) return true;
+    setErreurs(
+      Object.fromEntries(manquants.map((champ) => [champ.cle, 'À renseigner avant de copier.'])),
+    );
+    document.getElementById(`champ-${manquants[0]!.cle}`)?.focus();
+    return false;
+  }, [prompt.champs, valeurs]);
 
   const saisies = useMemo(
     () =>
@@ -37,7 +52,11 @@ export function BlocDeCopie({
       <ChampsDeCommande
         champs={prompt.champs}
         valeurs={valeurs}
-        onChange={(cle, valeur) => setValeurs((actuelles) => ({ ...actuelles, [cle]: valeur }))}
+        erreurs={erreurs}
+        onChange={(cle, valeur) => {
+          setValeurs((actuelles) => ({ ...actuelles, [cle]: valeur }));
+          setErreurs(({ [cle]: _retiree, ...reste }) => reste);
+        }}
       />
 
       <div className={prompt.champs.length > 0 ? 'mt-3' : undefined}>
@@ -47,6 +66,7 @@ export function BlocDeCopie({
           surface={surface}
           genre={prompt.entityType}
           champs={saisies}
+          verifierAvantCopie={verifierAvantCopie}
         />
       </div>
     </>

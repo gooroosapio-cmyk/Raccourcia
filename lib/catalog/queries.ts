@@ -331,6 +331,7 @@ const JOINTURE_TAG = 'filtre_tag:prompt_tags!inner(tags!inner(slug))';
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
   show_image_card, payload_ready, cta_label, entity_type, images_min, default_ratio, witness_type,
+  input_type,
   library,
   is_free, is_new, is_featured, risk_level, sort_order,
   level, max_questions,
@@ -363,6 +364,7 @@ type CardRow = {
   payload_ready: boolean;
   entity_type: string | null;
   witness_type: string | null;
+  input_type: Enums<'input_type'> | null;
   images_min: number | null;
   default_ratio: string | null;
   categories: { slug: string; name: string } | null;
@@ -475,6 +477,7 @@ function toCard(row: CardRow, marques: MarquesDuMembre = SANS_MARQUE): PromptCar
     showImageCard: row.show_image_card,
     entityType: genre,
     witnessType: row.witness_type ?? null,
+    entreeImage: row.input_type === 'image',
     library: row.library ?? null,
     collectionSlug: row.categories?.slug ?? null,
     collectionName: row.categories?.name ?? null,

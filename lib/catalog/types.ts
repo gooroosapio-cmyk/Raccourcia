@@ -65,6 +65,12 @@ export type PromptCard = {
    */
   witnessType: string | null;
   /**
+   * Vrai quand la commande part d'une image fournie par le membre (une
+   * photo, un produit). La fiche dit alors de la joindre dans l'outil d'IA
+   * apres avoir colle le prompt : aucun televersement ici ne l'alimenterait.
+   */
+  entreeImage: boolean;
+  /**
    * Images, Textes ou Reflexions : le premier niveau de rangement.
    *
    * La fiche s'en sert pour son fil — « Images > Matieres et

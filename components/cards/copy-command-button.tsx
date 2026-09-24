@@ -102,6 +102,7 @@ export function CopyCommandButton({
   pret = true,
   genre = null,
   champs,
+  verifierAvantCopie,
   onLockedClick,
 }: {
   promptId: string;
@@ -119,6 +120,12 @@ export function CopyCommandButton({
    * le serveur relit les champs declares et ignore le reste.
    */
   champs?: { cle: string; valeur: string }[];
+  /**
+   * Appelee avant toute copie ; `false` l'arrete. La fiche s'en sert pour
+   * un champ indispensable laisse vide : elle affiche l'erreur sous le champ
+   * et y place le focus. Synchrone, pour rester dans le geste du clic.
+   */
+  verifierAvantCopie?: () => boolean;
   onLockedClick?: () => void;
 }) {
   const { show } = useToast();
@@ -146,6 +153,7 @@ export function CopyCommandButton({
       return;
     }
     if (!pret || enCours.current) return;
+    if (verifierAvantCopie && !verifierAvantCopie()) return;
     enCours.current = true;
     setEtat('chargement');
 
@@ -184,7 +192,7 @@ export function CopyCommandButton({
         }
       },
     );
-  }, [champs, confirmer, locked, onLockedClick, pret, promptId, show, surface]);
+  }, [champs, confirmer, locked, onLockedClick, pret, promptId, show, surface, verifierAvantCopie]);
 
   const libelle = locked
     ? 'Débloquer pour copier'
