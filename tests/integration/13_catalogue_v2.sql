@@ -116,10 +116,18 @@ begin
   -- Borne aux categories de cet import-ci. Le catalogue de septembre 2026
   -- installe cent rayons de plus, sous les prefixes V2CAT- et V2COL- : ils
   -- attendent leurs visuels et ne relevent pas des regles de ce lot.
+  --
+  -- Les rayons Visuels V3 (V3- et V3C-) sont dans le meme cas, et pour une
+  -- raison qu'on peut nommer : aucune des 862 cartes du CSV V3 n'apporte
+  -- d'image — `statut_media` y vaut `a_produire` sur les 862. Leur donner
+  -- un visuel de repli maintenant reviendrait a emprunter celui d'un autre
+  -- rayon, c'est-a-dire a montrer une image qui ne vient pas de la.
   select count(*) into v_n from public.categories
   where external_ref is not null
     and external_ref not like 'V2CAT-%'
     and external_ref not like 'V2COL-%'
+    and external_ref not like 'V3-%'
+    and external_ref not like 'V3C-%'
     and coalesce(fallback_image_path, '') = '';
   perform tests_assert(v_n = 0, format('%s categories sans visuel de repli.', v_n));
 end $$;

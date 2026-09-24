@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   // WhatsApp recevrait un chemin relatif et n'afficherait aucune vignette.
   metadataBase: adressePublique(),
   title: {
-    default: 'RaccourcIA \u2014 Vos commandes pour ChatGPT, Claude et Gemini',
+    default: 'RaccourcIA \u2014 Le bon prompt, en un geste',
     template: '%s | RaccourcIA',
   },
   description:

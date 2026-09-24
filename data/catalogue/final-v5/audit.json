@@ -1,0 +1,30 @@
+{
+ "anomalies": [],
+ "cartes_cibles": 642,
+ "methodes_de_resolution": {
+  "commande": 587,
+  "proposition hors base": 72,
+  "titre exact": 708,
+  "titre prefixe": 6
+ },
+ "non_resolues": 0,
+ "par_action": {
+  "creer": 41,
+  "mettre_a_jour": 601
+ },
+ "par_statut_publication": {
+  "brouillon_nouveau": 44,
+  "brouillon_reactive": 249,
+  "conserver_publie": 349
+ },
+ "production": 2877,
+ "regroupees": 700,
+ "representantes": 601,
+ "retraits": {
+  "par_motif": {
+   "hors_selection": 1576,
+   "regroupee": 700
+  },
+  "total": 2276
+ }
+}

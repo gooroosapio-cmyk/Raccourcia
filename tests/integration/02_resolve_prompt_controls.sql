@@ -67,14 +67,17 @@ begin
 end;
 $$;
 
--- 5. IA sans variante publiee : refus.
+-- 5. IA sans variante publiee : le texte est servi quand meme.
+--
+-- La regle s'est inversee avec le payload unique (CLAUDE.md) : l'IA
+-- demandee ne choisit plus le texte et ne peut plus provoquer un refus.
 do $$
+declare v_payload text;
 begin
-  begin
-    perform public.resolve_prompt('00000000-0000-0000-0000-0000000000d1', 'claude');
-    perform tests_assert(false, 'Une IA sans variante publiee a renvoye un payload.');
-  exception when sqlstate '42501' then null;
-  end;
+  select payload into v_payload
+  from public.resolve_prompt('00000000-0000-0000-0000-0000000000d1', 'claude');
+  perform tests_assert(coalesce(v_payload, '') <> '',
+    'Une IA sans variante publiee provoque encore un refus.');
 end;
 $$;
 

@@ -6,7 +6,6 @@ import { TextPromptCard } from '@/components/cards/text-prompt-card';
 import { PromptDetailSheet } from '@/components/detail/prompt-detail';
 import { openPaywall } from '@/components/paywall/paywall-provider';
 import { trackPromptView } from '@/lib/actions/catalog';
-import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import type { PromptCard as PromptCardData } from '@/lib/catalog/types';
 
 /**
@@ -29,7 +28,6 @@ export function PromptGrid({
   visiteur = false,
   emptyState,
   disposition = 'grille',
-  initialProvider = 'chatgpt',
   prioritaire = true,
   rayons,
 }: {
@@ -55,7 +53,6 @@ export function PromptGrid({
    * c'est la disposition qui change, pas la carte.
    */
   disposition?: 'grille' | 'rangee';
-  initialProvider?: string;
   /**
    * Faux pour les grilles secondaires de l'Accueil.
    *
@@ -75,7 +72,6 @@ export function PromptGrid({
   rayons?: Record<string, string>;
 }) {
   const [selection, setSelection] = useState<PromptCardData | null>(null);
-  const [provider, changeProvider] = usePreferredProvider(initialProvider);
 
   const ouvrir = useCallback(
     (prompt: PromptCardData) => {
@@ -120,7 +116,6 @@ export function PromptGrid({
           const verrouille = locked && !prompt.isFree;
           const commun = {
             prompt,
-            provider,
             locked: verrouille,
             free: locked && prompt.isFree,
             masque: visiteur && verrouille,
@@ -148,8 +143,6 @@ export function PromptGrid({
       {selection ? (
         <PromptDetailSheet
           prompt={selection}
-          provider={provider}
-          onProviderChange={changeProvider}
           locked={locked && !selection.isFree}
           free={locked && selection.isFree}
           visiteur={visiteur}

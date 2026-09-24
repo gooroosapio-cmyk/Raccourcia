@@ -22,6 +22,7 @@ import type {
   BeforeAfter,
   CategoryNode,
   ChampDeCommande,
+  CommandeRetiree,
   LibraryFamily,
   PromptCard,
   PromptDetail,
@@ -296,9 +297,24 @@ export const getBibliotheque = cache(async (): Promise<LibraryFamily[]> => {
  * catalogue. Une jointure sert un filtre ; sans le filtre, elle n'a rien a
  * faire la.
  */
-function colonnesDuComptage(filtreFournisseur: boolean): string {
-  return filtreFournisseur ? 'id, prompt_variants!inner(ai_providers!inner(key))' : 'id';
+function colonnesDuComptage(filtreFournisseur: boolean, filtreTag: boolean): string {
+  const jointures = ['id'];
+  if (filtreFournisseur) jointures.push('prompt_variants!inner(ai_providers!inner(key))');
+  if (filtreTag) jointures.push(JOINTURE_TAG);
+  return jointures.join(', ');
 }
+
+/**
+ * La jointure qui porte le filtre par tag, sous un nom a elle.
+ *
+ * ALIASEE, ET C'EST NECESSAIRE. Les colonnes de carte embarquent deja
+ * `prompt_tags(tags(...))` pour AFFICHER les tags d'une commande. Poser le
+ * filtre sur cette imbrication-la la reduirait au tag filtre : une carte
+ * trouvee par « portrait » n'afficherait plus que « portrait », et perdrait
+ * les trois autres. L'alias donne une seconde jointure, interne celle-ci,
+ * qui filtre sans rien retirer de ce qu'on montre.
+ */
+const JOINTURE_TAG = 'filtre_tag:prompt_tags!inner(tags!inner(slug))';
 
 /** Colonnes publiques d'un raccourci. `payload` n'y figure jamais. */
 /**
@@ -315,8 +331,9 @@ function colonnesDuComptage(filtreFournisseur: boolean): string {
 const CARD_COLUMNS = `
   id, command, name, slug, mode, short_description, result_summary, use_cases, tags,
   show_image_card, payload_ready, cta_label, entity_type, images_min, default_ratio, witness_type,
+  input_type,
   library,
-  is_free, is_new, is_featured, risk_level, sort_order, like_count,
+  is_free, is_new, is_featured, risk_level, sort_order,
   level, max_questions,
   intention, expected_input, limitations, required_variables,
   input_examples, output_formats,
@@ -347,6 +364,7 @@ type CardRow = {
   payload_ready: boolean;
   entity_type: string | null;
   witness_type: string | null;
+  input_type: Enums<'input_type'> | null;
   images_min: number | null;
   default_ratio: string | null;
   categories: { slug: string; name: string } | null;
@@ -354,7 +372,6 @@ type CardRow = {
   is_free: boolean;
   is_new: boolean;
   is_featured: boolean;
-  like_count: number | null;
   risk_level: Enums<'risk_level'>;
   level: Enums<'execution_level'> | null;
   max_questions: number | null;
@@ -421,15 +438,14 @@ function toBeforeAfter(media: CardRow['prompt_media']): BeforeAfter | null {
 }
 
 /**
- * Ce que le membre courant a marque sur les cartes.
+ * Ce que le membre courant a marque sur les cartes : ses favoris.
  *
- * Deux ensembles et non un : un favori range pour soi, un « j'aime » dit
- * publiquement que la commande sert. Ils vivent dans deux tables, ils se
- * lisent en une fois, et la carte porte les deux.
+ * Le « j'aime » public a disparu (decision de cadrage 4B) : le coeur est
+ * desormais le favori, prive, et il n'y a plus qu'un ensemble a lire.
  */
-type MarquesDuMembre = { favoris: Set<string>; likes: Set<string> };
+type MarquesDuMembre = { favoris: Set<string> };
 
-const SANS_MARQUE: MarquesDuMembre = { favoris: new Set(), likes: new Set() };
+const SANS_MARQUE: MarquesDuMembre = { favoris: new Set() };
 
 function toCard(row: CardRow, marques: MarquesDuMembre = SANS_MARQUE): PromptCard {
   // L'Apres prime : c'est le resultat, donc ce qui fait choisir. La miniature
@@ -461,6 +477,7 @@ function toCard(row: CardRow, marques: MarquesDuMembre = SANS_MARQUE): PromptCar
     showImageCard: row.show_image_card,
     entityType: genre,
     witnessType: row.witness_type ?? null,
+    entreeImage: row.input_type === 'image',
     library: row.library ?? null,
     collectionSlug: row.categories?.slug ?? null,
     collectionName: row.categories?.name ?? null,
@@ -485,11 +502,6 @@ function toCard(row: CardRow, marques: MarquesDuMembre = SANS_MARQUE): PromptCar
         compatibility: variant.compatibility,
       })),
     isFavorite: marques.favoris.has(row.id),
-    // Le compte vient de la base, jamais d'un calcul ici : un declencheur
-    // l'ecrit a chaque like, et le recalculer cote serveur ouvrirait la
-    // porte a deux gestes simultanes comptes une seule fois.
-    likeCount: row.like_count ?? 0,
-    aime: marques.likes.has(row.id),
     intention: row.intention,
     expectedInput: row.expected_input,
     limitations: row.limitations,
@@ -558,21 +570,13 @@ async function getMarquesDuMembre(): Promise<MarquesDuMembre> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  // Un visiteur n'a ni favori ni like : deux ensembles vides valent mieux
-  // que deux requetes qui rendront vide de toute facon.
+  // Un visiteur n'a pas de favori : un ensemble vide vaut mieux qu'une
+  // requete qui rendra vide de toute facon.
   if (!user) return SANS_MARQUE;
 
-  // Les deux en parallele : elles ne se conditionnent pas, et les enchainer
-  // ajouterait un aller-retour a chaque page de galerie.
-  const [favoris, likes] = await Promise.all([
-    supabase.from('favorites').select('prompt_id'),
-    supabase.from('prompt_likes').select('prompt_id'),
-  ]);
+  const favoris = await supabase.from('favorites').select('prompt_id');
 
-  return {
-    favoris: new Set((favoris.data ?? []).map((row) => row.prompt_id)),
-    likes: new Set((likes.data ?? []).map((row) => row.prompt_id)),
-  };
+  return { favoris: new Set((favoris.data ?? []).map((row) => row.prompt_id)) };
 }
 
 export type CatalogPage = {
@@ -695,6 +699,17 @@ async function resoudreCategorie(client: Client, slug?: string): Promise<string[
 async function resoudreLesTags(client: Client, tags?: string[]): Promise<string[] | null> {
   if (!tags || tags.length === 0) return null;
 
+  // UN SEUL TAG NE PASSE PLUS PAR ICI. La sonnette a sonne : le catalogue
+  // Visuels V3 porte « photographie » sur plus de cinq cents commandes, et
+  // cinq cents identifiants de trente-huit caracteres font une adresse
+  // qu'une passerelle refuse. Le filtre a un tag est donc pose en SQL, par
+  // une jointure interne, et ne rapatrie plus rien.
+  //
+  // L'intersection de plusieurs tags reste ici : une jointure ne sait rendre
+  // qu'un OU, et croiser deux tags ne peut que reduire — le plus gros
+  // croisement du catalogue tient largement dans une adresse.
+  if (tags.length === 1) return null;
+
   const { data, error } = await client.rpc('prompts_avec_tous_les_tags', { p_tags: tags });
 
   // Une base qui refuse la question n'est pas une selection vide : on remonte
@@ -783,10 +798,18 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
   // de filtres separees auraient fini par annoncer un total qui ne correspond
   // plus a la liste montree. Les colonnes sont le seul parametre, ce qui
   // permet au comptage de ne rien ramener du tout.
+  // Le tag filtre en SQL, quand il est seul. La jointure rejoint les colonnes
+  // de lecture comme celle du comptage : sans elle des deux cotes, le total
+  // annonce ne correspondrait plus a la liste montree.
+  const tagUnique = query.tags?.length === 1 ? query.tags[0] : null;
+
   const construire = (colonnes: string, tete = false) => {
     let requete = supabase
       .from('prompts')
-      .select(colonnes as '*', tete ? { count: 'exact', head: true } : undefined)
+      .select(
+        (tagUnique && !tete ? `${colonnes},\n  ${JOINTURE_TAG}` : colonnes) as '*',
+        tete ? { count: 'exact', head: true } : undefined,
+      )
       .eq('status', 'published');
 
     if (!transverse) requete = requete.eq('mode', query.mode);
@@ -796,6 +819,7 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     if (categorieIds) requete = requete.in('category_id', categorieIds);
 
     if (tagIds) requete = requete.in('id', tagIds);
+    if (tagUnique) requete = requete.eq('filtre_tag.tags.slug', tagUnique);
 
     if (terme) requete = requete.or(portesDeRecherche(terme, famillesTrouvees));
 
@@ -831,7 +855,7 @@ export async function getCatalogPage(query: CatalogQuery): Promise<CatalogPage> 
     // le filtre porte sur `prompt_variants.ai_providers.key` : sans elle
     // PostgREST rejette la requete, avec elle sans filtre le total oublie
     // toutes les commandes sans variante.
-    construire(colonnesDuComptage(Boolean(query.provider)), true),
+    construire(colonnesDuComptage(Boolean(query.provider), Boolean(tagUnique)), true),
   ]);
 
   if (lecture.error) throw new CatalogUnavailableError(lecture.error);
@@ -1042,6 +1066,41 @@ export async function getAliasDestination(
   return { slug: destination.slug, mode };
 }
 
+/**
+ * Avis de retrait pour une adresse dont la commande a ete archivee.
+ *
+ * Une adresse partagee peut survivre longtemps a la commande qu'elle
+ * designait. Quand aucune redirection n'existe — et la refonte V5 en laisse
+ * volontairement beaucoup sans, parce qu'envoyer vers une fonction voisine
+ * promettrait un resultat qui ne viendrait pas — la page ne doit pas se
+ * presenter comme introuvable. « Introuvable » dit « vous vous etes trompe » ;
+ * ici, la personne ne s'est pas trompee, c'est le catalogue qui a change.
+ *
+ * `null` quand l'adresse ne correspond a aucune archive : la page redevient
+ * alors introuvable, ce qui reste la bonne reponse pour une adresse qui n'a
+ * jamais existe.
+ */
+export async function getRetiredPrompt(slug: string): Promise<CommandeRetiree | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc('commande_retiree', { p_slug: slug });
+  const ligne = error ? undefined : data?.[0];
+  if (!ligne) return null;
+
+  return {
+    nom: ligne.nom,
+    commande: ligne.commande,
+    bibliotheque: ligne.bibliotheque,
+    retireeLe: ligne.retiree_le,
+    // La remplacante ne vaut que si elle porte la meme commande. La fonction
+    // SQL ne rend que celles-la ; on ne fabrique rien ici.
+    remplacante:
+      ligne.remplacante_slug && ligne.remplacante_nom
+        ? { slug: ligne.remplacante_slug, nom: ligne.remplacante_nom }
+        : null,
+  };
+}
+
 /** Vue Favoris : exactement les memes cartes que Decouvrir. */
 export async function getFavorites(): Promise<PromptCard[]> {
   const supabase = await createClient();
@@ -1055,8 +1114,8 @@ export async function getFavorites(): Promise<PromptCard[]> {
   const ids = (rows ?? []).map((row) => row.prompt_id);
   if (ids.length === 0) return [];
 
-  // Les likes viennent de la meme lecture que partout ailleurs ; les
-  // favoris, eux, sont deja connus — ce sont precisement ces lignes.
+  // Les favoris sont relus comme partout ailleurs : la carte ne connait
+  // pas son contexte, et une page de favoris les a tous par definition.
   const [{ data }, marques] = await Promise.all([
     supabase.from('prompts').select(CARD_COLUMNS).in('id', ids),
     getMarquesDuMembre(),

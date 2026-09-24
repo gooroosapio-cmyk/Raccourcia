@@ -15,7 +15,11 @@ import {
 
 export const resolvePromptInput = z.object({
   promptId: z.string().uuid(),
-  provider: z.enum(PROVIDER_KEYS),
+  /**
+   * Ou le membre comptait coller, s'il l'a dit. Facultatif depuis le
+   * payload unique : l'IA ne choisit plus le texte (CLAUDE.md).
+   */
+  provider: z.enum(PROVIDER_KEYS).optional(),
   surface: z.enum(SURFACES).default('detail'),
   /**
    * Ce que la fiche a fait saisir, avant la copie.
@@ -41,6 +45,21 @@ export const resolvePromptInput = z.object({
 });
 
 export type ResolvePromptInput = z.infer<typeof resolvePromptInput>;
+
+/**
+ * Ce que le navigateur annonce une fois le presse-papiers ecrit.
+ *
+ * Ni le texte ni les champs saisis : seulement quelle commande, quelle
+ * version, d'ou. La base refait les controles d'acces avant d'inscrire.
+ */
+export const copieReussieInput = z.object({
+  promptId: z.string().uuid(),
+  versionId: z.string().uuid(),
+  provider: z.enum(PROVIDER_KEYS).optional(),
+  surface: z.enum(SURFACES).default('detail'),
+});
+
+export type CopieReussieInput = z.infer<typeof copieReussieInput>;
 
 export const catalogQuery = z.object({
   mode: z.enum(MODES).default('image'),

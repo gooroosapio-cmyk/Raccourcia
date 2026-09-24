@@ -1,13 +1,10 @@
 -- =====================================================================
 -- Les collections epinglees, et la description des rayons
 --
--- DEUX PROMESSES.
+-- Les collections epinglees ont ete retirees le 24 septembre 2026
+-- (decision 5A) ; voir 48_retrait_jaime_et_rayons_epingles.sql.
 --
---   * `category_favorites` tient la meme que `tag_favorites` : un membre
---     ne lit et n'ecrit que ses propres lignes. Une politique qui
---     oublierait `user_id` rendrait la bibliotheque privee de chacun
---     lisible par tous, et c'est exactement ce qu'on ne peut pas
---     verifier depuis l'interface.
+-- CE QUI RESTE A PROMETTRE :
 --
 --   * les quatre fonctions de sommaire rendent desormais une cle
 --     `description`. Elles ont ete remplacees par `create or replace`
@@ -81,52 +78,5 @@ begin
     raise exception '% tag(s) rendent une description vide au lieu de null.', v_vides;
   end if;
 end $$;
-
--- --- Les collections epinglees restent privees ---------------------------
-do $$
-declare v_categorie uuid;
-begin
-  select id into v_categorie from public.categories where is_visible limit 1;
-  if v_categorie is null then
-    raise notice 'Aucune categorie visible : rien a epingler.';
-    return;
-  end if;
-
-  insert into public.category_favorites (user_id, category_id)
-  values ('00000000-0000-0000-0000-0000000000a1', v_categorie);
-
-  perform set_config('tests.categorie', v_categorie::text, true);
-end $$;
-
-select tests_login('00000000-0000-0000-0000-0000000000a1',
-                   '00000000-0000-0000-0000-0000000000f1');
-do $$
-begin
-  perform tests_assert(
-    (select count(*) from public.category_favorites) = 1,
-    'Un membre ne retrouve pas la collection qu''il a epinglee.');
-end $$;
-reset role;
-
-select tests_login('00000000-0000-0000-0000-0000000000a2',
-                   '00000000-0000-0000-0000-0000000000f2');
-do $$
-declare v_categorie uuid := current_setting('tests.categorie', true)::uuid;
-begin
-  perform tests_assert(
-    (select count(*) from public.category_favorites) = 0,
-    'Un membre voit les collections epinglees par quelqu''un d''autre.');
-
-  begin
-    insert into public.category_favorites (user_id, category_id)
-    values ('00000000-0000-0000-0000-0000000000a1', v_categorie);
-    perform tests_assert(false, 'Un membre a epingle une collection au nom d''un autre.');
-  exception
-    when insufficient_privilege then null;
-  end;
-
-  raise notice 'Collections epinglees : chacun ne voit et n''ecrit que les siennes.';
-end $$;
-reset role;
 
 rollback;

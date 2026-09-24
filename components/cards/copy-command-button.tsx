@@ -1,8 +1,7 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/toast';
-import { PROVIDER_LABELS, PROVIDER_URLS, type ProviderKey } from '@/lib/constants';
 import type { PromptCard } from '@/lib/catalog/types';
 
 type Etat = 'repos' | 'chargement' | 'copie';
@@ -10,13 +9,17 @@ type Etat = 'repos' | 'chargement' | 'copie';
 /** Refus venant du serveur : il porte deja un message pour l'utilisateur. */
 class ErreurCopie extends Error {}
 
-/** Demande le contenu complet. La route revalide les droits a chaque appel. */
-function demanderLaCommande(corps: {
+type Lecture = { payload: string; versionId: string };
+
+/**
+ * Demande le texte complet. La route revalide les droits a chaque appel et
+ * n'inscrit rien : lire n'est pas copier.
+ */
+function lireLaCommande(corps: {
   promptId: string;
-  provider: string;
   surface: string;
   champs?: { cle: string; valeur: string }[];
-}): Promise<string> {
+}): Promise<Lecture> {
   return fetch('/api/resolve-prompt', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -25,13 +28,30 @@ function demanderLaCommande(corps: {
   }).then(async (response) => {
     const data = (await response.json().catch(() => ({}))) as {
       payload?: string;
+      versionId?: string;
       error?: string;
     };
-    if (!response.ok || !data.payload) {
+    if (!response.ok || !data.payload || !data.versionId) {
       throw new ErreurCopie(data.error ?? 'Copie impossible. Réessayez.');
     }
-    return data.payload;
+    return { payload: data.payload, versionId: data.versionId };
   });
+}
+
+/**
+ * Annonce une copie reussie. Jamais le texte, jamais les champs.
+ *
+ * `keepalive` : le membre part souvent coller aussitot, et l'onglet peut
+ * passer en arriere-plan avant la reponse. L'echec est silencieux — la
+ * copie, elle, a eu lieu.
+ */
+function annoncerLaCopie(corps: { promptId: string; versionId: string; surface: string }) {
+  void fetch('/api/copie-reussie', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(corps),
+    keepalive: true,
+  }).catch(() => {});
 }
 
 /**
@@ -39,13 +59,9 @@ function demanderLaCommande(corps: {
  *
  * Safari n'accorde ce droit que pendant la tache issue du clic. Attendre la
  * reponse du serveur avant d'appeler `writeText` la consomme, et l'appel est
- * refuse : sur iPhone, toute copie echouait, membre ou visiteur, alors que la
- * route repondait 200. C'est la cause du « Copie impossible » signale.
- *
- * `ClipboardItem` accepte une promesse comme valeur, precisement pour ce cas :
- * l'appel part dans le geste, le contenu arrive apres. Le repli par
- * `writeText` sert aux navigateurs qui n'acceptent pas de promesse — ils ne
- * demandent pas le geste avec la meme severite.
+ * refuse. `ClipboardItem` accepte une promesse comme valeur, precisement pour
+ * ce cas : l'appel part dans le geste, le contenu arrive apres. Le repli par
+ * `writeText` sert aux navigateurs qui n'acceptent pas de promesse.
  */
 function ecrireDansLePressePapier(texte: Promise<string>): Promise<void> {
   const repli = () => texte.then((valeur) => navigator.clipboard.writeText(valeur));
@@ -64,166 +80,110 @@ function ecrireDansLePressePapier(texte: Promise<string>): Promise<void> {
 }
 
 /**
- * Bouton de copie d'une commande.
+ * Le bouton « Copier le prompt ».
  *
- * L'interface parle de commande, jamais de prompt : le contenu complet n'est
- * ni affiche, ni precharge, ni nomme. Il est demande au clic a une route qui
- * revalide les droits, puis pose directement dans le presse-papiers.
+ * UN SEUL TEXTE, UN SEUL LIBELLE. La commande porte un texte unique, copie
+ * tel quel quelle que soit l'IA du membre : le bouton ne nomme aucune IA et
+ * n'en ouvre aucune apres la copie. Copier copie, et s'arrete la.
  *
- * Le message de retour est "Commande copiee" : ce que l'utilisateur vient
- * d'obtenir est une commande prete a coller, la mecanique interne ne le
- * regarde pas.
+ * LE SUCCES N'EST ANNONCE QU'APRES L'ECRITURE. « Prompt copié » n'apparait
+ * que si le presse-papiers a accepte le texte ; c'est seulement alors que la
+ * copie est inscrite a l'historique. Si le navigateur refuse, le texte
+ * s'ouvre dans un panneau ou il peut etre selectionne a la main — et une
+ * copie faite ainsi s'inscrit aussi, au moment ou elle a lieu.
+ *
+ * UN TOUCHER, UNE COPIE. Tant qu'une copie est en cours, un second toucher
+ * ne part pas ; la base ignore en plus un doublon dans les dix secondes.
  */
 export function CopyCommandButton({
   promptId,
-  provider,
   surface,
   locked = false,
   pret = true,
-  compact = false,
-  forme = 'bouton',
   genre = null,
   champs,
-  aPersonnaliser = false,
-  onPersonnaliser,
+  verifierAvantCopie,
   onLockedClick,
-  proposerOuverture = false,
-  iconeSeule = false,
 }: {
   promptId: string;
-  provider: string;
   surface: 'carte' | 'detail' | 'page-publique';
   locked?: boolean;
   /**
-   * Faux quand la commande n'a pas encore son texte.
-   *
-   * Le catalogue arrive par vagues : une carte existe, puis son texte. Entre
-   * les deux, le bouton ne promet rien qu'il ne puisse tenir — il le dit et
-   * ne part pas chercher un refus du serveur.
+   * Faux quand la commande n'a pas encore son texte : le bouton ne promet
+   * rien qu'il ne puisse tenir.
    */
   pret?: boolean;
-  /** Variante des cartes : le libelle se reduit a "Copier". */
-  compact?: boolean;
-  /**
-   * `icone` pour une pastille ronde posee sur la vignette.
-   *
-   * La carte de galerie n'a plus de bandeau d'action : un bouton large sous
-   * chaque vignette repoussait le titre suivant hors de l'ecran et repetait
-   * six fois le meme mot dans une grille. La copie reste pourtant sur la
-   * miniature — c'est le geste le plus frequent — mais sous la forme d'une
-   * pastille, a cote du favori, avec sa cible de 44 px.
-   */
-  forme?: 'bouton' | 'icone';
-  /**
-   * Le genre de ce qu'on copie, quand ce n'est pas une commande image.
-   *
-   * Les trois ne se collent pas de la meme facon. Une commande se colle et
-   * rend son resultat. Un mode se pose en tete de conversation, puis on lui
-   * decrit son objectif. Un parcours se colle une fois et conduit plusieurs
-   * etapes, qu'il faut suivre. Le libelle et le message de confirmation le
-   * disent, sinon rien n'apprend le geste a faire ensuite.
-   */
+  /** Le genre de la commande : le message apres copie dit quoi faire ensuite. */
   genre?: PromptCard['entityType'];
   /**
-   * Ce qui a ete saisi dans le formulaire de la fiche.
-   *
-   * Transmis tel quel : c'est le serveur qui decide de ce qu'il en fait,
-   * apres avoir relu les champs reellement declares pour la commande.
+   * Ce qui a ete saisi dans le formulaire de la fiche. Transmis tel quel :
+   * le serveur relit les champs declares et ignore le reste.
    */
   champs?: { cle: string; valeur: string }[];
   /**
-   * Vrai quand la commande attend des champs qu'on ne peut pas remplir ici.
-   *
-   * Depuis une carte de galerie, il n'y a pas de formulaire : copier
-   * livrerait un texte ampute de ce qui fait sa personnalisation, sans que
-   * rien ne le dise. Le bouton mene donc a la fiche, ou les champs existent.
+   * Appelee avant toute copie ; `false` l'arrete. La fiche s'en sert pour
+   * un champ indispensable laisse vide : elle affiche l'erreur sous le champ
+   * et y place le focus. Synchrone, pour rester dans le geste du clic.
    */
-  aPersonnaliser?: boolean;
-  onPersonnaliser?: () => void;
+  verifierAvantCopie?: () => boolean;
   onLockedClick?: () => void;
-  /**
-   * Propose d'ouvrir l'IA choisie une fois la commande copiee.
-   *
-   * Reserve a la fiche : sur une carte, la place manque et l'utilisateur
-   * copie souvent plusieurs commandes de suite avant d'aller les coller.
-   */
-  proposerOuverture?: boolean;
-  /**
-   * Le bouton se reduit a son icone.
-   *
-   * POURQUOI. Sur une carte de galerie — 42 % de la largeur d'un telephone
-   * moins ses marges, moins le coeur —, il reste une centaine de pixels au
-   * bouton. « Copier » s'y affichait « Copi… » et « Personnaliser »
-   * « Pe… ». Un mot coupe n'informe pas : il se lit comme un defaut
-   * d'affichage, et « Pe… » ne dit meme pas de quelle action il s'agit.
-   *
-   * Deux carres pour copier, une fleche vers le haut pour ouvrir la fiche :
-   * ces deux dessins se reconnaissent sans legende, et la carte gagne la
-   * place que le mot tronque occupait pour rien. Le nom complet reste dans
-   * `aria-label` et dans l'infobulle — rien n'est perdu pour qui ne voit
-   * pas l'icone.
-   *
-   * La regle est : on n'ecrit que ce qui tient en entier. Les cartes
-   * pleine largeur gardent donc leur libelle, qui s'y affiche complet.
-   */
-  iconeSeule?: boolean;
 }) {
   const { show } = useToast();
   const [etat, setEtat] = useState<Etat>('repos');
-  const [ouvertureProposee, setOuvertureProposee] = useState(false);
+  const [manuel, setManuel] = useState<Lecture | null>(null);
+  // Un ref et non l'etat : deux touchers dans la meme image liraient tous
+  // deux l'ancien etat « repos » et partiraient tous les deux.
+  const enCours = useRef(false);
+
+  const confirmer = useCallback(() => {
+    show(
+      genre === 'mode_ia'
+        ? 'Prompt copié. Collez-le dans votre outil d’IA, puis décrivez votre objectif.'
+        : genre === 'parcours'
+          ? 'Prompt copié. Collez-le dans votre outil d’IA, puis suivez les étapes.'
+          : 'Prompt copié. Collez-le dans votre outil d’IA.',
+    );
+  }, [genre, show]);
 
   // Volontairement non `async` : tout ce qui precede l'ecriture dans le
-  // presse-papiers doit rester dans la meme tache que le clic. Voir
-  // `ecrireDansLePressePapier`.
+  // presse-papiers doit rester dans la meme tache que le clic.
   const copier = useCallback(() => {
     if (locked) {
       onLockedClick?.();
       return;
     }
-    // Rien a copier tant que la personnalisation n'a pas eu lieu : le geste
-    // ouvre la fiche plutot que de livrer un texte incomplet en silence.
-    if (aPersonnaliser && onPersonnaliser) {
-      onPersonnaliser();
-      return;
-    }
-    // Rien a copier : le bouton est deja desactive, ce filet tient si un
-    // rendu le laissait passer.
-    if (!pret) return;
-
+    if (!pret || enCours.current) return;
+    if (verifierAvantCopie && !verifierAvantCopie()) return;
+    enCours.current = true;
     setEtat('chargement');
 
-    const texte = demanderLaCommande({ promptId, provider, surface, champs });
-    // Sans ce filet, un refus du serveur remonterait aussi comme rejet non
-    // gere : la promesse est lue deux fois, une seule lecture la traite.
-    texte.catch(() => {});
+    const lecture = lireLaCommande({ promptId, surface, champs });
+    // La promesse est lue deux fois ; une seule lecture traite son rejet.
+    lecture.catch(() => {});
 
-    // Les deux doivent aboutir. Le presse-papiers seul ne suffit pas : un
-    // navigateur qui accepte l'ecriture sans attendre la valeur promise ferait
-    // annoncer « Commande copiee » sur un refus du serveur.
-    Promise.all([ecrireDansLePressePapier(texte), texte]).then(
-      () => {
+    // Les deux doivent aboutir : un navigateur qui accepterait l'ecriture
+    // sans attendre la valeur promise ferait annoncer une copie sur un refus
+    // du serveur.
+    Promise.all([ecrireDansLePressePapier(lecture.then((l) => l.payload)), lecture]).then(
+      ([, lu]) => {
         setEtat('copie');
-        show(
-          genre === 'mode_ia'
-            ? 'Mode copié. Collez-le dans votre IA, puis décrivez votre objectif.'
-            : genre === 'parcours'
-              ? 'Parcours copié. Collez-le dans votre IA, puis suivez les étapes.'
-              : 'Prompt copié.',
-        );
-        setOuvertureProposee(proposerOuverture);
+        confirmer();
         navigator.vibrate?.(10);
-        // La coche est une confirmation breve : le bouton doit redevenir
-        // utilisable tout de suite, on copie souvent deux fois de suite.
-        setTimeout(() => setEtat('repos'), 1400);
+        annoncerLaCopie({ promptId, versionId: lu.versionId, surface });
+        // La coche est breve : on copie souvent deux fois de suite.
+        setTimeout(() => {
+          setEtat('repos');
+          enCours.current = false;
+        }, 1400);
       },
       async () => {
         setEtat('repos');
-        // Deux echecs tres differents arrivaient sous le meme message. On
-        // relit la demande pour savoir lequel : si elle a abouti, c'est le
-        // presse-papiers qui a refuse, et reessayer n'y changera rien.
+        enCours.current = false;
+        // Deux echecs tres differents : si la lecture a abouti, c'est le
+        // presse-papiers qui a refuse — le texte s'ouvre alors a la main.
         try {
-          await texte;
-          show('Votre navigateur a refusé l’accès au presse-papiers.', 'erreur');
+          const lu = await lecture;
+          setManuel(lu);
         } catch (erreur) {
           show(
             erreur instanceof ErreurCopie ? erreur.message : 'Connexion interrompue. Réessayez.',
@@ -232,60 +192,20 @@ export function CopyCommandButton({
         }
       },
     );
-  }, [
-    aPersonnaliser,
-    champs,
-    genre,
-    locked,
-    onLockedClick,
-    onPersonnaliser,
-    pret,
-    promptId,
-    proposerOuverture,
-    provider,
-    show,
-    surface,
-  ]);
+  }, [champs, confirmer, locked, onLockedClick, pret, promptId, show, surface, verifierAvantCopie]);
 
-  const cle = provider as ProviderKey;
-  const nomIA = PROVIDER_LABELS[cle];
-
-  // Le nom de l'IA dans le libelle : chaque commande porte un texte different
-  // par IA, et le bouton est le dernier endroit ou l'on peut encore
-  // s'apercevoir qu'on va copier celui d'une autre.
   const libelle = locked
-    ? compact
-      ? 'Débloquer'
-      : 'Débloquer pour copier'
+    ? 'Débloquer pour copier'
     : !pret
-      ? compact
-        ? 'Bientôt'
-        : 'Texte bientôt disponible'
-      : aPersonnaliser && onPersonnaliser
-        ? compact
-          ? 'Personnaliser'
-          : 'Personnaliser avant de copier'
-        : etat === 'copie'
-          ? 'Copie'
-          : compact
-            ? 'Copier'
-            : genre === 'mode_ia'
-              ? 'Copier le mode'
-              : genre === 'parcours'
-                ? 'Copier le parcours'
-                : nomIA
-                  ? `Copier le prompt pour ${nomIA}`
-                  : 'Copier le prompt';
+      ? 'Texte bientôt disponible'
+      : etat === 'copie'
+        ? 'Prompt copié'
+        : 'Copier le prompt';
 
-  // L'icone dit l'action quand le mot n'est pas la. « Bientot » avait une
-  // icone vide — un bouton grise sans dessin ne se distingue pas d'un
-  // bouton casse.
   const icone = locked ? (
     <LockIcon />
   ) : !pret ? (
     <HorlogeIcon />
-  ) : aPersonnaliser && onPersonnaliser ? (
-    <FlecheOuvrir />
   ) : etat === 'copie' ? (
     <CheckIcon />
   ) : (
@@ -300,112 +220,115 @@ export function CopyCommandButton({
         ? 'bg-[color:var(--color-success)] text-white'
         : 'bg-[color:var(--color-brand)] text-white hover:bg-[color:var(--color-brand-strong)]';
 
-  const adresse = PROVIDER_URLS[cle];
-
-  const intitule = locked
-    ? 'Débloquer RaccourcIA pour copier ce prompt'
-    : !pret
-      ? 'Le texte de ce prompt n’est pas encore disponible'
-      : // Sans le mot, l'intitule est la seule chose qui distingue « copier »
-        // de « ouvrir pour personnaliser ». Il doit donc le dire.
-        aPersonnaliser && onPersonnaliser
-        ? 'Ouvrir la fiche pour personnaliser avant de copier'
-        : nomIA
-          ? `Copier le prompt pour ${nomIA}`
-          : 'Copier le prompt';
-
-  // Pastille ronde sur la vignette : pas de libelle, donc pas de fond colore
-  // non plus. Un rond bleu vif sur chaque carte d'une grille de vingt tirerait
-  // l'oeil vers l'action la plus repetee au lieu des resultats.
-  if (forme === 'icone') {
-    return (
-      <button
-        type="button"
-        onClick={copier}
-        disabled={!pret && !locked}
-        aria-busy={etat === 'chargement'}
-        aria-label={intitule}
-        title={intitule}
-        className="touch-target flex h-11 w-11 items-center justify-center rounded-full text-white transition-transform duration-[var(--duration-fast)] active:scale-90 disabled:cursor-not-allowed disabled:opacity-45"
-      >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--color-night)]/55 backdrop-blur-[2px]">
-          {locked ? <LockIcon /> : etat === 'copie' ? <CheckIcon /> : <CopyIcon />}
-        </span>
-      </button>
-    );
-  }
-
   return (
     <>
       <button
         type="button"
         onClick={copier}
         disabled={!pret && !locked}
-        // Jamais desactive pendant le chargement : la largeur resterait la meme
-        // mais le bouton paraitrait casse. On garde l'etat visible a la place.
+        // Jamais desactive pendant le chargement : le bouton paraitrait
+        // casse. L'etat reste annonce, et le second toucher est ignore.
         aria-busy={etat === 'chargement'}
-        aria-label={intitule}
-        title={intitule}
-        className={`touch-target inline-flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] font-semibold transition-[background-color,transform] duration-[var(--duration-fast)] active:scale-[0.98] ${
-          compact ? 'h-11 px-3 text-[13px]' : 'h-13 px-4 text-[15px]'
-        } ${ton} disabled:cursor-not-allowed`}
+        className={`touch-target inline-flex h-13 w-full items-center justify-center gap-2 rounded-[color:var(--radius-control)] px-4 text-[15px] font-semibold transition-[background-color,transform] duration-[var(--duration-fast)] active:scale-[0.98] disabled:cursor-not-allowed ${ton}`}
       >
         {icone}
-        {/* Le libelle n'apparait que s'il tient : voir `iconeSeule`. Pas de
-            `truncate` ici — c'etait lui qui fabriquait les « Copi… ». */}
-        {iconeSeule ? null : <span className="whitespace-nowrap">{libelle}</span>}
+        <span className="whitespace-nowrap">{libelle}</span>
       </button>
 
-      {/* Action secondaire, discrete et seulement une fois la copie faite :
-          proposer d'ouvrir l'IA avant qu'il y ait quelque chose a coller
-          n'aurait servi qu'a faire quitter la page. Le lien ne porte aucune
-          donnee — la commande est dans le presse-papiers, pas dans l'URL.
+      {/* L'annonce du resultat pour un lecteur d'ecran : le libelle du
+          bouton change, mais un changement de libelle ne se lit pas seul. */}
+      <span className="sr-only" role="status" aria-live="polite">
+        {etat === 'copie' ? 'Prompt copié.' : ''}
+      </span>
 
-          SA PLACE EST RESERVEE DES LE DEPART, ET C'EST LA CORRECTION.
-          Le lien apparaissait dans le flux apres la copie : le pied de la
-          fiche gagnait cinquante pixels d'un coup, la zone de lecture
-          au-dessus perdait autant, et tout ce qu'on etait en train de lire
-          remontait sous les yeux — juste au moment ou l'on venait d'agir.
-
-          Le lien occupe donc sa ligne des l'ouverture, invisible et hors
-          du parcours de tabulation tant qu'il n'y a rien a ouvrir.
-          `invisible` et non `hidden` : le premier garde la place, le second
-          la rend. Le pied garde ainsi la meme hauteur du debut a la fin.
-
-          La reserve ne coute rien la ou le lien ne peut pas paraitre : sur
-          une carte de galerie, `proposerOuverture` est faux et la ligne
-          n'est pas rendue du tout. */}
-      {proposerOuverture && adresse ? (
-        <a
-          href={adresse}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => setOuvertureProposee(false)}
-          aria-hidden={!ouvertureProposee}
-          tabIndex={ouvertureProposee ? undefined : -1}
-          className={`touch-target mt-2 flex w-full items-center justify-center gap-1.5 rounded-[color:var(--radius-control)] text-[length:var(--texte-carte)] font-medium text-[color:var(--color-brand)] ${
-            ouvertureProposee ? '' : 'invisible'
-          }`}
-        >
-          Ouvrir {PROVIDER_LABELS[cle]}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path
-              d="M14 5h5v5M19 5l-8 8M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </a>
+      {manuel ? (
+        <CopieManuelle
+          texte={manuel.payload}
+          onCopie={() => {
+            confirmer();
+            annoncerLaCopie({ promptId, versionId: manuel.versionId, surface });
+          }}
+          onFermer={() => setManuel(null)}
+        />
       ) : null}
     </>
   );
 }
 
+/**
+ * Le repli quand le navigateur refuse le presse-papiers.
+ *
+ * Le texte est la, selectionne d'avance, avec la consigne. Une copie faite
+ * au clavier ou au menu declenche l'evenement `copy` du champ : c'est a ce
+ * moment-la, et pas avant, qu'elle s'annonce et s'inscrit.
+ */
+function CopieManuelle({
+  texte,
+  onCopie,
+  onFermer,
+}: {
+  texte: string;
+  onCopie: () => void;
+  onFermer: () => void;
+}) {
+  const champRef = useRef<HTMLTextAreaElement>(null);
+  const dejaCopie = useRef(false);
+
+  useEffect(() => {
+    champRef.current?.focus();
+    champRef.current?.select();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onFermer();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onFermer]);
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="copie-manuelle-titre"
+      className="anim-fondu fixed inset-0 z-[80] flex items-end justify-center bg-[color:var(--color-night)]/60 p-4 sm:items-center"
+    >
+      <div className="w-full max-w-lg rounded-[var(--radius-card)] bg-[color:var(--color-surface)] p-4 shadow-[var(--shadow-card)]">
+        <h2
+          id="copie-manuelle-titre"
+          className="text-[length:var(--texte-titre-carte)] font-semibold text-[color:var(--color-night)]"
+        >
+          Copiez le prompt à la main
+        </h2>
+        <p className="mt-1 text-[length:var(--texte-meta)] leading-relaxed text-[color:var(--color-muted)]">
+          Votre navigateur a bloqué la copie automatique. Le texte est sélectionné : appuyez
+          longuement dessus puis choisissez « Copier ».
+        </p>
+        <textarea
+          ref={champRef}
+          readOnly
+          value={texte}
+          onCopy={() => {
+            if (dejaCopie.current) return;
+            dejaCopie.current = true;
+            onCopie();
+          }}
+          rows={8}
+          className="mt-3 w-full resize-none rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-canvas)] p-3 font-mono text-[13px] leading-relaxed text-[color:var(--color-night)]"
+        />
+        <button
+          type="button"
+          onClick={onFermer}
+          className="touch-target mt-3 inline-flex h-11 w-full items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-sky)] text-[15px] font-semibold text-[color:var(--color-night)]"
+        >
+          Fermer
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function CopyIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="9" y="9" width="11" height="11" rx="2.5" stroke="currentColor" strokeWidth="2" />
       <path
         d="M5 15V5a2 2 0 0 1 2-2h10"
@@ -417,25 +340,10 @@ function CopyIcon() {
   );
 }
 
-/** Ouvrir la fiche : elle monte depuis le bas de l'ecran. */
-function FlecheOuvrir() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 20V5m0 0-6 6m6-6 6 6"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 /** Le texte n'est pas encore la. */
 function HorlogeIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="2" />
       <path
         d="M12 7.5V12l3 2"
@@ -450,11 +358,11 @@ function HorlogeIcon() {
 
 function CheckIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
         d="m5 13 4 4L19 7"
         stroke="currentColor"
-        strokeWidth="2.5"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -464,7 +372,7 @@ function CheckIcon() {
 
 function LockIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="4" y="10" width="16" height="11" rx="2.5" stroke="currentColor" strokeWidth="2" />
       <path
         d="M8 10V7a4 4 0 0 1 8 0v3"

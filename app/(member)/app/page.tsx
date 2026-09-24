@@ -1,24 +1,28 @@
+import { estUnivers, universActif } from '@/lib/catalog/univers';
 import { getAccessState } from '@/lib/access/entitlement';
-import {
-  getBibliotheque,
-  getCatalogPage,
-  getDernieresCopies,
-  getVivierDuFeed,
-} from '@/lib/catalog/queries';
+import { getBibliotheque, getCatalogPage, getDernieresCopies } from '@/lib/catalog/queries';
 import { getFacettes } from '@/lib/catalog/filtres';
-import { getCollectionsPopulaires } from '@/lib/catalog/accueil';
+import { getSommaireDeBibliotheque } from '@/lib/catalog/sommaire';
 import { getVisuelsTournants, visuelDeCollection } from '@/lib/catalog/visuels';
-import { ordonnerLeFeed } from '@/lib/catalog/feed';
-import type { PromptCard } from '@/lib/catalog/types';
-import { AccueilEditorial } from '@/components/discovery/accueil-editorial';
+import { traitsDesRayons } from '@/lib/catalog/rayons';
 import { FiltreDepliant, type SelectionAccueil } from '@/components/discovery/filtre-depliant';
 import { AucunResultat } from '@/components/discovery/aucun-resultat';
 import { GalerieInfinie } from '@/components/cards/galerie-infinie';
+import { PromptGrid } from '@/components/cards/prompt-grid';
+import { CollectionsPopulaires } from '@/components/accueil/collections-populaires';
+import { ChoixUnivers } from '@/components/accueil/choix-univers';
+import { RechercheAccueil } from '@/components/accueil/recherche-accueil';
+import {
+  IconeCollections,
+  IconeRecemment,
+  IconeTendances,
+  TitreDeSection,
+} from '@/components/accueil/titre-de-section';
 import { PaywallAutoOpen } from '@/components/paywall/paywall-provider';
 import { catalogQuery } from '@/lib/validation/schemas';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
-import { CATALOG_PAGE_SIZE, LIBRARIES, type Library } from '@/lib/constants';
+import { CATALOG_PAGE_SIZE, LIBRARY_LABELS } from '@/lib/constants';
 
 export const metadata = { title: 'Accueil' };
 
@@ -26,26 +30,25 @@ export const metadata = { title: 'Accueil' };
 const TAGS_MAX = 5;
 
 /**
- * Dans quoi l'accueil tire, et combien il en montre.
+ * L'accueil : un univers actif, et tout ce qui le concerne.
  *
- * Le tirage est volontairement plus large que l'affichage : c'est l'ecart
- * entre les deux qui fait qu'une visite ne ressemble pas a la precedente.
- * Trop large, il couterait une lecture inutile a chaque ouverture ; trois
- * fois ce qu'on montre suffit a ne pas revoir la meme page deux fois.
- */
-const VIVIER_TIRAGE = 180;
-const VIVIER_MONTRE = 60;
-
-/**
- * L'accueil : une galerie, et un filtre replie au-dessus.
+ * L'ORDRE DU RAPPORT DE REFONTE (23 septembre 2026) :
+ *   1. « Que voulez-vous creer ? » et la recherche, tout de suite ;
+ *   2. les trois univers, sans description ;
+ *   3. « Commencer gratuitement », tant que l'acces complet manque ;
+ *   4. les collections a explorer dans l'univers, et « Toutes » ;
+ *   5. les copies recentes dans l'univers, masquees si vides ;
+ *   6. la selection de commandes de l'univers, qui s'allonge au defilement.
+ *
+ * L'UNIVERS ACTIF. Visuels a la premiere visite, puis le dernier choisi
+ * explicitement (cookie pose par `ChoixUnivers`). Un lien peut imposer le
+ * sien par `?univers=` ; le bouton actif le montre.
+ *
+ * Des qu'une recherche ou un filtre est demande, l'accueil devient une
+ * liste de resultats, bornee a l'univers sauf si la recherche est elargie.
  *
  * Rendu au serveur. Le client ne recoit que les metadonnees publiques,
- * jamais le contenu complet d'une commande.
- *
- * Deux etats pour un seul ecran. Tant que rien n'est filtre, l'accueil
- * presente : selection du moment, collections, reprise. Des qu'une facette
- * est cochee, il redevient une liste de resultats. Le meme filtre coiffe les
- * deux, et c'est lui qui fait passer de l'un a l'autre.
+ * jamais le texte d'une commande.
  */
 export default async function AccueilPage({
   searchParams,
@@ -55,23 +58,26 @@ export default async function AccueilPage({
   const params = await searchParams;
   const lire = (cle: string) => (typeof params[cle] === 'string' ? params[cle] : undefined);
 
-  // La bibliotheque remplace l'ancien selecteur Image/Texte. Une valeur
-  // inconnue arrivant par l'URL est ignoree, jamais transmise a la requete.
-  const demandee = lire('bibliotheque');
-  const library = LIBRARIES.includes(demandee as Library) ? (demandee as Library) : undefined;
+  const univers = await universActif(lire('univers'));
 
-  // Les tags voyagent separes par des virgules : c'est la forme la plus
-  // courte, et elle se relit a l'oeil dans une adresse partagee.
+  // La bibliotheque d'une recherche ou d'un filtre. « partout » l'efface :
+  // c'est l'elargissement explicite aux trois.
+  const partout = lire('partout') === '1';
+  const demandee = lire('bibliotheque');
+  const library = partout ? undefined : estUnivers(demandee) ? demandee : undefined;
+
   const tags = (lire('tags') ?? '')
     .split(',')
     .map((entree) => entree.trim())
     .filter(Boolean)
     .slice(0, TAGS_MAX);
+  const recherche = lire('q')?.trim() || undefined;
+  const acces = lire('acces') === 'gratuit' ? ('gratuit' as const) : undefined;
 
-  let acces: Awaited<ReturnType<typeof getAccessState>>;
+  let etat: Awaited<ReturnType<typeof getAccessState>>;
   let facettes: Awaited<ReturnType<typeof getFacettes>>;
   try {
-    [acces, facettes] = await Promise.all([getAccessState(), getFacettes(library ?? null)]);
+    [etat, facettes] = await Promise.all([getAccessState(), getFacettes(library ?? null)]);
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -83,175 +89,122 @@ export default async function AccueilPage({
     throw error;
   }
 
-  // Une famille demandee qui n'existe plus — un lien partage avant une
-  // refonte, un favori du navigateur — ne doit pas rendre un ecran vide qui
-  // parle d'un rayon que personne ne voit. Elle est simplement ignoree.
+  // Une famille demandee qui n'existe plus est ignoree, pas rendue vide.
   const connues = new Set(facettes.familles.map((famille) => famille.slug));
   const demandeeCategorie = lire('categorie');
   const categorie =
     demandeeCategorie && connues.has(demandeeCategorie) ? demandeeCategorie : undefined;
 
-  const ia = facettes.ias.some((entree) => entree.cle === lire('ia')) ? lire('ia') : undefined;
-  const recherche = lire('q');
+  const resultats =
+    Boolean(recherche) ||
+    Boolean(categorie) ||
+    tags.length > 0 ||
+    Boolean(acces) ||
+    Boolean(library);
 
-  const selection: SelectionAccueil = { library, categorie, tags, ia, recherche };
+  const renvoye = lire('offre') === '1' && !etat.hasFullAccess;
 
-  const editorial = !library && !categorie && tags.length === 0 && !ia && !recherche;
+  const entete = (
+    <div className="space-y-3">
+      <h1 className="text-[26px] font-bold leading-tight text-[color:var(--color-night)]">
+        Que voulez-vous créer&nbsp;?
+      </h1>
+      <RechercheAccueil univers={library ?? univers} terme={recherche} partout={partout} />
+      <ChoixUnivers actif={library ?? univers} base="/app" />
+    </div>
+  );
 
-  // Zod filtre les valeurs inconnues : un parametre d'URL bricole ne peut ni
-  // atteindre la requete, ni faire echouer la page.
-  //
-  // `portee: 'catalogue'` toujours : la bibliotheque a remplace le domaine
-  // comme premier niveau de rangement, et borner en plus au mode ferait
-  // disparaitre les Modes IA d'une recherche lancee depuis les Images.
   const query = catalogQuery.parse({
     portee: 'catalogue',
     library,
     categorySlug: categorie,
     tags: tags.length > 0 ? tags : undefined,
     search: recherche,
-    provider: ia,
+    access: acces,
   });
 
-  // Un seul lot ici : la galerie s'allonge d'elle-meme cote client, lot par
-  // lot, a mesure qu'on descend. La page n'a plus a deviner combien de
-  // cartes l'utilisateur voudra voir — elle en rend un ecran et laisse la
-  // suite venir.
-  const requete = { ...query, page: 1, pageSize: CATALOG_PAGE_SIZE };
-
-  let page: Awaited<ReturnType<typeof getCatalogPage>>;
+  // Les lectures seules dans le `try` : un rendu n'y serait pas rattrape.
+  let page: Awaited<ReturnType<typeof getCatalogPage>> | null = null;
   let accueil: {
-    feed: PromptCard[];
-    reprendre: Awaited<ReturnType<typeof getDernieresCopies>>;
+    offertes: Awaited<ReturnType<typeof getCatalogPage>> | null;
+    sommaire: Awaited<ReturnType<typeof getSommaireDeBibliotheque>>;
+    copies: Awaited<ReturnType<typeof getDernieresCopies>>;
+    selection: Awaited<ReturnType<typeof getCatalogPage>>;
     familles: Awaited<ReturnType<typeof getBibliotheque>>;
-    collections: Awaited<ReturnType<typeof getCollectionsPopulaires>>;
+    tirage: Awaited<ReturnType<typeof getVisuelsTournants>>;
   } | null = null;
+  let injoignable = false;
 
   try {
-    if (editorial) {
-      // L'historique n'existe que pour un compte : le demander a un visiteur
-      // revient a interroger une table qui lui est fermee.
-      // Un vivier plus large que ce qu'on montre : c'est ce qui donne au
-      // melange de quoi varier. Tire dans soixante cartes, il rendrait
-      // toujours les memes soixante, dans un autre ordre.
-      const [vivier, familles, reprendre, collections, tirage] = await Promise.all([
-        getVivierDuFeed(VIVIER_TIRAGE, {
-          garder: VIVIER_MONTRE,
-          offertsDabord: !acces.hasFullAccess,
-        }),
+    if (resultats) {
+      page = await getCatalogPage({ ...query, page: 1, pageSize: CATALOG_PAGE_SIZE });
+    } else {
+      const [offertes, sommaire, copies, selection, familles, tirage] = await Promise.all([
+        etat.hasFullAccess
+          ? Promise.resolve(null)
+          : getCatalogPage(
+              catalogQuery.parse({
+                portee: 'catalogue',
+                library: univers,
+                access: 'gratuit',
+                page: 1,
+                pageSize: 8,
+              }),
+            ),
+        getSommaireDeBibliotheque(univers),
+        // L'historique n'existe que pour un compte.
+        etat.isMember ? getDernieresCopies(30) : Promise.resolve([]),
+        getCatalogPage(
+          catalogQuery.parse({
+            portee: 'catalogue',
+            library: univers,
+            page: 1,
+            pageSize: CATALOG_PAGE_SIZE,
+          }),
+        ),
         getBibliotheque(),
-        acces.isMember ? getDernieresCopies() : Promise.resolve([]),
-        // Dix collections : de quoi remplir une rangee qui defile sans en
-        // faire un sommaire.
-        getCollectionsPopulaires(10),
-        // Le tirage des miniatures. L'accueil ne le demandait pas : ses
-        // tuiles de collection montraient l'apercu prete par la premiere
-        // commande du rayon, donc la meme image a chaque visite. La
-        // Bibliotheque, elle, tirait deja.
         getVisuelsTournants(),
       ]);
-
-      accueil = {
-        // Une seule galerie, et non une vitrine puis une galerie : c'est
-        // `ordonnerLeFeed` qui alterne les rayons et glisse un mode ou un
-        // parcours toutes les quatre cartes.
-        //
-        // Le vivier arrive deja melange : la lecture tire large, rend
-        // court, et change d'un passage a l'autre. L'ordonnancement se
-        // pose par-dessus — l'inverse deferait ses regles.
-        feed: ordonnerLeFeed(vivier),
-        familles,
-        reprendre,
-        // Le tirage se pose ici et non dans la tuile : un composant qui
-        // tire au sort pendant qu'il rend n'est plus idempotent, et deux
-        // rendus du meme arbre ne donneraient pas la meme page.
-        collections: collections.map((collection) => ({
-          ...collection,
-          apercuUrl: visuelDeCollection(collection.apercuUrl, collection.slug, tirage),
-        })),
-      };
-      page = { items: [], hasMore: false, total: 0 };
-    } else {
-      page = await getCatalogPage(requete);
+      accueil = { offertes, sommaire, copies, selection, familles, tirage };
     }
   } catch (error) {
     // Un catalogue injoignable n'est pas un catalogue vide.
-    if (isCatalogUnavailable(error)) {
-      return (
-        <div className="pt-6">
-          <NetworkError />
-        </div>
-      );
-    }
-    throw error;
+    if (!isCatalogUnavailable(error)) throw error;
+    injoignable = true;
   }
 
-  // Renvoi depuis un espace reserve : c'est le serveur qui a pose le
-  // parametre, c'est donc lui qui decide d'ouvrir la fenetre.
-  const renvoye = lire('offre') === '1' && !acces.hasFullAccess;
+  if (injoignable) {
+    return (
+      <div className="space-y-4 pt-1">
+        {entete}
+        <NetworkError />
+      </div>
+    );
+  }
 
-  return (
-    <div className="space-y-3 pt-1">
-      {renvoye ? <PaywallAutoOpen /> : null}
-
-      {/* Une affirmation, pas une question : la question appelait une reponse
-          dans un champ qui n'est plus la. Hors accueil d'arrivee, le titre
-          reste invisible — la liste se lit d'un coup d'oeil, mais un lecteur
-          d'ecran a besoin d'un premier repere. */}
-      {editorial ? (
-        <div>
-          <h1 className="text-[26px] font-bold leading-tight text-[color:var(--color-night)]">
-            Que voulez-vous créer&nbsp;?
-          </h1>
-          <p className="mt-1 text-[length:var(--texte-carte)] leading-snug text-[color:var(--color-muted)]">
-            Une idée, une commande, à vous de jouer.
-          </p>
-        </div>
-      ) : (
-        <h1 className="sr-only">Bibliothèque de commandes RaccourcIA</h1>
-      )}
-
-      {/* LE FILTRE N'EST PLUS EN TETE D'ACCUEIL.
-          Il demandait de savoir ce qu'on cherchait avant d'avoir rien vu :
-          une barre de reglages au-dessus d'une page dont le role est de
-          montrer. La Bibliotheque range, l'accueil propose. Le filtre reste
-          la ou une selection est deja en cours — sans lui, on ne saurait
-          plus ni ce qui est coche ni comment le decocher. */}
-      {editorial ? null : (
+  if (page) {
+    const selection: SelectionAccueil = { library, categorie, tags, recherche };
+    return (
+      <div className="space-y-4 pt-1">
+        {renvoye ? <PaywallAutoOpen /> : null}
+        {entete}
         <FiltreDepliant facettes={facettes} selection={selection} resultats={page.total} />
-      )}
-
-      {accueil ? (
-        <AccueilEditorial
-          feed={accueil.feed}
-          reprendre={accueil.reprendre}
-          familles={accueil.familles}
-          collections={accueil.collections}
-          locked={!acces.hasFullAccess}
-          visiteur={!acces.isMember}
-        />
-      ) : (
         <GalerieInfinie
           premieres={page.items}
           critere={{
             library,
             categorySlug: categorie,
             tags: tags.length > 0 ? tags : undefined,
-            // `ia` a deja ete confronte aux facettes ; Zod le revalide de
-            // toute facon a l'arrivee de l'action.
-            provider: query.provider,
             search: recherche,
+            access: acces,
           }}
           encore={page.hasMore}
-          locked={!acces.hasFullAccess}
-          visiteur={!acces.isMember}
+          locked={!etat.hasFullAccess}
+          visiteur={!etat.isMember}
           emptyState={
             <AucunResultat
               terme={query.search}
               bibliotheque={library}
-              // Une selection qui ne rend rien dans un rayon peut rendre
-              // quelque chose ailleurs : on propose d'elargir plutot que de
-              // laisser croire que la commande n'existe pas.
               famille={
                 categorie
                   ? (facettes.familles.find((f) => f.slug === categorie)?.nom ?? null)
@@ -260,7 +213,96 @@ export default async function AccueilPage({
             />
           }
         />
-      )}
+      </div>
+    );
+  }
+
+  const { offertes, sommaire, copies, selection, familles, tirage } = accueil!;
+  const rayons = traitsDesRayons(familles);
+  const nom = LIBRARY_LABELS[univers];
+  const recentes = copies.filter((carte) => carte.library === univers).slice(0, 10);
+  // Hors Visuels, une collection n'emprunte pas de photographie : ses
+  // commandes rendent du texte, et une photo mentirait sur le resultat.
+  const collections = sommaire.collections.slice(0, 10).map((collection) => ({
+    ...collection,
+    apercuUrl:
+      univers === 'images'
+        ? visuelDeCollection(collection.apercuUrl, collection.slug, tirage)
+        : collection.apercuUrl,
+  }));
+
+  return (
+    <div className="space-y-6 pt-1">
+      {renvoye ? <PaywallAutoOpen /> : null}
+      {entete}
+
+      {offertes && offertes.items.length > 0 ? (
+        <section className="space-y-2.5">
+          <TitreDeSection
+            titre="Commencer gratuitement"
+            icone={<IconeTendances />}
+            href={`/app?bibliotheque=${univers}&acces=gratuit`}
+            action="Voir tout"
+          />
+          <PromptGrid
+            prompts={offertes.items}
+            locked={!etat.hasFullAccess}
+            visiteur={!etat.isMember}
+            disposition="rangee"
+            rayons={rayons}
+            emptyState={null}
+          />
+        </section>
+      ) : null}
+
+      {collections.length > 0 ? (
+        <section className="space-y-2.5">
+          <TitreDeSection
+            titre="Collections à explorer"
+            icone={<IconeCollections />}
+            href={`/app/bibliotheque?univers=${univers}`}
+            action="Toutes"
+          />
+          <CollectionsPopulaires collections={collections} />
+        </section>
+      ) : null}
+
+      {recentes.length > 0 ? (
+        <section className="space-y-2.5">
+          <TitreDeSection
+            titre="Copiées récemment"
+            icone={<IconeRecemment />}
+            href="/app/recents"
+            action="Tout l’historique"
+          />
+          <PromptGrid
+            prompts={recentes}
+            locked={!etat.hasFullAccess}
+            visiteur={!etat.isMember}
+            disposition="rangee"
+            prioritaire={false}
+            rayons={rayons}
+            emptyState={null}
+          />
+        </section>
+      ) : null}
+
+      <section className="space-y-2.5">
+        <TitreDeSection titre={`À découvrir en ${nom}`} icone={<IconeCollections />} />
+        <GalerieInfinie
+          premieres={selection.items}
+          critere={{ library: univers }}
+          encore={selection.hasMore}
+          locked={!etat.hasFullAccess}
+          visiteur={!etat.isMember}
+          rayons={rayons}
+          emptyState={
+            <p className="py-6 text-center text-[length:var(--texte-corps)] text-[color:var(--color-muted)]">
+              Aucune commande publiée en {nom} pour le moment.
+            </p>
+          }
+        />
+      </section>
     </div>
   );
 }

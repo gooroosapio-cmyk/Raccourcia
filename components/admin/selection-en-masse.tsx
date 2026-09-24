@@ -23,18 +23,35 @@ import type { AdminActionState } from '@/lib/actions/admin';
  * Archiver demande une confirmation. C'est le seul geste de la barre qui
  * retire quelque chose de la vue des membres, et il peut en retirer deux
  * cents d'un coup : le faire d'un clic distrait serait trop facile.
+ *
+ * LA BARRE N'APPARAIT QU'APRES UNE SELECTION (rapport de refonte, p. 11) :
+ * au repos, elle couvrait le bas de la liste pour rien. Visible, elle
+ * reserve sa place sous la liste. Sa PORTEE est toujours dite : « cette
+ * page » ou « les N resultats filtres » — ces derniers quand le filtre en
+ * retient au plus deux cents, la borne d'un geste groupe.
  */
-export function SelectionEnMasse({ children }: { children: ReactNode }) {
+export function SelectionEnMasse({
+  children,
+  tousLesIds = [],
+}: {
+  children: ReactNode;
+  /** Les identifiants de tous les resultats filtres, quand ils sont <= 200. */
+  tousLesIds?: string[];
+}) {
   const [state, action, enCours] = useActionState<AdminActionState, FormData>(appliquerEnMasse, {});
   const [choisis, setChoisis] = useState(0);
+  const [tous, setTous] = useState(false);
   const [confirmeArchivage, setConfirmeArchivage] = useState(false);
 
   const recompter = (formulaire: HTMLFormElement) => {
-    setChoisis(new FormData(formulaire).getAll('ids').length);
+    setChoisis(new FormData(formulaire).getAll('ids').length - (tous ? tousLesIds.length : 0));
     // Changer la selection annule une confirmation en attente : elle portait
     // sur un ensemble qui n'existe plus.
     setConfirmeArchivage(false);
   };
+
+  const portee = tous ? tousLesIds.length : choisis;
+  const visible = portee > 0;
 
   return (
     <form
@@ -42,52 +59,74 @@ export function SelectionEnMasse({ children }: { children: ReactNode }) {
       onChange={(evenement) => recompter(evenement.currentTarget)}
       className="space-y-3"
     >
+      {tousLesIds.length > 0 ? (
+        <button
+          type="button"
+          onClick={() => {
+            setTous((valeur) => !valeur);
+            setConfirmeArchivage(false);
+          }}
+          aria-pressed={tous}
+          className="touch-target inline-flex items-center text-[13px] font-medium text-[color:var(--color-brand)] underline underline-offset-2"
+        >
+          {tous
+            ? 'Revenir à la sélection de cette page'
+            : `Sélectionner les ${tousLesIds.length} résultats filtrés`}
+        </button>
+      ) : null}
+
+      {/* Une portee etendue : chaque identifiant part en champ cache. Les cases
+          de la page restent, sans effet de plus — la base ignore un doublon. */}
+      {tous ? tousLesIds.map((id) => <input key={id} type="hidden" name="ids" value={id} />) : null}
+
       {children}
 
       <AdminFeedback state={state} />
 
-      {/* La barre colle au bas de l'ecran : une selection faite en haut d'une
-          liste de vingt-cinq lignes ne doit pas obliger a redescendre pour
-          agir dessus. */}
-      <div className="sticky bottom-2 z-10 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-2.5 shadow-[var(--shadow-card)]">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-auto text-sm font-medium text-[color:var(--color-night)]">
-            {choisis === 0
-              ? 'Cochez des raccourcis pour agir dessus'
-              : `${choisis} sélectionné${choisis > 1 ? 's' : ''}`}
-          </span>
+      {/* Visible seulement apres une selection, et collee au bas de l'ecran :
+          une selection faite en haut d'une liste ne doit pas obliger a
+          redescendre pour agir dessus. */}
+      {visible ? (
+        <div className="sticky bottom-2 z-10 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-2.5 shadow-[var(--shadow-card)]">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="mr-auto text-sm font-medium text-[color:var(--color-night)]">
+              {tous
+                ? `Portée : les ${portee} résultats filtrés`
+                : `Portée : ${portee} sélectionné${portee > 1 ? 's' : ''} sur cette page`}
+            </span>
 
-          <Geste operation="publier" libelle="Publier" desactive={choisis === 0 || enCours} />
-          <Geste operation="brouillon" libelle="Brouillon" desactive={choisis === 0 || enCours} />
-          <Geste operation="offrir" libelle="Offrir" desactive={choisis === 0 || enCours} />
-          <Geste operation="reserver" libelle="Réserver" desactive={choisis === 0 || enCours} />
+            <Geste operation="publier" libelle="Publier" desactive={enCours} />
+            <Geste operation="brouillon" libelle="Brouillon" desactive={enCours} />
+            <Geste operation="offrir" libelle="Offrir" desactive={enCours} />
+            <Geste operation="reserver" libelle="Réserver" desactive={enCours} />
+
+            {confirmeArchivage ? (
+              <Geste
+                operation="archiver"
+                libelle={`Confirmer l’archivage de ${portee}`}
+                desactive={enCours}
+                ton="danger"
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmeArchivage(true)}
+                disabled={enCours}
+                className="inline-flex h-11 items-center rounded-[color:var(--radius-control)] border border-[color:var(--color-danger)]/40 px-3 text-sm font-medium text-[color:var(--color-danger)] disabled:opacity-40"
+              >
+                Archiver…
+              </button>
+            )}
+          </div>
 
           {confirmeArchivage ? (
-            <Geste
-              operation="archiver"
-              libelle={`Confirmer l’archivage de ${choisis}`}
-              desactive={choisis === 0 || enCours}
-              ton="danger"
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={() => setConfirmeArchivage(true)}
-              disabled={choisis === 0 || enCours}
-              className="inline-flex h-10 items-center rounded-[color:var(--radius-control)] border border-[color:var(--color-danger)]/40 px-3 text-sm font-medium text-[color:var(--color-danger)] disabled:opacity-40"
-            >
-              Archiver…
-            </button>
-          )}
+            <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+              L’archivage retire ces raccourcis de la vue des membres. Rien n’est supprimé : ils se
+              republient d’un geste.
+            </p>
+          ) : null}
         </div>
-
-        {confirmeArchivage ? (
-          <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
-            L’archivage retire ces raccourcis de la vue des membres. Rien n’est supprimé : ils se
-            republient d’un geste.
-          </p>
-        ) : null}
-      </div>
+      ) : null}
     </form>
   );
 }
@@ -109,7 +148,7 @@ function Geste({
       name="operation"
       value={operation}
       disabled={desactive}
-      className={`inline-flex h-10 items-center rounded-[color:var(--radius-control)] px-3 text-sm font-medium disabled:opacity-40 ${
+      className={`inline-flex h-11 items-center rounded-[color:var(--radius-control)] px-3 text-sm font-medium disabled:opacity-40 ${
         ton === 'danger'
           ? 'bg-[color:var(--color-danger)] text-white'
           : 'border border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[color:var(--color-night)]'
@@ -128,12 +167,15 @@ function Geste({
  */
 export function CaseDeSelection({ id, nom }: { id: string; nom: string }) {
   return (
-    <input
-      type="checkbox"
-      name="ids"
-      value={id}
-      aria-label={`Sélectionner ${nom}`}
-      className="mt-1 h-5 w-5 shrink-0 accent-[color:var(--color-brand)]"
-    />
+    // La case garde son dessin, sa zone de toucher fait 44 px.
+    <label className="-ml-2.5 -mt-1.5 flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center">
+      <input
+        type="checkbox"
+        name="ids"
+        value={id}
+        aria-label={`Sélectionner ${nom}`}
+        className="h-5 w-5 accent-[color:var(--color-brand)]"
+      />
+    </label>
   );
 }

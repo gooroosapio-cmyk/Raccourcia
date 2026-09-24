@@ -32,7 +32,9 @@ export function TitreDeSection({
         <span aria-hidden="true" className="shrink-0 text-[color:var(--color-brand)]">
           {icone}
         </span>
-        <span className="truncate">{titre}</span>
+        {/* Le titre passe a la ligne plutot que d'etre coupe : « Commencer
+            gratuit… » ne dit plus ce qu'il annonce. */}
+        <span className="min-w-0">{titre}</span>
       </h2>
 
       {href ? (

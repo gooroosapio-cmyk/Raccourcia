@@ -2,18 +2,18 @@ import Link from 'next/link';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getProfile } from '@/lib/auth/session';
 import { ExitButton, SignOutButton } from '@/app/(member)/compte/sign-out-button';
-import { LegalFooter } from '@/components/navigation/legal-footer';
+import { PreferenceUnivers } from '@/components/compte/preference-univers';
+import { preferenceUnivers } from '@/lib/catalog/univers';
 
-export const metadata = { title: 'Compte' };
+export const metadata = { title: 'Profil' };
 
 /**
- * Page Compte.
+ * Profil.
  *
- * Elle repond a trois questions et pas une de plus : ou en est mon acces,
- * comment je change mon mot de passe, comment je me deconnecte. Le reste est
- * une liste de liens compacte plutot qu'une suite d'encadres titres — quatre
- * cartes pour quatre liens faisaient defiler une page qui n'a presque rien a
- * dire.
+ * L'ordre du rapport de refonte : l'acces, mon activite (favoris,
+ * historique des copies, univers d'accueil), mon compte, les informations
+ * legales — reunies une seule fois — et l'administration pour le seul role
+ * autorise. Des listes de lignes plutot qu'une suite d'encadres.
  *
  * La liste des appareils connectes a ete retiree de l'interface. Elle
  * demandait a un membre d'arbitrer une limite technique qu'il n'a pas choisie,
@@ -22,13 +22,17 @@ export const metadata = { title: 'Compte' };
  * sa presentation qui disparait, pas la regle.
  */
 export default async function AccountPage() {
-  const [profile, access] = await Promise.all([getProfile(), getAccessState()]);
+  const [profile, access, preference] = await Promise.all([
+    getProfile(),
+    getAccessState(),
+    preferenceUnivers(),
+  ]);
   const administrateur = access.isAdmin;
 
   return (
     <div className="space-y-4 pt-1">
       <h1 className="text-[length:var(--texte-page)] font-bold text-[color:var(--color-night)]">
-        Compte
+        Profil
       </h1>
 
       {!access.isMember ? (
@@ -114,14 +118,33 @@ export default async function AccountPage() {
         </section>
       )}
 
-      <nav className="overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)]">
-        {/* Changer un mot de passe suppose d'en avoir un : la ligne ne se
-            propose qu'a un compte. */}
+      <Groupe titre="Mon activité">
         {access.isMember ? (
-          <LigneReglage href="/recuperation" icone={<CadenasIcone />}>
-            Modifier mon mot de passe
+          <LigneReglage href="/app/favoris" icone={<CoeurIcone />}>
+            Mes favoris
           </LigneReglage>
         ) : null}
+        {/* L'historique complet est reserve a l'acces complet : la ligne ne
+            s'affiche pas la ou elle menerait a une porte fermee. */}
+        {access.hasFullAccess || administrateur ? (
+          <LigneReglage href="/app/recents" icone={<HorlogeIcone />}>
+            Historique des copies
+          </LigneReglage>
+        ) : null}
+        <PreferenceUnivers initiale={preference} />
+      </Groupe>
+
+      {/* Changer un mot de passe suppose d'en avoir un : le groupe ne se
+          montre qu'a un compte. */}
+      {access.isMember ? (
+        <Groupe titre="Mon compte">
+          <LigneReglage href="/recuperation" icone={<CadenasIcone />} dernier>
+            Modifier mon mot de passe
+          </LigneReglage>
+        </Groupe>
+      ) : null}
+
+      <Groupe titre="Informations légales">
         <LigneReglage href="/legal/mentions" icone={<DocumentIcone />}>
           Mentions légales
         </LigneReglage>
@@ -131,7 +154,7 @@ export default async function AccountPage() {
         <LigneReglage href="/legal/conditions" icone={<DocumentIcone />} dernier>
           Conditions
         </LigneReglage>
-      </nav>
+      </Groupe>
 
       {/*
         Seule entree vers le back-office depuis l'application. Elle n'apparait
@@ -143,16 +166,14 @@ export default async function AccountPage() {
         chemin emprunte.
       */}
       {administrateur ? (
-        <nav className="overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)]">
+        <Groupe titre="Administration">
           <LigneReglage href="/admin" icone={<ReglagesIcone />} badge="Admin" dernier>
             Ouvrir l’administration
           </LigneReglage>
-        </nav>
+        </Groupe>
       ) : null}
 
       {access.isMember ? <SignOutButton /> : <ExitButton />}
-
-      <LegalFooter className="pt-2" />
 
       {/* Signature de l'editeur, apres les mentions : elle ferme la page sans
           entrer en concurrence avec les liens legaux, qui eux se cherchent. */}
@@ -160,6 +181,43 @@ export default async function AccountPage() {
         Raccourcia, propulsé par Gooroo.
       </p>
     </div>
+  );
+}
+
+/** Un groupe titre de lignes : le titre se lit, la liste se touche. */
+function Groupe({ titre, children }: { titre: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-1.5">
+      <h2 className="px-1 text-[length:var(--texte-meta)] font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">
+        {titre}
+      </h2>
+      <div className="overflow-hidden rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] [&>*:not(:last-child)]:border-b [&>*:not(:last-child)]:border-[color:var(--color-line)]">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function CoeurIcone() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function HorlogeIcone() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="2" />
+      <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
   );
 }
 
@@ -185,9 +243,9 @@ function LigneReglage({
   return (
     <Link
       href={href}
-      className={`flex min-h-[52px] items-center gap-3 px-3.5 py-2.5 text-[length:var(--texte-corps)] text-[color:var(--color-night)] ${
-        dernier ? '' : 'border-b border-[color:var(--color-line)]'
-      }`}
+      // Le separateur est pose par le groupe, entre les lignes.
+      data-derniere={dernier || undefined}
+      className="flex min-h-[52px] items-center gap-3 px-3.5 py-2.5 text-[length:var(--texte-corps)] text-[color:var(--color-night)]"
     >
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-[color:var(--color-sky)] text-[color:var(--color-brand)]">
         {icone}

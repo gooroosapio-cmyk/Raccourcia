@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { LIBRARY_LABELS } from '@/lib/constants';
 
 export type Offre = {
   purchaseUrl: string;
@@ -16,20 +17,15 @@ export type Offre = {
  * Aucun chiffre : annoncer « 1 500 commandes » engage a les avoir et oblige
  * a corriger la phrase a chaque publication.
  */
+// Trois benefices concrets, dans l'ordre de la trame visuelle (ecran 08).
 const AVANTAGES = [
   {
-    titre: 'Images',
-    corps:
-      'Portraits, produits, matières, scènes : des centaines de rendus, chacun avec son avant/après.',
+    titre: `${LIBRARY_LABELS.images}, ${LIBRARY_LABELS.textes} et ${LIBRARY_LABELS.reflexions}`,
+    corps: 'Les trois bibliothèques, en entier : rendus visuels, textes et assistants.',
   },
   {
-    titre: 'Réflexions',
-    corps:
-      'Des modes qui changent la façon dont l’IA vous répond — débat, décision, enquête, immersion.',
-  },
-  {
-    titre: 'Textes',
-    corps: 'Écrire, reformuler, synthétiser : on remplit deux champs, on copie, c’est prêt.',
+    titre: 'Commandes prêtes à personnaliser',
+    corps: 'Quelques champs à remplir, un prompt prêt à coller dans votre outil d’IA.',
   },
   {
     titre: 'Nouveautés incluses',
@@ -103,24 +99,22 @@ export function ArgumentaireDOffre({
           compact ? 'text-[19px]' : 'text-[30px] leading-tight'
         }`}
       >
-        Tout RaccourcIA, sans limites.
+        Allez plus loin.
       </Titre>
       <p
         className={`leading-relaxed text-[color:var(--color-muted)] ${
           compact ? 'mt-1 text-[13px] leading-snug' : 'mx-auto mt-2 max-w-[38ch] text-[16px]'
         }`}
       >
-        Certaines commandes se copient librement. L’accès complet ouvre les trois bibliothèques —
-        Images, Réflexions et Textes.
+        Vous avez essayé. Explorez maintenant les trois bibliothèques.
       </p>
 
       {/* SUR LA FEUILLE, LE CORPS DE CHAQUE AVANTAGE DISPARAIT.
           Quatre titres et quatre explications font deux cent quatre-vingts
           pixels : de quoi repousser le prix et le bouton hors de l'ecran,
           sur la fenetre meme ou l'on decide d'acheter. Le titre porte deja
-          l'essentiel — « Images », « Reflexions », « Textes »,
-          « Nouveautes incluses » —, et l'argumentaire complet reste a un
-          geste, sur la page d'offre. */}
+          l'essentiel, et l'argumentaire complet reste a un geste, sur la
+          page d'offre. */}
       <ul
         className={compact ? 'mt-3 grid grid-cols-2 gap-x-3 gap-y-2' : 'mt-5 space-y-3 text-left'}
       >
@@ -173,7 +167,7 @@ export function ActionsDOffre({ offre }: { offre: Offre }) {
         rel="noopener noreferrer"
         className="mt-3 flex h-13 w-full items-center justify-center gap-2 rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] text-[16px] font-semibold text-white transition-[background-color,transform] duration-[var(--duration-fast)] hover:bg-[color:var(--color-brand-strong)] active:scale-[0.99]"
       >
-        Passer en Premium
+        Accéder au catalogue complet
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M5 12h13m0 0-5-5m5 5-5 5"
@@ -191,6 +185,15 @@ export function ActionsDOffre({ offre }: { offre: Offre }) {
         className="mt-1 flex h-11 w-full items-center justify-center text-[14px] font-medium text-[color:var(--color-brand)] underline underline-offset-2"
       >
         J’ai déjà un accès
+      </Link>
+
+      {/* L'offre n'est pas un tunnel : les commandes offertes restent a un
+          geste, et le catalogue reste visible. */}
+      <Link
+        href="/app?acces=gratuit"
+        className="flex h-11 w-full items-center justify-center text-[14px] font-medium text-[color:var(--color-muted)]"
+      >
+        Continuer avec les commandes offertes
       </Link>
     </>
   );

@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 import { assertAdmin } from '@/lib/admin/guard';
-import { STORAGE_BUCKETS } from '@/lib/constants';
+import { PAYLOAD_CANONIQUE, STORAGE_BUCKETS } from '@/lib/constants';
 import { lireLesChoix } from '@/lib/admin/choix';
 import {
   accessInput,
@@ -149,11 +149,12 @@ export async function createPrompt(
 
   if (error || !data) return { error: readableError(error?.message ?? '') };
 
-  // Une variante par IA active, prete a recevoir son prompt complet.
+  // La variante canonique, qui porte le texte servi a toutes les IA, et une
+  // variante par IA active tant que l'interface les liste encore.
   const { data: providers } = await supabase
     .from('ai_providers')
     .select('id')
-    .eq('is_active', true);
+    .or(`is_active.eq.true,key.eq.${PAYLOAD_CANONIQUE}`);
 
   if (providers?.length) {
     await supabase.from('prompt_variants').insert(
@@ -1209,7 +1210,10 @@ export async function lireLePayloadAdmin(
       typeof entree.payload === 'string' && entree.payload.trim() !== '',
   );
 
-  const retenue = versions.find((entree) => entree.provider_key === 'chatgpt') ?? versions[0];
+  const retenue =
+    versions.find((entree) => entree.provider_key === PAYLOAD_CANONIQUE) ??
+    versions.find((entree) => entree.provider_key === 'chatgpt') ??
+    versions[0];
   if (!retenue) return { error: 'Cette commande n’a pas encore de texte.' };
 
   return { payload: retenue.payload, ia: retenue.provider_name };

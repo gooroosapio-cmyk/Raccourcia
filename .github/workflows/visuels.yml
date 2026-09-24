@@ -27,6 +27,13 @@ on:
           - inventaire
           - cache-apercu
           - cache
+          # L'effacement des visuels anterieurs au 18 septembre 2026, dans
+          # cet ordre : apercu, sauvegarde, lot SQL (workflow Catalogue),
+          # puis fichiers. La restauration prend le chemin inverse.
+          - purge-apercu
+          - purge-sauvegarde
+          - purge-fichiers
+          - purge-restauration
       releve:
         description: 'Releve a appliquer (tache « depot » uniquement)'
         required: true
@@ -158,6 +165,45 @@ jobs:
           else
             node scripts/recache-visuels.mjs
           fi
+
+  purge:
+    name: Effacer les visuels anterieurs au 18 septembre
+    if: startsWith(inputs.tache, 'purge-')
+    runs-on: ubuntu-latest
+    environment: production
+
+    # Ne touche que les chemins de data/visuels/purge-avant-18-septembre.json.
+    # « purge-apercu » lit et compte sans rien ecrire, sans confirmation.
+    # « purge-fichiers » refuse si une ligne reference encore un fichier, ou
+    # si un fichier manque dans la sauvegarde : rien ne part sans copie.
+    steps:
+      - name: Verifier la confirmation
+        if: inputs.tache != 'purge-apercu' && inputs.confirmation != 'raccourcia'
+        run: |
+          echo "Cette tache ecrit ou efface dans le stockage."
+          echo "Relancer en tapant « raccourcia » dans le premier champ."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verifier la cle
+        uses: ./.github/actions/verifier-cle
+        with:
+          cle: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          projet: jhqajkhovtcjklrjgwrx
+
+      # L'entree passe par l'environnement plutot que d'etre interpolee dans
+      # le script shell : une valeur d'entree ne doit jamais devenir du code.
+      - name: Executer
+        env:
+          SUPABASE_URL: https://jhqajkhovtcjklrjgwrx.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TACHE: ${{ inputs.tache }}
+        run: node scripts/purger-visuels.mjs "${TACHE#purge-}"
 
   inventaire:
     name: Inventorier les visuels manquants

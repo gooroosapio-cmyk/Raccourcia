@@ -1,21 +1,27 @@
 import Link from 'next/link';
 
 import { getAdminDashboard } from '@/lib/admin/queries';
-import { MODES, MODE_LABELS } from '@/lib/constants';
+import { compterLesAlertes, compterParUnivers } from '@/lib/admin/qualite';
+import { LIBRARIES, LIBRARY_LABELS } from '@/lib/constants';
 
-export const metadata = { title: 'Tableau de bord' };
+export const metadata = { title: 'Vue d’ensemble' };
 
 /**
  * Tableau de bord : uniquement des alertes utiles, pas un mur de widgets
  * (Spec UX/UI, 19). Ce qui est affiche doit appeler une action.
  */
 export default async function AdminDashboardPage() {
-  const dashboard = await getAdminDashboard();
+  const [dashboard, alertes, parUnivers] = await Promise.all([
+    getAdminDashboard(),
+    compterLesAlertes(),
+    compterParUnivers(),
+  ]);
+  const aCorriger = alertes.filter((ligne) => ligne.total > 0);
 
   return (
     <div className="space-y-6">
       <section>
-        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Tableau de bord</h1>
+        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Vue d’ensemble</h1>
         <p className="mt-1 text-[13px] text-[color:var(--color-muted)]">
           {dashboard.total} raccourcis au catalogue.
         </p>
@@ -27,17 +33,53 @@ export default async function AdminDashboardPage() {
         <Stat label="Archives" value={dashboard.archived} />
       </section>
 
+      {/* La qualite d'abord : ce qui empeche une commande de servir. Chaque
+          alerte ouvre exactement les lignes concernees. Les commandes
+          Redaction et Assistants ne sont jamais en alerte « sans visuel ». */}
       <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
         <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-muted)]">
-          Par mode
+          Qualité
+        </h2>
+        {aCorriger.length === 0 ? (
+          <p className="mt-2 text-[14px] text-[color:var(--color-night)]">
+            Aucune alerte : toutes les commandes actives ont leur texte, leur visuel quand il est
+            attendu, et un rayon visible.
+          </p>
+        ) : (
+          <ul className="mt-2 divide-y divide-[color:var(--color-line)]">
+            {aCorriger.map((ligne) => (
+              <li key={ligne.alerte}>
+                <Link
+                  href={`/admin/raccourcis?alerte=${ligne.alerte}`}
+                  className="flex min-h-11 items-center justify-between gap-3 py-2 text-[15px]"
+                >
+                  <span className="text-[color:var(--color-night)]">{ligne.libelle}</span>
+                  <span className="shrink-0 rounded-full bg-[color:var(--color-warning-soft)] px-2.5 py-0.5 text-[13px] font-semibold text-[color:var(--color-warning)]">
+                    {ligne.total}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
+        <h2 className="text-xs font-medium uppercase tracking-wide text-[color:var(--color-muted)]">
+          Publiées par univers
         </h2>
         <ul className="mt-3 space-y-2">
-          {MODES.map((mode) => (
-            <li key={mode} className="flex items-center justify-between text-[15px]">
-              <span className="text-[color:var(--color-ink)]">{MODE_LABELS[mode]}</span>
-              <span className="font-medium text-[color:var(--color-night)]">
-                {dashboard.byMode[mode]}
-              </span>
+          {LIBRARIES.map((univers) => (
+            <li key={univers}>
+              <Link
+                href={`/admin/raccourcis?bibliotheque=${univers}&statut=published`}
+                className="flex min-h-11 items-center justify-between text-[15px]"
+              >
+                <span className="text-[color:var(--color-ink)]">{LIBRARY_LABELS[univers]}</span>
+                <span className="font-medium text-[color:var(--color-night)]">
+                  {parUnivers[univers]}
+                </span>
+              </Link>
             </li>
           ))}
         </ul>
@@ -135,7 +177,7 @@ export default async function AdminDashboardPage() {
         href="/admin/raccourcis/nouveau"
         className="flex h-12 w-full items-center justify-center rounded-[color:var(--radius-control)] bg-[color:var(--color-brand)] font-medium text-white"
       >
-        Créer un raccourci
+        Nouvelle commande
       </Link>
     </div>
   );

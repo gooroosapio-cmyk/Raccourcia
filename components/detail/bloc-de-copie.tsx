@@ -1,9 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ChampsDeCommande } from '@/components/detail/champs-de-commande';
-import { ChoixMoteur } from '@/components/detail/choix-moteur';
-import type { Enums } from '@/lib/supabase/database.types';
+import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -18,16 +17,27 @@ import type { PromptCard } from '@/lib/catalog/types';
  */
 export function BlocDeCopie({
   prompt,
-  providers,
   surface,
-  proposerOuverture = false,
 }: {
   prompt: PromptCard;
-  providers: { key: string; name: string; compatibility: Enums<'compatibility_level'> }[];
   surface: 'carte' | 'detail' | 'page-publique';
-  proposerOuverture?: boolean;
 }) {
   const [valeurs, setValeurs] = useState<Record<string, string>>({});
+  const [erreurs, setErreurs] = useState<Record<string, string>>({});
+
+  // Meme regle que la fiche : un champ indispensable vide arrete la copie,
+  // le message se pose sous le champ et le focus y va.
+  const verifierAvantCopie = useCallback(() => {
+    const manquants = prompt.champs.filter(
+      (champ) => champ.requis && !(valeurs[champ.cle] ?? '').trim(),
+    );
+    if (manquants.length === 0) return true;
+    setErreurs(
+      Object.fromEntries(manquants.map((champ) => [champ.cle, 'À renseigner avant de copier.'])),
+    );
+    document.getElementById(`champ-${manquants[0]!.cle}`)?.focus();
+    return false;
+  }, [prompt.champs, valeurs]);
 
   const saisies = useMemo(
     () =>
@@ -42,19 +52,21 @@ export function BlocDeCopie({
       <ChampsDeCommande
         champs={prompt.champs}
         valeurs={valeurs}
-        onChange={(cle, valeur) => setValeurs((actuelles) => ({ ...actuelles, [cle]: valeur }))}
+        erreurs={erreurs}
+        onChange={(cle, valeur) => {
+          setValeurs((actuelles) => ({ ...actuelles, [cle]: valeur }));
+          setErreurs(({ [cle]: _retiree, ...reste }) => reste);
+        }}
       />
 
       <div className={prompt.champs.length > 0 ? 'mt-3' : undefined}>
-        <ChoixMoteur
+        <CopyCommandButton
           promptId={prompt.id}
           pret={prompt.payloadReady}
-          providers={providers}
           surface={surface}
-          locked={false}
           genre={prompt.entityType}
           champs={saisies}
-          proposerOuverture={proposerOuverture}
+          verifierAvantCopie={verifierAvantCopie}
         />
       </div>
     </>

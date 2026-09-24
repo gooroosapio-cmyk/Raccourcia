@@ -71,10 +71,17 @@ begin
   -- Deux arborescences cohabitent donc, et c'est voulu : la seconde ne
   -- remplace la premiere qu'une fois publiee. Compter les deux ensemble
   -- ferait lever ce garde-fou pour une raison qui n'est pas la sienne.
+  -- Les rayons Visuels V3 sont exclus au meme titre que ceux de septembre
+  -- 2026 : ce garde-fou compte les rayons que le menage aurait du fermer,
+  -- et douze categories plus leurs soixante-et-onze collections viennent
+  -- d'arriver pleines. Les compter ferait lever l'alerte pour une raison
+  -- qui n'est pas la sienne — c'est exactement ce que dit la borne
+  -- precedente.
   select count(*) into v_total
   from public.categories c
   where (c.external_ref is null
-         or (c.external_ref not like 'V2CAT-%' and c.external_ref not like 'V2COL-%'))
+         or (c.external_ref not like 'V2CAT-%' and c.external_ref not like 'V2COL-%'
+             and c.external_ref not like 'V3-%' and c.external_ref not like 'V3C-%'))
     and (c.status <> 'archived'
          or exists (select 1 from public.prompts p where p.category_id = c.id));
 

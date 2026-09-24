@@ -88,11 +88,30 @@ export type PurchaseStatus = (typeof PURCHASE_STATUS)[number];
 export const LIBRARIES = ['images', 'textes', 'reflexions'] as const;
 export type Library = (typeof LIBRARIES)[number];
 
+/**
+ * Les noms que l'interface donne aux trois univers (refonte UI, 23 septembre
+ * 2026). Les valeurs de l'enum, les adresses et les identifiants ne changent
+ * pas : un lien `/rayon/textes` partage hier mene toujours au meme endroit.
+ */
 export const LIBRARY_LABELS: Record<Library, string> = {
-  images: 'Images',
-  textes: 'Textes',
-  reflexions: 'Réflexions',
+  images: 'Visuels',
+  textes: 'Rédaction',
+  reflexions: 'Assistants',
 };
+
+/**
+ * L'univers ouvert a la premiere visite, puis celui que le membre a choisi
+ * lui-meme. Le choix se retient dans un cookie — le serveur doit le lire
+ * pour filtrer l'accueil des le premier rendu — et seulement quand il est
+ * explicite : un defilement ou une fiche consultee ne le deplacent pas.
+ */
+export const UNIVERS_PAR_DEFAUT: Library = 'images';
+export const COOKIE_UNIVERS = 'raccourcia_univers';
+/**
+ * L'univers d'accueil choisi dans Profil, quand le membre en fixe un. Absent,
+ * c'est « Dernier utilise » : le cookie ci-dessus decide.
+ */
+export const COOKIE_UNIVERS_PREFERE = 'raccourcia_univers_prefere';
 
 /**
  * Ce que chaque bibliotheque promet, en une ligne.
@@ -105,7 +124,7 @@ export const LIBRARY_LABELS: Record<Library, string> = {
 export const LIBRARY_PROMESSES: Record<Library, string> = {
   images: 'Générez, éditez et transformez vos images.',
   textes: 'Rédigez, reformulez et trouvez l’inspiration en un instant.',
-  reflexions: 'Apprenez, explorez et approfondissez avec l’IA.',
+  reflexions: 'Des assistants qui vous guident, question après question.',
 };
 
 /**
@@ -142,26 +161,14 @@ export const TAG_GROUP_LABELS: Record<TagGroup, string> = {
 };
 
 export const PROVIDER_KEYS = ['chatgpt', 'claude', 'gemini'] as const;
-export type ProviderKey = (typeof PROVIDER_KEYS)[number];
 
 /**
- * Ou coller la commande qu'on vient de copier.
- *
- * Une adresse d'accueil, jamais une adresse portant la commande : le contenu
- * complet ne doit jamais transiter par une URL, ou il finirait dans
- * l'historique du navigateur et dans les journaux du destinataire.
+ * Le fournisseur qui porte le payload canonique d'une commande : un seul
+ * texte, servi quelle que soit l'IA du membre. Inactif en base, il n'apparait
+ * dans aucune liste d'IA — ce n'est pas une IA, c'est un porteur de texte.
  */
-export const PROVIDER_URLS: Record<ProviderKey, string> = {
-  chatgpt: 'https://chatgpt.com/',
-  claude: 'https://claude.ai/new',
-  gemini: 'https://gemini.google.com/app',
-};
-
-export const PROVIDER_LABELS: Record<ProviderKey, string> = {
-  chatgpt: 'ChatGPT',
-  claude: 'Claude',
-  gemini: 'Gemini',
-};
+export const PAYLOAD_CANONIQUE = 'universel';
+export type ProviderKey = (typeof PROVIDER_KEYS)[number];
 
 /** D'ou part une copie. Alimente `copy_events.surface`. */
 export const SURFACES = ['carte', 'detail', 'page-publique'] as const;
@@ -320,3 +327,23 @@ export const STORAGE_BUCKETS = {
   PROMPT_MEDIA: 'prompt-media',
   ADMIN_TEMP: 'admin-temp',
 } as const;
+
+/**
+ * Les alertes de qualite, propres a chaque univers (rapport de refonte,
+ * p. 11) : chacune se traduit par un filtre de la liste, et un clic sur
+ * l'alerte ouvre exactement les lignes concernees.
+ *
+ *   * `texte_vide` : aucune version courante non vide — rien a copier ;
+ *   * `visuel_manquant` : une commande VISUELS affichee en carte illustree,
+ *     sans visuel de resultat. Une commande Redaction ou Assistants n'est
+ *     jamais en anomalie « sans visuel » : elle n'en attend pas ;
+ *   * `rayon_masque` : publiee, mais rangee dans une categorie masquee —
+ *     personne ne la voit.
+ */
+export const ALERTES_ADMIN = {
+  texte_vide: 'Sans texte à copier',
+  visuel_manquant: 'Visuels sans visuel de résultat',
+  rayon_masque: 'Publiées dans un rayon masqué',
+} as const;
+
+export type AlerteAdmin = keyof typeof ALERTES_ADMIN;

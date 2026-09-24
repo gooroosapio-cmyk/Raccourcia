@@ -393,6 +393,52 @@ if compgen -G "$ROOT/supabase/seed/offre-2026-09/*.sql" > /dev/null; then
            ' FCFA ' || (select value #>> '{}' from public.app_config where key = 'price_period');"
 fi
 
+# Le catalogue Visuels V3 : 862 cartes, dont 765 mises a jour par `card_id`
+# et 97 creees en brouillon. Applique deux fois, parce que l'idempotence est
+# ici la propriete qui compte le plus — l'import RENOMME les slugs, et un lot
+# qui se resoudrait par le slug marcherait au premier passage puis creerait
+# 862 doublons au second.
+#
+# Le lot 000 n'ecrit rien : il compte et leve si une carte historique est
+# introuvable. Il tourne donc en premier, comme en production.
+if compgen -G "$ROOT/supabase/seed/visuels-v3/*.sql" > /dev/null; then
+  echo "==> Visuels V3 (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/visuels-v3/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) || ' cartes V3, ' ||
+           count(*) filter (where status = 'draft') || ' en brouillon, ' ||
+           (select count(*) from public.categories where external_ref like 'V3%') ||
+           ' rayons, ' ||
+           (select count(*) from public.prompt_tags pt
+             join public.prompts q on q.id = pt.prompt_id
+            where q.catalog_version = 'visuels-v3') || ' tags poses'
+    from public.prompts where catalog_version = 'visuels-v3';"
+fi
+
+# Payload unique : en dernier, comme en production, parce que les lots
+# anterieurs croisent tous les fournisseurs. Le lot constate que les
+# variantes par IA portent le meme texte ; s'il en trouvait deux, il leve.
+if compgen -G "$ROOT/supabase/seed/payload-unique/*.sql" > /dev/null; then
+  echo "==> Payload unique (x2, verification d'idempotence)"
+  for passe in 1 2; do
+    for file in "$ROOT"/supabase/seed/payload-unique/*.sql; do
+      run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" >/dev/null < "$file"
+    done
+  done
+  run "${PSQL[@]}" -h "$SOCKET_DIR" -U postgres -d "$DB_NAME" -A -t -c "
+    select '    ' || count(*) || ' cartes servent un texte canonique, ' ||
+           (select count(*) from public.prompt_versions pv
+              join public.prompt_variants v on v.id = pv.variant_id
+              join public.ai_providers a on a.id = v.provider_id and a.key = 'universel'
+             where pv.is_current) || ' versions courantes'
+    from public.prompt_variants v
+    join public.ai_providers a on a.id = v.provider_id and a.key = 'universel';"
+fi
+
 echo "==> Tests d'integration"
 status=0
 for file in "$ROOT"/tests/integration/*.sql; do

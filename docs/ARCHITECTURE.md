@@ -81,9 +81,12 @@ par defaut et ne comble que le vide ; l'administration corrige.
 
 ### Champs de personnalisation
 
-`prompt_fields` (trois au plus, position unique) et `prompt_field_choices`.
-Ce que le membre saisit est applique **dans la route de resolution**, jamais
-dans le navigateur : le serveur relit les champs reellement declares, donc
+`prompt_fields` (trois par defaut, trois au plus, position unique) et
+`prompt_field_choices`. Depuis que le texte copie ne depend plus de l'IA, ces
+champs sont **la seule personnalisation** d'une commande : une commande qui n'en
+declare aucun explicitement en propose trois — objet, ton, contrainte — plutot
+que rien. Ce que le membre saisit est applique **dans la route de resolution**,
+jamais dans le navigateur : le serveur relit les champs reellement declares, donc
 une clef inventee dans la requete n'atteint rien et une contrainte
 « obligatoire » ne se leve pas en retirant une ligne de la charge utile.
 
@@ -92,10 +95,23 @@ ferme annonce comme tel. Voir `lib/prompt/personnalisation.ts`.
 
 ### Versions de payload
 
-`prompts` -> `prompt_variants` (une par IA) -> `prompt_versions` (historique).
+`prompts` -> `prompt_variants` -> `prompt_versions` (historique).
 Modifier un prompt ne detruit jamais la version precedente : on cree une
 nouvelle version, on la teste, on la publie, l'ancienne passe en `retired`.
 Une seule version peut etre `is_current` par variante (index unique partiel).
+
+**Une commande porte un seul texte, servi a toutes les IA.** La regle
+precedente — une variante par IA, et un choix de moteur sur la fiche qui
+changeait reellement ce qui partait dans le presse-papiers — est annulee. Elle
+demandait de rediger et de maintenir trois textes par commande pour une
+difference que le membre ne constatait pas, et elle faisait dependre une copie
+de la publication d'une variante pour le bon fournisseur : une commande publiee
+pouvait refuser de se copier parce qu'une variante `gemini` manquait.
+
+Le schema ne change pas pour autant. `prompt_variants` reste la table qui porte
+le texte courant ; c'est le nombre de lignes utiles par commande qui tombe a
+une. Garder la table, c'est garder l'historique deja ecrit et se laisser la
+possibilite de redifferencier plus tard sans migration destructrice.
 
 ## Resolution du payload premium
 
@@ -106,8 +122,13 @@ d'acces au texte complet. `SECURITY DEFINER`, elle verifie dans l'ordre :
 2. session applicative active (`app_sessions`),
 3. entitlement actif — sauf raccourci marque `is_free`,
 4. prompt publie dans une categorie visible,
-5. variante publiee pour l'IA demandee,
+5. variante courante publiee,
 6. version courante publiee.
+
+`provider_key` reste dans la signature et part au journal des copies — savoir
+ou le membre comptait coller garde un interet — mais **il ne choisit plus le
+texte rendu et ne peut plus causer un refus**. Le controle 5 porte sur la
+variante courante de la commande, quel que soit le fournisseur annonce.
 
 Elle retourne **un seul** payload et journalise la copie (jamais son contenu).
 Aucun appel `service_role` n'intervient sur ce chemin. Un refus renvoie la meme

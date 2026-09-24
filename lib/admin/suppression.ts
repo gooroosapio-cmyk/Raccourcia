@@ -15,7 +15,6 @@ export type BilanDeCommande = {
   variantes: number;
   versions: number;
   favoris: number;
-  likes: number;
   tags: number;
   champs: number;
   /** Anciens liens dont cette commande est la destination. */
@@ -46,7 +45,6 @@ export async function apercuDeSuppressionDeCommande(
     variantes: entier(brut.variantes),
     versions: entier(brut.versions),
     favoris: entier(brut.favoris),
-    likes: entier(brut.likes),
     tags: entier(brut.tags),
     champs: entier(brut.champs),
     liensAnciens: entier(brut.liens_anciens),

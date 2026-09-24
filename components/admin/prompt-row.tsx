@@ -30,6 +30,64 @@ import type { AdminPromptRow } from '@/lib/admin/queries';
  */
 export function AdminPromptRowItem({ prompt }: { prompt: AdminPromptRow }) {
   return (
+    <>
+      <LigneDeTableau prompt={prompt} />
+      <div className="lg:hidden">
+        <CarteMobile prompt={prompt} />
+      </div>
+    </>
+  );
+}
+
+/**
+ * Ordinateur : une ligne de tableau (rapport de refonte, p. 11) — commande,
+ * collection, acces, statut, actions, lisibles d'un balayage vertical.
+ */
+function LigneDeTableau({ prompt }: { prompt: AdminPromptRow }) {
+  return (
+    <div className="hidden grid-cols-[48px_minmax(0,2.2fr)_minmax(0,1.4fr)_88px_110px_auto] items-center gap-3 rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-2.5 py-2 lg:grid">
+      <Link href={`/admin/raccourcis/${prompt.id}`} aria-hidden="true" tabIndex={-1}>
+        <span className="block h-12 w-12 overflow-hidden rounded-[8px] [&>*]:!h-12 [&>*]:!w-12">
+          <Apercu url={prompt.afterUrl} mode={prompt.mode} />
+        </span>
+      </Link>
+      <Link href={`/admin/raccourcis/${prompt.id}`} className="min-w-0">
+        <span className="block truncate text-[15px] font-semibold text-[color:var(--color-night)]">
+          {prompt.name}
+        </span>
+        <span className="commande block truncate text-[13px] text-[color:var(--color-brand)]">
+          {prompt.command}
+          {prompt.cardSlug ? (
+            <span className="text-[12px] text-[color:var(--color-muted)]">
+              {' '}
+              · {prompt.cardSlug}
+            </span>
+          ) : null}
+        </span>
+      </Link>
+      <span className="truncate text-[13px] text-[color:var(--color-muted)]">
+        {prompt.library ? LIBRARY_LABELS[prompt.library] : MODE_LABELS[prompt.mode]}
+        {prompt.categoryName ? ` · ${prompt.categoryName}` : ' · sans collection'}
+      </span>
+      <span className="text-[13px] font-medium text-[color:var(--color-night)]">
+        {prompt.isFree ? 'Gratuit' : 'Premium'}
+      </span>
+      <span>
+        <StatusBadge status={prompt.status} />
+      </span>
+      <PromptRowActions
+        promptId={prompt.id}
+        free={prompt.isFree}
+        pinned={prompt.isPinned}
+        status={prompt.status}
+      />
+    </div>
+  );
+}
+
+/** Mobile : une carte sobre. */
+function CarteMobile({ prompt }: { prompt: AdminPromptRow }) {
+  return (
     <div className="rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-2.5">
       <div className="flex items-start gap-3">
         {/* L'apercu ouvre la fiche comme le texte : viser l'image est le

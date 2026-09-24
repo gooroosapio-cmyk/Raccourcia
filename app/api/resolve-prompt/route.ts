@@ -9,10 +9,16 @@ import { appliquerLaPersonnalisation, type ChampDeclare } from '@/lib/prompt/per
  * Seule voie d'acces au prompt complet.
  *
  * Deux portes, jamais melangees. Un compte connecte passe par
- * `resolve_prompt`, qui controle dans l'ordre : session, appareil actif,
- * droit d'acces, prompt publie, variante publiee, version courante. Un
- * visiteur passe par `resolve_free_prompt`, qui ne rend que les raccourcis
- * marques `is_free` et refuse tout le reste.
+ * `lire_prompt`, qui controle dans l'ordre : session, appareil actif,
+ * prompt publie, droit d'acces, version courante. Un visiteur passe par
+ * `lire_prompt_offert`, qui ne rend que les raccourcis marques `is_free`
+ * et refuse tout le reste.
+ *
+ * LIRE N'EST PAS COPIER. Cette route n'inscrit rien : la copie n'a lieu que
+ * si le navigateur parvient a ecrire dans le presse-papiers, et c'est lui
+ * qui l'annonce ensuite a `/api/copie-reussie`, avec la version recue ici.
+ * Journaliser a la lecture comptait des copies refusees par le navigateur,
+ * et deux pour un double toucher.
  *
  * La verification est faite en base et non ici : la route n'ajoute que le
  * quota et la traduction des erreurs. Un appel direct a l'API, sans passer
@@ -63,20 +69,18 @@ export async function POST(request: NextRequest) {
   }
 
   const { data, error } = user
-    ? await supabase.rpc('resolve_prompt', {
+    ? await supabase.rpc('lire_prompt', {
         p_prompt_id: parsed.data.promptId,
         p_provider_key: parsed.data.provider,
-        p_surface: parsed.data.surface,
       })
-    : await supabase.rpc('resolve_free_prompt', {
+    : await supabase.rpc('lire_prompt_offert', {
         p_prompt_id: parsed.data.promptId,
         p_provider_key: parsed.data.provider,
-        p_surface: parsed.data.surface,
       });
 
   if (error) {
-    // 28000 : session absente ou appareil deconnecte. 42501 : droit refuse,
-    // prompt indisponible ou IA non compatible. Les deux cas renvoient un
+    // 28000 : session absente ou appareil deconnecte. 42501 : droit refuse
+    // ou prompt indisponible. Les deux cas renvoient un
     // message identique cote client : on ne revele pas ce qui existe en interne.
     const status = error.code === '28000' ? 401 : 403;
     const message =
@@ -104,7 +108,7 @@ export async function POST(request: NextRequest) {
   const resolved = data?.[0];
   if (!resolved) {
     return NextResponse.json(
-      { error: "Ce raccourci n'est pas disponible pour cette IA." },
+      { error: "Ce raccourci n'est pas disponible pour le moment." },
       { status: 403, headers: noStore },
     );
   }
@@ -123,7 +127,7 @@ export async function POST(request: NextRequest) {
   const personnalise = appliquerLaPersonnalisation(resolved.payload, declares, saisies);
 
   return NextResponse.json(
-    { command: resolved.command, payload: personnalise.texte },
+    { command: resolved.command, payload: personnalise.texte, versionId: resolved.version_id },
     { headers: noStore },
   );
 }

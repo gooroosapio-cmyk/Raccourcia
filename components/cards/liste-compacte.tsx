@@ -7,7 +7,6 @@ import { PromptDetailSheet } from '@/components/detail/prompt-detail';
 import { openPaywall } from '@/components/paywall/paywall-provider';
 import { trackPromptView } from '@/lib/actions/catalog';
 import { actionPrincipale } from '@/lib/catalog/experience';
-import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -26,15 +25,12 @@ export function ListeCompacte({
   prompts,
   locked,
   visiteur = false,
-  initialProvider = 'chatgpt',
 }: {
   prompts: PromptCard[];
   locked: boolean;
   visiteur?: boolean;
-  initialProvider?: string;
 }) {
   const [selection, setSelection] = useState<PromptCard | null>(null);
-  const [provider, changeProvider] = usePreferredProvider(initialProvider);
 
   const ouvrir = useCallback(
     (prompt: PromptCard) => {
@@ -109,8 +105,6 @@ export function ListeCompacte({
       {selection ? (
         <PromptDetailSheet
           prompt={selection}
-          provider={provider}
-          onProviderChange={changeProvider}
           locked={locked && !selection.isFree}
           free={locked && selection.isFree}
           visiteur={visiteur}

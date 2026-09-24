@@ -369,56 +369,6 @@ export type Database = {
           },
         ];
       };
-      category_favorites: {
-        Row: {
-          category_id: string;
-          created_at: string;
-          user_id: string;
-        };
-        Insert: {
-          category_id: string;
-          created_at?: string;
-          user_id: string;
-        };
-        Update: {
-          category_id?: string;
-          created_at?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'category_favorites_category_id_fkey';
-            columns: ['category_id'];
-            referencedRelation: 'categories';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      tag_favorites: {
-        Row: {
-          created_at: string;
-          tag_id: string;
-          user_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          tag_id: string;
-          user_id: string;
-        };
-        Update: {
-          created_at?: string;
-          tag_id?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'tag_favorites_tag_id_fkey';
-            columns: ['tag_id'];
-            referencedRelation: 'tags';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
       pending_licenses: {
         Row: {
           adopted_at: string | null;
@@ -660,31 +610,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'prompt_fields_prompt_id_fkey';
-            columns: ['prompt_id'];
-            referencedRelation: 'prompts';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      prompt_likes: {
-        Row: {
-          created_at: string;
-          prompt_id: string;
-          user_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          prompt_id: string;
-          user_id: string;
-        };
-        Update: {
-          created_at?: string;
-          prompt_id?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'prompt_likes_prompt_id_fkey';
             columns: ['prompt_id'];
             referencedRelation: 'prompts';
             referencedColumns: ['id'];
@@ -936,6 +861,7 @@ export type Database = {
           attachment_rule: string | null;
           avoid_rules: string | null;
           blocking_condition: string | null;
+          capacites_requises: string[];
           card_id: string | null;
           card_image_mode: Database['public']['Enums']['card_image_mode'] | null;
           card_slug: string | null;
@@ -945,6 +871,9 @@ export type Database = {
           command: string;
           command_id: string | null;
           command_objectif: string | null;
+          commande_titre: string | null;
+          compatibilite_ia: string | null;
+          condition_reference: string | null;
           contexte: string | null;
           copy_rule: string | null;
           created_at: string;
@@ -955,7 +884,10 @@ export type Database = {
           default_image_path: string | null;
           default_ratio: string | null;
           default_values: string | null;
+          defauts: NonNullable<Json>;
+          description_detaillee: string | null;
           discover_rank: number | null;
+          donnees_personnalisables: string | null;
           entity_type: string | null;
           erreurs: string | null;
           expected_input: string | null;
@@ -963,6 +895,7 @@ export type Database = {
           external_ref: string | null;
           fallback_if_incomplete: string | null;
           fiche_champs_max: number | null;
+          format_fichier: string | null;
           id: string;
           identity_policy: string | null;
           images_max: number | null;
@@ -978,20 +911,26 @@ export type Database = {
           legacy_subcategory: string | null;
           level: Database['public']['Enums']['execution_level'] | null;
           library: Database['public']['Enums']['app_library'] | null;
-          like_count: number;
           limitations: string | null;
           livrables: string | null;
           max_questions: number | null;
           media_ready: boolean;
+          medium: string | null;
           minimal_context: string | null;
           mode: Database['public']['Enums']['app_mode'];
           name: string;
+          nombre_images: number | null;
           online_lookup_policy: string | null;
+          operation: string | null;
           optional_variables: string[];
+          organisation_sortie: string | null;
           output_format: string | null;
           output_formats: Database['public']['Enums']['output_format_kind'][];
           output_type: Database['public']['Enums']['output_type'];
           payload_ready: boolean;
+          personnalisation: NonNullable<Json>;
+          pistes_creatives: string | null;
+          plateformes: string[];
           preserve_rules: string | null;
           preset_key: string | null;
           primary_input: string | null;
@@ -1002,8 +941,15 @@ export type Database = {
           questionnaire_mode: string | null;
           questionnaire_policy: string | null;
           questions_cadrage: string | null;
+          ratio_apercu: string | null;
+          ratio_sortie_repli: string | null;
           reality_policy: string | null;
+          reference_inspiration: string | null;
+          references_fichiers: NonNullable<Json>;
+          regime_champs: string | null;
+          regime_personnalisation: string | null;
           regle_sortie: string | null;
+          rendu_galerie: string | null;
           required_variables: string[];
           result_summary: string | null;
           revised_at: string | null;
@@ -1021,20 +967,29 @@ export type Database = {
           source_status: string | null;
           specification: string | null;
           status: Database['public']['Enums']['content_status'];
+          statut_editorial: string | null;
+          statut_test_ia: string | null;
+          statut_validation: string | null;
           sufficient_context: string | null;
           tags: string[];
+          temoins_attendus: NonNullable<Json>;
           test_blocking: string | null;
           test_incomplete_context: string | null;
           test_nominal: string | null;
+          test_personnalisation: string | null;
+          test_visuel: string | null;
           text_in_image_policy: string | null;
           thumbnail_layout: string | null;
           thumbnail_spec: string | null;
+          type_reference: string | null;
           univers: string | null;
           updated_at: string;
           updated_by: string | null;
           usage_conditions: string | null;
           usage_example: string | null;
+          usage_principal: string | null;
           use_cases: string[];
+          variante: string | null;
           witness_type: string | null;
         };
         Insert: {
@@ -1045,6 +1000,7 @@ export type Database = {
           attachment_rule?: string | null;
           avoid_rules?: string | null;
           blocking_condition?: string | null;
+          capacites_requises?: string[];
           card_id?: string | null;
           card_image_mode?: Database['public']['Enums']['card_image_mode'] | null;
           card_slug?: string | null;
@@ -1054,6 +1010,9 @@ export type Database = {
           command: string;
           command_id?: string | null;
           command_objectif?: string | null;
+          commande_titre?: string | null;
+          compatibilite_ia?: string | null;
+          condition_reference?: string | null;
           contexte?: string | null;
           copy_rule?: string | null;
           created_at?: string;
@@ -1064,7 +1023,10 @@ export type Database = {
           default_image_path?: string | null;
           default_ratio?: string | null;
           default_values?: string | null;
+          defauts?: NonNullable<Json>;
+          description_detaillee?: string | null;
           discover_rank?: number | null;
+          donnees_personnalisables?: string | null;
           entity_type?: string | null;
           erreurs?: string | null;
           expected_input?: string | null;
@@ -1072,6 +1034,7 @@ export type Database = {
           external_ref?: string | null;
           fallback_if_incomplete?: string | null;
           fiche_champs_max?: number | null;
+          format_fichier?: string | null;
           id?: string;
           identity_policy?: string | null;
           images_max?: number | null;
@@ -1087,20 +1050,26 @@ export type Database = {
           legacy_subcategory?: string | null;
           level?: Database['public']['Enums']['execution_level'] | null;
           library?: Database['public']['Enums']['app_library'] | null;
-          like_count?: number;
           limitations?: string | null;
           livrables?: string | null;
           max_questions?: number | null;
           media_ready?: boolean;
+          medium?: string | null;
           minimal_context?: string | null;
           mode: Database['public']['Enums']['app_mode'];
           name: string;
+          nombre_images?: number | null;
           online_lookup_policy?: string | null;
+          operation?: string | null;
           optional_variables?: string[];
+          organisation_sortie?: string | null;
           output_format?: string | null;
           output_formats?: Database['public']['Enums']['output_format_kind'][];
           output_type?: Database['public']['Enums']['output_type'];
           payload_ready?: boolean;
+          personnalisation?: NonNullable<Json>;
+          pistes_creatives?: string | null;
+          plateformes?: string[];
           preserve_rules?: string | null;
           preset_key?: string | null;
           primary_input?: string | null;
@@ -1111,8 +1080,15 @@ export type Database = {
           questionnaire_mode?: string | null;
           questionnaire_policy?: string | null;
           questions_cadrage?: string | null;
+          ratio_apercu?: string | null;
+          ratio_sortie_repli?: string | null;
           reality_policy?: string | null;
+          reference_inspiration?: string | null;
+          references_fichiers?: NonNullable<Json>;
+          regime_champs?: string | null;
+          regime_personnalisation?: string | null;
           regle_sortie?: string | null;
+          rendu_galerie?: string | null;
           required_variables?: string[];
           result_summary?: string | null;
           revised_at?: string | null;
@@ -1130,20 +1106,29 @@ export type Database = {
           source_status?: string | null;
           specification?: string | null;
           status?: Database['public']['Enums']['content_status'];
+          statut_editorial?: string | null;
+          statut_test_ia?: string | null;
+          statut_validation?: string | null;
           sufficient_context?: string | null;
           tags?: string[];
+          temoins_attendus?: NonNullable<Json>;
           test_blocking?: string | null;
           test_incomplete_context?: string | null;
           test_nominal?: string | null;
+          test_personnalisation?: string | null;
+          test_visuel?: string | null;
           text_in_image_policy?: string | null;
           thumbnail_layout?: string | null;
           thumbnail_spec?: string | null;
+          type_reference?: string | null;
           univers?: string | null;
           updated_at?: string;
           updated_by?: string | null;
           usage_conditions?: string | null;
           usage_example?: string | null;
+          usage_principal?: string | null;
           use_cases?: string[];
+          variante?: string | null;
           witness_type?: string | null;
         };
         Update: {
@@ -1154,6 +1139,7 @@ export type Database = {
           attachment_rule?: string | null;
           avoid_rules?: string | null;
           blocking_condition?: string | null;
+          capacites_requises?: string[];
           card_id?: string | null;
           card_image_mode?: Database['public']['Enums']['card_image_mode'] | null;
           card_slug?: string | null;
@@ -1163,6 +1149,9 @@ export type Database = {
           command?: string;
           command_id?: string | null;
           command_objectif?: string | null;
+          commande_titre?: string | null;
+          compatibilite_ia?: string | null;
+          condition_reference?: string | null;
           contexte?: string | null;
           copy_rule?: string | null;
           created_at?: string;
@@ -1173,7 +1162,10 @@ export type Database = {
           default_image_path?: string | null;
           default_ratio?: string | null;
           default_values?: string | null;
+          defauts?: NonNullable<Json>;
+          description_detaillee?: string | null;
           discover_rank?: number | null;
+          donnees_personnalisables?: string | null;
           entity_type?: string | null;
           erreurs?: string | null;
           expected_input?: string | null;
@@ -1181,6 +1173,7 @@ export type Database = {
           external_ref?: string | null;
           fallback_if_incomplete?: string | null;
           fiche_champs_max?: number | null;
+          format_fichier?: string | null;
           id?: string;
           identity_policy?: string | null;
           images_max?: number | null;
@@ -1196,20 +1189,26 @@ export type Database = {
           legacy_subcategory?: string | null;
           level?: Database['public']['Enums']['execution_level'] | null;
           library?: Database['public']['Enums']['app_library'] | null;
-          like_count?: number;
           limitations?: string | null;
           livrables?: string | null;
           max_questions?: number | null;
           media_ready?: boolean;
+          medium?: string | null;
           minimal_context?: string | null;
           mode?: Database['public']['Enums']['app_mode'];
           name?: string;
+          nombre_images?: number | null;
           online_lookup_policy?: string | null;
+          operation?: string | null;
           optional_variables?: string[];
+          organisation_sortie?: string | null;
           output_format?: string | null;
           output_formats?: Database['public']['Enums']['output_format_kind'][];
           output_type?: Database['public']['Enums']['output_type'];
           payload_ready?: boolean;
+          personnalisation?: NonNullable<Json>;
+          pistes_creatives?: string | null;
+          plateformes?: string[];
           preserve_rules?: string | null;
           preset_key?: string | null;
           primary_input?: string | null;
@@ -1220,8 +1219,15 @@ export type Database = {
           questionnaire_mode?: string | null;
           questionnaire_policy?: string | null;
           questions_cadrage?: string | null;
+          ratio_apercu?: string | null;
+          ratio_sortie_repli?: string | null;
           reality_policy?: string | null;
+          reference_inspiration?: string | null;
+          references_fichiers?: NonNullable<Json>;
+          regime_champs?: string | null;
+          regime_personnalisation?: string | null;
           regle_sortie?: string | null;
+          rendu_galerie?: string | null;
           required_variables?: string[];
           result_summary?: string | null;
           revised_at?: string | null;
@@ -1239,20 +1245,29 @@ export type Database = {
           source_status?: string | null;
           specification?: string | null;
           status?: Database['public']['Enums']['content_status'];
+          statut_editorial?: string | null;
+          statut_test_ia?: string | null;
+          statut_validation?: string | null;
           sufficient_context?: string | null;
           tags?: string[];
+          temoins_attendus?: NonNullable<Json>;
           test_blocking?: string | null;
           test_incomplete_context?: string | null;
           test_nominal?: string | null;
+          test_personnalisation?: string | null;
+          test_visuel?: string | null;
           text_in_image_policy?: string | null;
           thumbnail_layout?: string | null;
           thumbnail_spec?: string | null;
+          type_reference?: string | null;
           univers?: string | null;
           updated_at?: string;
           updated_by?: string | null;
           usage_conditions?: string | null;
           usage_example?: string | null;
+          usage_principal?: string | null;
           use_cases?: string[];
+          variante?: string | null;
           witness_type?: string | null;
         };
         Relationships: [
@@ -1692,8 +1707,22 @@ export type Database = {
       admin_supprimer_tag: { Args: { p_tag_id: string }; Returns: Json };
       alias_recherche: { Args: { v: string[] }; Returns: string };
       analytics_window: { Args: { p_days: number }; Returns: number };
-      collections_de_bibliotheque: { Args: { p_library: string }; Returns: Json };
+      collections_de_bibliotheque: {
+        Args: { p_library: string };
+        Returns: Json;
+      };
       collections_populaires: { Args: { p_limite?: number }; Returns: Json };
+      commande_retiree: {
+        Args: { p_slug: string };
+        Returns: {
+          bibliotheque: string;
+          commande: string;
+          nom: string;
+          remplacante_nom: string;
+          remplacante_slug: string;
+          retiree_le: string;
+        }[];
+      };
       consume_rate_limit: {
         Args: {
           p_bucket: string;
@@ -1776,6 +1805,39 @@ export type Database = {
       register_app_session: {
         Args: { p_device_label?: string };
         Returns: number;
+      };
+      enregistrer_copie: {
+        Args: {
+          p_prompt_id: string;
+          p_version_id: string;
+          p_provider_key?: string;
+          p_surface?: string;
+        };
+        Returns: boolean;
+      };
+      lire_prompt: {
+        Args: {
+          p_prompt_id: string;
+          p_provider_key?: string;
+        };
+        Returns: {
+          command: string;
+          payload: string;
+          version_id: string;
+          version_label: string;
+        }[];
+      };
+      lire_prompt_offert: {
+        Args: {
+          p_prompt_id: string;
+          p_provider_key?: string;
+        };
+        Returns: {
+          command: string;
+          payload: string;
+          version_id: string;
+          version_label: string;
+        }[];
       };
       resolve_free_prompt: {
         Args: {

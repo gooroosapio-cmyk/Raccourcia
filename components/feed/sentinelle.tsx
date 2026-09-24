@@ -107,7 +107,13 @@ export function Sentinelle({
       <button
         type="button"
         onClick={onVisible}
-        className="touch-target sr-only flex w-full items-center justify-center rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-4 text-[15px] font-medium text-[color:var(--color-night)] focus:not-sr-only"
+        // Masque tant qu'on ne l'atteint pas au clavier. Tout ce qui lui donne
+        // une taille — largeur, marges internes, bordure, zone tactile — ne se
+        // pose qu'au focus : porte en permanence, `w-full` l'emportait sur le
+        // 1 px de `sr-only`, et ce bouton « invisible » faisait 360 px de large,
+        // place a 19 px du bord. Sans parent positionne, il echappait au `clip`
+        // de la coquille et faisait glisser l'accueil de 19 px.
+        className="sr-only flex items-center justify-center rounded-[color:var(--radius-control)] border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-[15px] font-medium text-[color:var(--color-night)] focus:not-sr-only focus:w-full focus:min-h-11 focus:border focus:px-4"
       >
         {libelle}
       </button>

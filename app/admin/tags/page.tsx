@@ -1,6 +1,7 @@
 import { listAdminTags } from '@/lib/admin/tags';
 import { TagCreateForm, TagRow } from '@/app/admin/tags/tag-forms';
 import { TAG_GROUPS, TAG_GROUP_LABELS } from '@/lib/constants';
+import { OngletsOrganisation } from '@/components/admin/onglets-organisation';
 
 export const metadata = { title: 'Tags' };
 
@@ -24,8 +25,8 @@ export default async function AdminTagsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Tags</h1>
-        <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
+        <OngletsOrganisation actif="tags" />
+        <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
           {tags.length} tag{tags.length > 1 ? 's' : ''}, dont {poses} porté
           {poses > 1 ? 's' : ''} par au moins une commande publiée. La Bibliothèque ne propose que
           ceux-là : un tag vide n’y apparaît pas.

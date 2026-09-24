@@ -24,20 +24,38 @@ export function ChampsDeCommande({
   champs,
   valeurs,
   onChange,
+  erreurs = {},
   desactive = false,
 }: {
   champs: ChampDeCommande[];
   valeurs: Record<string, string>;
   onChange: (cle: string, valeur: string) => void;
+  /**
+   * Les champs indispensables laisses vides au moment de copier. Le message
+   * s'affiche sous le champ, pas dans un toast : c'est la qu'on corrige.
+   */
+  erreurs?: Record<string, string>;
   /** Vrai quand la commande est verrouillee : rien a remplir avant l'acces. */
   desactive?: boolean;
 }) {
   if (champs.length === 0) return null;
+  const toutFacultatif = champs.every((champ) => !champ.requis);
 
   return (
-    <section className="mt-5 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-canvas)] p-3.5">
-      <h3 className="text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">
-        Avant de copier
+    <section
+      aria-labelledby="a-completer"
+      className="mt-5 rounded-[color:var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-canvas)] p-3.5"
+    >
+      <h3
+        id="a-completer"
+        className="text-[length:var(--texte-corps)] font-semibold text-[color:var(--color-night)]"
+      >
+        À compléter
+        {toutFacultatif ? (
+          <span className="ml-2 text-[length:var(--texte-meta)] font-normal text-[color:var(--color-muted)]">
+            Personnalisation facultative
+          </span>
+        ) : null}
       </h3>
 
       {/* POURQUOI REMPLIR, DIT AVANT DE DEMANDER DE REMPLIR.
@@ -68,6 +86,7 @@ export function ChampsDeCommande({
             champ={champ}
             valeur={valeurs[champ.cle] ?? ''}
             onChange={(valeur) => onChange(champ.cle, valeur)}
+            erreur={erreurs[champ.cle]}
             desactive={desactive}
           />
         ))}
@@ -80,14 +99,19 @@ function Champ({
   champ,
   valeur,
   onChange,
+  erreur,
   desactive,
 }: {
   champ: ChampDeCommande;
   valeur: string;
   onChange: (valeur: string) => void;
+  erreur?: string;
   desactive: boolean;
 }) {
   const identifiant = `champ-${champ.cle}`;
+  const idErreur = `${identifiant}-erreur`;
+  // Relie le champ a son message : le lecteur d'ecran le lit en y entrant.
+  const aria = erreur ? { 'aria-invalid': true as const, 'aria-describedby': idErreur } : {};
 
   // L'INDICATION DEVIENT L'EXEMPLE, DANS LE CHAMP.
   //
@@ -128,6 +152,7 @@ function Champ({
           value={valeur}
           onChange={(evenement) => onChange(evenement.target.value)}
           disabled={desactive}
+          {...aria}
           className={`${style} h-[46px]`}
         >
           {/* Une entree vide en tete, meme pour un champ obligatoire : sans
@@ -146,6 +171,7 @@ function Champ({
           onChange={(evenement) => onChange(evenement.target.value)}
           disabled={desactive}
           placeholder={exemple}
+          {...aria}
           rows={3}
           maxLength={600}
           className={`${style} resize-y py-2.5 leading-snug`}
@@ -162,10 +188,20 @@ function Champ({
           onChange={(evenement) => onChange(evenement.target.value)}
           disabled={desactive}
           placeholder={exemple}
+          {...aria}
           maxLength={champ.genre === 'nombre' ? 40 : 200}
           className={`${style} h-[46px]`}
         />
       )}
+
+      {erreur ? (
+        <p
+          id={idErreur}
+          className="mt-1 text-[length:var(--texte-meta)] font-medium text-[color:var(--color-danger)]"
+        >
+          {erreur}
+        </p>
+      ) : null}
     </div>
   );
 }

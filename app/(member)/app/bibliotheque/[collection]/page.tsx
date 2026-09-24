@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation';
 import { getAccessState } from '@/lib/access/entitlement';
 import { getBibliotheque, getCatalogPage } from '@/lib/catalog/queries';
 import { GalerieInfinie } from '@/components/cards/galerie-infinie';
+import { ReglagesDeListe } from '@/components/library/reglages-de-liste';
 import { EmptyState } from '@/components/ui/states';
 import { NetworkError } from '@/components/ui/network-error';
 import { isCatalogUnavailable } from '@/lib/catalog/errors';
@@ -12,9 +13,10 @@ import { estUneFamilleSpeciale } from '@/lib/catalog/familles-speciales';
 /**
  * Une collection, et les commandes qu'elle contient.
  *
- * Le troisieme palier de la Bibliotheque : famille, collection, commandes.
- * La page ne repropose ni recherche ni filtres — on vient d'y entrer par un
- * choix, et le refaire ici serait revenir sur ses pas.
+ * Le troisieme palier de la Bibliotheque : univers, collection, commandes.
+ * Le titre entier, l'introduction quand l'administration l'a ecrite, le
+ * nombre de commandes, puis deux reglages seulement : « Tout / Gratuits » et
+ * « Pertinence / Recentes » (rapport de refonte). Chacun est une adresse.
  */
 export async function generateMetadata({ params }: { params: Promise<{ collection: string }> }) {
   const { collection } = await params;
@@ -27,10 +29,15 @@ export async function generateMetadata({ params }: { params: Promise<{ collectio
 
 export default async function CollectionPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ collection: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { collection } = await params;
+  const reglages = await searchParams;
+  const gratuits = reglages.acces === 'gratuit';
+  const recentes = reglages.tri === 'recentes';
 
   let familles: Awaited<ReturnType<typeof getBibliotheque>>;
   try {
@@ -71,7 +78,8 @@ export default async function CollectionPage({
       categorySlug: collection,
       // L'ordre du catalogue : c'est le classeur qui decide de ce qui vient
       // en premier dans une collection, pas la popularite du moment.
-      sort: 'populaires',
+      sort: recentes ? 'nouveaux' : 'populaires',
+      access: gratuits ? 'gratuit' : undefined,
       // Une collection est un rayon : on y reste.
       portee: 'domaine',
       page: 1,
@@ -103,24 +111,48 @@ export default async function CollectionPage({
         <h1 className="mt-1 text-[length:var(--texte-page)] font-bold leading-tight text-[color:var(--color-night)]">
           {tuile.name}
         </h1>
+        {tuile.description ? (
+          <p className="mt-1 text-[length:var(--texte-corps)] leading-snug text-[color:var(--color-night)]">
+            {tuile.description}
+          </p>
+        ) : null}
         <p className="mt-0.5 text-[length:var(--texte-carte)] text-[color:var(--color-muted)]">
           {page.total} commande{page.total > 1 ? 's' : ''}
         </p>
       </div>
 
+      <ReglagesDeListe
+        base={`/app/bibliotheque/${collection}`}
+        gratuits={gratuits}
+        recentes={recentes}
+      />
+
       <GalerieInfinie
         premieres={page.items}
-        critere={{ collectionSlug: collection }}
+        critere={{
+          collectionSlug: collection,
+          access: gratuits ? 'gratuit' : undefined,
+          sort: recentes ? 'nouveaux' : undefined,
+        }}
         encore={page.hasMore}
         locked={!acces.hasFullAccess}
         visiteur={!acces.isMember}
         emptyState={
-          <EmptyState
-            title="Cette collection est vide"
-            body="Aucune commande n’y est publiée pour le moment."
-            actionLabel="Revenir à la bibliothèque"
-            actionHref="/app/bibliotheque"
-          />
+          gratuits ? (
+            <EmptyState
+              title="Aucune commande gratuite ici"
+              body="Toutes les commandes de cette collection demandent l’accès complet."
+              actionLabel="Voir toute la collection"
+              actionHref={`/app/bibliotheque/${collection}`}
+            />
+          ) : (
+            <EmptyState
+              title="Cette collection est vide"
+              body="Aucune commande n’y est publiée pour le moment."
+              actionLabel="Revenir à la bibliothèque"
+              actionHref="/app/bibliotheque"
+            />
+          )
         }
       />
     </div>

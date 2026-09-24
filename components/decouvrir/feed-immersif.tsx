@@ -9,8 +9,7 @@ import { openPaywall } from '@/components/paywall/paywall-provider';
 import { showToast } from '@/components/ui/toast';
 import { chargerLaSuite, ouvrirLaFiche } from '@/lib/actions/decouverte';
 import { trackPromptView } from '@/lib/actions/catalog';
-import { BoutonJaime } from '@/components/cards/bouton-jaime';
-import { usePreferredProvider } from '@/lib/catalog/use-preferred-provider';
+import { FavoriteButton } from '@/components/cards/favorite-button';
 import type { CarteDecouverte, CurseurDecouverte, PromptCard } from '@/lib/catalog/types';
 
 /**
@@ -49,7 +48,6 @@ export function FeedImmersif({
   const [charge, setCharge] = useState(false);
   const [fiche, setFiche] = useState<PromptCard | null>(null);
   const [ouverture, setOuverture] = useState<string | null>(null);
-  const [provider, changeProvider] = usePreferredProvider('chatgpt');
   const zone = useRef<HTMLDivElement>(null);
 
   const allonger = useCallback(() => {
@@ -146,8 +144,6 @@ export function FeedImmersif({
       {fiche ? (
         <PromptDetailSheet
           prompt={fiche}
-          provider={provider}
-          onProviderChange={changeProvider}
           locked={locked && !fiche.isFree}
           free={locked && fiche.isFree}
           visiteur={visiteur}
@@ -213,7 +209,10 @@ function CarteImmersive({
         type="button"
         onClick={ouvrir}
         disabled={ouverture}
-        aria-label={`Ouvrir ${carte.name}`}
+        // Hors du parcours au clavier : le titre, plus bas, porte la meme
+        // action et l'annonce. Deux cibles pour un geste se liraient deux fois.
+        tabIndex={-1}
+        aria-hidden="true"
         className="absolute inset-0 z-0"
       />
 
@@ -272,21 +271,23 @@ function CarteImmersive({
             {/* Le nom ouvre la fiche, comme le bouton du bas. On touche
                 naturellement ce qu'on lit ; n'avoir que le bouton obligeait
                 a viser plus bas ce qu'on avait deja designe du doigt. */}
+            {/* Le titre et la description ouvrent la fiche (rapport de
+                refonte) : on touche ce qu'on lit. Pas de /commande ici —
+                elle vit dans les details de la fiche. */}
             <button
               type="button"
               onClick={() => onUtiliser(carte)}
               disabled={ouverture}
-              className="block text-left"
+              aria-label={`Voir la commande ${carte.name}`}
+              className="block min-h-11 text-left"
             >
               <h2 className="text-[19px] font-bold leading-tight">{carte.name}</h2>
-              <p className="mt-0.5 font-mono text-[13px] text-white/70">{carte.command}</p>
+              {carte.description ? (
+                <p className="mt-1.5 line-clamp-2 text-[length:var(--texte-carte)] leading-snug text-white/85">
+                  {carte.description}
+                </p>
+              ) : null}
             </button>
-
-            {carte.description ? (
-              <p className="mt-1.5 line-clamp-2 text-[length:var(--texte-carte)] leading-snug text-white/85">
-                {carte.description}
-              </p>
-            ) : null}
 
             {/* Les tags sont des sorties : « pas celle-la, mais quelque
                 chose de ce genre » se joue ici, et non en remontant tout le
@@ -301,10 +302,11 @@ function CarteImmersive({
                         manque au pouce. Le pseudo-element etend la cible
                         sans toucher au dessin. */}
                     <Link
-                      href={`/app/bibliotheque/tag/${tag.slug}`}
+                      // Un #tag ouvre les resultats filtres dans Visuels.
+                      href={`/app?bibliotheque=images&tags=${encodeURIComponent(tag.slug)}`}
                       className="relative inline-flex min-h-[30px] items-center rounded-full border border-white/25 px-2.5 text-[12px] font-medium text-white/85 after:absolute after:-inset-y-[7px] after:inset-x-0 after:content-['']"
                     >
-                      {tag.name}
+                      #{tag.name}
                     </Link>
                   </li>
                 ))}
@@ -312,97 +314,59 @@ function CarteImmersive({
             ) : null}
           </div>
 
-          <BoutonJaime
-            promptId={carte.id}
-            likeCount={carte.likeCount}
-            aime={carte.aime}
-            visiteur={visiteur}
-            surVisuel
-          />
+          <div className="flex shrink-0 flex-col items-center gap-1">
+            <FavoriteButton
+              promptId={carte.id}
+              initial={carte.isFavorite}
+              disabled={reserve}
+              visiteur={visiteur}
+              surVisuel
+            />
+            <BoutonPartage carte={carte} />
+          </div>
         </div>
-
-        {/* LE GESTE LATERAL : LA MEME COLLECTION.
-            Le feed descend au hasard — c'est sa promesse, et sa limite.
-            Tomber sur un portrait vintage qui plait sans pouvoir en voir
-            d'autres du meme genre obligeait a fermer la page, a chercher le
-            rayon, puis a recommencer. A droite, ses voisines. */}
-        {carte.voisines.length > 0 ? (
-          <RailDeCollection carte={carte} onUtiliser={onUtiliser} />
-        ) : null}
-
-        <button
-          type="button"
-          onClick={() => onUtiliser(carte)}
-          disabled={ouverture}
-          // Le geste attendu de cette page, et il ouvre la fiche de la
-          // commande regardee — pas l'accueil, ou il faudrait la retrouver.
-          className="touch-target mt-3.5 flex w-full items-center justify-center rounded-[color:var(--radius-control)] bg-white px-4 text-[15px] font-semibold text-[color:var(--color-night)] transition-opacity duration-[var(--duration-fast)] disabled:opacity-60"
-        >
-          {ouverture ? 'Ouverture…' : reserve ? 'Voir cette commande' : 'Utiliser cette commande'}
-        </button>
       </div>
     </article>
   );
 }
 
 /**
- * Les voisines de la carte, en une rangee qui defile.
+ * Partager : le lien canonique de la fiche, jamais le texte de la commande.
  *
- * Des vignettes et non des cartes : ce rail sert a choisir, pas a lire.
- * Le nom sous chaque vignette suffit — le reste se decouvre en ouvrant.
- *
- * `snap-start` sur chaque element : le pouce repose la rangee sur une
- * vignette entiere, jamais a cheval sur deux, ce qui evite le sentiment
- * d'une liste qui glisse toute seule.
+ * Le partage natif quand le telephone l'offre ; sinon le lien part au
+ * presse-papiers, et un toast le confirme seulement si l'ecriture a reussi.
  */
-function RailDeCollection({
-  carte,
-  onUtiliser,
-}: {
-  carte: CarteDecouverte;
-  onUtiliser: (carte: CarteDecouverte) => void;
-}) {
-  return (
-    <div className="mt-3">
-      <p className="text-[length:var(--texte-meta)] font-medium text-white/70">
-        {carte.collection ? `Dans ${carte.collection.nom}` : 'Dans la même collection'}
-      </p>
+function BoutonPartage({ carte }: { carte: CarteDecouverte }) {
+  const partager = async () => {
+    const url = `${window.location.origin}/r/${carte.slug}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: carte.name, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      showToast('Lien copié');
+    } catch {
+      // Un partage annule n'est pas une erreur a signaler.
+    }
+  };
 
-      <ul className="rail pleine-largeur mt-1.5 flex snap-x snap-mandatory gap-2 pb-0.5">
-        {carte.voisines.map((voisine) => (
-          <li key={voisine.id} className="w-[74px] shrink-0 snap-start">
-            <button
-              type="button"
-              // La voisine emprunte l'ouverture de la carte courante : le
-              // feed ne connait qu'un chemin vers une fiche, et en ouvrir
-              // un second ici ferait diverger les deux le jour ou l'un
-              // change.
-              onClick={() =>
-                onUtiliser({
-                  ...carte,
-                  id: voisine.id,
-                  slug: voisine.slug,
-                  isFree: voisine.isFree,
-                })
-              }
-              className="block w-full text-left"
-            >
-              <span className="relative block aspect-square w-full overflow-hidden rounded-[10px] border border-white/20">
-                <Image
-                  src={voisine.visuelUrl}
-                  alt={voisine.visuelAlt}
-                  fill
-                  sizes="74px"
-                  className="object-cover"
-                />
-              </span>
-              <span className="mt-1 block truncate text-[11px] leading-tight text-white/75">
-                {voisine.name}
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+  return (
+    <button
+      type="button"
+      onClick={() => void partager()}
+      aria-label={`Partager ${carte.name}`}
+      className="touch-target inline-flex items-center justify-center rounded-full text-white"
+    >
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M12 15V4m0 0L8 8m4-4 4 4M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
   );
 }

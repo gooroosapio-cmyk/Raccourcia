@@ -19,7 +19,7 @@ import { AdminFeedback } from '@/components/ui/admin-form';
  * champ cache — celui-ci se modifie dans le navigateur.
  *
  * Le bilan est annonce avant, pas apres : visuels, variantes, versions,
- * favoris, likes, tags, champs. C'est la difference entre confirmer et
+ * favoris, tags, champs. C'est la difference entre confirmer et
  * accepter.
  */
 export function SuppressionDeCommande({
@@ -34,7 +34,6 @@ export function SuppressionDeCommande({
     variantes: number;
     versions: number;
     favoris: number;
-    likes: number;
     tags: number;
     champs: number;
     liensAnciens: number;
@@ -48,7 +47,6 @@ export function SuppressionDeCommande({
     [bilan.visuels, 'visuel', 'visuels'],
     [bilan.variantes, 'variante', 'variantes par IA'],
     [bilan.favoris, 'favori', 'favoris de membres'],
-    [bilan.likes, 'like', 'likes'],
     [bilan.tags, 'tag', 'tags posés'],
     [bilan.champs, 'champ', 'champs de personnalisation'],
   ] as const;

@@ -5,9 +5,11 @@ import { useActionState } from 'react';
 import { savePromptVersion, setVariantPublished, type AdminActionState } from '@/lib/actions/admin';
 import { AdminFeedback, AdminSubmit, AdminTextarea } from '@/components/ui/admin-form';
 import type { AdminPromptDetail } from '@/lib/admin/queries';
+import { PAYLOAD_CANONIQUE } from '@/lib/constants';
 
 /**
- * Un bloc par IA.
+ * Le prompt unique de la commande — un bloc par IA seulement pour une
+ * commande que le lot payload-unique n'a pas encore reprise.
  *
  * Enregistrer ne modifie jamais la version en place : la base cree une
  * nouvelle version courante et retire l'ancienne, qui reste consultable.
@@ -53,34 +55,39 @@ function VariantBlock({
   );
 
   const published = variant.variantStatus === 'published';
+  // Le texte canonique n'a pas d'interrupteur : le desactiver laisserait la
+  // commande sans rien a copier.
+  const canonique = variant.providerKey === PAYLOAD_CANONIQUE;
 
   return (
     <div className="rounded-[color:var(--radius-control)] border border-[color:var(--color-line)] p-3">
       <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
           <p className="text-[15px] font-medium text-[color:var(--color-night)]">
-            {variant.providerName}
+            {canonique ? 'Prompt unique' : variant.providerName}
           </p>
           <p className="text-[12px] text-[color:var(--color-muted)]">
             {variant.versionLabel ? `Version ${variant.versionLabel}` : 'Aucun prompt enregistré'}
           </p>
         </div>
 
-        <form action={statusAction}>
-          <input type="hidden" name="promptId" value={promptId} />
-          <input type="hidden" name="variantId" value={variant.variantId} />
-          <input type="hidden" name="published" value={published ? 'false' : 'true'} />
-          <button
-            type="submit"
-            className={`touch-target rounded-full px-3 text-[13px] font-medium ${
-              published
-                ? 'bg-[#E9F7EF] text-[color:var(--color-success)]'
-                : 'bg-[color:var(--color-canvas)] text-[color:var(--color-muted)]'
-            }`}
-          >
-            {published ? 'Active' : 'Désactivée'}
-          </button>
-        </form>
+        {canonique ? null : (
+          <form action={statusAction}>
+            <input type="hidden" name="promptId" value={promptId} />
+            <input type="hidden" name="variantId" value={variant.variantId} />
+            <input type="hidden" name="published" value={published ? 'false' : 'true'} />
+            <button
+              type="submit"
+              className={`touch-target rounded-full px-3 text-[13px] font-medium ${
+                published
+                  ? 'bg-[#E9F7EF] text-[color:var(--color-success)]'
+                  : 'bg-[color:var(--color-canvas)] text-[color:var(--color-muted)]'
+              }`}
+            >
+              {published ? 'Active' : 'Désactivée'}
+            </button>
+          </form>
+        )}
       </div>
 
       <AdminFeedback state={statusState} />

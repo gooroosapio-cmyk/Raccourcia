@@ -1,0 +1,458 @@
+[
+  {
+    "slug": "photographie",
+    "nom": "Photographie",
+    "definition": "Le rendu attendu imite une prise de vue réelle.",
+    "cartes": 524
+  },
+  {
+    "slug": "portrait",
+    "nom": "Portrait",
+    "definition": "Une personne est le sujet principal.",
+    "cartes": 243
+  },
+  {
+    "slug": "montage",
+    "nom": "Montage",
+    "definition": "Assemblage visuel ou effet ajouté à une scène.",
+    "cartes": 153
+  },
+  {
+    "slug": "lumiere",
+    "nom": "Lumière",
+    "definition": "Traitement lumineux au cœur du concept.",
+    "cartes": 146
+  },
+  {
+    "slug": "voyage",
+    "nom": "Voyage",
+    "definition": "Destination ou exploration d'un lieu.",
+    "cartes": 90
+  },
+  {
+    "slug": "fantasy",
+    "nom": "Fantasy",
+    "definition": "Univers fantastique et créatures imaginaires.",
+    "cartes": 86
+  },
+  {
+    "slug": "cinema",
+    "nom": "Cinema",
+    "definition": "Esthétique de film, plateau ou affiche.",
+    "cartes": 79
+  },
+  {
+    "slug": "illustration",
+    "nom": "Illustration",
+    "definition": "Rendu dessiné, peint ou graphiquement interprété.",
+    "cartes": 71
+  },
+  {
+    "slug": "nature",
+    "nom": "Nature",
+    "definition": "Paysage, végétation ou milieu naturel.",
+    "cartes": 66
+  },
+  {
+    "slug": "mode",
+    "nom": "Mode",
+    "definition": "Tenues, accessoires, essayage et éditorial vestimentaire.",
+    "cartes": 62
+  },
+  {
+    "slug": "schema",
+    "nom": "Schéma",
+    "definition": "Relations ou structures représentées de manière explicative.",
+    "cartes": 62
+  },
+  {
+    "slug": "technique",
+    "nom": "Technique",
+    "definition": "Données, mécanismes ou construction à respecter.",
+    "cartes": 60
+  },
+  {
+    "slug": "pedagogie",
+    "nom": "Pédagogie",
+    "definition": "But explicatif ou d'apprentissage.",
+    "cartes": 57
+  },
+  {
+    "slug": "produit",
+    "nom": "Produit",
+    "definition": "Objet ou service présenté comme sujet commercial.",
+    "cartes": 51
+  },
+  {
+    "slug": "typographie",
+    "nom": "Typographie",
+    "definition": "Texte organisé comme élément visuel essentiel.",
+    "cartes": 48
+  },
+  {
+    "slug": "humour",
+    "nom": "Humour",
+    "definition": "Situation ou narration comique.",
+    "cartes": 44
+  },
+  {
+    "slug": "souvenir",
+    "nom": "Souvenir",
+    "definition": "Objet visuel lié à un moment personnel.",
+    "cartes": 44
+  },
+  {
+    "slug": "ecommerce",
+    "nom": "E-commerce",
+    "definition": "Présentation pour une fiche produit ou une vente.",
+    "cartes": 43
+  },
+  {
+    "slug": "publicite",
+    "nom": "Publicité",
+    "definition": "Visuel destiné à communiquer une offre.",
+    "cartes": 43
+  },
+  {
+    "slug": "affiche",
+    "nom": "Affiche",
+    "definition": "Composition d'affiche, avec ou sans texte.",
+    "cartes": 41
+  },
+  {
+    "slug": "marque",
+    "nom": "Marque",
+    "definition": "Identité, cohérence ou univers de marque.",
+    "cartes": 40
+  },
+  {
+    "slug": "afrique",
+    "nom": "Afrique",
+    "definition": "Contexte africain explicitement choisi.",
+    "cartes": 34
+  },
+  {
+    "slug": "miniature",
+    "nom": "Miniature",
+    "definition": "Changement d'échelle ou décor miniature.",
+    "cartes": 34
+  },
+  {
+    "slug": "couverture",
+    "nom": "Couverture",
+    "definition": "Première page, pochette ou jaquette.",
+    "cartes": 33
+  },
+  {
+    "slug": "architecture",
+    "nom": "Architecture",
+    "definition": "Bâtiments, plans d'espace ou aménagements.",
+    "cartes": 31
+  },
+  {
+    "slug": "retro",
+    "nom": "Rétro",
+    "definition": "Évocation d'une période passée.",
+    "cartes": 30
+  },
+  {
+    "slug": "fond-ecran",
+    "nom": "Fond d'écran",
+    "definition": "Image conçue pour un écran personnel.",
+    "cartes": 29
+  },
+  {
+    "slug": "professionnel",
+    "nom": "Professionnel",
+    "definition": "Usage métier ou présentation professionnelle.",
+    "cartes": 28
+  },
+  {
+    "slug": "coupe",
+    "nom": "Coupe",
+    "definition": "Intérieur révélé par une section.",
+    "cartes": 26
+  },
+  {
+    "slug": "beaute",
+    "nom": "Beauté",
+    "definition": "Coiffure, maquillage, barbe, manucure ou apparence.",
+    "cartes": 24
+  },
+  {
+    "slug": "culture",
+    "nom": "Culture",
+    "definition": "Évocation documentée d'un patrimoine.",
+    "cartes": 23
+  },
+  {
+    "slug": "vues",
+    "nom": "Vues",
+    "definition": "Points de vue coordonnés du même sujet.",
+    "cartes": 22
+  },
+  {
+    "slug": "famille",
+    "nom": "Famille",
+    "definition": "Plusieurs proches ou un souvenir familial.",
+    "cartes": 21
+  },
+  {
+    "slug": "instagram",
+    "nom": "Instagram",
+    "definition": "Usage prévu dans une publication ou un carrousel Instagram.",
+    "cartes": 17
+  },
+  {
+    "slug": "animaux",
+    "nom": "Animaux",
+    "definition": "Animal comme sujet identifiable.",
+    "cartes": 16
+  },
+  {
+    "slug": "anime",
+    "nom": "Anime",
+    "definition": "Langage graphique de l'animation japonaise.",
+    "cartes": 15
+  },
+  {
+    "slug": "trois-d",
+    "nom": "3D",
+    "definition": "Rendu de volume ou maquette numérique assumé.",
+    "cartes": 15
+  },
+  {
+    "slug": "alimentation",
+    "nom": "Alimentation",
+    "definition": "Plat, ingrédient ou boisson.",
+    "cartes": 14
+  },
+  {
+    "slug": "peinture",
+    "nom": "Peinture",
+    "definition": "Touches, pigments et matière picturale visibles.",
+    "cartes": 14
+  },
+  {
+    "slug": "retouche",
+    "nom": "Retouche",
+    "definition": "Modification ou correction d'une image existante.",
+    "cartes": 14
+  },
+  {
+    "slug": "lifestyle",
+    "nom": "Lifestyle",
+    "definition": "Scène quotidienne ou portrait spontané.",
+    "cartes": 12
+  },
+  {
+    "slug": "collage",
+    "nom": "Collage",
+    "definition": "Assemblage de fragments photographiques ou de papier.",
+    "cartes": 11
+  },
+  {
+    "slug": "bd",
+    "nom": "BD",
+    "definition": "Narration organisée en cases et bulles.",
+    "cartes": 9
+  },
+  {
+    "slug": "surrealisme",
+    "nom": "Surréalisme",
+    "definition": "Élément impossible intégré volontairement.",
+    "cartes": 9
+  },
+  {
+    "slug": "cartoon",
+    "nom": "Cartoon",
+    "definition": "Personnages simplifiés à contours et aplats.",
+    "cartes": 8
+  },
+  {
+    "slug": "selfie",
+    "nom": "Selfie",
+    "definition": "Cadrage à bout de bras ou via un miroir.",
+    "cartes": 8
+  },
+  {
+    "slug": "packaging",
+    "nom": "Packaging",
+    "definition": "Emballage ou étiquette.",
+    "cartes": 6
+  },
+  {
+    "slug": "vue-eclatee",
+    "nom": "Vue éclatée",
+    "definition": "Composants séparés selon leur assemblage.",
+    "cartes": 6
+  },
+  {
+    "slug": "serie",
+    "nom": "Série",
+    "definition": "Plusieurs vues ou images cohérentes.",
+    "cartes": 5
+  },
+  {
+    "slug": "avatar",
+    "nom": "Avatar",
+    "definition": "Représentation personnelle utilisable comme identité visuelle ou personnage.",
+    "cartes": 4
+  },
+  {
+    "slug": "sport",
+    "nom": "Sport",
+    "definition": "Pratique, portrait ou ambiance sportive.",
+    "cartes": 4
+  },
+  {
+    "slug": "story",
+    "nom": "Story",
+    "definition": "Visuel vertical prévu pour une story.",
+    "cartes": 4
+  },
+  {
+    "slug": "barbie",
+    "nom": "Barbie",
+    "definition": "Carte explicitement située dans l'univers Barbie.",
+    "cartes": 3
+  },
+  {
+    "slug": "infographie",
+    "nom": "Infographie",
+    "definition": "Informations hiérarchisées en une composition graphique.",
+    "cartes": 3
+  },
+  {
+    "slug": "musique",
+    "nom": "Musique",
+    "definition": "Artiste, album ou univers musical.",
+    "cartes": 3
+  },
+  {
+    "slug": "aventure",
+    "nom": "Aventure",
+    "definition": "Exploration ou scène d'action non documentaire.",
+    "cartes": 2
+  },
+  {
+    "slug": "carrousel",
+    "nom": "Carrousel",
+    "definition": "Plusieurs images conçues pour être parcourues dans un ordre.",
+    "cartes": 2
+  },
+  {
+    "slug": "evenement",
+    "nom": "Événement",
+    "definition": "Annonce ou souvenir d'un événement.",
+    "cartes": 2
+  },
+  {
+    "slug": "fleurs",
+    "nom": "Fleurs",
+    "definition": "Fleurs comme élément majeur.",
+    "cartes": 2
+  },
+  {
+    "slug": "ia",
+    "nom": "IA",
+    "definition": "Visualisation de concepts d'intelligence artificielle.",
+    "cartes": 2
+  },
+  {
+    "slug": "luxe",
+    "nom": "Luxe",
+    "definition": "Direction esthétique sobre et raffinée.",
+    "cartes": 2
+  },
+  {
+    "slug": "naruto",
+    "nom": "Naruto",
+    "definition": "Carte explicitement située dans l'univers Naruto.",
+    "cartes": 2
+  },
+  {
+    "slug": "noir-blanc",
+    "nom": "Noir et blanc",
+    "definition": "Image volontairement monochrome.",
+    "cartes": 2
+  },
+  {
+    "slug": "pokemon",
+    "nom": "Pokémon",
+    "definition": "Carte avec un personnage ou un univers Pokémon.",
+    "cartes": 2
+  },
+  {
+    "slug": "reels",
+    "nom": "Reels",
+    "definition": "Couverture ou image fixe pour une vidéo courte.",
+    "cartes": 2
+  },
+  {
+    "slug": "simpsons",
+    "nom": "Les Simpson",
+    "definition": "Carte explicitement située dans l'univers Les Simpson.",
+    "cartes": 2
+  },
+  {
+    "slug": "south-park",
+    "nom": "South Park",
+    "definition": "Carte explicitement située dans l'univers South Park.",
+    "cartes": 2
+  },
+  {
+    "slug": "tiktok",
+    "nom": "TikTok",
+    "definition": "Image fixe prévue pour TikTok ; aucune vidéo implicite.",
+    "cartes": 2
+  },
+  {
+    "slug": "avant-apres",
+    "nom": "Avant / après",
+    "definition": "Comparaison explicite de deux états.",
+    "cartes": 1
+  },
+  {
+    "slug": "dragon-ball",
+    "nom": "Dragon Ball",
+    "definition": "Carte explicitement située dans l'univers Dragon Ball.",
+    "cartes": 1
+  },
+  {
+    "slug": "electronique",
+    "nom": "Électronique",
+    "definition": "Composants et circuits électriques ou électroniques.",
+    "cartes": 1
+  },
+  {
+    "slug": "figurine",
+    "nom": "Figurine",
+    "definition": "Sujet transformé en objet de collection ou en jouet.",
+    "cartes": 1
+  },
+  {
+    "slug": "ghibli",
+    "nom": "Studio Ghibli",
+    "definition": "Carte inspirée du langage visuel du Studio Ghibli.",
+    "cartes": 1
+  },
+  {
+    "slug": "one-piece",
+    "nom": "One Piece",
+    "definition": "Carte explicitement située dans l'univers One Piece.",
+    "cartes": 1
+  },
+  {
+    "slug": "science",
+    "nom": "Science",
+    "definition": "Contenu scientifique documenté.",
+    "cartes": 1
+  },
+  {
+    "slug": "stickers",
+    "nom": "Stickers",
+    "definition": "Découpes visuelles destinées à être réutilisées.",
+    "cartes": 1
+  }
+]

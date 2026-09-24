@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSommaireDeBibliotheque } from '@/lib/catalog/sommaire';
-import { getCollectionsFavorites, getTagsFavoris } from '@/lib/catalog/tags-favoris';
 import { getVisuelsTournants, visuelDeCollection, visuelDeTag } from '@/lib/catalog/visuels';
-import { getAccessState } from '@/lib/access/entitlement';
 import { Mosaique, type CarteDeMosaique } from '@/components/library/mosaique';
 import { FiltreDeCategories } from '@/components/library/filtre-de-categories';
 import { NetworkError } from '@/components/ui/network-error';
@@ -44,22 +42,13 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
 
   let sommaire: Awaited<ReturnType<typeof getSommaireDeBibliotheque>>;
   let tirage: Awaited<ReturnType<typeof getVisuelsTournants>>;
-  let epingles: Awaited<ReturnType<typeof getTagsFavoris>>;
-  let rayonsEpingles: Awaited<ReturnType<typeof getCollectionsFavorites>>;
-  let membre: boolean;
   try {
-    const [acces, lot, visuels, favoris, collectionsFavorites] = await Promise.all([
-      getAccessState(),
+    const [lot, visuels] = await Promise.all([
       getSommaireDeBibliotheque(library),
       getVisuelsTournants(),
-      getTagsFavoris(),
-      getCollectionsFavorites(),
     ]);
-    membre = acces.isMember;
     sommaire = lot;
     tirage = visuels;
-    epingles = favoris;
-    rayonsEpingles = collectionsFavorites;
   } catch (error) {
     if (isCatalogUnavailable(error)) {
       return (
@@ -71,15 +60,8 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
     throw error;
   }
 
-  // Les rayons epingles d'abord : c'est le seul ordre que le membre a
-  // choisi lui-meme, et il doit survivre au classement du catalogue.
-  const tags = [...sommaire.tags]
-    .sort((a, b) => Number(epingles.has(b.slug)) - Number(epingles.has(a.slug)))
-    .slice(0, 24);
-
-  sommaire.collections.sort(
-    (a, b) => Number(rayonsEpingles.has(b.slug)) - Number(rayonsEpingles.has(a.slug)),
-  );
+  // L'ordre du catalogue, tel que la base le rend.
+  const tags = sommaire.tags.slice(0, 24);
 
   const compter = (total: number) => `${total} commande${total > 1 ? 's' : ''}`;
 
@@ -113,7 +95,6 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
       detail: collection.description ?? compter(collection.total),
       famille: collection.famille,
       imageUrl: visuelDeCollection(collection.apercuUrl, collection.slug, tirage),
-      ...(membre ? { epingle: rayonsEpingles.has(collection.slug) } : {}),
     })),
     ...tags.map((tag) => ({
       cle: `t-${tag.slug}`,
@@ -127,7 +108,6 @@ export default async function RayonPage({ params }: { params: Promise<{ library:
         : // Hors de la bibliotheque Images, seule l'image DEPOSEE compte.
           // Voir `photosEmpruntables` ci-dessus.
           tag.imageUrl,
-      ...(membre ? { epingle: epingles.has(tag.slug) } : {}),
     })),
   ];
 

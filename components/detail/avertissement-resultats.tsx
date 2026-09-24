@@ -1,20 +1,32 @@
+import type { Library } from '@/lib/constants';
+
 /**
- * Rappel de fin de fiche.
+ * Rappel de fin de fiche : les deux formulations definitives du rapport de
+ * refonte UI (23 septembre 2026), une par nature de resultat.
  *
  * Il ferme la fiche plutot que de l'ouvrir : place en tete, il ferait douter
- * avant meme d'avoir lu ce que la commande fait. Le ton reste factuel — deux
- * phrases, gris clair, sans encadre ni pictogramme d'alerte. Une commande qui
- * s'annonce risquee ne se copie pas, et ce n'est pas ce qui est dit ici :
- * l'IA n'est pas un outil deterministe, le resultat se relit.
+ * avant meme d'avoir lu ce que la commande fait. Le ton reste factuel — gris
+ * clair, sans encadre ni pictogramme d'alerte.
+ *
+ * Aucun nom d'IA : le texte est le meme partout, et c'est le modele choisi
+ * par le membre qui fait varier le resultat.
  *
  * Sans balise `role="alert"` : ce n'est pas une alerte, c'est une note de bas
  * de page. Un lecteur d'ecran l'annoncerait par-dessus la lecture en cours.
  */
-export function AvertissementResultats({ className = '' }: { className?: string }) {
+export function AvertissementResultats({
+  univers,
+  className = '',
+}: {
+  /** La bibliotheque de la commande ; les Visuels ont leur propre phrase. */
+  univers: Library | null;
+  className?: string;
+}) {
   return (
     <p className={`text-[12px] leading-relaxed text-[color:var(--color-muted)]/80 ${className}`}>
-      Les résultats varient selon l’IA utilisée et sa version. Une IA peut se tromper : relisez
-      avant d’utiliser.
+      {univers === 'images'
+        ? 'Prompt conçu pour les modèles de génération d’images. Le résultat varie selon le modèle utilisé.'
+        : 'Le résultat varie selon le modèle d’IA utilisé. Relisez avant utilisation.'}
     </p>
   );
 }

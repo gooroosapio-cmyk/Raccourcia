@@ -4,7 +4,7 @@ import { getAnalytics, parseWindow, ANALYTICS_WINDOWS } from '@/lib/admin/analyt
 import { BarList, DailyColumns, Stat } from '@/components/ui/chart';
 import { MODE_LABELS } from '@/lib/constants';
 
-export const metadata = { title: 'Analytics' };
+export const metadata = { title: 'Statistiques' };
 
 /**
  * Ce qui est copie, et ce qui ne l'est pas.
@@ -27,7 +27,7 @@ export default async function AdminAnalyticsPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Analytics</h1>
+        <h1 className="text-xl font-semibold text-[color:var(--color-night)]">Statistiques</h1>
         <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--color-muted)]">
           Ce que les membres copient reellement. Les chiffres sont agrégés : ils ne disent jamais
           qui a copie quoi.

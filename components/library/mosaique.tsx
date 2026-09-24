@@ -2,8 +2,6 @@ import Image from 'next/image';
 import { resumerPourCarte } from '@/lib/format/resume';
 import Link from 'next/link';
 import { FondDeRayon } from '@/components/library/fond-de-rayon';
-import { EtoileDeRayon } from '@/components/library/etoile-de-rayon';
-import type { GenreDeRayon } from '@/lib/actions/tags-favoris';
 
 /**
  * Une mosaique de cartes illustrees, de tailles inegales.
@@ -36,8 +34,8 @@ export type CarteDeMosaique = {
   imageUrl: string | null;
   /** Le slug du rayon, dont se deduit sa teinte de repli. */
   slug: string;
-  /** Un tag ou une collection : l'etoile s'en sert pour savoir ou ecrire. */
-  genre: GenreDeRayon;
+  /** Un tag ou une collection. */
+  genre: 'tag' | 'collection';
   /**
    * La categorie dont releve la carte, quand elle en a une.
    *
@@ -46,12 +44,6 @@ export type CarteDeMosaique = {
    * resserrer sur une categorie sans confondre les deux axes.
    */
   famille?: string;
-  /**
-   * Presente pour un membre seulement : l'etoile qui epingle le rayon. Un
-   * visiteur n'a pas de rayon a lui, et la lui montrer serait promettre
-   * un geste qui echoue.
-   */
-  epingle?: boolean;
 };
 
 /**
@@ -80,19 +72,8 @@ export function Mosaique({
       {cartes.map((carte, rang) => {
         const large = estLarge(rang);
         return (
-          // `relative` : l'etoile se pose par-dessus la carte, jamais
-          // dedans — un bouton dans une ancre n'est pas du HTML valide.
-          <li key={carte.cle} className={`relative ${large ? 'col-span-2' : ''}`}>
+          <li key={carte.cle} className={large ? 'col-span-2' : undefined}>
             <CarteIllustree carte={carte} large={large} priority={rang < prioritaires} />
-            {carte.epingle === undefined ? null : (
-              <EtoileDeRayon
-                genre={carte.genre}
-                slug={carte.slug}
-                nom={carte.titre}
-                epingleAuDepart={carte.epingle}
-                surVisuel={carte.imageUrl !== null}
-              />
-            )}
           </li>
         );
       })}

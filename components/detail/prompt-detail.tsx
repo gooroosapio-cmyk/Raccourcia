@@ -5,9 +5,8 @@ import { AccessBadge } from '@/components/cards/access-badge';
 import { AvertissementResultats } from '@/components/detail/avertissement-resultats';
 import { BeforeAfterMedia, MediaPlaceholder } from '@/components/media/before-after-media';
 import { ChampsDeCommande } from '@/components/detail/champs-de-commande';
-import { ChoixMoteur } from '@/components/detail/choix-moteur';
+import { CopyCommandButton } from '@/components/cards/copy-command-button';
 import { FavoriteButton } from '@/components/cards/favorite-button';
-import { BoutonJaime } from '@/components/cards/bouton-jaime';
 import { AFournir } from '@/components/detail/a-fournir';
 import { CorpsMode, CorpsParcours } from '@/components/detail/fiche-moteur';
 import { ModesCommande } from '@/components/detail/modes-commande';
@@ -18,6 +17,9 @@ import { VousObtenez } from '@/components/detail/vous-obtenez';
 import { ListePuces, Section } from '@/components/detail/section-fiche';
 import { NiveauExecution } from '@/components/detail/niveau-execution';
 import { SheetCloseButton } from '@/components/ui/sheet-close';
+import { ApercuDuPrompt } from '@/components/detail/apercu-du-prompt';
+import { Icone } from '@/components/ui/icone';
+import { iconeDuRole } from '@/lib/ui/icones';
 import { SheetDragHandle, useSheetDrag } from '@/components/ui/sheet-drag';
 import { usePaywall } from '@/components/paywall/paywall-provider';
 import { decrireNiveau } from '@/lib/catalog/niveau';
@@ -26,27 +28,36 @@ import { useToast } from '@/components/ui/toast';
 import type { PromptCard } from '@/lib/catalog/types';
 
 /**
- * Fiche d'une commande, en bottom sheet.
+ * Fiche d'une commande : comprendre, completer, copier.
  *
  * Le detail reste une couche par-dessus la grille : la fermer rend la
  * position de defilement et les filtres exactement tels qu'ils etaient.
  *
- * Elle repond a quatre questions, dans cet ordre : ce que fait la commande,
- * ce qu'il faut lui fournir, ce qu'on recoit, ou l'utiliser. Le contenu
- * complet de la commande n'est present nulle part : il est demande au clic.
+ * L'ORDRE DU RAPPORT DE REFONTE (23 septembre 2026) :
+ *   1. le titre entier et le benefice en une phrase ;
+ *   2. le media (avant/apres) quand la commande rend une image ;
+ *   3. « A completer », ouvert, juste apres le resume ;
+ *   4. la consigne de photo, quand la commande part d'une image ;
+ *   5. « Voir le prompt final », replie ;
+ *   6. les details — dont le raccourci /commande, devenu secondaire ;
+ *   7. l'avertissement, en fin de contenu.
+ * La barre « Copier le prompt » reste fixe en bas et remplace la
+ * navigation, que la fiche recouvre.
+ *
+ * Sur ordinateur, deux panneaux : le media a gauche, le texte et les champs
+ * a droite. Une commande sans media garde une seule colonne centree.
+ *
+ * Le texte complet n'est jamais embarque : l'apercu et la copie le
+ * demandent a la route de lecture, qui revalide l'acces.
  */
 export function PromptDetailSheet({
   prompt,
-  provider,
-  onProviderChange,
   locked,
   free,
   visiteur = false,
   onClose,
 }: {
   prompt: PromptCard;
-  provider: string;
-  onProviderChange: (provider: string) => void;
   locked: boolean;
   free: boolean;
   /**
@@ -73,10 +84,33 @@ export function PromptDetailSheet({
   // retenue d'une ouverture a l'autre ferait copier, sans le dire, des
   // valeurs posees pour une autre occasion.
   const [valeurs, setValeurs] = useState<Record<string, string>>({});
+  const [erreurs, setErreurs] = useState<Record<string, string>>({});
 
   const renseigner = useCallback((cle: string, valeur: string) => {
     setValeurs((actuelles) => ({ ...actuelles, [cle]: valeur }));
+    // L'erreur tombe des qu'on corrige : la garder rouge pendant la saisie
+    // reprocherait ce qu'on est en train de faire.
+    setErreurs((actuelles) => {
+      if (!actuelles[cle]) return actuelles;
+      const suite = { ...actuelles };
+      delete suite[cle];
+      return suite;
+    });
   }, []);
+
+  // Un champ indispensable vide arrete la copie : le message se pose sous
+  // le champ, et le focus y va. Les champs facultatifs ne bloquent jamais.
+  const verifierAvantCopie = useCallback(() => {
+    const manquants = prompt.champs.filter(
+      (champ) => champ.requis && !(valeurs[champ.cle] ?? '').trim(),
+    );
+    if (manquants.length === 0) return true;
+    setErreurs(
+      Object.fromEntries(manquants.map((champ) => [champ.cle, 'À renseigner avant de copier.'])),
+    );
+    document.getElementById(`champ-${manquants[0]!.cle}`)?.focus();
+    return false;
+  }, [prompt.champs, valeurs]);
 
   // Seules les clefs declarees partent, et dans l'ordre du formulaire : le
   // serveur les reverifiera, mais rien ne sert d'envoyer ce qu'il ecartera.
@@ -143,9 +177,9 @@ export function PromptDetailSheet({
     };
   }, [onClose]);
 
-  const compatibles = prompt.providers.filter((entry) => entry.compatibility !== 'non_supporte');
   const niveau = decrireNiveau(prompt.level, prompt.maxQuestions);
-  const actif = compatibles.find((entry) => entry.key === provider) ?? compatibles[0];
+  // Le panneau media n'existe que pour une commande qui rend une image.
+  const media = prompt.showImageCard;
 
   const partager = async () => {
     const url = `${window.location.origin}/r/${prompt.slug}`;
@@ -197,22 +231,24 @@ export function PromptDetailSheet({
           <SheetDragHandle />
 
           <header className="flex items-center justify-between gap-1 border-b border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-2 py-1.5">
-            <SheetCloseButton ref={fermerRef} onClose={onClose} libelle="Fermer la fiche" />
+            {/* Retour, et non une croix : on revient a la liste, a sa
+                position et a ses filtres — c'est ce que dit une fleche. */}
+            <button
+              ref={fermerRef}
+              type="button"
+              onClick={onClose}
+              aria-label="Retour"
+              className="touch-target inline-flex items-center justify-center rounded-full text-[color:var(--color-night)]"
+            >
+              <Icone svg={iconeDuRole('back')} taille={24} />
+            </button>
 
             <div className="flex items-center">
-              {/* Le coeur et son compte, a cote de l'etoile : la fiche est
-                  l'endroit ou l'on decide, donc celui ou un signal d'usage
-                  compte le plus. */}
-              <BoutonJaime
-                promptId={prompt.id}
-                likeCount={prompt.likeCount}
-                aime={prompt.aime}
-                visiteur={visiteur}
-              />
               <FavoriteButton
                 promptId={prompt.id}
                 initial={prompt.isFavorite}
-                disabled={locked || visiteur}
+                disabled={locked}
+                visiteur={visiteur}
               />
               <button
                 type="button"
@@ -220,7 +256,7 @@ export function PromptDetailSheet({
                 aria-label="Partager cette commande"
                 className="touch-target inline-flex items-center justify-center rounded-full text-[color:var(--color-muted)]"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path
                     d="M12 15V4m0 0L8 8m4-4 4 4M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"
                     stroke="currentColor"
@@ -235,177 +271,172 @@ export function PromptDetailSheet({
         </div>
 
         <div ref={contenuRef} className="flex-1 overflow-y-auto overscroll-contain px-5 pb-4 pt-4">
-          {/* Une colonne sur telephone, deux a partir du grand ecran. La
-              fiche repond aux memes questions dans le meme ordre ; passe une
-              certaine largeur, les poser les unes sous les autres obligeait
-              a faire defiler une page a moitie vide pour atteindre ce qu'on
-              donne et ce qu'on obtient. */}
-          <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
-            <div>
-              {prompt.showImageCard ? (
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => prompt.beforeAfter && setAgrandi(true)}
-                    aria-label={
-                      prompt.beforeAfter
-                        ? 'Agrandir la comparaison avant et après'
-                        : 'Aucun visuel disponible'
-                    }
-                    disabled={!prompt.beforeAfter}
-                    className="block w-full"
-                  >
-                    <div
-                      className={
-                        locked
-                          ? 'scale-[1.04] overflow-hidden rounded-[color:var(--radius-card)] blur-[8px]'
-                          : undefined
-                      }
-                    >
-                      {prompt.beforeAfter ? (
-                        <BeforeAfterMedia media={prompt.beforeAfter} command={prompt.command} />
-                      ) : (
-                        <MediaPlaceholder command={prompt.command} />
-                      )}
-                    </div>
-                  </button>
-                </div>
-              ) : prompt.intention ? (
-                /*
-                 * Commande texte : la place reservee au visuel porte l'intention.
-                 *
-                 * Une commande texte n'a pas d'avant/apres a montrer. Le decor qui
-                 * occupait ce cadre — des traits imitant des lignes de texte —
-                 * n'apprenait rien; les cas d'usage, eux, sont repris plus bas
-                 * sous « Quand l'utiliser », et les lire deux fois a dix lignes
-                 * d'intervalle ne les rend pas plus clairs. L'intention dit autre
-                 * chose : ce que la commande cherche a obtenir.
-                 */
-                <div className="rounded-[color:var(--radius-card)] bg-gradient-to-br from-[color:var(--color-sky)] to-[color:var(--color-canvas)] px-4 py-3.5">
-                  <h3 className="text-[13px] font-semibold uppercase tracking-wide text-[color:var(--color-brand)]/75">
-                    Intention
-                  </h3>
-                  <p className="mt-1.5 text-[length:var(--texte-corps)] leading-[1.45] text-[color:var(--color-night)]">
-                    {prompt.intention}
-                  </p>
-                </div>
-              ) : null}
-
-              {/* Le titre d'abord, le raccourci ensuite. C'est l'ordre dans
-              lequel on decouvre une commande : on sait d'abord ce qu'elle
-              fait, on apprend ensuite comment l'appeler. La carte qui a
-              amene ici portait ce meme titre — la fiche ne change pas de
-              nom en cours de route. */}
-              <div className="mt-4">
-                {/* Le fil remplace la pastille de genre. « Mode IA » disait
-                    comment le classeur range la commande ; « Images ›
-                    Matieres et metamorphoses » dit ou l'on se trouve, ce qui
-                    est la question qu'on se pose en ouvrant une fiche. */}
-                <div className="flex items-start justify-between gap-2">
-                  <FilTaxonomique library={prompt.library} collection={prompt.collectionName} />
-                  <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
-                </div>
-
-                <h2
-                  id="fiche-commande"
-                  className="mt-2 text-[22px] font-semibold leading-tight text-[color:var(--color-night)]"
-                >
-                  {prompt.name}
-                </h2>
-
-                {/* Le raccourci, avec sa propre copie. Deux copies coexistent
-                    sur cette fiche et les confondre coute cher : celle-ci rend
-                    « /toybox », le bouton bleu du bas rend le texte complet.
-                    Elles ne se ressemblent donc pas. */}
-                <CopieDuRaccourci commande={prompt.command} />
+          <div
+            className={
+              media
+                ? 'flex flex-col lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8'
+                : 'mx-auto flex max-w-2xl flex-col'
+            }
+          >
+            {/* 1. Le titre entier et le benefice. */}
+            <div className={media ? 'lg:col-start-2 lg:row-start-1' : undefined}>
+              <div className="flex items-start justify-between gap-2">
+                <FilTaxonomique library={prompt.library} collection={prompt.collectionName} />
+                <AccessBadge free={free} locked={locked} isNew={prompt.isNew} />
               </div>
-
-              {/* Ce que fait la commande, en premiere information apres son nom.
-              `result_summary` decrit le format produit et se repete a
-              l'identique sur toute une famille : il est dit plus bas, dans
-              « Resultat », ou c'est sa place. */}
+              <h2
+                id="fiche-commande"
+                className="mt-2 text-[24px] font-semibold leading-tight text-[color:var(--color-night)]"
+              >
+                {prompt.name}
+              </h2>
               <p className="mt-1.5 text-[length:var(--texte-corps)] leading-[1.5] text-[color:var(--color-night)]">
                 {prompt.shortDescription || prompt.resultSummary}
               </p>
-
-              {/* Entre « ce que ca fait » et « ce qu'il faut fournir » : est-ce
-              que la commande rend un resultat tout de suite, ou est-ce
-              qu'elle va d'abord poser des questions ? C'est ce qui separe
-              vraiment deux commandes voisines, et personne ne le savait
-              avant de copier. */}
-              {niveau ? (
-                <div className="mt-4">
-                  <NiveauExecution niveau={niveau} />
-                </div>
-              ) : null}
             </div>
 
-            <div className="lg:[&>*:first-child]:mt-0">
-              {/* Trois genres, trois corps de fiche. Une commande image se
-                  juge sur son avant/apres et sur ce qu'il faut lui fournir ;
-                  un Mode IA sur ce qu'il fera de la conversation ; un
-                  Parcours sur la liste de ce qu'il rend. Le meme gabarit pour
-                  les trois laissait une section « A fournir » vide devant un
-                  mode, qui ne demande aucune photo. */}
-              {prompt.entityType === 'mode_ia' ? (
-                <CorpsMode prompt={prompt} />
-              ) : prompt.entityType === 'parcours' ? (
-                <CorpsParcours prompt={prompt} />
-              ) : (
-                <CorpsCommande prompt={prompt} />
-              )}
+            {/* 2. Le media, compact sur telephone, a gauche sur ordinateur. */}
+            {media ? (
+              <div className="mt-4 lg:sticky lg:top-0 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:mt-0">
+                <button
+                  type="button"
+                  onClick={() => prompt.beforeAfter && setAgrandi(true)}
+                  aria-label={
+                    prompt.beforeAfter
+                      ? 'Agrandir la comparaison avant et après'
+                      : 'Aucun visuel disponible'
+                  }
+                  disabled={!prompt.beforeAfter}
+                  className="block w-full"
+                >
+                  <div
+                    className={
+                      locked
+                        ? 'scale-[1.04] overflow-hidden rounded-[color:var(--radius-card)] blur-[8px]'
+                        : undefined
+                    }
+                  >
+                    {prompt.beforeAfter ? (
+                      <BeforeAfterMedia media={prompt.beforeAfter} command={prompt.command} />
+                    ) : (
+                      <MediaPlaceholder command={prompt.command} />
+                    )}
+                  </div>
+                </button>
+              </div>
+            ) : null}
 
-              {prompt.modes.length > 0 ? (
-                <Section titre="Elle sait aussi faire">
-                  <ModesCommande modes={prompt.modes} />
-                </Section>
+            <div className={media ? 'lg:col-start-2 lg:row-start-2' : undefined}>
+              {/* 3. A completer, ouvert, juste apres le resume. */}
+              <ChampsDeCommande
+                champs={prompt.champs}
+                valeurs={valeurs}
+                onChange={renseigner}
+                erreurs={erreurs}
+                desactive={locked}
+              />
+
+              {/* 4. La photo se joint dans l'outil d'IA : aucun televersement
+                  ici ne l'alimenterait, et en proposer un serait mentir. */}
+              {prompt.entreeImage && prompt.library === 'images' ? (
+                <p className="mt-4 flex gap-2 rounded-[color:var(--radius-control)] bg-[color:var(--color-sky)] px-3 py-2.5 text-[length:var(--texte-meta)] leading-snug text-[color:var(--color-night)]">
+                  <span aria-hidden="true" className="shrink-0 text-[color:var(--color-brand)]">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <rect
+                        x="3"
+                        y="5"
+                        width="18"
+                        height="14"
+                        rx="2.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <circle cx="9" cy="10" r="1.8" stroke="currentColor" strokeWidth="2" />
+                      <path
+                        d="m21 15-4.5-4.5L8 19"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  Ajoutez votre photo dans votre outil d’IA après avoir collé le prompt.
+                </p>
               ) : null}
 
-              {/* Les tags sortent de la fiche : « pas celle-la, mais
-                  quelque chose de ce genre » n'avait aucune reponse — il
-                  fallait fermer, remonter et relancer une recherche. Ils ne
-                  s'affichent pas pour un visiteur devant une commande
-                  reservee : la carte est masquee, elle ne porte rien. */}
-              <MotsCles mots={prompt.motsCles} />
+              {/* 5. Le texte tel qu'il sera copie, replie. */}
+              {!locked && prompt.payloadReady ? (
+                <ApercuDuPrompt promptId={prompt.id} champs={saisies} />
+              ) : null}
 
-              {/* Le formulaire ferme la fiche, juste au-dessus du bouton :
-                  c'est le dernier geste avant la copie, et le lire apres
-                  avoir compris ce que fait la commande vaut mieux que de le
-                  trouver avant d'en connaitre l'usage. */}
-              {/* AUCUN CHAMP SUR UNE FICHE IMAGE.
-                  Ce qu'une commande image attend, c'est une photo — et la
-                  photo se joint dans la conversation, pas ici. Un formulaire
-                  a cet endroit demandait d'ecrire ce qu'on allait de toute
-                  facon montrer. Les champs restent la ou ils servent : les
-                  Textes et les Reflexions, ou une precision ecrite change
-                  reellement le resultat. */}
-              {prompt.showImageCard ? null : (
-                <ChampsDeCommande
-                  champs={prompt.champs}
-                  valeurs={valeurs}
-                  onChange={renseigner}
-                  desactive={locked}
-                />
-              )}
+              {/* 6. Les details : ce qui aide a choisir, apres ce qui sert a
+                  agir. Le raccourci /commande y vit, secondaire. */}
+              <section
+                aria-labelledby="details-commande"
+                className="mt-6 border-t border-[color:var(--color-line)] pt-4"
+              >
+                <h3
+                  id="details-commande"
+                  className="text-[length:var(--texte-corps)] font-semibold text-[color:var(--color-night)]"
+                >
+                  Détails
+                </h3>
+
+                {niveau ? (
+                  <div className="mt-3">
+                    <NiveauExecution niveau={niveau} />
+                  </div>
+                ) : null}
+
+                {prompt.entityType === 'mode_ia' ? (
+                  <CorpsMode prompt={prompt} />
+                ) : prompt.entityType === 'parcours' ? (
+                  <CorpsParcours prompt={prompt} />
+                ) : (
+                  <CorpsCommande prompt={prompt} />
+                )}
+
+                {!prompt.showImageCard && prompt.intention ? (
+                  <Section titre="Intention">
+                    <p className="text-[length:var(--texte-corps)] leading-[1.5] text-[color:var(--color-night)]">
+                      {prompt.intention}
+                    </p>
+                  </Section>
+                ) : null}
+
+                {prompt.modes.length > 0 ? (
+                  <Section titre="Elle sait aussi faire">
+                    <ModesCommande modes={prompt.modes} />
+                  </Section>
+                ) : null}
+
+                <MotsCles mots={prompt.motsCles} />
+
+                <Section titre="Raccourci">
+                  <CopieDuRaccourci commande={prompt.command} />
+                </Section>
+              </section>
+
+              {/* 7. L'avertissement ferme la fiche. */}
+              <AvertissementResultats
+                univers={prompt.library}
+                className="mt-5 border-t border-[color:var(--color-line)] pt-3"
+              />
             </div>
           </div>
-
-          <AvertissementResultats className="mt-5 border-t border-[color:var(--color-line)] pt-3" />
         </div>
 
         <div className="shrink-0 border-t border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
-          <ChoixMoteur
+          <CopyCommandButton
             champs={saisies}
             promptId={prompt.id}
             pret={prompt.payloadReady}
-            providers={compatibles}
             surface="detail"
             locked={locked}
             genre={prompt.entityType}
-            selected={actif?.key}
-            onSelect={onProviderChange}
+            verifierAvantCopie={verifierAvantCopie}
             onLockedClick={ouvrirOffre}
-            proposerOuverture
           />
         </div>
       </div>
@@ -460,9 +491,13 @@ function CorpsCommande({ prompt }: { prompt: PromptCard }) {
           commande qui transforme un portrait, on lisait « Texte brut » et
           « Brief » juste au-dessus d'une phrase qui disait « Une photo
           nette de la personne ». C'est le temoin qui fait foi. */}
+      {/* Sur une commande Visuels, `witness_type` dit comment la carte est
+          illustree (« avant_apres »), pas ce qu'il faut fournir : l'afficher
+          montrait le vocabulaire de la base. Ce qui compte, c'est si la
+          commande part d'une photo du membre. */}
       <AFournir
-        temoin={prompt.witnessType}
-        precision={prompt.expectedInput}
+        temoin={prompt.entreeImage ? 'Votre photo, à joindre dans votre outil d’IA' : null}
+        precision={prompt.showImageCard ? null : prompt.expectedInput}
         exemples={prompt.inputExamples}
         image={prompt.showImageCard}
       />

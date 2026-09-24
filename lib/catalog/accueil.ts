@@ -15,7 +15,7 @@ import { LARGEURS_VISUEL, urlVisuel } from '@/lib/media/url';
  * derriere.
  *
  * Le classement vient de la base, pas d'ici : ce que l'administration
- * epingle, ce qui est reellement montrable, les likes, puis le volume. Le
+ * epingle, ce qui est reellement montrable, puis le volume. Le
  * volume en dernier, sinon l'accueil afficherait chaque jour le plus gros
  * rayon.
  */
