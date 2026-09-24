@@ -491,9 +491,13 @@ function CorpsCommande({ prompt }: { prompt: PromptCard }) {
           commande qui transforme un portrait, on lisait « Texte brut » et
           « Brief » juste au-dessus d'une phrase qui disait « Une photo
           nette de la personne ». C'est le temoin qui fait foi. */}
+      {/* Sur une commande Visuels, `witness_type` dit comment la carte est
+          illustree (« avant_apres »), pas ce qu'il faut fournir : l'afficher
+          montrait le vocabulaire de la base. Ce qui compte, c'est si la
+          commande part d'une photo du membre. */}
       <AFournir
-        temoin={prompt.witnessType}
-        precision={prompt.expectedInput}
+        temoin={prompt.entreeImage ? 'Votre photo, à joindre dans votre outil d’IA' : null}
+        precision={prompt.showImageCard ? null : prompt.expectedInput}
         exemples={prompt.inputExamples}
         image={prompt.showImageCard}
       />

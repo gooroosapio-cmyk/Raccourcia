@@ -146,3 +146,32 @@ Retour arrière : redéployer le code précédent (les anciennes fonctions
 `resolve_prompt` et `resolve_free_prompt` restent en place) ; les variantes
 archivées se republient par changement de statut ; les « j’aime » et
 épingles se restaurent depuis le schéma `sauvegarde`.
+
+## Lot 3 — parcours public
+
+- **Fiche** : titre et bénéfice, média (à gauche sur ordinateur), « À
+  compléter » ouvert avec validation sous le champ, consigne de photo pour
+  les 102 Visuels qui partent d’une image, « Voir le prompt final » replié
+  (même route que la copie, sans journalisation), détails — dont le
+  raccourci /commande —, avertissement, barre « Copier le prompt ».
+- **Accueil** : recherche sous « Que voulez-vous créer ? », trois univers ;
+  Visuels à la première visite, puis le dernier choisi ou l’univers fixé
+  dans Profil. Sections filtrées : Commencer gratuitement, Collections à
+  explorer, Copiées récemment, sélection de l’univers.
+- **Bibliothèque** : onglets d’univers, collections (couverture, titre,
+  nombre). **Collection** : introduction, « Tout / Gratuits »,
+  « Pertinence / Récentes ».
+- **Découvrir** : image, titre, description, #tags, cœur, partage ; plus de
+  /commande, de miniatures ni de bouton d’action.
+- **Favoris** : ouverts à tout compte ; « Tout » et trois univers,
+  recherche, états vides utiles ; invitation à se connecter pour un visiteur.
+- **Profil** : accès, mon activité (favoris, historique, univers
+  d’accueil), mon compte, informations légales une seule fois,
+  administration selon le rôle.
+- **Offre** : « Allez plus loin. », trois bénéfices, prix configuré,
+  « Accéder au catalogue complet », « J’ai déjà un accès », « Continuer avec
+  les commandes offertes ». Parcours de paiement inchangé (décision 8B).
+
+Restent hors lot 3 : favoris d’un visiteur mémorisés localement puis
+synchronisés à la connexion ; refonte de la page de présentation (vrais
+exemples, CTA « Essayer gratuitement », illustration sans marques IA).
