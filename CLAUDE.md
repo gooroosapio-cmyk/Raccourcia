@@ -66,7 +66,8 @@ precisement :
   reprise se fait en `on conflict (card_id)`. `card_code` (`RCIA-C-000001`) la
   designe entre humains ; il ne se renumerote jamais, et une carte supprimee ne
   libere pas le sien. Registre : `data/catalogue/v7/identifiants.csv`, et
-  `identifiants-brouillons.csv` pour les brouillons hors kit.
+  `identifiants-brouillons.csv` pour les brouillons hors kit ; pour le v7.1,
+  le code du fichier source reste dans `external_ref`.
 - **Une commande active par couple (`command`, `card_slug`)**, garantie par
   `prompts_carte_active_unique`. Une nouvelle carte sous une commande existante
   porte donc toujours son propre `card_slug`.
@@ -98,7 +99,9 @@ dans les douze ferait annoncer a un rayon des cartes que personne n'a lues.
 
 - **Exception : l'import du catalogue v7.** Ses 760 nouvelles cartes ont ete
   publiees directement dans leur collection, le 24 septembre 2026, sur
-  decision : le kit est une base relue, pas un lot a reclasser. Le rayon de
+  decision : le kit est une base relue, pas un lot a reclasser. De meme pour
+  les 200 cartes de la base consolidee du 3 octobre 2026 (catalogue v7.1),
+  publiees le 4 octobre pour recevoir leurs visuels. Le rayon de
   transition garde les brouillons qui ne viennent pas du kit.
 - **Le rayon de transition est visible comme les autres.** La regle qui
   interdisait une categorie publique « a reclasser » est levee : elle

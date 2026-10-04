@@ -170,6 +170,23 @@ Après import : 1 109 cartes publiées, 290 brouillons (registre
 visuels intacts, 464 lignes au journal, 21 favoris ; toutes les cartes ont
 un `card_id` et un `card_code`.
 
+## Catalogue v7.1 — 200 cartes Visuels, publiées le 4 octobre 2026
+
+Base consolidée du 3 octobre 2026 (`data/catalogue/v7-1/`), lots générés par
+`scripts/build-catalogue-v7-1.py`, une transaction (workflow Catalogue,
+`catalogue-v7-1`, répété d'abord en `catalogue-v7-1-repetition`).
+
+- 200 cartes ajoutées et publiées sans visuel, à illustrer depuis la console ;
+  rien d'existant n'est modifié ni supprimé.
+- Codes `RCIA-C-001400` à `RCIA-C-001599` ; le code du fichier
+  (`VIV2-STU-001`…) devient la référence externe.
+- Champs : le fichier en déclarait 5, 7 ou 12, sans libellé ni jeton. Sont
+  gardés contexte, texte, préférences (portraits) ; texte, intention,
+  couleurs (illustrations) ; entreprise, offre, prix, date (14 flyers, régime
+  marketing). 614 champs, 618 liens de tags.
+- Photo facultative pour les 163 cartes dont la ressemblance part d'une
+  photo.
+
 ## Lot 2 — composants
 
 - **Copie en deux temps** (migration `20260924110000_copie_en_deux_temps.sql`) :

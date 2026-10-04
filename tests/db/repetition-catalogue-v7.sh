@@ -8,8 +8,9 @@
 #   ./tests/db/repetition-catalogue-v7.sh /chemin/replica.sql
 #
 # Deroule : migrations du depot, replique, puis l'import v7 DEUX fois — une
-# transaction chacun, comme en production — et la repetition annulee. Chaque
-# passage doit reussir ; le second ne doit rien changer.
+# transaction chacun, comme en production — et la repetition annulee ; puis
+# de meme pour chaque lot qui le suit (catalogue-v7-1, ...). Chaque passage
+# doit reussir ; le second ne doit rien changer.
 # ---------------------------------------------------------------------------
 set -euo pipefail
 
@@ -60,6 +61,25 @@ if cat "${SANS_VALIDATION[@]}" "$ROOT/supabase/seed/catalogue-v7-repetition.sql"
 fi
 grep -q 'REPETITION v7' /tmp/repetition-v7.err || { cat /tmp/repetition-v7.err >&2; exit 1; }
 grep -o 'REPETITION v7.*' /tmp/repetition-v7.err
+
+# Les lots qui suivent le v7 (v7-1, ...) : chacun deux fois, puis sa
+# repetition annulee.
+for dossier in "$ROOT"/supabase/seed/catalogue-v7-[0-9]*/; do
+  [[ -d "$dossier" ]] || continue
+  nom="$(basename "$dossier")"
+  SUITE=("$dossier"*.sql)
+  for passe in 1 2; do
+    echo "==> ${nom}, passage $passe (une transaction)"
+    cat "${SUITE[@]}" | run "${PSQL[@]}" -At
+  done
+  echo "==> ${nom}, repetition annulee"
+  if cat "${SUITE[@]:0:${#SUITE[@]}-1}" "$ROOT/supabase/seed/${nom}-repetition.sql" \
+     | run "${PSQL[@]}" -At 2>/tmp/repetition-suite.err; then
+    echo "La repetition ${nom} aurait du lever." >&2; exit 1
+  fi
+  grep -o 'REPETITION v7[.0-9]* (annulee).*' /tmp/repetition-suite.err \
+    || { cat /tmp/repetition-suite.err >&2; exit 1; }
+done
 
 echo "==> Lecture par le site : chaque carte publiee rend son texte"
 run "${PSQL[@]}" -At -c "
