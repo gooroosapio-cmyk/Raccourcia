@@ -57,6 +57,10 @@ on:
           # n'est garde, le journal rend le bilan. Toujours repeter d'abord.
           - catalogue-v7-repetition
           - supabase/seed/catalogue-v7
+          # 200 cartes Visuels de la base consolidee du 3 octobre 2026, en une
+          # transaction, comme le v7. Repeter d'abord.
+          - catalogue-v7-1-repetition
+          - supabase/seed/catalogue-v7-1
           - supabase/seed/catalogue-final-v5
           # Le catalogue Visuels V3. Le lot 000 n'ecrit rien : il compte ce
           # que les suivants vont toucher et leve si une carte historique est
@@ -171,7 +175,9 @@ jobs:
           inputs.dossier != 'catalogue-final' &&
           inputs.dossier != 'formats-et-rayons' &&
           inputs.dossier != 'catalogue-v7-repetition' &&
-          inputs.dossier != 'supabase/seed/catalogue-v7'
+          inputs.dossier != 'supabase/seed/catalogue-v7' &&
+          inputs.dossier != 'catalogue-v7-1-repetition' &&
+          inputs.dossier != 'supabase/seed/catalogue-v7-1'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
@@ -198,28 +204,36 @@ jobs:
       - name: Importer le catalogue v7 (une transaction)
         if: >-
           inputs.dossier == 'supabase/seed/catalogue-v7' ||
-          inputs.dossier == 'catalogue-v7-repetition'
+          inputs.dossier == 'catalogue-v7-repetition' ||
+          inputs.dossier == 'supabase/seed/catalogue-v7-1' ||
+          inputs.dossier == 'catalogue-v7-1-repetition'
         env:
           PGURL: ${{ secrets.SUPABASE_DB_URL }}
           DOSSIER: ${{ inputs.dossier }}
         run: |
           set -euo pipefail
-          lots=(supabase/seed/catalogue-v7/*.sql)
-          if [ "$DOSSIER" = "catalogue-v7-repetition" ]; then
+          # « catalogue-v7-1-repetition » rejoue supabase/seed/catalogue-v7-1
+          # sans son 999, suivi de catalogue-v7-1-repetition.sql.
+          case "$DOSSIER" in
+            *-repetition) nom="${DOSSIER%-repetition}"; repetition=1 ;;
+            *) nom="$(basename "$DOSSIER")"; repetition=0 ;;
+          esac
+          lots=(supabase/seed/"$nom"/*.sql)
+          if [ "$repetition" = 1 ]; then
             unset 'lots[${#lots[@]}-1]'
-            cat "${lots[@]}" supabase/seed/catalogue-v7-repetition.sql > "$RUNNER_TEMP/v7.sql"
-            if psql "$PGURL" -v ON_ERROR_STOP=1 -At --no-psqlrc -f "$RUNNER_TEMP/v7.sql" \
-                 > "$RUNNER_TEMP/v7.out" 2> "$RUNNER_TEMP/v7.err"; then
+            cat "${lots[@]}" "supabase/seed/${nom}-repetition.sql" > "$RUNNER_TEMP/lot.sql"
+            if psql "$PGURL" -v ON_ERROR_STOP=1 -At --no-psqlrc -f "$RUNNER_TEMP/lot.sql" \
+                 > "$RUNNER_TEMP/lot.out" 2> "$RUNNER_TEMP/lot.err"; then
               echo 'La repetition aurait du lever.'; exit 1
             fi
-            cat "$RUNNER_TEMP/v7.out"
-            if ! grep -q 'REPETITION v7' "$RUNNER_TEMP/v7.err"; then
-              cat "$RUNNER_TEMP/v7.err"; exit 1
+            cat "$RUNNER_TEMP/lot.out"
+            if ! grep -q 'REPETITION v7' "$RUNNER_TEMP/lot.err"; then
+              cat "$RUNNER_TEMP/lot.err"; exit 1
             fi
-            grep -o 'REPETITION v7.*' "$RUNNER_TEMP/v7.err"
+            grep -o 'REPETITION v7.*' "$RUNNER_TEMP/lot.err"
           else
-            cat "${lots[@]}" > "$RUNNER_TEMP/v7.sql"
-            psql "$PGURL" -v ON_ERROR_STOP=1 -At --no-psqlrc -f "$RUNNER_TEMP/v7.sql"
+            cat "${lots[@]}" > "$RUNNER_TEMP/lot.sql"
+            psql "$PGURL" -v ON_ERROR_STOP=1 -At --no-psqlrc -f "$RUNNER_TEMP/lot.sql"
           fi
 
       # La bascule de taxonomie est la seule etape que les membres voient :
